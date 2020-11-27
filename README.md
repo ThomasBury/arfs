@@ -1,5 +1,6 @@
 <img src="logo.png" alt="drawing" width="200"/>
 
+[buy me caffeine](Ko-fi.com/V7V72SOHX)
 
 # All relevant feature selection
 
