@@ -21,6 +21,7 @@ import numpy as np
 import lightgbm as lgb
 
 # visualizations
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 from palettable.cmocean.diverging import Curl_19, Balance_19, Curl_5, Curl_5_r
 from palettable.cartocolors.qualitative import Bold_10
@@ -44,10 +45,6 @@ import random
 # set style
 hv.extension('bokeh', logo=False)
 hv.renderer('bokeh').theme = 'light_minimal'
-
-
-
-
 
 
 #####################
@@ -81,7 +78,6 @@ def set_my_plt_style(height=3, width=5, linewidth=2):
               "savefig.facecolor": bckgnd_color, "grid.color": "#d2d2d2",
               'lines.linewidth': linewidth}  # plt.cycler(color=my_colors_list)
     mpl.rcParams.update(params)
-
 
 
 def cat_var(df, col_excl=None, return_cat=True):
@@ -143,7 +139,6 @@ def cat_var(df, col_excl=None, return_cat=True):
     if return_cat:
         df[non_num_cols] = df[non_num_cols].astype('category')
     return df, cat_var_df, inv_mapper, mapper
-
 
 
 def plot_corr(df, size=10):
@@ -892,7 +887,7 @@ class FeatureSelector:
         """
 
         # Check for all required parameters
-        list_of_params = ['patterns', 'missing_threshold', 'max_card','correlation_threshold',
+        list_of_params = ['patterns', 'missing_threshold', 'max_card', 'correlation_threshold',
                           'eval_metric', 'task', 'cumulative_importance']
         for param in list_of_params:
             if param not in selection_params.keys():

@@ -28,7 +28,7 @@ INSTALL_REQUIRES = ['pandas >= 1.0.0',
 KEYWORDS = 'feature-selection, all-relevant, selection'
 
 setup(name="arfs",
-      version="0.0.1",
+      version="0.0.2",
       description="All Relevant Feature Selection",
       long_description=README,
       long_description_content_type="text/markdown",
