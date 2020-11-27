@@ -1,4 +1,4 @@
-![Avatar](logo.png =250x) 
+<img src="logo.png" alt="drawing" width="200"/>
 
 
 # All relevant feature selection
