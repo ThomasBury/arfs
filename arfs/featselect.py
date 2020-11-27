@@ -992,7 +992,7 @@ class FeatureSelector:
         plt.xlabel('Missing Fraction', size=14)
         plt.ylabel('Count of Features', size=14)
         plt.title("Fraction of Missing Values Histogram", size=16)
-        plt.yscale("log", nonposy='clip')
+        plt.yscale("log", nonpositive='clip')
         return plt.show()
 
     def plot_unique(self):
