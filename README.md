@@ -8,7 +8,7 @@ All relevant feature selection means trying to find all features carrying inform
 
 This package implements 3 different methods (Leshy is an evolution of Boruta, BoostAGroota is an evolution of BoostARoota and GrootCV is a new one). They are sklearn compatible. See hereunder for details about those methods. You can use any sklearn compatible estimator with Leshy and BoostAGroota but I recommend lightGBM. It's fast, accurate and has SHAP values builtin.
 
-Moreover, it provides a module for performing pre-filtering (columns with too many missing values, zero variance, high-cardinality, highly correlated, etc.).
+Moreover, it provides a module for performing pre-filtering (columns with too many missing values, zero variance, high-cardinality, highly correlated, etc.). Examples and detailled methods hereunder.
 
 ## Installation
 
@@ -56,12 +56,25 @@ feat_selector.plot_importance(n_feat_per_inch=2)
 ```
 
 **Titanic dataset, classification**
-<img src="images/leshy-titanic-catboost-shap.png" alt="drawing" width="400"/>
-<img src="images/leshy-titanic-rndforest-shap.png" alt="drawing" width="400"/>
+
+
+<table >
+  <tr>
+    <td align="left"><img src="images/leshy-titanic-catboost-shap.png" width="600"/></td>
+    <td align="left"><img src="images/leshy-titanic-rndforest-shap.png" width="600"/></td>
+  </tr>
+</table>
+
 
 **Boston dataset, regression** (boostagroota with lightgbm)
-<img src="images/grootcv-boston.png" alt="drawing" width="400"/>
-<img src="images/boostagroota-boston-lgb.png" alt="drawing" width="400"/>
+
+<table >
+  <tr>
+    <td align="left"><img src="images/grootcv-boston.png" width="600"/></td>
+    <td align="left"><img src="images/boostagroota-boston-lgb.png" width="600"/></td>
+  </tr>
+</table>
+
 
 
 ### Pre-filters
