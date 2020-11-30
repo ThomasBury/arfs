@@ -41,6 +41,7 @@ import lightgbm as lgb
 import operator
 import warnings
 import time
+from tqdm.autonotebook import trange, tqdm
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
@@ -969,7 +970,7 @@ class Leshy(BaseEstimator, TransformerMixin):
                 vimp = str(self.importance)
             else:
                 vimp = 'native'
-            output = "\n\nBorutaPy finished running using " + vimp + " var. imp.\n\n" + result
+            output = "\n\nLeshy finished running using " + vimp + " var. imp.\n\n" + result
         print(output)
 
 
@@ -1891,7 +1892,7 @@ def _reduce_vars_lgb_cv(x, y, objective, n_folds, cutoff, n_iter, silent, weight
 
     rkf = RepeatedKFold(n_splits=n_folds, n_repeats=n_iter, random_state=2652124)
     i = 0
-    for trIdx, valIdx in rkf.split(x, y):
+    for trIdx, valIdx in tqdm(rkf.split(x, y), total=rkf.get_n_splits(), desc="Repeated k-fold"):
 
         if weight is not None:
             xTrainLGBM, yTrainLGBM, weight_tr = x.iloc[trIdx, :], y.iloc[trIdx], weight.iloc[trIdx]

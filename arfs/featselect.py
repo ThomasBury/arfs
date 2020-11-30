@@ -31,7 +31,8 @@ import holoviews as hv
 import gc
 
 # progress bar
-from tqdm import tqdm, trange
+#from tqdm import tqdm, trange
+from tqdm.autonotebook import trange, tqdm
 from holoviews import dim, opts
 
 # ML
@@ -741,9 +742,10 @@ class FeatureSelector:
         feature_importance_values = np.zeros(len(feature_names))
 
         print('Training Gradient Boosting Model\n')
-
+        progress_bar = trange(n_iterations)
         # Iterate through each fold
-        for _ in range(n_iterations):
+        for _ in progress_bar:
+            progress_bar.set_description('Iteration nb: {0:<3}'.format(_))
 
             if task == 'classification':
                 model = lgb.LGBMClassifier(n_estimators=1000, learning_rate=0.05, verbose=-1,
@@ -889,7 +891,10 @@ class FeatureSelector:
         # Check for all required parameters
         list_of_params = ['patterns', 'missing_threshold', 'max_card', 'correlation_threshold',
                           'eval_metric', 'task', 'cumulative_importance']
-        for param in list_of_params:
+
+        progress_bar = tqdm(list_of_params)
+        for param in progress_bar:
+            progress_bar.set_description('Processing method: {0:<23}'.format(param))
             if param not in selection_params.keys():
                 raise ValueError('%s is a required parameter for this method.' % param)
 

@@ -18,6 +18,7 @@ Moreover, it provides a module for performing pre-filtering (columns with too ma
 
 For working examples, see the example NB and the unit tests.
 
+### All Relevant FS
 
 ```python
 import arfs.allrelevant as arfsgroot
@@ -53,6 +54,98 @@ feat_selector.fit(X, y, sample_weight)
 print(feat_selector.keep_vars_ )
 feat_selector.plot_importance(n_feat_per_inch=2)
 ```
+
+**Titanic dataset, classification**
+<img src="images/leshy-titanic-catboost-shap.png" alt="drawing" width="400"/>
+<img src="images/leshy-titanic-rndforest-shap.png" alt="drawing" width="400"/>
+
+**Boston dataset, regression** (boostagroota with lightgbm)
+<img src="images/grootcv-boston.png" alt="drawing" width="400"/>
+<img src="images/boostagroota-boston-lgb.png" alt="drawing" width="400"/>
+
+
+### Pre-filters
+
+```python
+# Artificial data set
+X, y, w = _generated_corr_dataset_regr()
+data = X.copy()
+data['target'] = y
+
+# significant regressors
+x_vars = ["var0", "var1", "var2", "var3", "var4"]
+y_vars = ["target"]
+g = sns.PairGrid(data, x_vars=x_vars, y_vars=y_vars)
+g.map(plt.scatter, alpha=0.1)
+
+# noise
+x_vars = ["var5", "var6", "var7", "var8", "var9", "var10"]
+y_vars = ["target"]
+g = sns.PairGrid(data, x_vars=x_vars, y_vars=y_vars)
+g.map(plt.scatter, alpha=0.1)
+
+plt.plot()
+
+# X is the predictor DF (e.g: df[predictor_list]), at this stage you don't need to 
+# specify the target and weights (only for identifying zero and low importance)
+fs = arfsfs.FeatureSelector(data = X, labels = y, weight = w)
+# filter out missing and store in dic
+fs.identify_missing(missing_threshold=0.2)
+fsDic = {}
+fsDic['missing'] = fs.ops['missing']
+fs.plot_missing()
+
+# single unique value columns
+fs.identify_single_unique()
+fsDic['single_unique'] = fs.ops['single_unique']
+fs.plot_unique()
+
+# high cardinality for categoricals predictors
+fs.identify_high_cardinality(max_card=2000)
+fsDic['high_cardinality'] =  fs.ops['high_cardinality']
+fs.plot_cardinality()
+
+# collect columns to drop and force some predictors
+cols_to_drop = fs.check_removal()
+filtered_features = list( set(X.columns) - set(cols_to_drop) )
+X_red = X[filtered_features].copy()
+# tagging and keeping track of everything
+fs_df = fs.tag_df
+fs_df
+
+####################################################
+#                                                  #
+# Run if you want to remove highly correlated cols #
+# and zero/low importance predictors               #
+#                                                  #
+####################################################
+
+# New instance of the class
+fs = arfsfs.FeatureSelector(data = X[filtered_features], labels = y, weight = w)
+# identify highly correlated columns (here corr_coef >= 0.75)
+# set encode to True if there are categorical/string cols (takes a bit of time)
+fs.identify_collinear(correlation_threshold=0.5, encode=False)
+# tag the discarded predictors and store the results
+fs_df = fs_df.merge(fs.tag_df, how='left')
+fsDic['collinear'] = sorted(fs.ops['collinear'])
+# Plot and save the corr-map
+heatmap = fs.plot_collinear(plot_all=True, size=300)
+# hv.save(heatmap, "C:User/my_folder/heatmap_corr.html")
+
+fs.encoded = True
+fs.identify_zero_importance(task = 'regression', eval_metric = 'rmse', n_iterations = 10, early_stopping = True)
+# change the threshold depending if you want to be more conservative and remove more predictors 
+cum_imp_threshold = 0.95
+fs.identify_low_importance(cumulative_importance = cum_imp_threshold)
+
+fsDic['zero_importance'] = fs.ops['zero_importance']
+fsDic['low_importance'] = fs.ops['low_importance']
+fs_df = fs_df.merge(fs.tag_df, how='left')
+feat_imp = fs.plot_feature_importances(threshold = 0.9, plot_n = 12)
+#hv.save(feat_imp, outpath+"feat_imp_TPLMD_freq.html")
+feat_imp
+```
+
 
 ## Boruta
 
@@ -123,6 +216,19 @@ In the spirit, the same heuristic than Boruta but using Boosting (originally Bor
  - [Consistent feature selection for pattern recognition in polynomial time](http://compmed.se/files/6914/2107/3475/pub_2007_5.pdf)
 
 **Applications**
- - [The Boruta paper]([https://www.jstatsoft.org/article/view/v036i11/v36i11.pdf)
+ - [The Boruta paper](https://www.jstatsoft.org/article/view/v036i11/v36i11.pdf)
  - [The python implementation](https://github.com/scikit-learn-contrib/boruta_py)
  - [BoostARoota](https://github.com/chasedehan/BoostARoota)
+
+
+## Changes
+
+
+### 0.0.3
+
+ - Adding examples and expanding documentation
+
+
+### 0.0.2
+
+ - fix bug: relative import removed
