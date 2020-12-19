@@ -4,44 +4,38 @@ This module provides a class for basic feature selection based on the following 
         2. Find columns with a single unique value
         3. Find collinear variables with a correlation greater than a specified correlation coefficient
         4. Find features with 0.0 feature importance from a gradient boosting machine (gbm)
-        5. Find low importance features that do not contribute to a specified cumulative feature importance from
-           the gbm SHAP feature importance.
+        5. Find low importance features that do not contribute to a specified cumulative
+           feature importance from the gbm SHAP feature importance.
 
-It is the first step of the feature selection, ideally followed by a "all relevant feature selection" step.
+It is the first step of the feature selection, ideally followed by a
+"all relevant feature selection" step.
 
 """
 
 # from https://github.com/WillKoehrsen
 # modified by Thomas Bury
-# numpy and pandas for data manipulation
-import pandas as pd
-import numpy as np
-
-# model used for feature importances, Shapley values are builtin
-import lightgbm as lgb
-
-# visualizations
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-from palettable.cmocean.diverging import Curl_19, Balance_19, Curl_5, Curl_5_r
-from palettable.cartocolors.qualitative import Bold_10
-import holoviews as hv
 
 # memory management
 import gc
-
-# progress bar
-#from tqdm import tqdm, trange
-from tqdm.autonotebook import trange, tqdm
-from holoviews import dim, opts
-
-# ML
-import scipy.cluster.hierarchy as sch
-
 # utilities
 from itertools import chain
 import time
 import random
+# numpy and pandas for data manipulation
+import pandas as pd
+import numpy as np
+# model used for feature importance, Shapley values are builtin
+import lightgbm as lgb
+# visualizations
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+from palettable.cmocean.diverging import Curl_5_r
+from palettable.cartocolors.qualitative import Bold_10
+import holoviews as hv
+# progress bar
+from tqdm.autonotebook import trange, tqdm
+# ML
+import scipy.cluster.hierarchy as sch
 
 # set style
 hv.extension('bokeh', logo=False)
@@ -55,6 +49,10 @@ hv.renderer('bokeh').theme = 'light_minimal'
 #####################
 
 def reset_plot():
+    """
+    reset matplotlib default
+    :return: None
+    """
     plt.rcParams = plt.rcParamsDefault
 
 
@@ -62,6 +60,8 @@ def set_my_plt_style(height=3, width=5, linewidth=2):
     """
     This set the style of matplotlib to fivethirtyeight with some modifications (colours, axes)
 
+    :param linewidth: int, default=2
+        line width
     :param height: int, default=3
         fig height in inches (yeah they're still struggling with the metric system)
     :param width: int, default=5
@@ -74,7 +74,8 @@ def set_my_plt_style(height=3, width=5, linewidth=2):
     my_colors_list = [my_colors_list[i] for i in myorder]
     bckgnd_color = "#f5f5f5"
     params = {'figure.figsize': (width, height), "axes.prop_cycle": plt.cycler(color=my_colors_list),
-              "axes.facecolor": bckgnd_color, "patch.edgecolor": bckgnd_color, "figure.facecolor": bckgnd_color,
+              "axes.facecolor": bckgnd_color, "patch.edgecolor": bckgnd_color,
+              "figure.facecolor": bckgnd_color,
               "axes.edgecolor": bckgnd_color, "savefig.edgecolor": bckgnd_color,
               "savefig.facecolor": bckgnd_color, "grid.color": "#d2d2d2",
               'lines.linewidth': linewidth}  # plt.cycler(color=my_colors_list)
@@ -112,9 +113,6 @@ def cat_var(df, col_excl=None, return_cat=True):
         non_num_cols = list(
             set(list(df.columns)) - set(list(df.select_dtypes(include=[np.number]))) - set(col_excl))
 
-    # cat_var_index = [i for i, x in enumerate(df[col_names].dtypes.tolist()) if isinstance(x, pd.CategoricalDtype)
-    # or x == 'object'] cat_var_name = [x for i, x in enumerate(col_names) if i in cat_var_index]
-
     cat_var_index = [df.columns.get_loc(c) for c in non_num_cols if c in df]
 
     cat_var_df = pd.DataFrame({'cat_ind': cat_var_index,
@@ -125,7 +123,8 @@ def cat_var(df, col_excl=None, return_cat=True):
     df[date_cols] = df[date_cols].astype(str)
 
     cols_need_mapped = cat_var_df.cat_name.to_list()
-    inv_mapper = {col: dict(enumerate(df[col].astype('category').cat.categories)) for col in df[cols_need_mapped]}
+    inv_mapper = {col: dict(enumerate(df[col].astype('category').cat.categories))
+                  for col in df[cols_need_mapped]}
     mapper = {col: {v: k for k, v in inv_mapper[col].items()} for col in df[cols_need_mapped]}
 
     progress_bar = tqdm(cols_need_mapped)
@@ -133,7 +132,8 @@ def cat_var(df, col_excl=None, return_cat=True):
         progress_bar.set_description('Processing {0:<30}'.format(c))
         df[c] = df[c].map(mapper[c]).fillna(0).astype(int)
         # I could have use df[c].update(df[c].map(mapper[c])) while slower,
-        # prevents values not included in an incomplete map from being changed to nans. But then I could have outputs
+        # prevents values not included in an incomplete map from being changed to nans.
+        # But then I could have outputs
         # with mixed types in the case of different dtypes mapping (like str -> int).
         # This would eventually break any flow.
         # Map is faster than replace
@@ -163,7 +163,7 @@ def plot_corr(df, size=10):
 
     # Plot the correlation matrix
     fig, ax = plt.subplots(figsize=(size, size))
-    cax = ax.matshow(corr, cmap=Curl_5_r.mpl_colormap, vmin=-1, vmax=1)  # , cmap='RdYlGn'
+    cax = ax.matshow(corr, cmap=Curl_5_r.mpl_colormap, vmin=-1, vmax=1)
     plt.xticks(range(len(corr.columns)), corr.columns, rotation=90)
     plt.yticks(range(len(corr.columns)), corr.columns)
 
@@ -212,8 +212,9 @@ class FeatureSelector:
     ----------
 
     cat_features : list of str
-        list of column names for the categorical columns. Note that lightGBM is working better if you integer encode
-        the categorical predictors and leave this argument to None, even if there is order relationship.
+        list of column names for the categorical columns. Note that lightGBM is
+        working better if you integer encode the categorical predictors and leave
+        this argument to None, even if there is order relationship.
         See lightGBM doc and blog pages.
 
     record_missing : pd.DataFrame
@@ -223,13 +224,16 @@ class FeatureSelector:
         Records the features that have a single unique value
 
     record_collinear : dataframe
-        Records the pairs of collinear variables with a correlation coefficient above the threshold
+        Records the pairs of collinear variables with a correlation
+        coefficient above the threshold
 
     record_zero_importance : dataframe
-        Records the zero importance features in the data according to the gbm, using SHAP feature importance
+        Records the zero importance features in the data according to the gbm,
+        using SHAP feature importance
 
     record_low_importance : dataframe
-        Records the lowest importance features not needed to reach the threshold of cumulative importance
+        Records the lowest importance features not needed to reach the
+        threshold of cumulative importance
         according to the gbm, using SHAP feature importance
 
     missing_stats : dataframe
@@ -245,7 +249,8 @@ class FeatureSelector:
         All correlations between all features in the data
 
     correlation_threshold: float between 0 and 1
-        the pariwise correlation threshold, above this threshold one of the two predictors is tagged 'to be dropped'
+        the pariwise correlation threshold, above this threshold one of the two
+        predictors is tagged 'to be dropped'
 
     feature_importances : dataframe
         All feature importances (SHAP) from the gradient boosting machine
@@ -263,8 +268,9 @@ class FeatureSelector:
         the fraction of missing values to tag the column 'to drop"
 
     cumulative_importance : float between 0 and 1,
-        the fraction of the feature importance. The features are sorted by importance. The selector drop all the feature
-        contributing for the part > cumulative_importance. Example: 0.9, then all the predictors contributing upto 90%
+        the fraction of the feature importance. The features are sorted by importance.
+        The selector drop all the feature contributing for the part > cumulative_importance.
+        Example: 0.9, then all the predictors contributing upto 90%
         of the total feature importance are kept, the others being discarded.
 
     all_identified : list of str
@@ -295,13 +301,14 @@ class FeatureSelector:
         find the zero variance columns
 
     identify_high_cardinality(max_card=1000):
-        Finds the categorical columns with more than max_card unique values (might be relevant for GLM or if the
-        categorical column has as many levels than rows in the data set)
+        Finds the categorical columns with more than max_card unique values
+        (might be relevant for GLM or if the categorical column has as many
+        levels than rows in the data set)
 
     encode_cat_var(df=None, col_excl=None):
         Categorical encoding (as integer). Automatically detect the non-numerical columns,
-        save the index and name of those columns, encode them as integer, save the direct and inverse mappers as
-        dictionaries.
+        save the index and name of those columns, encode them as integer,
+        save the direct and inverse mappers as dictionaries.
         Return the data-set with the encoded columns with a data type either int or pandas categorical.
 
     identify_collinear(correlation_threshold, encode=False, method='spearman'):
@@ -309,7 +316,8 @@ class FeatureSelector:
         For each pair of features with a correlation coefficient greather than `correlation_threshold`,
         only one of the pair is identified for removal.
 
-    identify_zero_importance(task, eval_metric=None, objective=None, n_iterations=10, early_stopping=True, missing=0):
+    identify_zero_importance(task, eval_metric=None, objective=None,
+                             n_iterations=10, early_stopping=True, missing=0):
         Identify the features with zero importance according to a gradient boosting machine.
         The gbm can be trained with early stopping using a utils set to prevent overfitting.
         The feature importances are averaged over `n_iterations` to reduce variance.
@@ -340,7 +348,8 @@ class FeatureSelector:
 
     plot_feature_importances(plot_n=15, threshold=None):
         Plots `plot_n` most important features and the cumulative importance of features.
-        If `threshold` is provided, prints the number of features needed to reach `threshold` cumulative importance.
+        If `threshold` is provided, prints the number of features needed to reach
+        `threshold` cumulative importance.
 
 
     Example:
@@ -349,8 +358,9 @@ class FeatureSelector:
     # Initiate an instance of the feature selector
     fs = noglmfs.FeatureSelector(data = df[predictors], labels = df.re_cl_RCC, weight = df.exp_yr)
 
-    # A dictionary to store the output of each step (to combine with further selection, not provided by this FS,
-    or to split the process in two parts to speed up the computation of the correlation matrix.)
+    # A dictionary to store the output of each step (to combine with further selection,
+    not provided by this FS, or to split the process in two parts to speed up the
+    computation of the correlation matrix.)
     fsDic = {}
     # Missing values
     fs.identify_missing(missing_threshold=0.2)
@@ -379,7 +389,9 @@ class FeatureSelector:
     gc.enable()
     del(fs)
     gc.collect()
-    fs = noglmfs.FeatureSelector(data = df_red[filtered_features], labels = df_red.re_cl_RCC, weight = df_red.exp_yr)
+    fs = noglmfs.FeatureSelector(data = df_red[filtered_features],
+                                 labels = df_red.re_cl_RCC,
+                                 weight = df_red.exp_yr)
 
     # Correlation
     fs.identify_collinear(correlation_threshold=0.85, encode=False)
@@ -401,7 +413,8 @@ class FeatureSelector:
     fs.encoded = True
 
     # Identify the zero and low importance predictors
-    fs.identify_zero_importance(task = 'regression', eval_metric = 'poisson', n_iterations = 10, early_stopping = True)
+    fs.identify_zero_importance(task = 'regression', eval_metric = 'poisson',
+                                n_iterations = 10, early_stopping = True)
     cum_imp_threshold = 0.95
     fs.identify_low_importance(cumulative_importance = cum_imp_threshold)
     fsDic['zero_importance'] = fs.ops['zero_importance']
@@ -488,16 +501,18 @@ class FeatureSelector:
 
         # Calculate the fraction of missing in each column
         missing_series = self.data.isnull().sum() / self.data.shape[0]
-        self.missing_stats = pd.DataFrame(missing_series).rename(columns={'index': 'feature', 0: 'missing_fraction'})
+        self.missing_stats = pd.DataFrame(missing_series).rename(
+            columns={'index': 'feature', 0: 'missing_fraction'}
+        )
 
         # Sort with highest number of missing values on top
         self.missing_stats = self.missing_stats.sort_values('missing_fraction', ascending=False)
 
         # Find the columns with a missing percentage above the threshold
-        record_missing = pd.DataFrame(missing_series[missing_series > missing_threshold]).reset_index().rename(columns=
-        {
-            'index': 'feature',
-            0: 'missing_fraction'})
+        record_missing = pd.DataFrame(missing_series[missing_series > missing_threshold]).reset_index(). \
+            rename(columns={
+             'index': 'feature',
+             0: 'missing_fraction'})
         to_drop = list(record_missing['feature'])
 
         self.record_missing = record_missing
@@ -539,15 +554,17 @@ class FeatureSelector:
 
     def identify_high_cardinality(self, max_card=1000):
         """
-        Finds the categorical columns with more than max_card unique values (might be relevant for GLM or if the
-        categorical column has as many levels than rows in the data set)
+        Finds the categorical columns with more than max_card unique values
+        (might be relevant for GLM or if the categorical column has as many
+        levels than rows in the data set)
+
         :param max_card: int
             the maximum number of the unique values
         :return:
          self : object
             Nothing but attributes
         """
-        # char_cols = self.data.dtypes.pipe(lambda x: x[x == 'object' or isinstance(x, pd.CategoricalDtype)]).index
+
         col_names = list(self.data)
         cat_var_index = [i for i, x in enumerate(self.data.dtypes.tolist()) if
                          isinstance(x, pd.CategoricalDtype) or x == 'object']
@@ -565,13 +582,15 @@ class FeatureSelector:
         self.tag_df['high_cardinality'] = 1
         self.tag_df['high_cardinality'] = np.where(self.tag_df['predictor'].isin(to_drop), 0, 1)
 
-        print('{0:d} features with a cardinality larger than {1:d}'.format(len(self.ops['high_cardinality']), max_card))
+        print('{0:d} features with a cardinality larger than {1:d}'.format(
+            len(self.ops['high_cardinality']), max_card)
+        )
 
     def encode_cat_var(self, df=None, col_excl=None):
         """
         Categorical encoding (as integer). Automatically detect the non-numerical columns,
-        save the index and name of those columns, encode them as integer, save the direct and inverse mappers as
-        dictionaries.
+        save the index and name of those columns, encode them as integer,
+        save the direct and inverse mappers as dictionaries.
         Return the data-set with the encoded columns with a data type either int or pandas categorical.
 
         :param df: pd.DataFrame
@@ -605,7 +624,8 @@ class FeatureSelector:
         For each pair of features with a correlation coefficient greather than `correlation_threshold`,
         only one of the pair is identified for removal.
 
-        Using code adapted from: https://chrisalbon.com/machine_learning/feature_selection/drop_highly_correlated_features/
+        Using code adapted from:
+        https://chrisalbon.com/machine_learning/feature_selection/drop_highly_correlated_features/
 
         Parameters
         --------
@@ -636,13 +656,15 @@ class FeatureSelector:
             self.corr_matrix = self.data.corr(method="spearman").fillna(0)
             # Extract the upper triangle of the correlation matrix
             upper = self.corr_matrix.where(np.triu(np.ones(self.corr_matrix.shape), k=1).astype(np.bool))
-            to_drop = [column for column in upper.columns if any(upper[column].abs() > correlation_threshold)]
+            to_drop = [column for column in upper.columns if
+                       any(upper[column].abs() > correlation_threshold)]
         elif method == 'pearson':
             # Using both Spearman and Pearson because we might have ordinal and non ordinal respectively.
             corr_matrix = self.data.corr(method='pearson').fillna(0)
             # Extract the upper triangle of the correlation matrix
             upper = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(np.bool))
-            to_drop = [column for column in upper.columns if any(upper[column].abs() > correlation_threshold)]
+            to_drop = [column for column in upper.columns if
+                       any(upper[column].abs() > correlation_threshold)]
         else:
             raise ValueError('method should be spearman or pearson')
 
@@ -717,7 +739,8 @@ class FeatureSelector:
 
         - Features are one-hot encoded to handle the categorical variables before training.
         - The gbm is not optimized for any particular task and might need some hyperparameter tuning
-        - Feature importances, including zero importance features, can change across runs, using Shapley values.
+        - Feature importances, including zero importance features,
+          can change across runs, using Shapley values.
 
         """
 
@@ -782,7 +805,9 @@ class FeatureSelector:
                           early_stopping_rounds=100, verbose=-1, sample_weight=train_weight,
                           eval_sample_weight=[valid_weight])
                 # pimp cool but too slow
-                # perm_imp =  permutation_importance(model, valid_features, valid_labels, n_repeats=10, random_state=42, n_jobs=-1)
+                # perm_imp =  permutation_importance(
+                # model, valid_features, valid_labels, n_repeats=10, random_state=42, n_jobs=-1
+                # )
                 # perm_imp = perm_imp.importances_mean
 
                 shap_matrix = model.predict(valid_features, pred_contrib=True)
@@ -795,7 +820,9 @@ class FeatureSelector:
 
             else:
                 model.fit(features, labels, sample_weight=self.weight)
-                # perm_imp =  permutation_importance(model, features, labels, n_repeats=10, random_state=42, n_jobs=-1)
+                # perm_imp =  permutation_importance(
+                # model, features, labels, n_repeats=10, random_state=42, n_jobs=-1
+                # )
                 # perm_imp = perm_imp.importances_mean
 
                 shap_matrix = model.predict(features, pred_contrib=True)
@@ -804,10 +831,12 @@ class FeatureSelector:
             # Record the feature importances
             feature_importance_values += shap_imp / n_iterations  # model.feature_importances_ / n_iterations
 
-        feature_importances = pd.DataFrame({'feature': feature_names, 'importance': feature_importance_values})
+        feature_importances = pd.DataFrame({'feature': feature_names,
+                                            'importance': feature_importance_values})
 
         # Sort features according to importance
-        feature_importances = feature_importances.sort_values('importance', ascending=False).reset_index(drop=True)
+        feature_importances = feature_importances.sort_values(
+            'importance', ascending=False).reset_index(drop=True)
 
         # Normalize the feature importances to add up to one
         feature_importances['normalized_importance'] = feature_importances['importance'] / feature_importances[
@@ -868,8 +897,8 @@ class FeatureSelector:
         print('%d features required for cumulative importance of %0.2f after encoding.' % (
             len(self.feature_importances) -
             len(self.record_low_importance), self.cumulative_importance))
-        print('%d features do not contribute to cumulative importance of %0.2f.\n' % (len(self.ops['low_importance']),
-                                                                                      self.cumulative_importance))
+        print('%d features do not contribute to cumulative '
+              'importance of %0.2f.\n' % (len(self.ops['low_importance']), self.cumulative_importance))
 
     def identify_all(self, selection_params):
         """
@@ -878,8 +907,9 @@ class FeatureSelector:
         Parameters
         --------
 
-        selection_params : dict Parameters to use in the five feature selection methhods. Params must contain the
-        keys ['patterns', 'missing_threshold', 'max_card','correlation_threshold', 'eval_metric', 'task',
+        selection_params : dict Parameters to use in the five feature selection methhods.
+        Params must contain the keys
+        ['patterns', 'missing_threshold', 'max_card','correlation_threshold', 'eval_metric', 'task',
         'cumulative_importance']
         identify_all = {'patterns': 'emb_',
                         'missing_threshold': 0.1,
@@ -941,7 +971,8 @@ class FeatureSelector:
 
         Notes
         --------
-            - If feature importances are used, the one-hot encoded columns will be added to the data (and then may be removed)
+            - If feature importances are used, the one-hot encoded columns will be
+              added to the data (and then may be removed)
             - Check the features that will be removed before transforming data!
 
         """
@@ -1005,7 +1036,8 @@ class FeatureSelector:
     def plot_unique(self):
         """Histogram of number of unique values in each feature"""
         if self.record_single_unique is None:
-            raise NotImplementedError('Unique values have not been calculated. Run `identify_single_unique`')
+            raise NotImplementedError('Unique values have not been calculated. '
+                                      'Run `identify_single_unique`')
 
         # self.reset_plot()
         set_my_plt_style()
@@ -1024,13 +1056,15 @@ class FeatureSelector:
     def plot_cardinality(self):
         """Histogram of number of unique values in each feature"""
         if self.cardinality_stats is None:
-            raise NotImplementedError('Cardinality values have not been calculated. Run `identify_cardinality`')
+            raise NotImplementedError('Cardinality values have not been '
+                                      'calculated. Run `identify_cardinality`')
 
         # self.reset_plot()
         set_my_plt_style()
 
         # Histogram of number of unique values
-        logbins = np.logspace(np.log10(self.cardinality_stats.min()[0]), np.log10(self.cardinality_stats.max()[0]), 21)
+        logbins = np.logspace(np.log10(self.cardinality_stats.min()[0]),
+                              np.log10(self.cardinality_stats.max()[0]), 21)
         self.cardinality_stats.plot.hist(figsize=(7, 5), bins=logbins)
 
         plt.ylabel('Frequency', size=14)
@@ -1055,7 +1089,8 @@ class FeatureSelector:
         """
 
         if self.record_collinear is None:
-            raise NotImplementedError('Collinear features have not been identified. Run `identify_collinear`.')
+            raise NotImplementedError('Collinear features have not been identified. '
+                                      'Run `identify_collinear`.')
 
         if plot_all:
             corr_matrix_plot = self.corr_matrix
@@ -1079,7 +1114,8 @@ class FeatureSelector:
         heatmap = hv.HeatMap((corr_matrix_plot.columns, corr_matrix_plot.index, corr_matrix_plot)).redim.range(
             z=(-1, 1))
         heatmap.opts(tools=['tap', 'hover'], height=size, width=size + 50, toolbar='above', colorbar=True,
-                     cmap=Curl_5_r.mpl_colormap, fontsize={'title': 20, 'ticks': 12, 'minor_ticks': 12}, xrotation=90,
+                     cmap=Curl_5_r.mpl_colormap,
+                     fontsize={'title': 20, 'ticks': 12, 'minor_ticks': 12}, xrotation=90,
                      invert_xaxis=False, invert_yaxis=True, title=title, xlabel='',
                      ylabel='', xaxis=None, yaxis=None)
         return heatmap
@@ -1087,13 +1123,15 @@ class FeatureSelector:
     def plot_feature_importances(self, plot_n=15, threshold=None):
         """
         Plots `plot_n` most important features and the cumulative importance of features.
-        If `threshold` is provided, prints the number of features needed to reach `threshold` cumulative importance.
+        If `threshold` is provided, prints the number of features needed to reach `threshold`
+        cumulative importance.
 
         Parameters
         --------
 
         plot_n : int, default = 15
-            Number of most important features to plot. Defaults to 15 or the maximum number of features whichever is smaller
+            Number of most important features to plot. Defaults to 15 or the maximum
+            number of features whichever is smaller
 
         threshold : float, between 0 and 1 default = None
             Threshold for printing information about cumulative importances
@@ -1101,7 +1139,8 @@ class FeatureSelector:
         """
 
         if self.record_zero_importance is None:
-            raise NotImplementedError('Feature importances have not been determined. Run `idenfity_zero_importance`')
+            raise NotImplementedError('Feature importances have not been determined. '
+                                      'Run `idenfity_zero_importance`')
 
         # Need to adjust number of features if greater than the features in the data
         if plot_n > self.feature_importances.shape[0]:
