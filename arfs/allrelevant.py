@@ -16,35 +16,36 @@ https://github.com/chasedehan/BoostARoota
 
 The module structure is the following:
 ---------------------------------------
-- The ``Leshy`` class a heavy re-work of ``BorutaPy`` class
-  itself a a modified version of Boruta, the pull request I submitted and still pending
+- The ``Leshy`` class, a heavy re-work of ``BorutaPy`` class
+  itself a modified version of Boruta, the pull request I submitted and still pending:
   https://github.com/scikit-learn-contrib/boruta_py/pull/77
 
-- The ``BoostAGroota`` class for a modified version of BoostARoota, PR still to be submitted
+- The ``BoostAGroota`` class, a modified version of BoostARoota, PR still to be submitted
   https://github.com/chasedehan/BoostARoota
 
-- The ``GrootCV`` class for a new method for all relevant feature selection using a lgGBM model, cross-validated
-  SHAP importances and shadowing.
+- The ``GrootCV`` class for a new method for all relevant feature selection using a lgGBM model,
+  cross-validated SHAP importances and shadowing.
 """
 
 from __future__ import print_function, division
+import operator
+import warnings
+import time
+import shap
+import numpy as np
+import pandas as pd
+import lightgbm as lgb
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 import scipy as sp
+from tqdm.autonotebook import tqdm
 from sklearn.utils import check_random_state, check_X_y
 from sklearn.base import TransformerMixin, BaseEstimator, is_regressor, is_classifier
 from sklearn.model_selection import RepeatedKFold, train_test_split
 from sklearn.inspection import permutation_importance
 from sklearn.utils.validation import _check_sample_weight
-import shap
-import numpy as np
-import pandas as pd
-import lightgbm as lgb
-import operator
-import warnings
-import time
-from tqdm.autonotebook import trange, tqdm
-import matplotlib as mpl
-import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+from palettable.cartocolors.qualitative import Bold_10
 
 
 #####################
@@ -58,18 +59,23 @@ def check_if_tree_based(model):
     condition = any(i in str(type(model)) for i in tree_based_models)
     return condition
 
+
 def is_lightgbm(estimator):
     is_lgb = 'lightgbm' in str(type(estimator))
     return is_lgb
+
 
 def is_catboost(estimator):
     is_cat = 'catboost' in str(type(estimator))
     return is_cat
 
+
 def set_my_plt_style(height=3, width=5, linewidth=2):
     """
     This set the style of matplotlib to fivethirtyeight with some modifications (colours, axes)
 
+    :param linewidth: int, default=2
+        line width
     :param height: int, default=3
         fig height in inches (yeah they're still struggling with the metric system)
     :param width: int, default=5
@@ -82,12 +88,12 @@ def set_my_plt_style(height=3, width=5, linewidth=2):
     my_colors_list = [my_colors_list[i] for i in myorder]
     bckgnd_color = "#f5f5f5"
     params = {'figure.figsize': (width, height), "axes.prop_cycle": plt.cycler(color=my_colors_list),
-              "axes.facecolor": bckgnd_color, "patch.edgecolor": bckgnd_color, "figure.facecolor": bckgnd_color,
+              "axes.facecolor": bckgnd_color, "patch.edgecolor": bckgnd_color,
+              "figure.facecolor": bckgnd_color,
               "axes.edgecolor": bckgnd_color, "savefig.edgecolor": bckgnd_color,
               "savefig.facecolor": bckgnd_color, "grid.color": "#d2d2d2",
               'lines.linewidth': linewidth}  # plt.cycler(color=my_colors_list)
     mpl.rcParams.update(params)
-
 
 
 ########################################################################################
@@ -102,8 +108,19 @@ def set_my_plt_style(height=3, width=5, linewidth=2):
 Author: Daniel Homola <dani.homola@gmail.com>
 
 Original code and method by: Miron B Kursa, https://m2.icm.edu.pl/boruta/
-Modified by Thomas Bury, pull request under review and still pending:
+Modified by Thomas Bury, pull request:
 https://github.com/scikit-learn-contrib/boruta_py/pull/77
+Not going to be merge because of the dependencies introduced.
+Those dependencies are critical to improve and speed up the All Relevant Feature Selection (arfs).
+The native feature importance is biased and does not uncover the real impact of each feature (aka
+"feature impact" in the literature). 
+
+The reason is that scikit-contrib tries to be as "vanilla" as possible, but giving a large coverage
+to biased methods is harmful to the community IMHO (native feature importance flaws are known for 
+10 years or so). In the case where a small increase of complexity (lightGBM+SHAP) fixes known problem,
+it's not too much a burden.
+
+Leshy is actually a re-work of the PR I submitted.
 
 License: BSD 3 clause
 """
@@ -118,13 +135,14 @@ class Leshy(BaseEstimator, TransformerMixin):
     Leshy vs BorutaPy:
     ------------------
     To summarize, this PR solves/enhances:
-     - The categorical features (they are detected, encoded. The tree-based models are working better with integer
-       encoding rather than with OHE, which leads to deep and unstable trees). If Catboost is used, then the cat.pred
-       (if any) are set up
+     - The categorical features (they are detected, encoded. The tree-based models are working
+       better with integer encoding rather than with OHE, which leads to deep and unstable trees).
+       If Catboost is used, then the cat.pred (if any) are set up
      - Work with Catboost sklearn API
      - Allow using sample_weight, for applications like Poisson regression or any requiring weights
      - 3 different feature importances: native, SHAP and permutation. Native being the least consistent
-       (because of the imp. biased towards numerical and large cardinality categorical) but the fastest of the 3.
+       (because of the imp. biased towards numerical and large cardinality categorical)
+       but the fastest of the 3.
      - Using lightGBM as default speed up by an order of magnitude the running time
      - Visualization like in the R package
 
@@ -198,8 +216,8 @@ class Leshy(BaseEstimator, TransformerMixin):
             o add +1 to the previous tag vector
          - Perform a test
             o select non rejected features yet
-            o get a binomial p-values (nbr of times the feat has been tagged as important on the n_iter done so far)
-            o reject or not according the (corrected) p-val
+            o get a binomial p-values (nbr of times the feat has been tagged as important
+            on the n_iter done so far) o reject or not according the (corrected) p-val
 
 
     Parameters
@@ -417,8 +435,8 @@ class Leshy(BaseEstimator, TransformerMixin):
             o add +1 to the previous tag vector
          - Perform a test
             o select non rejected features yet
-            o get a binomial p-values (nbr of times the feat has been tagged as important on the n_iter done so far)
-            o reject or not according the (corrected) p-val
+            o get a binomial p-values (nbr of times the feat has been tagged as
+            important on the n_iter done so far) o reject or not according the (corrected) p-val
         """
 
         self._fit(X, y, sample_weight=sample_weight)
@@ -432,12 +450,13 @@ class Leshy(BaseEstimator, TransformerMixin):
         :return: boxplot
         """
         # plt.style.use('fivethirtyeight')
-        my_colors_list = ['#000000', '#7F3C8D', '#11A579', '#3969AC', '#F2B701', '#E73F74', '#80BA5A', '#E68310',
-                          '#008695',
-                          '#CF1C90', '#F97B72']
+        my_colors_list = ['#000000', '#7F3C8D', '#11A579', '#3969AC',
+                          '#F2B701', '#E73F74', '#80BA5A', '#E68310',
+                          '#008695', '#CF1C90', '#F97B72']
         bckgnd_color = "#f5f5f5"
         params = {"axes.prop_cycle": plt.cycler(color=my_colors_list),
-                  "axes.facecolor": bckgnd_color, "patch.edgecolor": bckgnd_color, "figure.facecolor": bckgnd_color,
+                  "axes.facecolor": bckgnd_color, "patch.edgecolor": bckgnd_color,
+                  "figure.facecolor": bckgnd_color,
                   "axes.edgecolor": bckgnd_color, "savefig.edgecolor": bckgnd_color,
                   "savefig.facecolor": bckgnd_color, "grid.color": "#d2d2d2",
                   'lines.linewidth': 1.5}  # plt.cycler(color=my_colors_list)
@@ -514,8 +533,8 @@ class Leshy(BaseEstimator, TransformerMixin):
             o add +1 to the previous tag vector
          - Perform a test
             o select non rejected features yet
-            o get a binomial p-values (nbr of times the feat has been tagged as important on the n_iter done so far)
-            o reject or not according the (corrected) p-val
+            o get a binomial p-values (nbr of times the feat has been tagged as
+            important on the n_iter done so far) o reject or not according the (corrected) p-val
 
         Parameters
         ----------
@@ -544,11 +563,11 @@ class Leshy(BaseEstimator, TransformerMixin):
         cat_idx = [X_raw.columns.get_loc(c) for c in cat_feat if c in cat_feat]
         if cat_feat:
             # a way without loop but need to re-do astype
-            Cat = X_raw[cat_feat].stack().astype('category').cat.codes.unstack()
+            cat = X_raw[cat_feat].stack().astype('category').cat.codes.unstack()
 
         if self.is_cat is False:
             if cat_feat:
-                X = pd.concat([X_raw[X_raw.columns.difference(cat_feat)], Cat], axis=1)
+                X = pd.concat([X_raw[X_raw.columns.difference(cat_feat)], cat], axis=1)
             else:
                 X = X_raw
         else:
@@ -704,14 +723,17 @@ class Leshy(BaseEstimator, TransformerMixin):
         self.running_time = time.time() - start_time
         hours, rem = divmod(self.running_time, 3600)
         minutes, seconds = divmod(rem, 60)
-        print("All relevant predictors selected in {:0>2}:{:0>2}:{:05.2f}".format(int(hours), int(minutes), seconds))
+        print("All relevant predictors selected in {:0>2}:{:0>2}:{:05.2f}".format(int(hours),
+                                                                                  int(minutes),
+                                                                                  seconds))
         return self
 
     def _transform(self, X, weak=False, return_df=False):
         """
         Private method
 
-        transform the predictor matrix by dropping the rejected and (optional) the undecided predictors
+        transform the predictor matrix by dropping the rejected and
+        (optional) the undecided predictors
         :param X: pd.DataFrame
             predictor matrix
         :param weak: bool
@@ -756,7 +778,8 @@ class Leshy(BaseEstimator, TransformerMixin):
 
     def _add_shadows_get_imps(self, X, y, sample_weight, dec_reg):
         """
-        Add a shuffled copy of the columns (shadows) and get the feature importance of the augmented data set
+        Add a shuffled copy of the columns (shadows) and get the feature
+        importance of the augmented data set
 
         :param X: pd.DataFrame of shape [n_samples, n_features]
             predictor matrix
@@ -802,9 +825,12 @@ class Leshy(BaseEstimator, TransformerMixin):
     @staticmethod
     def _assign_hits(hit_reg, cur_imp, imp_sha_max):
         """
-        count how many times a given feature was more important than the best of the shadow features
+        count how many times a given feature was more important than
+        the best of the shadow features
+
         :param hit_reg: array
-            count how many times a given feature was more important than the best of the shadow features
+            count how many times a given feature was more important than the
+            best of the shadow features
         :param cur_imp: array
             current importance
         :param imp_sha_max: array
@@ -823,8 +849,8 @@ class Leshy(BaseEstimator, TransformerMixin):
         Perform the rest if the feature should be tagget as relevant (confirmed), not relevant (rejected)
         or undecided. The test is performed by considering the binomial tentatives over several attempts.
         I.e. count how many times a given feature was more important than the best of the shadow features
-        and test if the associated probability to the z-score is below, between or above the rejection or acceptance
-        threshold.
+        and test if the associated probability to the z-score is below, between or above the rejection or
+        acceptance threshold.
 
         :param dec_reg: array
             holds the decision about each feature 1, 0, -1 (accepted, undecided, rejected)
@@ -938,7 +964,8 @@ class Leshy(BaseEstimator, TransformerMixin):
         Private method
         printing the result
         :param dec_reg: array
-            if the feature as been tagged as relevant (confirmed), not relevant (rejected) or undecided
+            if the feature as been tagged as relevant (confirmed),
+            not relevant (rejected) or undecided
         :param _iter: int
             the iteration number
         :param flag: int
@@ -1011,12 +1038,10 @@ def _split_fit_estimator(estimator, X, y, sample_weight=None):
     X_tr = pd.DataFrame(X_tr)
     X_tt = pd.DataFrame(X_tt)
     obj_feat = list(set(list(X_tr.columns)) - set(list(X_tr.select_dtypes(include=[np.number]))))
-    obj_idx = None
 
     if obj_feat:
         X_tr[obj_feat] = X_tr[obj_feat].astype('str').astype('category')
         X_tt[obj_feat] = X_tt[obj_feat].astype('str').astype('category')
-        obj_idx = np.argwhere(X_tr.columns.isin(obj_feat)).ravel()
 
     if check_if_tree_based(estimator):
         try:
@@ -1151,28 +1176,33 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
     Original version of BoostARoota:
     * One-Hot-Encode the feature set
     * Double width of the data set, making a copy of all features in original dataset
-    * Randomly shuffle the new features created in (2). These duplicated and shuffled features are referred to as
-      "shadow features"
-    * Run XGBoost classifier on the entire data set ten times. Running it ten times allows for random noise to be
-      smoothed out, resulting in more robust estimates of importance. The number of repeats is a parameter than can
-      be changed.
-    * Obtain importance values for each feature. This is a simple importance metric that sums up how many times the
-      particular feature was split on in the XGBoost algorithm.
+    * Randomly shuffle the new features created in (2). These duplicated and shuffled features
+      are referred to as "shadow features"
+    * Run XGBoost classifier on the entire data set ten times. Running it ten times allows for
+      random noise to be smoothed out, resulting in more robust estimates of importance.
+      The number of repeats is a parameter than can be changed.
+    * Obtain importance values for each feature. This is a simple importance metric that sums up
+      how many times the particular feature was split on in the XGBoost algorithm.
     * Compute "cutoff": the average feature importance value for all shadow features and divide by a factor
-      (parameter to deal with conservativeness). With values lower than this, features are removed at too high of a rate.
-    * Remove features with average importance across the ten iterations that is less than the cutoff specified in (6)
+      (parameter to deal with conservativeness). With values lower than this,
+      features are removed at too high of a rate.
+    * Remove features with average importance across the ten iterations that is less than
+      the cutoff specified in (6)
     * Go back to (2) until the number of features removed is less than ten percent of the total.
     * Method returns the features remaining once completed.
 
     Modifications:
     - Replace XGBoost with LightGBM, you can still use tree-based scikitlearn models
-    - Replace native var.imp by SHAP var.imp. Indeed, the impurity var.imp. are biased en sensitive to large cardinality
+    - Replace native var.imp by SHAP var.imp. Indeed, the impurity var.imp. are biased and
+      sensitive to large cardinality
       (see [scikit demo](https://scikit-learn.org/stable/auto_examples/inspection/plot_permutation_importance.
       html#sphx-glr-auto-examples-inspection-plot-permutation-importance-py)).
       Moreover, the native var. imp are computed on the train set, here the data are split (internally)
       in train and test, var. imp computed on the test set.
-    - Handling categorical predictors. Cat. predictors should NOT be one hot encoded, it leads to deep unstable trees.
-      Instead, it's better to use the native method of lightGBM or CatBoost. A preprocessing step is needed to encode
+    - Handling categorical predictors. Cat. predictors should NOT be one hot encoded,
+      it leads to deep unstable trees.
+      Instead, it's better to use the native method of lightGBM or CatBoost.
+      A preprocessing step is needed to encode
       (ligthGBM and CatBoost use integer encoding and reference to categorical columns.
       The splitting stratigies are different then, see official doc).
     - Work with sample_weight, for Poisson or any application requiring a weighting.
@@ -1185,9 +1215,11 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
     :param cutoff: float
         the value by which the max of shadow imp is divided, to compare to real importance
     :param iters: int (>0)
-        The number of iterations to average for the feature importances (on the same split), to reduce the variance
+        The number of iterations to average for the feature importances (on the same split),
+        to reduce the variance
     :param max_rounds: int (>0)
-        The number of times the core BoostARoota algorithm will run. Each round eliminates more and more features
+        The number of times the core BoostARoota algorithm will run.
+        Each round eliminates more and more features
     :param delta: float (0 < delta <= 1)
         Stopping criteria for whether another round is started
     :param silent: bool
@@ -1215,11 +1247,12 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
     y = y/w.replace(0,1)
     y = y.fillna(0)
 
-    model = LGBMRegressor(n_jobs=-1, n_estimators=100, objective='poisson', random_state=42, verbose=0)
-    br = noglmgroot.BoostARoota(est=model, cutoff=1, iters=10, max_rounds=10, delta=0.1, silent=False, weight=w)
+    model = LGBMRegressor(n_jobs=-1, n_estimators=100, objective='poisson',
+                          random_state=42, verbose=0)
+    br = noglmgroot.BoostARoota(est=model, cutoff=1, iters=10, max_rounds=10,
+                                delta=0.1, silent=False, weight=w)
     br.fit(X, y)
     br.plot_importance()
-
     """
 
     def __init__(self, est=None, cutoff=4, iters=10, max_rounds=500, delta=0.1,
@@ -1295,8 +1328,8 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
         # a way without loop but need to re-do astype
 
         if cat_feat:
-            Cat = x[cat_feat].stack().astype('category').cat.codes.unstack()
-            X = pd.concat([x[x.columns.difference(cat_feat)], Cat], axis=1)
+            cat = x[cat_feat].stack().astype('category').cat.codes.unstack()
+            X = pd.concat([x[x.columns.difference(cat_feat)], cat], axis=1)
         else:
             X = x
         # crit, keep_vars, df_vimp, mean_shadow
@@ -1354,12 +1387,13 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
         :return: boxplot
         """
         # plt.style.use('fivethirtyeight')
-        my_colors_list = ['#000000', '#7F3C8D', '#11A579', '#3969AC', '#F2B701', '#E73F74', '#80BA5A', '#E68310',
-                          '#008695',
-                          '#CF1C90', '#F97B72']
+        my_colors_list = ['#000000', '#7F3C8D', '#11A579', '#3969AC',
+                          '#F2B701', '#E73F74', '#80BA5A', '#E68310',
+                          '#008695', '#CF1C90', '#F97B72']
         bckgnd_color = "#f5f5f5"
         params = {"axes.prop_cycle": plt.cycler(color=my_colors_list),
-                  "axes.facecolor": bckgnd_color, "patch.edgecolor": bckgnd_color, "figure.facecolor": bckgnd_color,
+                  "axes.facecolor": bckgnd_color, "patch.edgecolor": bckgnd_color,
+                  "figure.facecolor": bckgnd_color,
                   "axes.edgecolor": bckgnd_color, "savefig.edgecolor": bckgnd_color,
                   "savefig.facecolor": bckgnd_color, "grid.color": "#d2d2d2",
                   'lines.linewidth': 1.5}  # plt.cycler(color=my_colors_list)
@@ -1376,16 +1410,16 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
         blue_color = "#2590fa"
         color = {'boxes': blue_color, 'whiskers': 'gray', 'medians': '#000000', 'caps': 'gray'}
         real_df = real_df.reindex(real_df.mean().sort_values(ascending=True).index, axis=1)
-        bp = real_df.plot.box(#kind='box',
-                          color=color,
-                          boxprops=dict(linestyle='-', linewidth=1.5, color=blue_color, facecolor=blue_color),
-                          flierprops=dict(linestyle='-', linewidth=1.5),
-                          medianprops=dict(linestyle='-', linewidth=1.5, color='#000000'),
-                          whiskerprops=dict(linestyle='-', linewidth=1.5),
-                          capprops=dict(linestyle='-', linewidth=1.5),
-                          showfliers=False, grid=True, rot=0, vert=False, patch_artist=True,
-                          figsize=(10, real_df.shape[1] / n_feat_per_inch), fontsize=9
-                          )
+        bp = real_df.plot.box(  # kind='box',
+            color=color,
+            boxprops=dict(linestyle='-', linewidth=1.5, color=blue_color, facecolor=blue_color),
+            flierprops=dict(linestyle='-', linewidth=1.5),
+            medianprops=dict(linestyle='-', linewidth=1.5, color='#000000'),
+            whiskerprops=dict(linestyle='-', linewidth=1.5),
+            capprops=dict(linestyle='-', linewidth=1.5),
+            showfliers=False, grid=True, rot=0, vert=False, patch_artist=True,
+            figsize=(10, real_df.shape[1] / n_feat_per_inch), fontsize=9
+        )
         # xrange = real_df.max(skipna=True).max(skipna=True)-real_df.min(skipna=True).min(skipna=True)
         bp.set_xlim(left=real_df.min(skipna=True).min(skipna=True) - 0.025)
         fig = bp.get_figure()
@@ -1438,11 +1472,13 @@ def _reduce_vars_sklearn(x, y, est, this_round, cutoff, n_iterations, delta, sil
     :param est: sklear estimator
         the model to train, lightGBM recommended
     :param this_round: int
-        The number of times the core BoostARoota algorithm will run. Each round eliminates more and more features
+        The number of times the core BoostARoota algorithm will run.
+        Each round eliminates more and more features
     :param cutoff: float
         the value by which the max of shadow imp is divided, to compare to real importance
     :param n_iterations: int
-        The number of iterations to average for the feature importances (on the same split), to reduce the variance
+        The number of iterations to average for the feature importances (on the same split),
+        to reduce the variance
     :param delta: float (0 < delta <= 1)
         Stopping criteria for whether another round is started
     :param silent: bool
@@ -1475,7 +1511,8 @@ def _reduce_vars_sklearn(x, y, est, this_round, cutoff, n_iterations, delta, sil
             warnings.warn("[BoostAGroota]: using native variable importance might break the FS")
             imp = _get_imp(est, new_x, y, sample_weight=weight)
         else:
-            raise ValueError("'imp' should be either 'native', 'shap' or 'pimp', 'native' is not recommended")
+            raise ValueError("'imp' should be either 'native', 'shap' or 'pimp', "
+                             "'native' is not recommended")
 
         if i == 1:
             df = pd.DataFrame({'feature': new_x.columns})
@@ -1485,7 +1522,8 @@ def _reduce_vars_sklearn(x, y, est, this_round, cutoff, n_iterations, delta, sil
             importance = imp  # est.feature_importances_
             df2['fscore' + str(i)] = importance
         except ValueError:
-            print("this clf doesn't have the feature_importances_ method.  Only Sklearn tree based methods allowed")
+            print("this clf doesn't have the feature_importances_ method.  "
+                  "Only Sklearn tree based methods allowed")
 
         # importance = sorted(importance.items(), key=operator.itemgetter(1))
 
@@ -1530,9 +1568,11 @@ def _BoostARoota(x, y, est, cutoff, iters, max_rounds, delta, silent, weight, im
     :param cutoff: float
         the value by which the max of shadow imp is divided, to compare to real importance
     :param iters: int (>0)
-        The number of iterations to average for the feature importances (on the same split), to reduce the variance
+        The number of iterations to average for the feature importances (on the same split),
+        to reduce the variance
     :param max_rounds: int (>0)
-        The number of times the core BoostARoota algorithm will run. Each round eliminates more and more features
+        The number of times the core BoostARoota algorithm will run.
+        Each round eliminates more and more features
     :param delta: float (0 < delta <= 1)
         Stopping criteria for whether another round is started
     :param silent: bool
@@ -1591,9 +1631,10 @@ def _BoostARoota(x, y, est, cutoff, iters, max_rounds, delta, silent, weight, im
 class GrootCV(BaseEstimator, TransformerMixin):
     """
     A shuffled copy of the predictors matrix is added (shadows) to the original set of predictors.
-    The lightGBM is fitted using repeated cross-validation, the feature importance is extracted each time
-    and averaged to smooth out the noise. If the feature importance is larger than the average shadow feature importance
-    then the predictors are rejected, the others are kept.
+    The lightGBM is fitted using repeated cross-validation, the feature importance
+    is extracted each time and averaged to smooth out the noise.
+    If the feature importance is larger than the average shadow feature importance then the predictors
+     are rejected, the others are kept.
 
 
     - Cross-validated feature importance to smooth out the noise, based on lightGBM only
@@ -1639,7 +1680,8 @@ class GrootCV(BaseEstimator, TransformerMixin):
     y = y.fillna(0)
     # The smaller the cutoff, the more aggresive the feature selection
     #br = noglmgroot.BoostARoota(objective = 'binary', cutoff = 1.1, weight=w, silent=True)
-    br = noglmgroot.GrootCV(objective = 'poisson', cutoff = 1, weight=w, silent=False, n_folds=3, n_iter=10)
+    br = noglmgroot.GrootCV(objective = 'poisson', cutoff = 1,
+                            weight=w, silent=False, n_folds=3, n_iter=10)
     br.fit(X, y)
     br.plot_importance()
     """
@@ -1698,8 +1740,8 @@ class GrootCV(BaseEstimator, TransformerMixin):
         # a way without loop but need to re-do astype
 
         if cat_feat:
-            Cat = x[cat_feat].stack().astype('category').cat.codes.unstack()
-            X = pd.concat([x[x.columns.difference(cat_feat)], Cat], axis=1)
+            cat = x[cat_feat].stack().astype('category').cat.codes.unstack()
+            X = pd.concat([x[x.columns.difference(cat_feat)], cat], axis=1)
         else:
             X = x
 
@@ -1757,12 +1799,13 @@ class GrootCV(BaseEstimator, TransformerMixin):
         :return: boxplot
         """
         # plt.style.use('fivethirtyeight')
-        my_colors_list = ['#000000', '#7F3C8D', '#11A579', '#3969AC', '#F2B701', '#E73F74', '#80BA5A', '#E68310',
-                          '#008695',
-                          '#CF1C90', '#F97B72']
+        my_colors_list = ['#000000', '#7F3C8D', '#11A579', '#3969AC',
+                          '#F2B701', '#E73F74', '#80BA5A', '#E68310',
+                          '#008695', '#CF1C90', '#F97B72']
         bckgnd_color = "#f5f5f5"
         params = {"axes.prop_cycle": plt.cycler(color=my_colors_list),
-                  "axes.facecolor": bckgnd_color, "patch.edgecolor": bckgnd_color, "figure.facecolor": bckgnd_color,
+                  "axes.facecolor": bckgnd_color, "patch.edgecolor": bckgnd_color,
+                  "figure.facecolor": bckgnd_color,
                   "axes.edgecolor": bckgnd_color, "savefig.edgecolor": bckgnd_color,
                   "savefig.facecolor": bckgnd_color, "grid.color": "#d2d2d2",
                   'lines.linewidth': 1.5}  # plt.cycler(color=my_colors_list)
@@ -1852,7 +1895,7 @@ def _reduce_vars_lgb_cv(x, y, objective, n_folds, cutoff, n_iter, silent, weight
      cutoff_shadow: float
         the feature importance threshold, to reject or not the predictors
     """
-    # Set up the parameters for running the model in XGBoost - split is on multi log loss
+    # Set up the parameters for running the model in LGBM - split is on multi log loss
 
     if objective == 'softmax':
         param = {'objective': objective,
@@ -1876,6 +1919,11 @@ def _reduce_vars_lgb_cv(x, y, objective, n_folds, cutoff, n_iter, silent, weight
         y = y.astype(int)
         y_freq_table = pd.Series(y.fillna(0)).value_counts(normalize=True)
         n_classes = y_freq_table.size
+        if n_classes > 2 and objective != 'softmax':
+            objective = 'softmax'
+            if not silent:
+                print("Multi-class task, setting objective to softmax")
+
         main_class = y_freq_table[0]
         if not silent:
             print("BoostaGroota: classification with unbalance classes")
@@ -1888,36 +1936,38 @@ def _reduce_vars_lgb_cv(x, y, objective, n_folds, cutoff, n_iter, silent, weight
     col_names = list(x)
     cat_var_index = [i for i, x in enumerate(x.dtypes.tolist()) if
                      isinstance(x, pd.CategoricalDtype) or x == 'object']
-    categoryCols = [x for i, x in enumerate(col_names) if i in cat_var_index]
+    category_cols = [x for i, x in enumerate(col_names) if i in cat_var_index]
 
     rkf = RepeatedKFold(n_splits=n_folds, n_repeats=n_iter, random_state=2652124)
     i = 0
-    for trIdx, valIdx in tqdm(rkf.split(x, y), total=rkf.get_n_splits(), desc="Repeated k-fold"):
+    for tridx, validx in tqdm(rkf.split(x, y), total=rkf.get_n_splits(), desc="Repeated k-fold"):
 
         if weight is not None:
-            xTrainLGBM, yTrainLGBM, weight_tr = x.iloc[trIdx, :], y.iloc[trIdx], weight.iloc[trIdx]
-            xValidLGBM, yValidLGBM, weight_val = x.iloc[valIdx, :], y.iloc[valIdx], weight.iloc[valIdx]
+            x_train, y_train, weight_tr = x.iloc[tridx, :], y.iloc[tridx], weight.iloc[tridx]
+            x_val, y_val, weight_val = x.iloc[validx, :], y.iloc[validx], weight.iloc[validx]
         else:
-            xTrainLGBM, yTrainLGBM = x.iloc[trIdx, :], y.iloc[trIdx]
-            xValidLGBM, yValidLGBM = x.iloc[valIdx, :], y.iloc[valIdx]
+            x_train, y_train = x.iloc[tridx, :], y.iloc[tridx]
+            x_val, y_val = x.iloc[validx, :], y.iloc[validx]
             weight_tr = None
             weight_val = None
 
         # Create the shadow variables and run the model to obtain importances
-        new_x_tr, shadow_names = _create_shadow(xTrainLGBM)
-        new_x_val, _ = _create_shadow(xValidLGBM)
+        new_x_tr, shadow_names = _create_shadow(x_train)
+        new_x_val, _ = _create_shadow(x_val)
 
-        dTrain = lgb.Dataset(new_x_tr, label=yTrainLGBM, weight=weight_tr, categorical_feature=categoryCols)
-        dValid = lgb.Dataset(new_x_val, label=yValidLGBM, weight=weight_val, categorical_feature=categoryCols)
-        watchlist = [dTrain, dValid]
+        d_train = lgb.Dataset(new_x_tr, label=y_train, weight=weight_tr,
+                              categorical_feature=category_cols)
+        d_valid = lgb.Dataset(new_x_val, label=y_val, weight=weight_val,
+                              categorical_feature=category_cols)
+        watchlist = [d_train, d_valid]
 
         bst = lgb.train(param,
-                        train_set=dTrain,
+                        train_set=d_train,
                         num_boost_round=1000,
                         valid_sets=watchlist,
                         early_stopping_rounds=50,
                         verbose_eval=0,
-                        categorical_feature=categoryCols
+                        categorical_feature=category_cols
                         )
         if i == 0:
             df = pd.DataFrame({'feature': new_x_tr.columns})
@@ -1928,12 +1978,13 @@ def _reduce_vars_lgb_cv(x, y, objective, n_folds, cutoff, n_iter, silent, weight
         # the dim changed in lightGBM 3
         shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
 
+        # For LGBM version < 3
         # if objective in ['softmax', 'binary']:
         #     # X_SHAP_values (array-like of shape = [n_samples, n_features + 1]
         #     # or shape = [n_samples, (n_features + 1) * n_classes])
         #     n_feat = new_x_tr.shape[1]
-        #     shap_matrix = np.delete(shap_matrix, list(range(n_feat + 1, 1 + (n_feat + 1) * n_classes, n_feat + 1)),
-        #                             axis=1)
+        #     shap_matrix = np.delete(shap_matrix,
+        #     list(range(n_feat + 1, 1 + (n_feat + 1) * n_classes, n_feat + 1)), axis=1)
         #     shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
         # else:
         #     shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)

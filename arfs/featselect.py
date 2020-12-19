@@ -84,7 +84,8 @@ def set_my_plt_style(height=3, width=5, linewidth=2):
 def cat_var(df, col_excl=None, return_cat=True):
     """
     Categorical encoding (as integer). Automatically detect the non-numerical columns,
-    save the index and name of those columns, encode them as integer, save the direct and inverse mappers as
+    save the index and name of those columns, encode them as integer,
+    save the direct and inverse mappers as
     dictionaries.
     Return the data-set with the encoded columns with a data type either int or pandas categorical.
 
@@ -190,7 +191,8 @@ class FeatureSelector:
         2. Find columns with a single unique value
         3. Find collinear variables with a correlation greater than a specified correlation coefficient
         4. Find features with 0.0 feature importance from a gradient boosting machine (gbm)
-        5. Find low importance features that do not contribute to a specified cumulative feature importance from
+        5. Find low importance features that do not contribute to a specified
+        cumulative feature importance from
            the gbm SHAP feature importance.
 
     Parameters
