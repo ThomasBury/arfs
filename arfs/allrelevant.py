@@ -70,6 +70,30 @@ def is_catboost(estimator):
     return is_cat
 
 
+def LightForestRegressor(n_feat):
+    """
+    Ideal number of features, according to Elements of statistical learning
+    :param n_feat: int
+        the number of predictors (nbr of columns of the X matrix)
+    :return: lightgbm regressor
+    """
+    feat_frac = n_feat / (3 * n_feat)
+    return lgb.LGBMRegressor(verbose=-1, force_col_wise=True, n_estimators=100, bagging_fraction=0.632,
+                             feature_fraction=feat_frac, boosting_type="rf", bagging_freq=1)
+
+
+def LightForestClassifier(n_feat):
+    """
+    Ideal number of features, according to Elements of statistical learning
+    :param n_feat: int
+        the number of predictors (nbr of columns of the X matrix)
+    :return: lightgbm regressor
+    """
+    feat_frac = np.sqrt(n_feat) / n_feat
+    return lgb.LGBMClassifier(verbose=-1, force_col_wise=True, n_estimators=100, bagging_fraction=0.632,
+                              feature_fraction=feat_frac, boosting_type="rf", bagging_freq=1)
+
+
 def set_my_plt_style(height=3, width=5, linewidth=2):
     """
     This set the style of matplotlib to fivethirtyeight with some modifications (colours, axes)
@@ -1897,6 +1921,8 @@ def _reduce_vars_lgb_cv(x, y, objective, n_folds, cutoff, n_iter, silent, weight
     """
     # Set up the parameters for running the model in LGBM - split is on multi log loss
 
+    n_feat = x.shape[1]
+
     if objective == 'softmax':
         param = {'objective': objective,
                  'eval_metric': 'mlogloss',
@@ -1908,10 +1934,16 @@ def _reduce_vars_lgb_cv(x, y, objective, n_folds, cutoff, n_iter, silent, weight
 
     param.update({'verbosity': -1})
 
+    # best feature fraction according to "Elements of statistical learning"
+    if objective in ['softmax', 'binary']:
+        feat_frac = np.sqrt(n_feat) / n_feat
+    else:
+        feat_frac = n_feat / (3 * n_feat)
+
     if rf:
         param.update({'boosting_type': 'rf',
                       'bagging_fraction': '0.7',
-                      'feature_fraction': '0.7',
+                      'feature_fraction': feat_frac,
                       'bagging_freq': '1'
                       })
 

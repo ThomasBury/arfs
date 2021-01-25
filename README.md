@@ -236,6 +236,12 @@ In the spirit, the same heuristic than Boruta but using Boosting (originally Bor
 
 ## Changes
 
+### 0.0.4
+
+ - setting optimal number of features (according to "Elements of statistical learning") when using lightGBM random forest boosting.
+
+ - Providing random forest, lightgbm implementation, estimators
+
 
 ### 0.0.3
 
