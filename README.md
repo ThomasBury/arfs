@@ -22,10 +22,7 @@ For working examples, see the example NB and the unit tests.
 
 ```python
 import arfs.allrelevant as arfsgroot
-
-def LightForestRegressor(n_feat):
-    return lgb.LGBMRegressor(verbose=-1, force_col_wise=True, n_estimators=100, bagging_fraction=0.632,
-                                   feature_fraction=n_feat / (3*n_feat), boosting_type="rf", bagging_freq=1)
+from arfs.allrelevant import LightForestRegressor
 
 # The arfs methods work with regressors or classifiers
 models = [RandomForestRegressor(n_jobs= 4, oob_score= True), 
