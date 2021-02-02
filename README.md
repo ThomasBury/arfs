@@ -260,6 +260,10 @@ In the spirit, the same heuristic than Boruta but using Boosting (originally Bor
 
 ## Changes
 
+### 0.1.1
+
+ - remove old attribute names in unit-tests
+
 ### 0.1.0
 
  - Fix lightGBM warnings
