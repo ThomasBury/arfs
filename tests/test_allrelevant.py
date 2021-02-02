@@ -250,9 +250,9 @@ class TestBoostAGroota:
 
         X, y, w = _generated_corr_dataset_classification()
         model = lgb.LGBMClassifier(verbose=-1, force_col_wise=True, n_estimators=100)
-        arfs = BoostAGroota(est=model, cutoff=1, iters=10, max_rounds=10, delta=0.1, silent=False, imp='shap')
+        arfs = BoostAGroota(est=model, cutoff=1, iters=10, max_rounds=10, delta=0.1, silent=False, importance='shap')
         arfs.fit(X, y, w)
-        leshy_list = sorted(arfs.keep_vars_)
+        leshy_list = sorted(arfs.support_names_)
 
         assert bool(set(baseline_list) & set(leshy_list)), "expect non-empty intersection"
 
@@ -261,9 +261,9 @@ class TestBoostAGroota:
 
         X, y, w = _generated_corr_dataset_classification()
         model = lgb.LGBMClassifier(verbose=-1, force_col_wise=True, n_estimators=100)
-        arfs = BoostAGroota(est=model, cutoff=1, iters=10, max_rounds=10, delta=0.1, silent=False, imp='pimp')
+        arfs = BoostAGroota(est=model, cutoff=1, iters=10, max_rounds=10, delta=0.1, silent=False, importance='pimp')
         arfs.fit(X, y, w)
-        leshy_list = sorted(arfs.keep_vars_)
+        leshy_list = sorted(arfs.support_names_)
 
         assert bool(set(baseline_list) & set(leshy_list)), "expect non-empty intersection"
 
@@ -272,9 +272,9 @@ class TestBoostAGroota:
 
         X, y, w = _generated_corr_dataset_regr()
         model = lgb.LGBMRegressor(verbose=-1, force_col_wise=True, n_estimators=100)
-        arfs = BoostAGroota(est=model, cutoff=1, iters=10, max_rounds=10, delta=0.1, silent=False, imp='shap')
+        arfs = BoostAGroota(est=model, cutoff=1, iters=10, max_rounds=10, delta=0.1, silent=False, importance='shap')
         arfs.fit(X, y, w)
-        leshy_list = sorted(arfs.keep_vars_)
+        leshy_list = sorted(arfs.support_names_)
 
         assert bool(set(baseline_list) & set(leshy_list)), "expect non-empty intersection"
 
@@ -283,9 +283,9 @@ class TestBoostAGroota:
 
         X, y, w = _generated_corr_dataset_regr()
         model = lgb.LGBMRegressor(verbose=-1, force_col_wise=True, n_estimators=100)
-        arfs = BoostAGroota(est=model, cutoff=1, iters=10, max_rounds=10, delta=0.1, silent=False, imp='pimp')
+        arfs = BoostAGroota(est=model, cutoff=1, iters=10, max_rounds=10, delta=0.1, silent=False, importance='pimp')
         arfs.fit(X, y, w)
-        leshy_list = sorted(arfs.keep_vars_)
+        leshy_list = sorted(arfs.support_names_)
 
         assert bool(set(baseline_list) & set(leshy_list)), "expect non-empty intersection"
 
@@ -301,7 +301,7 @@ class TestGrootCV:
         X, y, w = _generated_corr_dataset_classification()
         arfs = GrootCV(objective='binary', cutoff=1, n_folds=5, n_iter=5, silent=False)
         arfs.fit(X, y, w)
-        grootcv_list = sorted(arfs.keep_vars_)
+        grootcv_list = sorted(arfs.support_names_)
 
         assert bool(set(baseline_list) & set(grootcv_list)), "expect non-empty intersection"
 
@@ -311,6 +311,6 @@ class TestGrootCV:
         X, y, w = _generated_corr_dataset_regr()
         arfs = GrootCV(objective='l2', cutoff=1, n_folds=5, n_iter=5, silent=False)
         arfs.fit(X, y, w)
-        grootcv_list = sorted(arfs.keep_vars_)
+        grootcv_list = sorted(arfs.support_names_)
 
         assert bool(set(baseline_list) & set(grootcv_list)), "expect non-empty intersection"
