@@ -16,14 +16,30 @@ Moreover, it provides a module for performing pre-filtering (columns with too ma
 
 ## Example
 
-For working examples, see the example NB and the unit tests.
+Working examples for:
+
+ - [Regression](./examples/Regression.ipynb)
+ - [Classification](./examples/Classification.ipynb)
+ - [Categoricals](./examples/Categoricals.ipynb)
+ - [Collinearity](./examples/Collinearity.ipynb)
+ - [Pre-filters](./examples/pre-filtering.ipynb)
+
+For imbalanced classification:
+ - GrootCV will automatically detect imbalanced data and set the lightGBM `'is_unbalance' = True`
+ - For Leshy and BoostAGroota, you can pass the estimator with the relevant parameter (e.g. `class_weight = 'balanced'`)
 
 ### All Relevant FS
 
 ```python
+import arfs
+import arfs.featselect as arfsfs
 import arfs.allrelevant as arfsgroot
-from arfs.allrelevant import LightForestRegressor
+from arfs.utils import LightForestClassifier, LightForestRegressor
+from arfs.utils import highlight_tick, compare_varimp
+from arfs.utils import load_data, sklearn_pimp_bench
 
+boston = load_data(name='Boston')
+X, y = boston.data, boston.target
 # The arfs methods work with regressors or classifiers
 models = [RandomForestRegressor(n_jobs= 4, oob_score= True), 
           CatBoostRegressor(random_state=42, verbose=0), 
@@ -34,22 +50,31 @@ models = [RandomForestRegressor(n_jobs= 4, oob_score= True),
 model = models[3]
 
 # Leshy
-feat_selector = arfsgroot.Leshy(model, n_estimators = 100, verbose= 1, max_iter= 10, random_state=42, importance=varimp)
-feat_selector.fit(X, y, sample_weight)
+feat_selector = arfsgroot.Leshy(model, n_estimators = 100, verbose= 1, max_iter= 10, random_state=42, importance='shap')
+feat_selector.fit(X, y, sample_weight=None)
 print(feat_selector.support_names_)
-feat_selector.plot_importance(n_feat_per_inch=3)
+fig = feat_selector.plot_importance(n_feat_per_inch=5)
+fig = highlight_tick(figure=fig, str_match='random') # highlight synthetic random and genuine variables
+fig = highlight_tick(figure=fig, str_match='genuine', color='green')
+plt.show()
 
 # BoostAGroota
-feat_selector = arfsgroot.BoostAGroota(est=model, cutoff=1, iters=10, max_rounds=10, delta=0.1, silent=False, imp='shap')
-feat_selector.fit(X, y)
-print(feat_selector.keep_vars_ )
-feat_selector.plot_importance()
+feat_selector = arfsgroot.BoostAGroota(est=model, cutoff=1, iters=10, max_rounds=10, delta=0.1, importance='shap')
+feat_selector.fit(X, y, sample_weight=None)
+print(feat_selector.support_names_)
+fig = feat_selector.plot_importance(n_feat_per_inch=5)
+fig = highlight_tick(figure=fig, str_match='random') # highlight synthetic random and genuine variables
+fig = highlight_tick(figure=fig, str_match='genuine', color='green')
 
 # GrootCV
-feat_selector = arfsgroot.GrootCV(objective='rmse', cutoff = 1, n_folds=5, n_iter=5, silent=False)
-feat_selector.fit(X, y, sample_weight)
-print(feat_selector.keep_vars_ )
-feat_selector.plot_importance(n_feat_per_inch=2)
+feat_selector = arfsgroot.GrootCV(objective='rmse', cutoff = 1, n_folds=5, n_iter=5)
+feat_selector.fit(X, y, sample_weight=None)
+print(feat_selector.support_names_)
+fig = feat_selector.plot_importance(n_feat_per_inch=5)
+fig = highlight_tick(figure=fig, str_match='random') # highlight synthetic random and genuine variables
+fig = highlight_tick(figure=fig, str_match='genuine', color='green')
+
+plt.show()
 ```
 
 **Titanic dataset, classification**
@@ -59,6 +84,7 @@ feat_selector.plot_importance(n_feat_per_inch=2)
   <tr>
     <td align="left"><img src="images/leshy-titanic-catboost-shap.png" width="600"/></td>
     <td align="left"><img src="images/leshy-titanic-rndforest-shap.png" width="600"/></td>
+    <td align="left"><img src="images/leshy-titanic-lgbm-shap.png" width="600"/></td>
   </tr>
 </table>
 
@@ -68,6 +94,7 @@ feat_selector.plot_importance(n_feat_per_inch=2)
 <table >
   <tr>
     <td align="left"><img src="images/grootcv-boston.png" width="600"/></td>
+    <td align="left"><img src="images/leshy-boston.png" width="600"/></td>
     <td align="left"><img src="images/boostagroota-boston-lgb.png" width="600"/></td>
   </tr>
 </table>
@@ -233,17 +260,25 @@ In the spirit, the same heuristic than Boruta but using Boosting (originally Bor
 
 ## Changes
 
+### 0.1.0
+
+ - Fix lightGBM warnings
+ - Typo in repr
+ - Provide load_data utility
+ - Enhance jupyter NB examples
+ - highlighting synthetic random predictors
+ - Benchmark using sklearn permutation importance
+ - Harmonization of the attributes and parameters
+ - Fix categoricals handling
+
 ### 0.0.4
 
  - setting optimal number of features (according to "Elements of statistical learning") when using lightGBM random forest boosting.
-
  - Providing random forest, lightgbm implementation, estimators
-
 
 ### 0.0.3
 
  - Adding examples and expanding documentation
-
 
 ### 0.0.2
 

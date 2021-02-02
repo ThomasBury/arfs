@@ -38,87 +38,16 @@ import lightgbm as lgb
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import scipy as sp
-from tqdm.autonotebook import tqdm
+# from tqdm.autonotebook import tqdm
+from tqdm import tqdm
 from sklearn.utils import check_random_state, check_X_y
 from sklearn.base import TransformerMixin, BaseEstimator, is_regressor, is_classifier
 from sklearn.model_selection import RepeatedKFold, train_test_split
 from sklearn.inspection import permutation_importance
 from sklearn.utils.validation import _check_sample_weight
 from matplotlib.lines import Line2D
-from palettable.cartocolors.qualitative import Bold_10
 
-
-#####################
-#                   #
-#     Utilities     #
-#                   #
-#####################
-
-def check_if_tree_based(model):
-    tree_based_models = ['lightgbm', 'xgboost', 'catboost', '_forest']
-    condition = any(i in str(type(model)) for i in tree_based_models)
-    return condition
-
-
-def is_lightgbm(estimator):
-    is_lgb = 'lightgbm' in str(type(estimator))
-    return is_lgb
-
-
-def is_catboost(estimator):
-    is_cat = 'catboost' in str(type(estimator))
-    return is_cat
-
-
-def LightForestRegressor(n_feat):
-    """
-    Ideal number of features, according to Elements of statistical learning
-    :param n_feat: int
-        the number of predictors (nbr of columns of the X matrix)
-    :return: lightgbm regressor
-    """
-    feat_frac = n_feat / (3 * n_feat)
-    return lgb.LGBMRegressor(verbose=-1, force_col_wise=True, n_estimators=100, bagging_fraction=0.632,
-                             feature_fraction=feat_frac, boosting_type="rf", bagging_freq=1)
-
-
-def LightForestClassifier(n_feat):
-    """
-    Ideal number of features, according to Elements of statistical learning
-    :param n_feat: int
-        the number of predictors (nbr of columns of the X matrix)
-    :return: lightgbm regressor
-    """
-    feat_frac = np.sqrt(n_feat) / n_feat
-    return lgb.LGBMClassifier(verbose=-1, force_col_wise=True, n_estimators=100, bagging_fraction=0.632,
-                              feature_fraction=feat_frac, boosting_type="rf", bagging_freq=1)
-
-
-def set_my_plt_style(height=3, width=5, linewidth=2):
-    """
-    This set the style of matplotlib to fivethirtyeight with some modifications (colours, axes)
-
-    :param linewidth: int, default=2
-        line width
-    :param height: int, default=3
-        fig height in inches (yeah they're still struggling with the metric system)
-    :param width: int, default=5
-        fig width in inches (yeah they're still struggling with the metric system)
-    :return: Nothing
-    """
-    plt.style.use('fivethirtyeight')
-    my_colors_list = Bold_10.hex_colors
-    myorder = [2, 3, 4, 1, 0, 6, 5, 8, 9, 7]
-    my_colors_list = [my_colors_list[i] for i in myorder]
-    bckgnd_color = "#f5f5f5"
-    params = {'figure.figsize': (width, height), "axes.prop_cycle": plt.cycler(color=my_colors_list),
-              "axes.facecolor": bckgnd_color, "patch.edgecolor": bckgnd_color,
-              "figure.facecolor": bckgnd_color,
-              "axes.edgecolor": bckgnd_color, "savefig.edgecolor": bckgnd_color,
-              "savefig.facecolor": bckgnd_color, "grid.color": "#d2d2d2",
-              'lines.linewidth': linewidth}  # plt.cycler(color=my_colors_list)
-    mpl.rcParams.update(params)
-
+from arfs.utils import check_if_tree_based, is_lightgbm, is_catboost
 
 ########################################################################################
 #
@@ -270,6 +199,8 @@ class Leshy(BaseEstimator, TransformerMixin):
         vs shadow predictors. Note that the builtin tree importance (gini/impurity based
         importance) is biased towards numerical and large cardinality predictors, even
         if they are random. Shapley values and permutation imp. are robust w.r.t those predictors.
+        Possible values: 'shap' (Shapley values),
+        'pimp' (permutation importance) and 'native' (Gini/impurity)
     two_step : Boolean, default = True
         If you want to use the original implementation of Boruta with Bonferroni
         correction only set this to False.
@@ -388,7 +319,7 @@ class Leshy(BaseEstimator, TransformerMixin):
             Individual weights for each sample
         """
         self.imp_real_hist = np.empty((0, X.shape[1]), float)
-        if isinstance(X, pd.DataFrame) is not True:
+        if not isinstance(X, pd.DataFrame):
             X = pd.DataFrame(X)
         self.col_names = X.columns.to_list()
 
@@ -499,7 +430,7 @@ class Leshy(BaseEstimator, TransformerMixin):
                              whiskerprops=dict(linestyle='-', linewidth=1.5),
                              capprops=dict(linestyle='-', linewidth=1.5),
                              showfliers=False, grid=True, rot=0, vert=False, patch_artist=True,
-                             figsize=(10, vimp_df.shape[1] / n_feat_per_inch), fontsize=9
+                             figsize=(16, vimp_df.shape[1] / n_feat_per_inch), fontsize=9
                              )
         blue_color = "#2590fa"
         yellow_color = "#f0be00"
@@ -524,7 +455,8 @@ class Leshy(BaseEstimator, TransformerMixin):
         plt.title('Leshy importance and selected predictors')
         # fig.set_size_inches((10, 1.5 * np.rint(max(vimp_df.shape) / 10)))
         # plt.tight_layout()
-        plt.show()
+        # plt.show()
+        return fig
 
     @staticmethod
     def _validate_pandas_input(arg):
@@ -580,29 +512,13 @@ class Leshy(BaseEstimator, TransformerMixin):
         # First, let's store "object" columns as categorical columns
         # obj_feat = X_raw.dtypes.loc[X_raw.dtypes == 'object'].index.tolist()
         obj_feat = list(set(list(X_raw.columns)) - set(list(X_raw.select_dtypes(include=[np.number]))))
-
-        if obj_feat:
-            X_raw.loc[:, obj_feat] = X_raw[obj_feat].astype('str').astype('category')
-        cat_feat = X_raw.dtypes.loc[X_raw.dtypes == 'category'].index.tolist()
-        cat_idx = [X_raw.columns.get_loc(c) for c in cat_feat if c in cat_feat]
-        if cat_feat:
-            # a way without loop but need to re-do astype
-            cat = X_raw[cat_feat].stack().astype('category').cat.codes.unstack()
-
-        if self.is_cat is False:
-            if cat_feat:
-                X = pd.concat([X_raw[X_raw.columns.difference(cat_feat)], cat], axis=1)
-            else:
-                X = X_raw
-        else:
-            X = X_raw
-
+        X = X_raw
         X = np.nan_to_num(X)
         y = np.nan_to_num(y)
         # w = w.fillna(0)
 
-        self.cat_name = cat_feat
-        self.cat_idx = cat_idx
+        self.cat_name = obj_feat
+        # self.cat_idx = cat_idx
 
         # check input params
         self._check_params(X, y)
@@ -638,6 +554,7 @@ class Leshy(BaseEstimator, TransformerMixin):
             self.estimator.set_params(n_estimators=self.n_estimators)
 
         # main feature selection loop
+        pbar = tqdm(total=self.max_iter, desc="Leshy iteration")
         while np.any(dec_reg == 0) and _iter < self.max_iter:
             # find optimal number of trees and depth
             if self.n_estimators == 'auto':
@@ -672,11 +589,12 @@ class Leshy(BaseEstimator, TransformerMixin):
             dec_reg = self._do_tests(dec_reg, hit_reg, _iter)
 
             # print out confirmed features
-            if self.verbose > 0 and _iter < self.max_iter:
-                self._print_results(dec_reg, _iter, 0)
+            # if self.verbose > 0 and _iter < self.max_iter:
+            #     self._print_results(dec_reg, _iter, 0)
             if _iter < self.max_iter:
                 _iter += 1
-
+                pbar.update(1)
+        pbar.close()
         # we automatically apply R package's rough fix for tentative ones
         confirmed = np.where(dec_reg == 1)[0]
         tentative = np.where(dec_reg == 0)[0]
@@ -1025,7 +943,7 @@ class Leshy(BaseEstimator, TransformerMixin):
         print(output)
 
 
-def _split_fit_estimator(estimator, X, y, sample_weight=None):
+def _split_fit_estimator(estimator, X, y, sample_weight=None, cat_feature=None):
     """
     Private function
     split the train, test and fit the model
@@ -1037,6 +955,10 @@ def _split_fit_estimator(estimator, X, y, sample_weight=None):
         target
     :param sample_weight: array-like, shape = [n_samples], default=None
         Individual weights for each sample
+    :param cat_feature: list of int or None
+        the list of integers, cols loc, of the categrocial predictors. Avoids to detect and encode
+        each iteration if the exact same columns are passed to the selection methods.
+
 
     :return:
      model
@@ -1046,6 +968,21 @@ def _split_fit_estimator(estimator, X, y, sample_weight=None):
      y_tt: array [n_samples]
         the test split, target
     """
+    if cat_feature is None:
+        # detect, store and encode categorical predictors
+        X = pd.DataFrame(X)
+        obj_feat = list(set(list(X.columns)) - set(list(X.select_dtypes(include=[np.number]))))
+        if obj_feat:
+            X[obj_feat] = X[obj_feat].astype('str').astype('category')
+            for col in obj_feat:
+                X[col] = X[col].astype('category').cat.codes
+            cat_idx = [X.columns.get_loc(col) for col in obj_feat]
+        else:
+            obj_feat = None
+            cat_idx = None
+    else:
+        cat_idx = cat_feature
+
     if sample_weight is not None:
         w = sample_weight
         if is_regressor(estimator):
@@ -1061,16 +998,12 @@ def _split_fit_estimator(estimator, X, y, sample_weight=None):
 
     X_tr = pd.DataFrame(X_tr)
     X_tt = pd.DataFrame(X_tt)
-    obj_feat = list(set(list(X_tr.columns)) - set(list(X_tr.select_dtypes(include=[np.number]))))
-
-    if obj_feat:
-        X_tr[obj_feat] = X_tr[obj_feat].astype('str').astype('category')
-        X_tt[obj_feat] = X_tt[obj_feat].astype('str').astype('category')
 
     if check_if_tree_based(estimator):
         try:
-            if is_catboost(estimator):
-                model = estimator.fit(X_tr, y_tr, sample_weight=w_tr, cat_features=obj_feat)
+            # handle cat features if supported by the fit method
+            if is_catboost(estimator) or ('cat_feature' in estimator.fit.__code__.co_varnames):
+                model = estimator.fit(X_tr, y_tr, sample_weight=w_tr, cat_features=cat_idx)
             else:
                 model = estimator.fit(X_tr, y_tr, sample_weight=w_tr)
 
@@ -1083,7 +1016,7 @@ def _split_fit_estimator(estimator, X, y, sample_weight=None):
     return model, X_tt, y_tt, w_tt
 
 
-def _get_shap_imp(estimator, X, y, sample_weight=None):
+def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
     """
     Private function
     Get the SHAP feature importance
@@ -1095,12 +1028,17 @@ def _get_shap_imp(estimator, X, y, sample_weight=None):
         target
     :param sample_weight: array-like, shape = [n_samples], default=None
         Individual weights for each sample
+    :param cat_feature: list of int or None
+        the list of integers, cols loc, of the categorical predictors. Avoids to detect and encode
+        each iteration if the exact same columns are passed to the selection methods.
 
     :return:
      shap_imp, array
         the SHAP importance array
     """
-    model, X_tt, y_tt, w_tt = _split_fit_estimator(estimator, X, y, sample_weight=sample_weight)
+    model, X_tt, y_tt, w_tt = _split_fit_estimator(estimator, X, y,
+                                                   sample_weight=sample_weight,
+                                                   cat_feature=cat_feature)
     # build the explainer
     explainer = shap.TreeExplainer(model, feature_perturbation="tree_path_dependent")
     shap_values = explainer.shap_values(X_tt)
@@ -1122,7 +1060,7 @@ def _get_shap_imp(estimator, X, y, sample_weight=None):
     return shap_imp
 
 
-def _get_perm_imp(estimator, X, y, sample_weight):
+def _get_perm_imp(estimator, X, y, sample_weight, cat_feature=None):
     """
     Private function
     Get the permutation feature importance
@@ -1134,18 +1072,23 @@ def _get_perm_imp(estimator, X, y, sample_weight):
         target
     :param sample_weight: array-like, shape = [n_samples], default=None
         Individual weights for each sample
+    :param cat_feature: list of int or None
+        the list of integers, cols loc, of the categorical predictors. Avoids to detect and encode
+        each iteration if the exact same columns are passed to the selection methods.
 
     :return:
      imp, array
         the permutation importance array
     """
-    model, X_tt, y_tt, w_tt = _split_fit_estimator(estimator, X, y, sample_weight=sample_weight)
+    model, X_tt, y_tt, w_tt = _split_fit_estimator(estimator, X, y,
+                                                   sample_weight=sample_weight,
+                                                   cat_feature=cat_feature)
     perm_imp = permutation_importance(model, X_tt, y_tt, n_repeats=5, random_state=42, n_jobs=-1)
     imp = perm_imp.importances_mean.ravel()
     return imp
 
 
-def _get_imp(estimator, X, y, sample_weight=None):
+def _get_imp(estimator, X, y, sample_weight=None, cat_feature=None):
     """
         Get the native feature importance (impurity based for instance)
         This is know to return biased and uninformative results.
@@ -1164,15 +1107,30 @@ def _get_imp(estimator, X, y, sample_weight=None):
             The target values.
         sample_weight : array-like, shape = [n_samples], default=None
             Individual weights for each sample
+        cat_feature: list of int or None
+            the list of integers, cols loc, of the categorical predictors. Avoids to detect and encode
+            each iteration if the exact same columns are passed to the selection methods.
         """
     try:
-        if is_catboost(estimator):
-            X = pd.DataFrame(X)
-            obj_feat = X.dtypes.loc[(X.dtypes == 'object') | (X.dtypes == 'category')].index.tolist()
+        # handle categoricals
+        X = pd.DataFrame(X)
+        if cat_feature is None:
+            obj_feat = list(set(list(X.columns)) - set(list(X.select_dtypes(include=[np.number]))))
             if obj_feat:
                 X[obj_feat] = X[obj_feat].astype('str').astype('category')
-            cat_feat = X.dtypes.loc[X.dtypes == 'category'].index.tolist()
-            estimator.fit(X, y, sample_weight=sample_weight, cat_features=cat_feat)
+                for col in obj_feat:
+                    X[col] = X[col].cat.codes
+                cat_idx = [X.columns.get_loc(col) for col in obj_feat]
+            else:
+                obj_feat = None
+                cat_idx = None
+        else:
+            cat_idx = cat_feature
+
+        # handle catboost and cat features
+        if is_catboost(estimator) or ('cat_feature' in estimator.fit.__code__.co_varnames):
+            X = pd.DataFrame(X)
+            estimator.fit(X, y, sample_weight=sample_weight, cat_features=cat_idx)
         else:
             estimator.fit(X, y, sample_weight=sample_weight)
 
@@ -1239,7 +1197,7 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
     :param cutoff: float
         the value by which the max of shadow imp is divided, to compare to real importance
     :param iters: int (>0)
-        The number of iterations to average for the feature importances (on the same split),
+        The number of iterations to average for the feature importance (on the same split),
         to reduce the variance
     :param max_rounds: int (>0)
         The number of times the core BoostARoota algorithm will run.
@@ -1248,12 +1206,14 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
         Stopping criteria for whether another round is started
     :param silent: bool
         Set to True if don't want to see the BoostARoota output printed.
-    :param imp: str, default='shap'
+    :param importance: str, default='shap'
+        the kind of feature importance to use. Possible values: 'shap' (Shapley values),
+        'pimp' (permutation importance) and 'native' (Gini/impurity)
 
 
     Attributes:
     -----------
-    keep_vars_: list of str
+    support_names_: list of str
         the list of columns to keep
     tag_df: dataframe
         the df with the details (accepted or rejected) of the feature selection
@@ -1280,7 +1240,7 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
     """
 
     def __init__(self, est=None, cutoff=4, iters=10, max_rounds=500, delta=0.1,
-                 silent=False, imp='shap'):
+                 silent=True, importance='shap'):
 
         self.est = est
         self.cutoff = cutoff
@@ -1288,8 +1248,8 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
         self.max_rounds = max_rounds
         self.delta = delta
         self.silent = silent
-        self.imp = imp
-        self.keep_vars_ = None
+        self.importance = importance
+        self.support_names_ = None
         self.tag_df = None
         self.sha_cutoff_df = None
         self.mean_shadow = None
@@ -1310,21 +1270,21 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
 
     def __repr__(self):
         s = "BoostARoota(est={est}, \n" \
-            "                cutoff={cutoff}},\n" \
+            "                cutoff={cutoff},\n" \
             "                iters={iters},\n" \
             "                max_rounds={mr},\n" \
             "                delta={delta},\n" \
             "                silent={silent}, \n" \
-            "                imp=\"{imp}\")".format(est=self.est,
-                                                    cutoff=self.cutoff,
-                                                    iters=self.iters,
-                                                    mr=self.max_rounds,
-                                                    delta=self.delta,
-                                                    silent=self.silent,
-                                                    imp=self.imp)
+            "                importance=\"{importance}\")".format(est=self.est,
+                                                                  cutoff=self.cutoff,
+                                                                  iters=self.iters,
+                                                                  mr=self.max_rounds,
+                                                                  delta=self.delta,
+                                                                  silent=self.silent,
+                                                                  importance=self.importance)
         return s
 
-    def fit(self, x, y, sample_weight=None):
+    def fit(self, X, y, sample_weight=None):
         """
         Fit the transformer
 
@@ -1337,40 +1297,34 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
         :return:
         """
 
-        if isinstance(x, pd.DataFrame) is not True:
-            x = pd.DataFrame(x)
+        if isinstance(X, pd.DataFrame) is not True:
+            X = pd.DataFrame(X)
 
         if sample_weight is not None:
-            sample_weight = _check_sample_weight(sample_weight, x)
+            sample_weight = _check_sample_weight(sample_weight, X)
 
         # obj_feat = x.dtypes.loc[x.dtypes == 'object'].index.tolist()
-        obj_feat = list(set(list(x.columns)) - set(list(x.select_dtypes(include=[np.number]))))
+        obj_feat = list(set(list(X.columns)) - set(list(X.select_dtypes(include=[np.number]))))
         if obj_feat:
-            x[obj_feat] = x[obj_feat].astype('str').astype('category')
-        cat_feat = x.dtypes.loc[x.dtypes == 'category'].index.tolist()
-        cat_idx = [x.columns.get_loc(c) for c in cat_feat if c in cat_feat]
-        # a way without loop but need to re-do astype
+            X[obj_feat] = X[obj_feat].astype('str').astype('category')
 
-        if cat_feat:
-            cat = x[cat_feat].stack().astype('category').cat.codes.unstack()
-            X = pd.concat([x[x.columns.difference(cat_feat)], cat], axis=1)
-        else:
-            X = x
+        # cat_idx = [X.columns.get_loc(c) for c in cat_feat if c in cat_feat]
+
         # crit, keep_vars, df_vimp, mean_shadow
-        _, self.keep_vars_, self.sha_cutoff_df, self.mean_shadow = _BoostARoota(X, y,
-                                                                                # metric=self.metric,
-                                                                                est=self.est,
-                                                                                cutoff=self.cutoff,
-                                                                                iters=self.iters,
-                                                                                max_rounds=self.max_rounds,
-                                                                                delta=self.delta,
-                                                                                silent=self.silent,
-                                                                                weight=sample_weight,
-                                                                                imp=self.imp
-                                                                                )
-        self.tag_df = pd.DataFrame({'predictor': list(x.columns)})
+        _, self.support_names_, self.sha_cutoff_df, self.mean_shadow = _BoostARoota(X, y,
+                                                                                    # metric=self.metric,
+                                                                                    est=self.est,
+                                                                                    cutoff=self.cutoff,
+                                                                                    iters=self.iters,
+                                                                                    max_rounds=self.max_rounds,
+                                                                                    delta=self.delta,
+                                                                                    silent=self.silent,
+                                                                                    weight=sample_weight,
+                                                                                    imp=self.importance
+                                                                                    )
+        self.tag_df = pd.DataFrame({'predictor': list(X.columns)})
         self.tag_df['BoostAGroota'] = 1
-        self.tag_df['BoostAGroota'] = np.where(self.tag_df['predictor'].isin(list(self.keep_vars_)), 1, 0)
+        self.tag_df['BoostAGroota'] = np.where(self.tag_df['predictor'].isin(list(self.support_names_)), 1, 0)
         return self
 
     def transform(self, x):
@@ -1381,9 +1335,9 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
         :return:
             the transformed predictors matrix
         """
-        if self.keep_vars_ is None:
+        if self.support_names_ is None:
             raise ValueError("You need to fit the model first")
-        return x[self.keep_vars_]
+        return x[self.support_names_]
 
     def fit_transform(self, X, y=None, **fit_params):
         """
@@ -1442,14 +1396,15 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
             whiskerprops=dict(linestyle='-', linewidth=1.5),
             capprops=dict(linestyle='-', linewidth=1.5),
             showfliers=False, grid=True, rot=0, vert=False, patch_artist=True,
-            figsize=(10, real_df.shape[1] / n_feat_per_inch), fontsize=9
+            figsize=(16, real_df.shape[1] / n_feat_per_inch), fontsize=9
         )
         # xrange = real_df.max(skipna=True).max(skipna=True)-real_df.min(skipna=True).min(skipna=True)
         bp.set_xlim(left=real_df.min(skipna=True).min(skipna=True) - 0.025)
         fig = bp.get_figure()
         plt.title('BoostAGroota importance of selected predictors')
         # plt.tight_layout()
-        plt.show()
+        # plt.show()
+        return fig
 
 
 ############################################
@@ -1484,7 +1439,7 @@ def _create_shadow(x_train):
 # the _ in front of the function name, they're internal functions)
 ########################################################################################
 
-def _reduce_vars_sklearn(x, y, est, this_round, cutoff, n_iterations, delta, silent, weight, imp_kind):
+def _reduce_vars_sklearn(x, y, est, this_round, cutoff, n_iterations, delta, silent, weight, imp_kind, cat_feature):
     """
     Private function
     reduce the number of predictors using a sklearn estimator
@@ -1501,7 +1456,7 @@ def _reduce_vars_sklearn(x, y, est, this_round, cutoff, n_iterations, delta, sil
     :param cutoff: float
         the value by which the max of shadow imp is divided, to compare to real importance
     :param n_iterations: int
-        The number of iterations to average for the feature importances (on the same split),
+        The number of iterations to average for the feature importance (on the same split),
         to reduce the variance
     :param delta: float (0 < delta <= 1)
         Stopping criteria for whether another round is started
@@ -1512,6 +1467,10 @@ def _reduce_vars_sklearn(x, y, est, this_round, cutoff, n_iterations, delta, sil
         sample_weight, if any
     :param imp_kind: str
         whether if native, shap or permutation importance should be used
+    :param cat_feature: list of int or None
+        the list of integers, cols loc, of the categorical predictors. Avoids to detect and encode
+        each iteration if the exact same columns are passed to the selection methods.
+
     :return:
      criteria: bool
         if the criteria has been reached or not
@@ -1528,12 +1487,12 @@ def _reduce_vars_sklearn(x, y, est, this_round, cutoff, n_iterations, delta, sil
         # Create the shadow variables and run the model to obtain importances
         new_x, shadow_names = _create_shadow(x)
         if imp_kind == 'shap':
-            imp = _get_shap_imp(est, new_x, y, sample_weight=weight)
+            imp = _get_shap_imp(est, new_x, y, sample_weight=weight, cat_feature=cat_feature)
         elif imp_kind == 'pimp':
-            imp = _get_perm_imp(est, new_x, y, sample_weight=weight)
+            imp = _get_perm_imp(est, new_x, y, sample_weight=weight, cat_feature=cat_feature)
         elif imp_kind == 'native':
             warnings.warn("[BoostAGroota]: using native variable importance might break the FS")
-            imp = _get_imp(est, new_x, y, sample_weight=weight)
+            imp = _get_imp(est, new_x, y, sample_weight=weight, cat_feature=cat_feature)
         else:
             raise ValueError("'imp' should be either 'native', 'shap' or 'pimp', "
                              "'native' is not recommended")
@@ -1568,7 +1527,9 @@ def _reduce_vars_sklearn(x, y, est, this_round, cutoff, n_iterations, delta, sil
 
     # Check for the stopping criteria
     # Basically looking to make sure we are removing at least 10% of the variables, or we should stop
-    if (len(real_vars['feature']) / len(x.columns)) > (1 - delta):
+    if len(x.columns) == 0:
+        criteria = True
+    elif (len(real_vars['feature']) / len(x.columns)) > (1 - delta):
         criteria = True
     else:
         criteria = False
@@ -1617,8 +1578,21 @@ def _BoostARoota(x, y, est, cutoff, iters, max_rounds, delta, silent, weight, im
     """
     t_boostaroota = time.time()
     new_x = x.copy()
+
+    # extract the categorical names for the first time, store it for next iterations
+    # In the below while loop this list will be update only once some of the predictors
+    # are removed. This way the encoding is done only every predictors update and not
+    # every iteration. The code will then be much faster since the encoding is done only once.
+    obj_feat = list(set(list(x.columns)) - set(list(x.select_dtypes(include=[np.number]))))
+    if obj_feat:
+        new_x[obj_feat] = new_x[obj_feat].astype('str').astype('category')
+        for col in obj_feat:
+            new_x[col] = new_x[col].astype('category').cat.codes
+    cat_idx = [new_x.columns.get_loc(c) for c in obj_feat if c in obj_feat]
+
     # Run through loop until "crit" changes
     i = 0
+    pbar = tqdm(total=max_rounds, desc="BoostaGRoota round")
     while True:
         # Inside this loop we reduce the dataset on each iteration exiting with keep_vars
         i += 1
@@ -1631,13 +1605,18 @@ def _BoostARoota(x, y, est, cutoff, iters, max_rounds, delta, silent, weight, im
                                                                      delta=delta,
                                                                      silent=silent,
                                                                      weight=weight,
-                                                                     imp_kind=imp
+                                                                     imp_kind=imp,
+                                                                     cat_feature=cat_idx
                                                                      )
 
         if crit | (i >= max_rounds):
             break  # exit and use keep_vars as final variables
         else:
             new_x = new_x[keep_vars].copy()
+            cat_col = list(set(obj_feat).intersection(set(new_x.columns)))
+            cat_idx = [new_x.columns.get_loc(c) for c in cat_col if c in cat_col]
+            pbar.update(1)
+    pbar.close()
     elapsed = time.time() - t_boostaroota
     elapsed = elapsed / 60
     if not silent:
@@ -1686,7 +1665,7 @@ class GrootCV(BaseEstimator, TransformerMixin):
 
     Attributes:
     -----------
-    keep_vars_: list of str
+    support_names_: list of str
         the list of columns to keep
     tag_df: dataframe
         the df with the details (accepted or rejected) of the feature selection
@@ -1711,14 +1690,14 @@ class GrootCV(BaseEstimator, TransformerMixin):
     """
 
     def __init__(self, objective=None, cutoff=1, n_folds=5, n_iter=5,
-                 silent=False, rf=False):
+                 silent=True, rf=False):
 
         self.objective = objective
         self.cutoff = cutoff
         self.n_folds = n_folds
         self.n_iter = n_iter
         self.silent = silent
-        self.keep_vars_ = None
+        self.support_names_ = None
         self.rf = rf
         self.tag_df = None
         self.cv_df = None
@@ -1769,18 +1748,18 @@ class GrootCV(BaseEstimator, TransformerMixin):
         else:
             X = x
 
-        self.keep_vars_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(X,
-                                                                           y,
-                                                                           objective=self.objective,
-                                                                           cutoff=self.cutoff,
-                                                                           n_folds=self.n_folds,
-                                                                           n_iter=self.n_iter,
-                                                                           silent=self.silent,
-                                                                           weight=sample_weight,
-                                                                           rf=self.rf)
+        self.support_names_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(X,
+                                                                               y,
+                                                                               objective=self.objective,
+                                                                               cutoff=self.cutoff,
+                                                                               n_folds=self.n_folds,
+                                                                               n_iter=self.n_iter,
+                                                                               silent=self.silent,
+                                                                               weight=sample_weight,
+                                                                               rf=self.rf)
         self.tag_df = pd.DataFrame({'predictor': list(x.columns)})
         self.tag_df['GrootCV'] = 1
-        self.tag_df['GrootCV'] = np.where(self.tag_df['predictor'].isin(list(self.keep_vars_)), 1, 0)
+        self.tag_df['GrootCV'] = np.where(self.tag_df['predictor'].isin(list(self.support_names_)), 1, 0)
         return self
 
     def transform(self, x):
@@ -1791,9 +1770,9 @@ class GrootCV(BaseEstimator, TransformerMixin):
         :return:
             the transformed predictors matrix
         """
-        if self.keep_vars_ is None:
+        if self.support_names_ is None:
             raise ValueError("You need to fit the model first")
-        return x[self.keep_vars_]
+        return x[self.support_names_]
 
     def fit_transform(self, X, y=None, **fit_params):
         """
@@ -1855,9 +1834,9 @@ class GrootCV(BaseEstimator, TransformerMixin):
                           whiskerprops=dict(linestyle='-', linewidth=1.5),
                           capprops=dict(linestyle='-', linewidth=1.5),
                           showfliers=False, grid=True, rot=0, vert=False, patch_artist=True,
-                          figsize=(10, real_df.shape[1] / n_feat_per_inch), fontsize=9
+                          figsize=(16, real_df.shape[1] / n_feat_per_inch), fontsize=9
                           )
-        col_idx = np.argwhere(real_df.columns.isin(self.keep_vars_)).ravel()
+        col_idx = np.argwhere(real_df.columns.isin(self.support_names_)).ravel()
         blue_color = "#2590fa"
 
         for c in range(real_df.shape[1]):
@@ -1878,7 +1857,8 @@ class GrootCV(BaseEstimator, TransformerMixin):
         fig = bp.get_figure()
         plt.title('Groot CV importance and selected predictors')
         # plt.tight_layout()
-        plt.show()
+        # plt.show()
+        return fig
 
 
 ########################################################################################
@@ -1926,11 +1906,9 @@ def _reduce_vars_lgb_cv(x, y, objective, n_folds, cutoff, n_iter, silent, weight
     if objective == 'softmax':
         param = {'objective': objective,
                  'eval_metric': 'mlogloss',
-                 'num_class': len(np.unique(y)),
-                 'verbose': 0}
+                 'num_class': len(np.unique(y))}
     else:
-        param = {'objective': objective,
-                 'verbose': 0}
+        param = {'objective': objective}
 
     param.update({'verbosity': -1})
 
@@ -1952,13 +1930,13 @@ def _reduce_vars_lgb_cv(x, y, objective, n_folds, cutoff, n_iter, silent, weight
         y_freq_table = pd.Series(y.fillna(0)).value_counts(normalize=True)
         n_classes = y_freq_table.size
         if n_classes > 2 and objective != 'softmax':
-            objective = 'softmax'
+            param['objective'] = 'softmax'
             if not silent:
                 print("Multi-class task, setting objective to softmax")
 
         main_class = y_freq_table[0]
         if not silent:
-            print("BoostaGroota: classification with unbalance classes")
+            print("GrootCV: classification with unbalance classes")
 
         if main_class > 0.8:
             param.update({'is_unbalance': True})

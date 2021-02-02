@@ -301,9 +301,9 @@ class TestGrootCV:
         X, y, w = _generated_corr_dataset_classification()
         arfs = GrootCV(objective='binary', cutoff=1, n_folds=5, n_iter=5, silent=False)
         arfs.fit(X, y, w)
-        leshy_list = sorted(arfs.keep_vars_)
+        grootcv_list = sorted(arfs.keep_vars_)
 
-        assert bool(set(baseline_list) & set(leshy_list)), "expect non-empty intersection"
+        assert bool(set(baseline_list) & set(grootcv_list)), "expect non-empty intersection"
 
     def test_grootcv_regression_with_and_sample_weight(self):
         baseline_list = ['var0', 'var1', 'var2', 'var3', 'var4', 'var5']
@@ -311,6 +311,6 @@ class TestGrootCV:
         X, y, w = _generated_corr_dataset_regr()
         arfs = GrootCV(objective='l2', cutoff=1, n_folds=5, n_iter=5, silent=False)
         arfs.fit(X, y, w)
-        leshy_list = sorted(arfs.keep_vars_)
+        grootcv_list = sorted(arfs.keep_vars_)
 
-        assert bool(set(baseline_list) & set(leshy_list)), "expect non-empty intersection"
+        assert bool(set(baseline_list) & set(grootcv_list)), "expect non-empty intersection"
