@@ -567,9 +567,12 @@ class FeatureSelector:
         """
 
         col_names = list(self.data)
-        cat_var_index = [i for i, x in enumerate(self.data.dtypes.tolist()) if
-                         isinstance(x, pd.CategoricalDtype) or x == 'object']
-        char_cols = [x for i, x in enumerate(col_names) if i in cat_var_index]
+
+        char_cols = list(set(list(self.data.columns)) - set(list(self.data.select_dtypes(include=[np.number]))))
+
+        # cat_var_index = [i for i, x in enumerate(self.data.dtypes.tolist()) if
+        #                  isinstance(x, pd.CategoricalDtype) or x == 'object']
+        # char_cols = [x for i, x in enumerate(col_names) if i in cat_var_index]
 
         unique_counts = self.data[char_cols].nunique()
         self.cardinality_stats = pd.DataFrame(unique_counts).rename(columns={'index': 'feature', 0: 'nunique'})
@@ -587,17 +590,21 @@ class FeatureSelector:
             len(self.ops['high_cardinality']), max_card)
         )
 
-    def encode_cat_var(self, df=None, col_excl=None):
+    def encode_cat_var(self, df=None, col_excl=None, return_cat=False):
         """
         Categorical encoding (as integer). Automatically detect the non-numerical columns,
         save the index and name of those columns, encode them as integer,
         save the direct and inverse mappers as dictionaries.
         Return the data-set with the encoded columns with a data type either int or pandas categorical.
 
+
         :param df: pd.DataFrame
             the dataset
         :param col_excl: list of str, default=None
             the list of columns names not being encoded (e.g. the ID column)
+        :param return_cat: Boolean, default=False
+            wether or not return pandas categorical (if false --> integer)
+
         :return:
          df: pd.DataFrame
             the dataframe with encoded columns
@@ -608,7 +615,7 @@ class FeatureSelector:
         else:
             is_external_data = True
 
-        df, cat_var_df, inv_mapper, mapper = cat_var(df, col_excl=col_excl, return_cat=True)
+        df, cat_var_df, inv_mapper, mapper = cat_var(df, col_excl=col_excl, return_cat=return_cat)
 
         self.cat_var_df = cat_var_df
         self.mapper = inv_mapper

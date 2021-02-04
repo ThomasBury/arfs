@@ -97,14 +97,14 @@ class TestFeatSelectPattern:
 
     def test_identify_patterns_for_classification(self):
         X, y, w = _generated_corr_dataset_classification()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         fs.identify_patterns(patterns='emb_')
         message = "Expected: {0}, Actual: {1}".format('emb_dummy', fs.ops['pattern'])
         assert fs.ops['pattern'] == ['emb_dummy'], message
 
     def test_identify_patterns_for_regression(self):
         X, y, w = _generated_corr_dataset_regr()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         fs.identify_patterns(patterns='emb_')
         message = "Expected: {0}, Actual: {1}".format('emb_dummy', fs.ops['pattern'])
         assert fs.ops['pattern'] == ['emb_dummy'], message
@@ -117,14 +117,14 @@ class TestFeatSelectMissing:
 
     def test_identify_missing_for_classification(self):
         X, y, w = _generated_corr_dataset_classification()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         fs.identify_missing()
         message = "Expected: {0}, Actual: {1}".format('var12', fs.ops['missing'])
         assert fs.ops['missing'] == ['var12'], message
 
     def test_identify_missing_for_regression(self):
         X, y, w = _generated_corr_dataset_regr()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         fs.identify_missing()
         message = "Expected: {0}, Actual: {1}".format('var12', fs.ops['missing'])
         assert fs.ops['missing'] == ['var12'], message
@@ -137,14 +137,14 @@ class TestFeatSelectZeroVariance:
 
     def test_identify_single_unique_classification(self):
         X, y, w = _generated_corr_dataset_classification()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         fs.identify_single_unique()
         message = "Expected: {0}, Actual: {1}".format('var10', fs.ops['single_unique'])
         assert fs.ops['single_unique'] == ['var10'], message
 
     def test_identify_single_unique_regression(self):
         X, y, w = _generated_corr_dataset_regr()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         fs.identify_single_unique()
         message = "Expected: {0}, Actual: {1}".format('var10', fs.ops['single_unique'])
         assert fs.ops['single_unique'] == ['var10'], message
@@ -157,14 +157,14 @@ class TestFeatSelectHighCardinality:
 
     def test_identify_high_cardinality_classification(self):
         X, y, w = _generated_corr_dataset_classification()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         fs.identify_high_cardinality(max_card=100)
         message = "Expected: {0}, Actual: {1}".format('emb_dummy', fs.ops['high_cardinality'])
         assert fs.ops['high_cardinality'] == ['emb_dummy'], message
 
     def test_identify_high_cardinality_regression(self):
         X, y, w = _generated_corr_dataset_regr()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         fs.identify_high_cardinality(max_card=100)
         message = "Expected: {0}, Actual: {1}".format('emb_dummy', fs.ops['high_cardinality'])
         assert fs.ops['high_cardinality'] == ['emb_dummy'], message
@@ -177,28 +177,28 @@ class TestFeatSelectCollinearity:
 
     def test_identify_collinear_spearman_no_encoding(self):
         X, y, w = _generated_corr_dataset_regr()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         fs.identify_collinear(correlation_threshold=0.5, encode=False, method='spearman')
         message = "Expected: {0}, Actual: {1}".format(['var2', 'var3', 'var4', 'var12'], fs.ops['collinear'])
         assert fs.ops['collinear'] == ['var2', 'var3', 'var4', 'var12'], message
 
     def test_identify_collinear_pearson_no_encoding(self):
         X, y, w = _generated_corr_dataset_regr()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         fs.identify_collinear(correlation_threshold=0.5, encode=False, method='pearson')
         message = "Expected: {0}, Actual: {1}".format(['var2', 'var3', 'var12'], fs.ops['collinear'])
         assert fs.ops['collinear'] == ['var2', 'var3', 'var12'], message
 
     def test_identify_collinear_spearman_with_encoding(self):
         X, y, w = _generated_corr_dataset_regr()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         fs.identify_collinear(correlation_threshold=0.5, encode=True, method='spearman')
         message = "Expected: {0}, Actual: {1}".format(['var2', 'var3', 'var4', 'var12'], fs.ops['collinear'])
         assert fs.ops['collinear'] == ['var2', 'var3', 'var4', 'var12'], message
 
     def test_identify_collinear_pearson_with_encoding(self):
         X, y, w = _generated_corr_dataset_regr()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         fs.identify_collinear(correlation_threshold=0.5, encode=True, method='pearson')
         message = "Expected: {0}, Actual: {1}".format(['var2', 'var3', 'var12'], fs.ops['collinear'])
         assert fs.ops['collinear'] == ['var2', 'var3', 'var12'], message
@@ -211,7 +211,7 @@ class TestFeatSelectZeroImportance:
 
     def test_identify_zero_importance_for_regression_with_early_stopping(self):
         X, y, w = _generated_corr_dataset_regr()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         fs.identify_zero_importance(task='regression', eval_metric='l2', objective='l2', n_iterations=5,
                                     early_stopping=True)
         message = "Expected: {0}, Actual: {1}".format(['var10'], fs.ops['zero_importance'])
@@ -220,7 +220,7 @@ class TestFeatSelectZeroImportance:
     @pytest.mark.xfail
     def test_identify_zero_importance_for_regression_with_early_stopping_no_eval_metric(self):
         X, y, w = _generated_corr_dataset_regr()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         # Xfail: expected to fail because the eval metric is not provided
         fs.identify_zero_importance(task='regression', eval_metric=None, objective='l2', n_iterations=5,
                                     early_stopping=True)
@@ -230,7 +230,7 @@ class TestFeatSelectZeroImportance:
     @pytest.mark.xfail
     def test_identify_zero_importance_for_regression_with_early_stopping_no_eval_metric_no_objective(self):
         X, y, w = _generated_corr_dataset_regr()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         # Xfail: expected to fail because the eval metric is not provided
         fs.identify_zero_importance(task='regression', eval_metric=None, objective=None, n_iterations=5,
                                     early_stopping=True)
@@ -240,7 +240,7 @@ class TestFeatSelectZeroImportance:
     @pytest.mark.xfail
     def test_identify_zero_importance_for_regression_with_early_stopping_wrong_task(self):
         X, y, w = _generated_corr_dataset_regr()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         # Xfail: expected to fail because the eval metric is not provided
         fs.identify_zero_importance(task='classification', eval_metric='l2', objective='l2', n_iterations=5,
                                     early_stopping=True)
@@ -249,7 +249,7 @@ class TestFeatSelectZeroImportance:
 
     def test_identify_zero_importance_for_regression_without_early_stopping(self):
         X, y, w = _generated_corr_dataset_regr()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         fs.identify_zero_importance(task='regression', eval_metric='l2', objective='l2', n_iterations=5,
                                     early_stopping=False)
         message = "Expected: {0}, Actual: {1}".format(['var10'], fs.ops['zero_importance'])
@@ -257,7 +257,7 @@ class TestFeatSelectZeroImportance:
 
     def test_identify_zero_importance_for_regression_without_early_stopping_no_objective(self):
         X, y, w = _generated_corr_dataset_regr()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         fs.identify_zero_importance(task='regression', n_iterations=5,
                                     early_stopping=False)
         message = "Expected: {0}, Actual: {1}".format(['var10'], fs.ops['zero_importance'])
@@ -265,7 +265,7 @@ class TestFeatSelectZeroImportance:
 
     def test_identify_zero_importance_for_classification_with_early_stopping(self):
         X, y, w = _generated_corr_dataset_classification()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         fs.identify_zero_importance(task='classification', eval_metric='auc', n_iterations=5,
                                     early_stopping=True)
         message = "Expected: {0}, Actual: {1}".format(['var10'], fs.ops['zero_importance'])
@@ -274,7 +274,7 @@ class TestFeatSelectZeroImportance:
     @pytest.mark.xfail
     def test_identify_zero_importance_for_classification_with_early_stopping_no_eval_metric(self):
         X, y, w = _generated_corr_dataset_classification()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         # Xfail: expected to fail because the eval metric is not provided
         fs.identify_zero_importance(task='classification', eval_metric=None, n_iterations=5,
                                     early_stopping=True)
@@ -284,7 +284,7 @@ class TestFeatSelectZeroImportance:
     @pytest.mark.xfail
     def test_identify_zero_importance_for_classification_with_early_stopping_no_eval_metric_no_objective(self):
         X, y, w = _generated_corr_dataset_classification()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         # Xfail: expected to fail because the eval metric is not provided
         fs.identify_zero_importance(task='classification', eval_metric=None, objective=None, n_iterations=5,
                                     early_stopping=True)
@@ -294,7 +294,7 @@ class TestFeatSelectZeroImportance:
     @pytest.mark.xfail
     def test_identify_zero_importance_for_classification_with_early_stopping_wrong_task(self):
         X, y, w = _generated_corr_dataset_classification()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         # Xfail: expected to fail because the eval metric is not provided
         fs.identify_zero_importance(task='regression', eval_metric='auc', objective='cross-entropy', n_iterations=5,
                                     early_stopping=True)
@@ -303,7 +303,7 @@ class TestFeatSelectZeroImportance:
 
     def test_identify_zero_importance_for_classification_without_early_stopping(self):
         X, y, w = _generated_corr_dataset_classification()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         fs.identify_zero_importance(task='classification', objective='binary', n_iterations=5,
                                     early_stopping=False)
         message = "Expected: {0}, Actual: {1}".format(['var10'], fs.ops['zero_importance'])
@@ -311,7 +311,7 @@ class TestFeatSelectZeroImportance:
 
     def test_identify_zero_importance_for_classification_without_early_stopping_no_objective(self):
         X, y, w = _generated_corr_dataset_classification()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         fs.identify_zero_importance(task='classification', n_iterations=5,
                                     early_stopping=False)
         message = "Expected: {0}, Actual: {1}".format(['var10'], fs.ops['zero_importance'])
@@ -325,7 +325,7 @@ class TestFeatSelectLowImportance:
 
     def test_identify_low_importance_for_regression_with_early_stopping(self):
         X, y, w = _generated_corr_dataset_regr()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         fs.identify_zero_importance(task='regression', eval_metric='l2', objective='l2', n_iterations=5,
                                     early_stopping=True)
         cum_imp_threshold = 0.95
@@ -337,7 +337,7 @@ class TestFeatSelectLowImportance:
     @pytest.mark.xfail
     def test_identify_low_importance_for_regression_with_early_stopping_no_eval_metric(self):
         X, y, w = _generated_corr_dataset_regr()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         # Xfail: expected to fail because the eval metric is not provided
         fs.identify_zero_importance(task='regression', eval_metric=None, objective='l2', n_iterations=5,
                                     early_stopping=True)
@@ -350,7 +350,7 @@ class TestFeatSelectLowImportance:
     @pytest.mark.xfail
     def test_identify_low_importance_for_regression_with_early_stopping_no_eval_metric_no_objective(self):
         X, y, w = _generated_corr_dataset_regr()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         # Xfail: expected to fail because the eval metric is not provided
         fs.identify_zero_importance(task='regression', eval_metric=None, objective=None, n_iterations=5,
                                     early_stopping=True)
@@ -363,7 +363,7 @@ class TestFeatSelectLowImportance:
     @pytest.mark.xfail
     def test_identify_low_importance_for_regression_with_early_stopping_wrong_task(self):
         X, y, w = _generated_corr_dataset_regr()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         # Xfail: expected to fail because the eval metric is not provided
         fs.identify_zero_importance(task='classification', eval_metric='l2', objective='l2', n_iterations=5,
                                     early_stopping=True)
@@ -375,7 +375,7 @@ class TestFeatSelectLowImportance:
 
     def test_identify_low_importance_for_regression_without_early_stopping(self):
         X, y, w = _generated_corr_dataset_regr()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         fs.identify_zero_importance(task='regression', objective='l2', n_iterations=5, early_stopping=False)
         cum_imp_threshold = 0.95
         fs.identify_low_importance(cumulative_importance=cum_imp_threshold)
@@ -385,7 +385,7 @@ class TestFeatSelectLowImportance:
 
     def test_identify_low_importance_for_regression_without_early_stopping_no_objective(self):
         X, y, w = _generated_corr_dataset_regr()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         fs.identify_zero_importance(task='regression', n_iterations=5, early_stopping=False)
         cum_imp_threshold = 0.95
         fs.identify_low_importance(cumulative_importance=cum_imp_threshold)
@@ -395,7 +395,7 @@ class TestFeatSelectLowImportance:
 
     def test_identify_low_importance_for_classification_with_early_stopping(self):
         X, y, w = _generated_corr_dataset_classification()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         fs.identify_zero_importance(task='classification', eval_metric='auc', n_iterations=5, early_stopping=True)
         cum_imp_threshold = 0.95
         fs.identify_low_importance(cumulative_importance=cum_imp_threshold)
@@ -406,7 +406,7 @@ class TestFeatSelectLowImportance:
     @pytest.mark.xfail
     def test_identify_low_importance_for_classification_with_early_stopping_no_eval_metric(self):
         X, y, w = _generated_corr_dataset_classification()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         # Xfail: expected to fail because the eval metric is not provided
         fs.identify_zero_importance(task='classification', eval_metric=None, n_iterations=5,
                                     early_stopping=True)
@@ -419,7 +419,7 @@ class TestFeatSelectLowImportance:
     @pytest.mark.xfail
     def test_identify_low_importance_for_classification_with_early_stopping_no_eval_metric_no_objective(self):
         X, y, w = _generated_corr_dataset_classification()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         # Xfail: expected to fail because the eval metric is not provided
         fs.identify_zero_importance(task='classification', eval_metric=None, objective=None, n_iterations=5,
                                     early_stopping=True)
@@ -432,7 +432,7 @@ class TestFeatSelectLowImportance:
     @pytest.mark.xfail
     def test_identify_low_importance_for_classification_with_early_stopping_wrong_task(self):
         X, y, w = _generated_corr_dataset_classification()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         # Xfail: expected to fail because the eval metric is not provided
         fs.identify_zero_importance(task='regression', eval_metric='auc', objective='cross-entropy', n_iterations=5,
                                     early_stopping=True)
@@ -444,7 +444,7 @@ class TestFeatSelectLowImportance:
 
     def test_identify_low_importance_for_classification_without_early_stopping(self):
         X, y, w = _generated_corr_dataset_classification()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
         fs.identify_zero_importance(task='classification', n_iterations=5, early_stopping=False)
         cum_imp_threshold = 0.95
         fs.identify_low_importance(cumulative_importance=cum_imp_threshold)
@@ -456,7 +456,7 @@ class TestFeatSelectLowImportance:
 class TestFeatSelectAllMethods:
     def test_identify_all(self):
         X, y, w = _generated_corr_dataset_regr()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
 
         selection_params_dic = {'patterns': 'emb_',
                                 'missing_threshold': 0.1,
@@ -472,7 +472,7 @@ class TestFeatSelectAllMethods:
 
     def test_remove_all_identified(self):
         X, y, w = _generated_corr_dataset_regr()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
 
         selection_params_dic = {'patterns': 'emb_',
                                 'missing_threshold': 0.1,
@@ -489,7 +489,7 @@ class TestFeatSelectAllMethods:
 
     def test_remove_identified_after_some_methods(self):
         X, y, w = _generated_corr_dataset_regr()
-        fs = FeatureSelector(data=X, labels=y, weight=w)
+        fs = FeatureSelector(X=X, y=y, sample_weight=w)
 
         selection_params_dic = {'patterns': 'emb_',
                                 'missing_threshold': 0.1,

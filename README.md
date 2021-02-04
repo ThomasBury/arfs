@@ -158,7 +158,7 @@ fs_df
 ####################################################
 
 # New instance of the class
-fs = arfsfs.FeatureSelector(data = X[filtered_features], labels = y, weight = w)
+fs = arfsfs.FeatureSelector(X = X[filtered_features], y = y, sample_weight = w)
 # identify highly correlated columns (here corr_coef >= 0.75)
 # set encode to True if there are categorical/string cols (takes a bit of time)
 fs.identify_collinear(correlation_threshold=0.5, encode=False)
@@ -259,6 +259,15 @@ In the spirit, the same heuristic than Boruta but using Boosting (originally Bor
 
 
 ## Changes
+
+### 0.1.3
+
+ - change the defaut for categorical encoding in pre-filters (pd.cat to integers as default)
+ - fix the unit tests with new defaults and names
+
+### 0.1.2
+
+ - change arguments name in pre-filters
 
 ### 0.1.1
 
