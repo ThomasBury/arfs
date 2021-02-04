@@ -197,15 +197,16 @@ class FeatureSelector:
 
     Parameters
     ----------
-        data : pd.DataFrame
+        X : pd.DataFrame
             A dataset with observations in the rows and features in the columns
 
-        labels : array or series, default = None
+        y : array or series, default = None
             Array of labels for training the machine learning model to find feature importances.
             These can be either binary labels (if task is 'classification') or continuous targets
             (if task is 'regression').
             If no labels are provided, then the feature importance based methods are not available.
-        weight : pd.Series or np.array.
+
+        sample_weight : pd.Series or np.array.
             Sample weights, if any
 
     Attributes
@@ -424,17 +425,17 @@ class FeatureSelector:
     hv.save(feat_imp, outpath+"feat_imp_TPLMD_freq.html")
     """
 
-    def __init__(self, data, labels=None, weight=None):
+    def __init__(self, X, y=None, sample_weight=None):
 
         # Dataset and optional training labels
-        self.data = data
-        self.labels = labels
-        self.weight = weight
+        self.data = X
+        self.labels = y
+        self.weight = sample_weight
 
-        if labels is None:
+        if y is None:
             print('No labels provided. Feature importance based methods are not available.')
 
-        self.base_features = list(data.columns)
+        self.base_features = list(self.data.columns)
         self.cat_features = None
 
         # Dataframes recording information about features to remove
