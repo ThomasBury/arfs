@@ -12,13 +12,15 @@ jobs:
     steps:
       - checkout
       - run:
-          command: pip install -r requirements-test.txt
+          command: |
+             pip install --upgrade pip
+             pip install -r requirements-test.txt
           name: Install Test requirements
       - run:
           command: pip install -e .[all]
           name: Install Pacakge
       - run:
-          command: pytest ./tests/
+          command: pytest -k test_featselect
           no_output_timeout: 20m
           name: Test
 
