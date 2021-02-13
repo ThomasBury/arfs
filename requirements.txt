@@ -6,5 +6,5 @@ lightgbm >= 3.0.0
 matplotlib >= 3.3.0
 palettable >= 3.3.0
 holoviews >= 1.13.0
-shap >= 0.35.0
+shap >= 0.37.0
 tqdm >= 4.40.0
