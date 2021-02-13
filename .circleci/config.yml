@@ -12,7 +12,7 @@ jobs:
     steps:
       - checkout
       - run:
-          command: pip install -r requirements.txt
+          command: pip install -r requirements-test.txt
           name: Install Test requirements
       - run:
           command: pip install -e .[all]
@@ -20,7 +20,7 @@ jobs:
       - run:
           command: pytest
           name: Test
-          
+
 workflows:
   main:
     jobs:
