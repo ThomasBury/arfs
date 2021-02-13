@@ -18,7 +18,8 @@ jobs:
           command: pip install -e .[all]
           name: Install Pacakge
       - run:
-          command: pytest
+          command: pytest ./tests/
+          no_output_timeout: 20m
           name: Test
 
 workflows:
