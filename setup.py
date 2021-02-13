@@ -14,16 +14,9 @@ EXTRAS_REQUIRE = {
         'pytest-cov']
 }
 
-INSTALL_REQUIRES = ['pandas >= 1.0.0',
-                    'numpy >= 1.18.0',
-                    'scipy >= 1.4.0',
-                    'scikit-learn >= 0.23.0',
-                    'lightgbm >= 3.0.0',
-                    'matplotlib >= 3.3.0',
-                    'palettable >= 3.3.0',
-                    'holoviews >= 1.13.0',
-                    'shap >= 0.35.0',
-                    'tqdm >= 4.40.0']
+# Get the requirements list by reading the file and splitting it up
+with open('requirements.txt', 'r') as f:
+    INSTALL_REQUIRES = f.read().splitlines()
 
 KEYWORDS = 'feature-selection, all-relevant, selection'
 
