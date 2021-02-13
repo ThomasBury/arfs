@@ -6,10 +6,12 @@ orbs:
 jobs:
   build-and-test:
     executor: python/default
-    docker:
-      - image: cimg/python:3.8
+
     steps:
       - checkout
+      - run:
+          name: "Set Python Version"
+          command: pyenv global 3.7.0
       - python/load-cache
       - python/install-deps
       - python/save-cache
