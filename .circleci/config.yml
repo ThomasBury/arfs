@@ -11,29 +11,17 @@ jobs:
     executor: python/default
     steps:
       - checkout
-      - python/load-cache
-      - python/install-deps
-      - python/save-cache
-      - python/test
-      -
-  lint-and-coverage:
-    docker:
-      - image: circleci/python:3.7.9
-    environment: PYTHONPATH=./src
-    executor: python/default
-    steps:
-      - checkout
-      - python/load-cache
-      - python/install-deps
-      - python/save-cache
-        run:
-          command: |
-              coverage run
-              coverage report
-          name: Coverage
-
+      - run:
+          command: pip install -r requirements.txt
+          name: Install Test requirements
+      - run:
+          command: pip install -e .[all]
+          name: Install Pacakge
+      - run:
+          command: pytest
+          name: Test
+          
 workflows:
   main:
     jobs:
       - build-and-test
-      - lint-and-coverage
