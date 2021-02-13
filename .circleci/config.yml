@@ -15,6 +15,7 @@ jobs:
       - python/install-deps
       - python/save-cache
       - python/test
+      -
   lint-and-coverage:
     docker:
       - image: circleci/python:3.7.9
