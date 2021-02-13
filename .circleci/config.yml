@@ -11,7 +11,7 @@ jobs:
     steps:
       - checkout
       - run:
-          command: pip install -r requirements-dev.txt
+          command: pip install -r requirements.txt
           name: Install Test requirements-dev
       - run:
           command: pip install -e .[all]
