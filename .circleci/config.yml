@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  python: circleci/python:3.6
+  python: circleci/python@0.2.1
 
 jobs:
   build-and-test:
@@ -10,11 +10,14 @@ jobs:
       CIRCLECI_PYTHON_EXECUTOR: python3
     steps:
       - checkout
-      - python/load-cache
-      - python/install-deps
-      - python/save-cache
       - run:
-          command: ./manage.py test
+          command: pip install -r requirements-dev.txt
+          name: Install Test requirements-dev
+      - run:
+          command: pip install -e .[all]
+          name: Install Pacakge
+      - run:
+          command: pytest
           name: Test
 
 workflows:
