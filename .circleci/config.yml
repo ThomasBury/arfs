@@ -14,7 +14,7 @@ jobs:
       - python/load-cache
       - python/install-deps
       - python/save-cache
-      - run:
+        run:
           command: pytest
           name: Test
   lint-and-coverage:
