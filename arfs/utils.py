@@ -38,6 +38,7 @@ from palettable.cartocolors.qualitative import Bold_10
 import itertools
 import gc
 from sklearn.impute import SimpleImputer
+from sklearn.base import clone
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.datasets import fetch_openml
@@ -69,6 +70,11 @@ def is_lightgbm(estimator):
 def is_catboost(estimator):
     is_cat = 'catboost' in str(type(estimator))
     return is_cat
+
+
+def is_xgboost(estimator):
+    is_xgb = 'xgboost' in str(type(estimator))
+    return is_xgb
 
 
 def LightForestRegressor(n_feat):
@@ -228,10 +234,13 @@ def compare_varimp(feat_selector, models, X, y, sample_weight=None):
 
     varimp_list = ['shap', 'pimp', 'native']
     for model, varimp in itertools.product(models, varimp_list):
-        print('='*20 + ' ' + str(feat_selector.__class__.__name__) +
-              ' - testing: {mod:>55} for var.imp: {vimp:<15} '.format(mod=str(model), vimp=varimp)+'='*20)
+        print('=' * 20 + ' ' + str(feat_selector.__class__.__name__) +
+              ' - testing: {mod:>55} for var.imp: {vimp:<15} '.format(mod=str(model), vimp=varimp) + '=' * 20)
         # change the varimp
         feat_selector.importance = varimp
+        # change model
+        mod_clone = clone(model, safe=True)
+        feat_selector.estimator = mod_clone
         # fit the feature selector
         feat_selector.fit(X=X, y=y, sample_weight=sample_weight)
         # print the results
@@ -369,13 +378,24 @@ def _get_boston_data():
     X.columns = boston.feature_names
     X['random_num1'] = rng.randn(X.shape[0])
     X['random_num2'] = np.random.poisson(1, X.shape[0])
-    X['random_cat'] = rng.randint(10, size=X.shape[0])
-    X['random_cat'] = X['random_cat'].astype('str')
+    # high cardinality
+    X['random_cat'] = rng.randint(10*X.shape[0], size=X.shape[0])
+    X['random_cat'] = 'cat_' + X['random_cat'].astype('str')
+    # low cardinality
+    nice_guys = ['Rick', 'Bender', 'Cartman', 'Morty', 'Fry', 'Vador',
+                 'Thanos', 'Bejita', 'Cell', 'Tinkywinky', 'Lecter',
+                 'Alien', 'Terminator', 'Drago', 'Dracula',
+                 'Krueger', 'Geoffrey', 'Goldfinder', 'Blackbeard',
+                 'Excel', 'SAS', 'Bias', 'Variance', 'Scrum',
+                 'Human', 'Garry', 'Coldplay', 'Imaginedragons',
+                 'Platist', 'Creationist', 'Gruber', 'KeyserSoze', 'Luthor',
+                 'Klaue', 'Bane', 'MarkZ']
+    X['random_cat_2'] = np.random.choice(nice_guys, X.shape[0])
     y = pd.Series(boston.target)
     # non linear noisy but genuine predictor to test the ability to detect even genuine noisy non-linearities
     X['genuine_num'] = np.sqrt(y) + np.random.gamma(2, .5, X.shape[0])
-    cat_f = ['CHAS', 'RAD', 'random_cat']
-    X[cat_f] = X[cat_f].astype(str)
+    cat_f = ['CHAS', 'RAD', 'random_cat', 'random_cat_2']
+    X[cat_f] = X[cat_f].astype(str).astype('category')
     return Bunch(data=X,
                  target=y,
                  sample_weight=None,

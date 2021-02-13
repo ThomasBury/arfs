@@ -41,7 +41,7 @@ import scipy as sp
 # from tqdm.autonotebook import tqdm
 from tqdm import tqdm
 from sklearn.utils import check_random_state, check_X_y
-from sklearn.base import TransformerMixin, BaseEstimator, is_regressor, is_classifier
+from sklearn.base import TransformerMixin, BaseEstimator, is_regressor, is_classifier, clone
 from sklearn.model_selection import RepeatedKFold, train_test_split
 from sklearn.inspection import permutation_importance
 from sklearn.utils.validation import _check_sample_weight
@@ -264,7 +264,7 @@ class Leshy(BaseEstimator, TransformerMixin):
     rf = RandomForestClassifier(n_jobs=-1, class_weight='balanced', max_depth=5)
 
     # define Boruta feature selection method
-    feat_selector = BorutaPy(rf, n_estimators='auto', verbose=2, random_state=1)
+    feat_selector = Leshy(rf, n_estimators='auto', verbose=2, random_state=1)
 
     # find all relevant features - 5 features should be selected
     feat_selector.fit(X, y)
@@ -277,6 +277,7 @@ class Leshy(BaseEstimator, TransformerMixin):
 
     # call transform() on X to filter it down to selected features
     X_filtered = feat_selector.transform(X)
+
     References
     ----------
     [1] Kursa M., Rudnicki W., "Feature Selection with the Boruta Package"
@@ -1036,26 +1037,40 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
      shap_imp, array
         the SHAP importance array
     """
+
+    # be sure to use an non-fitted estimator
+    estimator = clone(estimator)
+
     model, X_tt, y_tt, w_tt = _split_fit_estimator(estimator, X, y,
                                                    sample_weight=sample_weight,
                                                    cat_feature=cat_feature)
-    # build the explainer
-    explainer = shap.TreeExplainer(model, feature_perturbation="tree_path_dependent")
-    shap_values = explainer.shap_values(X_tt)
-    # flatten to 2D if classification and lightgbm
-    if is_classifier(estimator):
-        if isinstance(shap_values, list):
-            # for lightgbm clf sklearn api, shap returns list of arrays
-            # https://github.com/slundberg/shap/issues/526
-            class_inds = range(len(shap_values))
-            shap_imp = np.zeros(shap_values[0].shape[1])
-            for i, ind in enumerate(class_inds):
-                shap_imp += np.abs(shap_values[ind]).mean(0)
-            shap_imp /= len(shap_values)
+
+    # Faster and safer to use the builtin lightGBM method
+    # Note the xgboost and catboost have builtin shap as well
+    # but it requires to use DMatrix or Pool respectively
+    # for other tree-based models, no builtin SHAP
+    if is_lightgbm(estimator):
+        shap_matrix = model.predict(X_tt, pred_contrib=True)
+        # the dim changed in lightGBM 3
+        shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
+    else:
+        # build the explainer
+        explainer = shap.TreeExplainer(model, feature_perturbation="tree_path_dependent")
+        shap_values = explainer.shap_values(X_tt)
+        # flatten to 2D if classification and lightgbm
+        if is_classifier(estimator):
+            if isinstance(shap_values, list):
+                # for lightgbm clf sklearn api, shap returns list of arrays
+                # https://github.com/slundberg/shap/issues/526
+                class_inds = range(len(shap_values))
+                shap_imp = np.zeros(shap_values[0].shape[1])
+                for i, ind in enumerate(class_inds):
+                    shap_imp += np.abs(shap_values[ind]).mean(0)
+                shap_imp /= len(shap_values)
+            else:
+                shap_imp = np.abs(shap_values).mean(0)
         else:
             shap_imp = np.abs(shap_values).mean(0)
-    else:
-        shap_imp = np.abs(shap_values).mean(0)
 
     return shap_imp
 
@@ -1080,6 +1095,9 @@ def _get_perm_imp(estimator, X, y, sample_weight, cat_feature=None):
      imp, array
         the permutation importance array
     """
+    # be sure to use an non-fitted estimator
+    estimator = clone(estimator)
+
     model, X_tt, y_tt, w_tt = _split_fit_estimator(estimator, X, y,
                                                    sample_weight=sample_weight,
                                                    cat_feature=cat_feature)
@@ -1111,6 +1129,9 @@ def _get_imp(estimator, X, y, sample_weight=None, cat_feature=None):
             the list of integers, cols loc, of the categorical predictors. Avoids to detect and encode
             each iteration if the exact same columns are passed to the selection methods.
         """
+    # be sure to use an non-fitted estimator
+    estimator = clone(estimator)
+
     try:
         # handle categoricals
         X = pd.DataFrame(X)

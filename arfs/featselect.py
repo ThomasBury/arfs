@@ -512,8 +512,8 @@ class FeatureSelector:
         # Find the columns with a missing percentage above the threshold
         record_missing = pd.DataFrame(missing_series[missing_series > missing_threshold]).reset_index(). \
             rename(columns={
-             'index': 'feature',
-             0: 'missing_fraction'})
+            'index': 'feature',
+            0: 'missing_fraction'})
         to_drop = list(record_missing['feature'])
 
         self.record_missing = record_missing
@@ -1128,7 +1128,7 @@ class FeatureSelector:
                      ylabel='', xaxis=None, yaxis=None)
         return heatmap
 
-    def plot_feature_importances(self, plot_n=15, threshold=None):
+    def plot_feature_importances(self, plot_n=15, threshold=None, figsize=None):
         """
         Plots `plot_n` most important features and the cumulative importance of features.
         If `threshold` is provided, prints the number of features needed to reach `threshold`
@@ -1155,17 +1155,25 @@ class FeatureSelector:
             plot_n = self.feature_importances.shape[0] - 1
 
         reset_plot()
-        plot_height = 500
-        plot_width = 500
-        if plot_n <= 20:
+
+        if figsize is not None:
+            plot_width = figsize[0]
+            plot_height = figsize[1]
+        else:
             plot_height = 500
             plot_width = 500
-        elif plot_n > 20:
-            plot_height = 800
-            plot_width = 800
-        elif plot_n > 30:
-            plot_height = 1000
-            plot_width = 1000
+            if plot_n <= 20:
+                plot_height = 500
+                plot_width = 500
+            elif (plot_n > 20) and (plot_n < 30):
+                plot_height = 800
+                plot_width = 800
+            elif (plot_n >= 30) and (plot_n < 50):
+                plot_height = 1000
+                plot_width = 1000
+            elif (plot_n >= 50) and (plot_n < 100):
+                plot_height = 1500
+                plot_width = 1500
 
         bars = hv.Bars(self.feature_importances.iloc[:plot_n], kdims='feature',
                        vdims='normalized_importance').opts(color='#2961ba', invert_axes=True,

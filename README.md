@@ -37,6 +37,7 @@ import arfs.allrelevant as arfsgroot
 from arfs.utils import LightForestClassifier, LightForestRegressor
 from arfs.utils import highlight_tick, compare_varimp
 from arfs.utils import load_data, sklearn_pimp_bench
+from sklearn.base import clone
 
 boston = load_data(name='Boston')
 X, y = boston.data, boston.target
@@ -59,6 +60,7 @@ fig = highlight_tick(figure=fig, str_match='genuine', color='green')
 plt.show()
 
 # BoostAGroota
+model = clone(model)
 feat_selector = arfsgroot.BoostAGroota(est=model, cutoff=1, iters=10, max_rounds=10, delta=0.1, importance='shap')
 feat_selector.fit(X, y, sample_weight=None)
 print(feat_selector.support_names_)
@@ -259,6 +261,10 @@ In the spirit, the same heuristic than Boruta but using Boosting (originally Bor
 
 
 ## Changes
+
+### 0.1.4
+
+ - fix bug when using catboost, clone estimator (avoid error and be sure to use a non-fitted estimator)
 
 ### 0.1.3
 
