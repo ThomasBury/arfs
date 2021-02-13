@@ -9,6 +9,7 @@ jobs:
       - image: circleci/python:3.7.9
     environment: PYTHONPATH=./src
     executor: python/default
+    parallelism: 4
     steps:
       - checkout
       - run:
