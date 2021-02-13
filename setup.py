@@ -32,7 +32,7 @@ setup(name="arfs",
       zip_safe=False,  # the package can run out of an .egg file
       install_requires=INSTALL_REQUIRES,
       extras_require=EXTRAS_REQUIRE,
-      python_requires='>=3.6',
+      python_requires='>=3.7',
       license='MIT',
       keywords=KEYWORDS
       )
