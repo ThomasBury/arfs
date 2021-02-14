@@ -21,7 +21,7 @@ jobs:
           command: pip install -e .[all]
           name: Install Pacakge
       - run:
-          command: pytest ./tests
+          command: pytest -k test_featselect
           no_output_timeout: 90m
           name: Test
 
