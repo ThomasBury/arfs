@@ -31,6 +31,13 @@ For imbalanced classification:
 ### All Relevant FS
 
 ```python
+from sklearn.ensemble import RandomForestRegressor
+from catboost import CatBoostRegressor
+from xgboost import XGBRegressor
+from lightgbm import LGBMRegressor
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 import arfs
 import arfs.featselect as arfsfs
 import arfs.allrelevant as arfsgroot
@@ -106,6 +113,8 @@ plt.show()
 ### Pre-filters
 
 ```python
+from arfs.utils import _generated_corr_dataset_regr, _generated_corr_dataset_classification
+
 # Artificial data set
 X, y, w = _generated_corr_dataset_regr()
 data = X.copy()
@@ -127,7 +136,7 @@ plt.plot()
 
 # X is the predictor DF (e.g: df[predictor_list]), at this stage you don't need to 
 # specify the target and weights (only for identifying zero and low importance)
-fs = arfsfs.FeatureSelector(data = X, labels = y, weight = w)
+fs = arfsfs.FeatureSelector(X = X, y = y, sample_weight = w)
 # filter out missing and store in dic
 fs.identify_missing(missing_threshold=0.2)
 fsDic = {}
@@ -261,6 +270,12 @@ In the spirit, the same heuristic than Boruta but using Boosting (originally Bor
 
 
 ## Changes
+
+### 0.1.5
+
+ - fix readme (typos)
+ - move utilities in utils sub-package
+ - make unit tests lighter
 
 ### 0.1.4
 

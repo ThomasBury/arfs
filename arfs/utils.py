@@ -31,7 +31,9 @@ from __future__ import print_function, division
 
 import lightgbm as lgb
 import matplotlib as mpl
-import matplotlib.pyplot as plt
+import seaborn as sns
+from matplotlib import pyplot as plt
+
 from sklearn.model_selection import train_test_split
 from sklearn.inspection import permutation_importance
 from palettable.cartocolors.qualitative import Bold_10
@@ -77,29 +79,34 @@ def is_xgboost(estimator):
     return is_xgb
 
 
-def LightForestRegressor(n_feat):
+def LightForestRegressor(n_feat, n_estimators=10):
     """
     lightGBM implementation of the Random Forest regressor with the
     ideal number of features, according to Elements of statistical learning
     :param n_feat: int
         the number of predictors (nbr of columns of the X matrix)
+    :param n_estimators, int
+        the number of trees/estimators
     :return: lightgbm regressor
     """
     feat_frac = n_feat / (3 * n_feat)
-    return lgb.LGBMRegressor(verbose=-1, force_col_wise=True, n_estimators=100, subsample=0.632,
+    return lgb.LGBMRegressor(verbose=-1, force_col_wise=True, n_estimators=n_estimators, subsample=0.632,
                              colsample_bytree=feat_frac, boosting_type="rf", subsample_freq=1)
 
 
-def LightForestClassifier(n_feat):
+def LightForestClassifier(n_feat, n_estimators=10):
     """
     lightGBM implementation of the Random Forest classifier with the
     ideal number of features, according to Elements of statistical learning
     :param n_feat: int
         the number of predictors (nbr of columns of the X matrix)
+    :param n_estimators, int
+        the number of trees/estimators
+
     :return: lightgbm regressor
     """
     feat_frac = np.sqrt(n_feat) / n_feat
-    return lgb.LGBMClassifier(verbose=-1, force_col_wise=True, n_estimators=100, subsample=0.632,
+    return lgb.LGBMClassifier(verbose=-1, force_col_wise=True, n_estimators=n_estimators, subsample=0.632,
                               colsample_bytree=feat_frac, boosting_type="rf", subsample_freq=1)
 
 
@@ -379,7 +386,7 @@ def _get_boston_data():
     X['random_num1'] = rng.randn(X.shape[0])
     X['random_num2'] = np.random.poisson(1, X.shape[0])
     # high cardinality
-    X['random_cat'] = rng.randint(10*X.shape[0], size=X.shape[0])
+    X['random_cat'] = rng.randint(10 * X.shape[0], size=X.shape[0])
     X['random_cat'] = 'cat_' + X['random_cat'].astype('str')
     # low cardinality
     nice_guys = ['Rick', 'Bender', 'Cartman', 'Morty', 'Fry', 'Vador',
@@ -400,6 +407,103 @@ def _get_boston_data():
                  target=y,
                  sample_weight=None,
                  categorical=cat_f)
+
+
+def generated_corr_dataset_regr(size):
+    # weights
+    size = size
+    w = np.random.beta(a=1, b=0.5, size=size)
+    # fixing the seed and the target
+    np.random.seed(42)
+    sigma = 0.2
+    y = np.random.gamma(1, 4, size)
+    z = y + np.random.gamma(2, 2, size) - 2 * np.random.gamma(1, 1, size)
+    X = np.zeros((size, 11))
+
+    # 5 relevant features, with positive and negative correlation to the target
+    # and non-linearity
+    X[:, 0] = z
+    X[:, 1] = y * np.random.gamma(5, .5, size) + np.random.normal(2, sigma, size)
+    X[:, 2] = -y * z + np.random.normal(0, sigma, size)
+    X[:, 3] = y ** (2 + np.random.normal(0, sigma / 2, size))
+    X[:, 4] = np.sqrt(y) + np.random.gamma(1, .2, size)
+    X[:, 5] = X[:, 3] * X[:, 0] / X[:, 1]
+
+    # 5 irrelevant features (with one having high cardinality)
+    X[:, 6] = np.random.gamma(1, .2, size)
+    X[:, 7] = np.random.binomial(1, 0.3, size)
+    X[:, 8] = np.random.normal(0, 1, size)
+    X[:, 9] = np.random.gamma(1, 2, size)
+    X[:, 10] = np.arange(start=0, stop=size, step=1)
+
+    # make  it a pandas DF
+    column_names = ['var' + str(i) for i in range(11)]
+    X = pd.DataFrame(X)
+    X.columns = column_names
+
+    return X, y, w
+
+
+def generated_corr_dataset_classification(size):
+    # weights
+    size = size
+    w = np.random.beta(a=1, b=0.5, size=size)
+    # fixing the seed and the target
+    np.random.seed(42)
+    y = np.random.binomial(1, 0.5, size)
+    X = np.zeros((size, 11))
+
+    z = y - np.random.binomial(1, 0.1, size) + np.random.binomial(1, 0.1, size)
+    z[z == -1] = 0
+    z[z == 2] = 1
+
+    # 5 relevant features, with positive and negative correlation to the target
+    # and non-linearity
+    X[:, 0] = z
+    X[:, 1] = y * np.abs(np.random.normal(0, .1, size)) + np.random.normal(0, 0.1, size)
+    X[:, 2] = -y + np.random.normal(0, 1, size)
+    X[:, 3] = y ** 2 + np.random.normal(0, 1, size)
+    X[:, 4] = X[:, 3] * X[:, 2]  # np.sqrt(y) + np.random.binomial(2, 0.1, size)
+
+    # 6 irrelevant features (with one having high cardinality)
+    X[:, 5] = np.random.normal(0, 1, size)
+    X[:, 6] = np.random.poisson(1, size)
+    X[:, 7] = np.random.binomial(1, 0.3, size)
+    X[:, 8] = np.random.normal(0, 1, size)
+    X[:, 9] = np.random.poisson(1, size)
+    X[:, 10] = np.arange(start=0, stop=size, step=1)
+
+    # make  it a pandas DF
+    column_names = ['var' + str(i) for i in range(11)]
+    X = pd.DataFrame(X)
+    X.columns = column_names
+
+    return X, y, w
+
+
+def plot_y_vs_X(X, y):
+    """
+    Plot target vs relevant and non-relevant predictors
+
+    :param X: pd.DataFrame
+        the pd DF of the predictors
+    :param y: np.array
+        the target
+    :return: g1 and g2, matplotlib objects
+        the univariate plots y vs pred_i
+    """
+    data = X.copy()
+    data['target'] = y
+    x_vars = ["var0", "var1", "var2", "var3", "var4", "var5"]
+    y_vars = ["target"]
+    g1 = sns.PairGrid(data, x_vars=x_vars, y_vars=y_vars)
+    g1.map(plt.scatter, alpha=0.1)
+
+    x_vars = ["var6", "var7", "var8", "var9", "var10"]
+    y_vars = ["target"]
+    g2 = sns.PairGrid(data, x_vars=x_vars, y_vars=y_vars)
+    g2.map(plt.scatter, alpha=0.1)
+    return g1, g2
 
 
 def load_data(name='Titanic'):
@@ -429,3 +533,89 @@ def load_data(name='Titanic'):
         return _get_cancer_data()
     else:
         raise ValueError("`name should be in ['Titanic', 'Boston', 'cancer']`")
+
+
+def _generated_corr_dataset_regr(size=1000):
+    # weights
+    w = np.random.beta(a=1, b=0.5, size=size)
+    # fixing the seed and the target
+    np.random.seed(42)
+    sigma = 0.2
+    y = np.random.normal(1, sigma, size)
+    z = y - np.random.normal(1, sigma / 5, size) + np.random.normal(1, sigma / 5, size)
+    X = np.zeros((size, 13))
+
+    # 5 relevant features, with positive and negative correlation to the target
+    X[:, 0] = z
+    X[:, 1] = y * np.abs(np.random.normal(0, sigma * 2, size)) + np.random.normal(0, sigma / 10, size)
+    X[:, 2] = -y + np.random.normal(0, sigma, size)
+    X[:, 3] = y ** 2 + np.random.normal(0, sigma, size)
+    X[:, 4] = np.sqrt(y) + np.random.gamma(1, .2, size)
+
+    # 5 irrelevant features
+    X[:, 5] = np.random.normal(0, 1, size)
+    X[:, 6] = np.random.poisson(1, size)
+    X[:, 7] = np.random.binomial(1, 0.3, size)
+    X[:, 8] = np.random.normal(0, 1, size)
+    X[:, 9] = np.random.poisson(1, size)
+    # zero variance
+    X[:, 10] = np.ones(size)
+    # high cardinality
+    X[:, 11] = np.arange(start=0, stop=size, step=1)
+    # a lot of missing values
+    idx_nan = np.random.choice(size, int(round(size/2)), replace=False)
+    X[:, 12] = y ** 3 + np.abs(np.random.normal(0, 1, size))
+    X[idx_nan, 12] = np.nan
+
+    # make  it a pandas DF
+    column_names = ['var' + str(i) for i in range(13)]
+    column_names[11] = 'emb_dummy'
+    X = pd.DataFrame(X)
+    X.columns = column_names
+    X['emb_dummy'] = X['emb_dummy'].astype('category')
+
+    return X, y, w
+
+
+def _generated_corr_dataset_classification(size=1000):
+    # weights
+    w = np.random.beta(a=1, b=0.5, size=size)
+    # fixing the seed and the target
+    np.random.seed(42)
+    y = np.random.binomial(1, 0.5, size)
+    X = np.zeros((size, 13))
+
+    z = y - np.random.binomial(1, 0.1, size) + np.random.binomial(1, 0.1, size)
+    z[z == -1] = 0
+    z[z == 2] = 1
+
+    # 5 relevant features, with positive and negative correlation to the target
+    X[:, 0] = z
+    X[:, 1] = y * np.abs(np.random.normal(0, 1, size)) + np.random.normal(0, 0.1, size)
+    X[:, 2] = -y + np.random.normal(0, 1, size)
+    X[:, 3] = y ** 2 + np.random.normal(0, 1, size)
+    X[:, 4] = np.sqrt(y) + np.random.binomial(2, 0.1, size)
+
+    # 5 irrelevant features
+    X[:, 5] = np.random.normal(0, 1, size)
+    X[:, 6] = np.random.poisson(1, size)
+    X[:, 7] = np.random.binomial(1, 0.3, size)
+    X[:, 8] = np.random.normal(0, 1, size)
+    X[:, 9] = np.random.poisson(1, size)
+    # zero variance
+    X[:, 10] = np.ones(size)
+    # high cardinality
+    X[:, 11] = np.arange(start=0, stop=size, step=1)
+    # a lot of missing values
+    idx_nan = np.random.choice(size, int(round(size/2)), replace=False)
+    X[:, 12] = y ** 3 + np.abs(np.random.normal(0, 1, size))
+    X[idx_nan, 12] = np.nan
+
+    # make  it a pandas DF
+    column_names = ['var' + str(i) for i in range(13)]
+    column_names[11] = 'emb_dummy'
+    X = pd.DataFrame(X)
+    X.columns = column_names
+    X['emb_dummy'] = X['emb_dummy'].astype('category')
+
+    return X, y, w

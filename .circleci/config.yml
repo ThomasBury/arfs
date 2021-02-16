@@ -5,11 +5,11 @@ orbs:
 
 jobs:
   build-and-test:
+    parallelism: 4
     docker:
       - image: circleci/python:3.7.9
     environment: PYTHONPATH=./src
     executor: python/default
-    parallelism: 4
     steps:
       - checkout
       - run:
@@ -22,7 +22,7 @@ jobs:
           name: Install Pacakge
       - run:
           command: pytest -k test_featselect
-          no_output_timeout: 90m
+          no_output_timeout: 10m
           name: Test
 
 workflows:

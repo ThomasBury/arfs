@@ -1994,9 +1994,9 @@ def _reduce_vars_lgb_cv(x, y, objective, n_folds, cutoff, n_iter, silent, weight
 
         bst = lgb.train(param,
                         train_set=d_train,
-                        num_boost_round=1000,
+                        num_boost_round=10000,
                         valid_sets=watchlist,
-                        early_stopping_rounds=50,
+                        early_stopping_rounds=20,
                         verbose_eval=0,
                         categorical_feature=category_cols
                         )
