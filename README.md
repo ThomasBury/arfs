@@ -231,15 +231,15 @@ In the spirit, the same heuristic than Boruta but using Boosting (originally Bor
 ## Modifications to Boruta and BoostARoota
 
  I forked both Boruta and BoostARoota and made the following changes (under PR):
- 
+
 **Boruta --> Leshy**:
- 
+
   - The categorical features (they are detected, encoded. The tree-based models are working better with integer encoding rather than with OHE, which leads to deep and unstable trees). If Catboost is used, then the cat.pred (if any) are set up
   - Using lightGBM as the default speeds up by an order of magnitude the running time
   - Work with Catboost, sklearn API
   - Allow using sample_weight, for applications like Poisson regression or any requiring weights
   - Supports 3 different feature importances: native, SHAP and permutation. Native being the least consistent(because of the imp. biased towards numerical and large cardinality categorical) but the fastest of the 3. Indeed, the impurity var.imp. are biased en sensitive to large cardinality (see [scikit demo](https://scikit-learn.org/stable/auto_examples/inspection/plot_permutation_importance.html#sphx-glr-auto-examples-inspection-plot-permutation-importance-py))
-  
+
 **BoostARoota --> BoostAGroota**:
 
   - Replace XGBoost with LightGBM, you can still use tree-based scikitlearn models
@@ -256,20 +256,26 @@ In the spirit, the same heuristic than Boruta but using Boosting (originally Bor
   - Taking the max of the median of the shadow var. imp over folds otherwise not enough conservative and it improves the convergence (needs less evaluation to find a threshold)
   - Not based on a given percentage of cols needed to be deleted
   - Plot method for var. imp
- 
- 
+
+
 ## References
 
 **Theory**
- - [Consistent feature selection for pattern recognition in polynomial time](http://compmed.se/files/6914/2107/3475/pub_2007_5.pdf)
+
+ - [Consistent feature selection for pattern recognition in polynomial time](https://www.jmlr.org/papers/volume8/nilsson07a/nilsson07a.pdf)
 
 **Applications**
+
  - [The Boruta paper](https://www.jstatsoft.org/article/view/v036i11/v36i11.pdf)
  - [The python implementation](https://github.com/scikit-learn-contrib/boruta_py)
  - [BoostARoota](https://github.com/chasedehan/BoostARoota)
 
 
 ## Changes
+
+### 0.1.6
+
+ - improve the plot_y_vs_X function
 
 ### 0.1.5
 
