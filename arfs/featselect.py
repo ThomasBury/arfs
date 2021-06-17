@@ -822,9 +822,7 @@ class FeatureSelector:
                 shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
 
                 # Clean up memory
-                gc.enable()
                 del train_features, train_labels, valid_features, valid_labels
-                gc.collect()
 
             else:
                 model.fit(features, labels, sample_weight=self.weight)

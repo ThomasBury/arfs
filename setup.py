@@ -21,7 +21,7 @@ with open('requirements.txt', 'r') as f:
 KEYWORDS = 'feature-selection, all-relevant, selection'
 
 setup(name="arfs",
-      version="0.1.4",
+      version="0.1.6",
       description="All Relevant Feature Selection",
       long_description=README,
       long_description_content_type="text/markdown",
@@ -32,7 +32,7 @@ setup(name="arfs",
       zip_safe=False,  # the package can run out of an .egg file
       install_requires=INSTALL_REQUIRES,
       extras_require=EXTRAS_REQUIRE,
-      python_requires='>=3.6, <3.9',
+      python_requires='>=3.6, <=3.9',
       license='MIT',
       keywords=KEYWORDS
       )

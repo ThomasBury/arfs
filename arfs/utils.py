@@ -481,7 +481,7 @@ def generated_corr_dataset_classification(size):
     return X, y, w
 
 
-def plot_y_vs_X(X, y):
+def plot_y_vs_X(X, y, ncols=2, figsize=(10, 10)):
     """
     Plot target vs relevant and non-relevant predictors
 
@@ -489,21 +489,48 @@ def plot_y_vs_X(X, y):
         the pd DF of the predictors
     :param y: np.array
         the target
-    :return: g1 and g2, matplotlib objects
+    :param ncols: int, default=2
+        the number of columns in the facet plot
+    :param figsize: 2-uple of float, default=(10, 10)
+        the figure size
+    :return:f, matplotlib objects
         the univariate plots y vs pred_i
     """
-    data = X.copy()
-    data['target'] = y
-    x_vars = ["var0", "var1", "var2", "var3", "var4", "var5"]
-    y_vars = ["target"]
-    g1 = sns.PairGrid(data, x_vars=x_vars, y_vars=y_vars)
-    g1.map(plt.scatter, alpha=0.1)
 
-    x_vars = ["var6", "var7", "var8", "var9", "var10"]
-    y_vars = ["target"]
-    g2 = sns.PairGrid(data, x_vars=x_vars, y_vars=y_vars)
-    g2.map(plt.scatter, alpha=0.1)
-    return g1, g2
+    X = pd.DataFrame(X)
+    ncols_to_plot = X.shape[1]
+    n_rows = int(np.ceil(ncols_to_plot / ncols))
+
+    # Create figure and axes (this time it's 9, arranged 3 by 3)
+    f, axs = plt.subplots(nrows=n_rows, ncols=ncols, figsize=figsize)
+
+    # delete non-used axes
+    n_charts = ncols_to_plot
+    n_subplots = n_rows * ncols
+    cols_to_enum = X.columns
+
+    # Make the axes accessible with single indexing
+    if n_charts > 1:
+        axs = axs.flatten()
+
+    for i, col in enumerate(cols_to_enum):
+        # select the axis where the map will go
+        if n_charts > 1:
+            ax = axs[i]
+        else:
+            ax = axs
+
+        ax.scatter(X[col], y, alpha=0.1)
+        ax.set_title(col)
+
+    if n_subplots > n_charts > 1:
+        for i in range(n_charts, n_subplots):
+            ax = axs[i]
+            ax.set_axis_off()
+
+    # Display the figure
+    plt.tight_layout()
+    return f
 
 
 def load_data(name='Titanic'):
@@ -563,7 +590,7 @@ def _generated_corr_dataset_regr(size=1000):
     # high cardinality
     X[:, 11] = np.arange(start=0, stop=size, step=1)
     # a lot of missing values
-    idx_nan = np.random.choice(size, int(round(size/2)), replace=False)
+    idx_nan = np.random.choice(size, int(round(size / 2)), replace=False)
     X[:, 12] = y ** 3 + np.abs(np.random.normal(0, 1, size))
     X[idx_nan, 12] = np.nan
 
@@ -607,7 +634,7 @@ def _generated_corr_dataset_classification(size=1000):
     # high cardinality
     X[:, 11] = np.arange(start=0, stop=size, step=1)
     # a lot of missing values
-    idx_nan = np.random.choice(size, int(round(size/2)), replace=False)
+    idx_nan = np.random.choice(size, int(round(size / 2)), replace=False)
     X[:, 12] = y ** 3 + np.abs(np.random.normal(0, 1, size))
     X[idx_nan, 12] = np.nan
 

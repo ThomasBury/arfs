@@ -276,6 +276,7 @@ In the spirit, the same heuristic than Boruta but using Boosting (originally Bor
 ### 0.1.6
 
  - improve the plot_y_vs_X function
+ - remove gc.collect()
 
 ### 0.1.5
 
