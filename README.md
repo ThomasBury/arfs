@@ -172,6 +172,8 @@ fs_df
 fs = arfsfs.FeatureSelector(X = X[filtered_features], y = y, sample_weight = w)
 # identify highly correlated columns (here corr_coef >= 0.75)
 # set encode to True if there are categorical/string cols (takes a bit of time)
+# the identify collinear method now supports continuous and categorical filtering,
+# using associations (con-con, con-cat, cat-cat) without encoding the variables.
 fs.identify_collinear(correlation_threshold=0.5, encode=False)
 # tag the discarded predictors and store the results
 fs_df = fs_df.merge(fs.tag_df, how='left')
@@ -272,6 +274,10 @@ In the spirit, the same heuristic than Boruta but using Boosting (originally Bor
 
 
 ## Changes
+
+### 0.2.0
+
+ - Prefilters now support the filtering of continuous and nominal (categorical) collinear variables
 
 ### 0.1.6
 

@@ -24,6 +24,7 @@ import random
 # numpy and pandas for data manipulation
 import pandas as pd
 import numpy as np
+from dython.nominal import compute_associations
 # model used for feature importance, Shapley values are builtin
 import lightgbm as lgb
 # visualizations
@@ -32,6 +33,7 @@ import matplotlib.pyplot as plt
 from palettable.cmocean.diverging import Curl_5_r
 from palettable.cartocolors.qualitative import Bold_10
 import holoviews as hv
+import panel as pn
 # progress bar
 from tqdm.autonotebook import trange, tqdm
 # ML
@@ -171,6 +173,49 @@ def plot_corr(df, size=10):
     cbar = fig.colorbar(cax, ticks=[-1, -0.5, 0, 0.5, 1], aspect=10, shrink=.8)
     # plt.show()
     return fig
+
+
+def plot_associations(df, features=None, size=1200, theil_u=False):
+
+    if features is None:
+        features = df.columns
+
+    # continuous features
+    con_features = set(features).intersection(set(list(df.select_dtypes(include=[np.number]))))
+
+    # nominal features
+    nom_features = set(features) - set(con_features)
+
+    assoc_df = compute_associations(df,
+                                    nominal_columns=nom_features,
+                                    mark_columns=True,
+                                    theil_u=theil_u,
+                                    clustering=True,
+                                    bias_correction=True,
+                                    nan_strategy='drop_samples')
+
+    heatmap = hv.HeatMap((assoc_df.columns, assoc_df.index, assoc_df)).redim.range(z=(-1, 1))
+
+    heatmap.opts(tools=['tap', 'hover'], height=size, width=size + 50, toolbar='left', colorbar=True,
+                cmap=Curl_5_r.mpl_colormap, fontsize={'title': 12, 'ticks': 12, 'minor_ticks': 12}, xrotation=90,
+                invert_xaxis=False, invert_yaxis=True,  # title=title_str,
+                xlabel='', ylabel=''
+                     )
+    title_str = "**Continuous (con) and Categorical (nom) Associations **"
+    sub_title_str = "*Categorical(nom): uncertainty coefficient & correlation ratio from 0 to 1. The uncertainty " \
+                        "coefficient is assymmetrical, (approximating how much the elements on the " \
+                        "left PROVIDE INFORMATION on elements in the row). Continuous(con): symmetrical numerical " \
+                        "correlations (Pearson's) from -1 to 1*"
+    panel_layout = pn.Column(
+            pn.pane.Markdown(title_str, align="start"),  # bold
+            pn.pane.Markdown(sub_title_str, align="start"),  # italic
+            heatmap, background='#ebebeb'
+    )
+
+    gc.enable()
+    del assoc_df
+    gc.collect()
+    return panel_layout
 
 
 ######################
@@ -459,6 +504,7 @@ class FeatureSelector:
         self.n_identified = None
         self.encoded = False
         self.mapper = None
+        self.collinear_method = None
         self.tag_df = pd.DataFrame({'predictor': self.base_features})
 
         # Dictionary to hold removal operations
@@ -626,7 +672,7 @@ class FeatureSelector:
 
         return df
 
-    def identify_collinear(self, correlation_threshold, encode=False, method='spearman'):
+    def identify_collinear(self, correlation_threshold, encode=False, method='association'):
         """
         Finds collinear features based on the correlation coefficient between features.
         For each pair of features with a correlation coefficient greather than `correlation_threshold`,
@@ -645,7 +691,7 @@ class FeatureSelector:
             Whether to encode the features before calculating the correlation coefficients
 
         method: str
-            spearman or pearson correlation coefficient
+            association, spearman or pearson correlation coefficient. If you have categorical variables, use "association"
 
         """
 
@@ -660,7 +706,31 @@ class FeatureSelector:
             print('Encoding done, {0:4.0f} min'.format(round((tic - time.time()) / 60)))
 
         tic_corr = time.time()
-        if method == 'spearman':
+
+        self.collinear_method = method
+        if method == 'association':
+            features = self.data.columns
+
+            # continuous features
+            con_features = set(features).intersection(set(list(self.data.select_dtypes(include=[np.number]))))
+
+            # nominal features
+            nom_features = set(features) - set(con_features)
+
+            self.corr_matrix = compute_associations(self.data,
+                                                    nominal_columns=nom_features,
+                                                    mark_columns=True,
+                                                    theil_u=True,
+                                                    clustering=True,
+                                                    bias_correction=True,
+                                                    nan_strategy='drop_samples')
+
+            upper = self.corr_matrix.where(np.triu(np.ones(self.corr_matrix.shape), k=1).astype(np.bool))
+            to_drop = [column for column in upper.columns if
+                       any(upper[column].abs() > correlation_threshold)]
+
+
+        elif method == 'spearman':
             self.corr_matrix = self.data.corr(method="spearman").fillna(0)
             # Extract the upper triangle of the correlation matrix
             upper = self.corr_matrix.where(np.triu(np.ones(self.corr_matrix.shape), k=1).astype(np.bool))
@@ -1100,31 +1170,49 @@ class FeatureSelector:
 
         if plot_all:
             corr_matrix_plot = self.corr_matrix
-            title = 'All Correlations'
+            subtitle_str = 'All Correlations'
 
         else:
             # Identify the correlations that were above the threshold
             # columns (x-axis) are features to drop and rows (y_axis) are correlated pairs
             corr_matrix_plot = self.corr_matrix.loc[list(set(self.record_collinear['corr_feature'])),
                                                     list(set(self.record_collinear['drop_feature']))]
-            title = "Correlations Above Threshold"
+            subtitle_str = "Correlations Above Threshold"
 
-        d = sch.distance.pdist(corr_matrix_plot)
-        L = sch.linkage(d, method='ward')
-        ind = sch.fcluster(L, 0.5 * np.nanmax(d), 'distance')
-        columns = [corr_matrix_plot.columns.tolist()[i] for i in list((np.argsort(ind)))]
-        corr_matrix_plot = corr_matrix_plot.reindex(columns, axis=1)
-        corr_matrix_plot = corr_matrix_plot.reindex(columns, axis=0)
-
+            d = sch.distance.pdist(corr_matrix_plot)
+            L = sch.linkage(d, method='ward')
+            ind = sch.fcluster(L, 0.5 * np.nanmax(d), 'distance')
+            columns = [corr_matrix_plot.columns.tolist()[i] for i in list((np.argsort(ind)))]
+            corr_matrix_plot = corr_matrix_plot.reindex(columns, axis=1)
+            corr_matrix_plot = corr_matrix_plot.reindex(columns, axis=0)
         # interactive plot of the correlation matrix
         heatmap = hv.HeatMap((corr_matrix_plot.columns, corr_matrix_plot.index, corr_matrix_plot)).redim.range(
-            z=(-1, 1))
-        heatmap.opts(tools=['tap', 'hover'], height=size, width=size + 50, toolbar='above', colorbar=True,
-                     cmap=Curl_5_r.mpl_colormap,
-                     fontsize={'title': 20, 'ticks': 12, 'minor_ticks': 12}, xrotation=90,
-                     invert_xaxis=False, invert_yaxis=True, title=title, xlabel='',
-                     ylabel='', xaxis=None, yaxis=None)
-        return heatmap
+                                 z=(-1, 1))
+
+        heatmap.opts(tools=['tap', 'hover'], height=size, width=size + 50, toolbar='left', colorbar=True,
+                cmap=Curl_5_r.mpl_colormap, fontsize={'title': 12, 'ticks': 12, 'minor_ticks': 12}, xrotation=90,
+                invert_xaxis=False, invert_yaxis=True,  # title=title_str,
+                xlabel='', ylabel=''
+                     )
+        if self.collinear_method == 'association':
+            title_str = "**Continuous (con) and Categorical (nom) Associations **"
+            sub_title_str = "*Categorical(nom): uncertainty coefficient & correlation ratio from 0 to 1. The uncertainty " \
+                        "coefficient is assymmetrical, (approximating how much the elements on the " \
+                        "left PROVIDE INFORMATION on elements in the row). Continuous(con): symmetrical numerical " \
+                        "correlations (Pearson's) from -1 to 1*"
+        else:
+            title_str = "**Correlations (continuous variables only) **"
+            subtitle_str = "Use `method='association'` if there are categorical variables. "  + subtitle_str 
+
+            
+        panel_layout = pn.Column(
+                pn.pane.Markdown(title_str, align="start"),  # bold
+                pn.pane.Markdown(sub_title_str, align="start"),  # italic
+                heatmap, background='#ebebeb'
+        )
+
+        return panel_layout
+
 
     def plot_feature_importances(self, plot_n=15, threshold=None, figsize=None):
         """
