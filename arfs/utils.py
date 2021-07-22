@@ -254,10 +254,12 @@ def compare_varimp(feat_selector, models, X, y, sample_weight=None):
         print(feat_selector.support_names_)
         fig = feat_selector.plot_importance(n_feat_per_inch=5)
 
-        # highlight synthetic random variable
-        fig = highlight_tick(figure=fig, str_match='random')
-        fig = highlight_tick(figure=fig, str_match='genuine', color='green')
-        plt.show()
+        if fig is not None:
+            # highlight synthetic random variable
+            fig = highlight_tick(figure=fig, str_match='random')
+            fig = highlight_tick(figure=fig, str_match='genuine', color='green')
+            plt.show()
+
 
 
 def cat_var(df, col_excl=None, return_cat=True):

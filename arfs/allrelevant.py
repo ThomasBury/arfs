@@ -424,40 +424,47 @@ class Leshy(BaseEstimator, TransformerMixin):
         color = {'boxes': 'gray', 'whiskers': 'gray', 'medians': '#000000', 'caps': 'gray'}
         vimp_df = pd.DataFrame(self.imp_real_hist, columns=self.col_names)
         vimp_df = vimp_df.reindex(vimp_df.mean().sort_values(ascending=True).index, axis=1)
-        bp = vimp_df.boxplot(color=color,
-                             boxprops=dict(linestyle='-', linewidth=1.5),
-                             flierprops=dict(linestyle='-', linewidth=1.5),
-                             medianprops=dict(linestyle='-', linewidth=1.5, color='#000000'),
-                             whiskerprops=dict(linestyle='-', linewidth=1.5),
-                             capprops=dict(linestyle='-', linewidth=1.5),
-                             showfliers=False, grid=True, rot=0, vert=False, patch_artist=True,
-                             figsize=(16, vimp_df.shape[1] / n_feat_per_inch), fontsize=9
-                             )
-        blue_color = "#2590fa"
-        yellow_color = "#f0be00"
-        n_strong = sum(self.support_)
-        n_weak = sum(self.support_weak_)
-        n_discarded = len(self.col_names) - n_weak - n_strong
-        box_face_col = [blue_color] * n_strong + [yellow_color] * n_weak + ['gray'] * n_discarded
-        for c in range(len(box_face_col)):
-            bp.findobj(mpl.patches.Patch)[len(self.support_) - c - 1].set_facecolor(box_face_col[c])
-            bp.findobj(mpl.patches.Patch)[len(self.support_) - c - 1].set_color(box_face_col[c])
 
-        xrange = vimp_df.max(skipna=True).max(skipna=True) - vimp_df.min(skipna=True).min(skipna=True)
-        bp.set_xlim(left=vimp_df.min(skipna=True).min(skipna=True) - 0.10 * xrange)
+        if vimp_df.dropna().empty:
+            warnings.warn("No feature selected - No data to plot")
+            return None
+        else:
+            bp = vimp_df.boxplot(color=color,
+                                 boxprops=dict(linestyle='-', linewidth=1.5),
+                                 flierprops=dict(linestyle='-', linewidth=1.5),
+                                 medianprops=dict(linestyle='-', linewidth=1.5, color='#000000'),
+                                 whiskerprops=dict(linestyle='-', linewidth=1.5),
+                                 capprops=dict(linestyle='-', linewidth=1.5),
+                                 showfliers=False, grid=True, rot=0, vert=False, patch_artist=True,
+                                 figsize=(16, vimp_df.shape[1] / n_feat_per_inch), fontsize=9
+                                )
+            blue_color = "#2590fa"
+            yellow_color = "#f0be00"
+            n_strong = sum(self.support_)
+            n_weak = sum(self.support_weak_)
+            n_discarded = len(self.col_names) - n_weak - n_strong
+            box_face_col = [blue_color] * n_strong + [yellow_color] * n_weak + ['gray'] * n_discarded
+            for c in range(len(box_face_col)):
+                bp.findobj(mpl.patches.Patch)[len(self.support_) - c - 1].set_facecolor(box_face_col[c])
+                bp.findobj(mpl.patches.Patch)[len(self.support_) - c - 1].set_color(box_face_col[c])
 
-        custom_lines = [Line2D([0], [0], color=blue_color, lw=5),
-                        Line2D([0], [0], color=yellow_color, lw=5),
-                        Line2D([0], [0], color="gray", lw=5),
-                        Line2D([0], [0], linestyle='--', color="gray", lw=2)]
-        bp.legend(custom_lines, ['confirmed', 'tentative', 'rejected', 'sha. max'], loc="lower right")
-        plt.axvline(x=self.sha_max, linestyle='--', color='gray')
-        fig = bp.get_figure()
-        plt.title('Leshy importance and selected predictors')
-        # fig.set_size_inches((10, 1.5 * np.rint(max(vimp_df.shape) / 10)))
-        # plt.tight_layout()
-        # plt.show()
-        return fig
+            xrange = vimp_df.max(skipna=True).max(skipna=True) - vimp_df.min(skipna=True).min(skipna=True)
+            bp.set_xlim(left=vimp_df.min(skipna=True).min(skipna=True) - 0.10 * xrange)
+
+            custom_lines = [Line2D([0], [0], color=blue_color, lw=5),
+                            Line2D([0], [0], color=yellow_color, lw=5),
+                            Line2D([0], [0], color="gray", lw=5),
+                            Line2D([0], [0], linestyle='--', color="gray", lw=2)]
+            bp.legend(custom_lines, ['confirmed', 'tentative', 'rejected', 'sha. max'], loc="lower right")
+            plt.axvline(x=self.sha_max, linestyle='--', color='gray')
+            fig = bp.get_figure()
+            plt.title('Leshy importance and selected predictors')
+            # fig.set_size_inches((10, 1.5 * np.rint(max(vimp_df.shape) / 10)))
+            # plt.tight_layout()
+            # plt.show()
+            return fig
+
+
 
     @staticmethod
     def _validate_pandas_input(arg):
@@ -1409,7 +1416,12 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
         blue_color = "#2590fa"
         color = {'boxes': blue_color, 'whiskers': 'gray', 'medians': '#000000', 'caps': 'gray'}
         real_df = real_df.reindex(real_df.mean().sort_values(ascending=True).index, axis=1)
-        bp = real_df.plot.box(  # kind='box',
+
+        if real_df.dropna().empty:
+            warnings.warn("No feature selected - No data to plot")
+            return None
+        else:
+            bp = real_df.plot.box(  # kind='box',
             color=color,
             boxprops=dict(linestyle='-', linewidth=1.5, color=blue_color, facecolor=blue_color),
             flierprops=dict(linestyle='-', linewidth=1.5),
@@ -1418,14 +1430,15 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
             capprops=dict(linestyle='-', linewidth=1.5),
             showfliers=False, grid=True, rot=0, vert=False, patch_artist=True,
             figsize=(16, real_df.shape[1] / n_feat_per_inch), fontsize=9
-        )
-        # xrange = real_df.max(skipna=True).max(skipna=True)-real_df.min(skipna=True).min(skipna=True)
-        bp.set_xlim(left=real_df.min(skipna=True).min(skipna=True) - 0.025)
-        fig = bp.get_figure()
-        plt.title('BoostAGroota importance of selected predictors')
-        # plt.tight_layout()
-        # plt.show()
-        return fig
+            )
+            # xrange = real_df.max(skipna=True).max(skipna=True)-real_df.min(skipna=True).min(skipna=True)
+            bp.set_xlim(left=real_df.min(skipna=True).min(skipna=True) - 0.025)
+            fig = bp.get_figure()
+            plt.title('BoostAGroota importance of selected predictors')
+            # plt.tight_layout()
+            # plt.show()
+            return fig
+        
 
 
 ############################################
@@ -1847,39 +1860,45 @@ class GrootCV(BaseEstimator, TransformerMixin):
 
         color = {'boxes': 'gray', 'whiskers': 'gray', 'medians': '#000000', 'caps': 'gray'}
         real_df = real_df.reindex(real_df.mean().sort_values(ascending=True).index, axis=1)
-        bp = real_df.plot(kind='box',
-                          color=color,
-                          boxprops=dict(linestyle='-', linewidth=1.5),
-                          flierprops=dict(linestyle='-', linewidth=1.5),
-                          medianprops=dict(linestyle='-', linewidth=1.5, color='#000000'),
-                          whiskerprops=dict(linestyle='-', linewidth=1.5),
-                          capprops=dict(linestyle='-', linewidth=1.5),
-                          showfliers=False, grid=True, rot=0, vert=False, patch_artist=True,
-                          figsize=(16, real_df.shape[1] / n_feat_per_inch), fontsize=9
-                          )
-        col_idx = np.argwhere(real_df.columns.isin(self.support_names_)).ravel()
-        blue_color = "#2590fa"
 
-        for c in range(real_df.shape[1]):
-            bp.findobj(mpl.patches.Patch)[c].set_facecolor('gray')
-            bp.findobj(mpl.patches.Patch)[c].set_color('gray')
+        if real_df.dropna().empty:
+            warnings.warn("No feature selected - No data to plot")
+            return None
+        else:
+            bp = real_df.plot(kind='box',
+                              color=color,
+                              boxprops=dict(linestyle='-', linewidth=1.5),
+                              flierprops=dict(linestyle='-', linewidth=1.5),
+                              medianprops=dict(linestyle='-', linewidth=1.5, color='#000000'),
+                              whiskerprops=dict(linestyle='-', linewidth=1.5),
+                              capprops=dict(linestyle='-', linewidth=1.5),
+                              showfliers=False, grid=True, rot=0, vert=False, patch_artist=True,
+                              figsize=(16, real_df.shape[1] / n_feat_per_inch), fontsize=9
+                              )
+            col_idx = np.argwhere(real_df.columns.isin(self.support_names_)).ravel()
+            blue_color = "#2590fa"
 
-        for c in col_idx:
-            bp.findobj(mpl.patches.Patch)[c].set_facecolor(blue_color)
-            bp.findobj(mpl.patches.Patch)[c].set_color(blue_color)
+            for c in range(real_df.shape[1]):
+                bp.findobj(mpl.patches.Patch)[c].set_facecolor('gray')
+                bp.findobj(mpl.patches.Patch)[c].set_color('gray')
 
-        plt.axvline(x=self.sha_cutoff, linestyle='--', color='gray')
-        # xrange = real_df.max(skipna=True).max(skipna=True)-real_df.min(skipna=True).min(skipna=True)
-        bp.set_xlim(left=real_df.min(skipna=True).min(skipna=True) - 0.025)
-        custom_lines = [Line2D([0], [0], color=blue_color, lw=5),
-                        Line2D([0], [0], color="gray", lw=5),
-                        Line2D([0], [0], linestyle='--', color="gray", lw=2)]
-        bp.legend(custom_lines, ['confirmed', 'rejected', 'threshold'], loc="lower right")
-        fig = bp.get_figure()
-        plt.title('Groot CV importance and selected predictors')
-        # plt.tight_layout()
-        # plt.show()
-        return fig
+            for c in col_idx:
+                bp.findobj(mpl.patches.Patch)[c].set_facecolor(blue_color)
+                bp.findobj(mpl.patches.Patch)[c].set_color(blue_color)
+
+            plt.axvline(x=self.sha_cutoff, linestyle='--', color='gray')
+            # xrange = real_df.max(skipna=True).max(skipna=True)-real_df.min(skipna=True).min(skipna=True)
+            bp.set_xlim(left=real_df.min(skipna=True).min(skipna=True) - 0.025)
+            custom_lines = [Line2D([0], [0], color=blue_color, lw=5),
+                            Line2D([0], [0], color="gray", lw=5),
+                            Line2D([0], [0], linestyle='--', color="gray", lw=2)]
+            bp.legend(custom_lines, ['confirmed', 'rejected', 'threshold'], loc="lower right")
+            fig = bp.get_figure()
+            plt.title('Groot CV importance and selected predictors')
+            # plt.tight_layout()
+            # plt.show()
+            return fig
+
 
 
 ########################################################################################
