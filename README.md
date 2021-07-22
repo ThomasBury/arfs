@@ -275,6 +275,10 @@ In the spirit, the same heuristic than Boruta but using Boosting (originally Bor
 
 ## Changes
 
+### 0.2.1
+
+ - Fix a bug when removing collinear columns
+
 ### 0.2.0
 
  - Prefilters now support the filtering of continuous and nominal (categorical) collinear variables

@@ -682,7 +682,7 @@ class FeatureSelector:
         https://chrisalbon.com/machine_learning/feature_selection/drop_highly_correlated_features/
 
         Parameters
-        --------
+        ----------
 
         correlation_threshold : float between 0 and 1
             Value of the Pearson correlation cofficient for identifying correlation features
@@ -728,6 +728,8 @@ class FeatureSelector:
             upper = self.corr_matrix.where(np.triu(np.ones(self.corr_matrix.shape), k=1).astype(np.bool))
             to_drop = [column for column in upper.columns if
                        any(upper[column].abs() > correlation_threshold)]
+            
+            
 
 
         elif method == 'spearman':
@@ -771,6 +773,7 @@ class FeatureSelector:
             record_collinear = record_collinear.append(temp_df, ignore_index=True)
 
         self.record_collinear = record_collinear
+        to_drop = [x[:-6] for x in to_drop]
         self.ops['collinear'] = to_drop
         # tagging
         self.tag_df['collinear'] = 1

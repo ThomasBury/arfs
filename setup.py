@@ -21,7 +21,7 @@ with open('requirements.txt', 'r') as f:
 KEYWORDS = 'feature-selection, all-relevant, selection'
 
 setup(name="arfs",
-      version="0.2.0",
+      version="0.2.1",
       description="All Relevant Feature Selection",
       long_description=README,
       long_description_content_type="text/markdown",
