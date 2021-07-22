@@ -11,3 +11,4 @@ tqdm >= 4.40.0
 pytest
 seaborn
 Ipython
+dython
