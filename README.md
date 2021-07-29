@@ -275,6 +275,10 @@ In the spirit, the same heuristic than Boruta but using Boosting (originally Bor
 
 ## Changes
 
+### 0.2.3
+
+ - Update syntax to stick to the new argument names in Dython
+
 ### 0.2.2
 
  - Check if no feature selected, warn rather than throw error

@@ -59,10 +59,9 @@ import string
 #####################
 
 def check_if_tree_based(model):
-    tree_based_models = ['lightgbm', 'xgboost', 'catboost', '_forest']
-    condition = any(i in str(type(model)) for i in tree_based_models)
+    tree_based_models = ['lightgbm', 'xgboost', 'catboost', '_forest', 'boosting']
+    condition = any(i in str(type(model)).lower() for i in tree_based_models)
     return condition
-
 
 def is_lightgbm(estimator):
     is_lgb = 'lightgbm' in str(type(estimator))

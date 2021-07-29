@@ -21,6 +21,7 @@ import gc
 from itertools import chain
 import time
 import random
+import warnings
 # numpy and pandas for data manipulation
 import pandas as pd
 import numpy as np
@@ -701,9 +702,11 @@ class FeatureSelector:
         # Calculate the correlations between every column
         tic = time.time()
         # Calculate the correlations between every column
-        if encode:
+        if encode and (method != 'association'):
             self.data = self.encode_cat_var()
             print('Encoding done, {0:4.0f} min'.format(round((tic - time.time()) / 60)))
+        elif encode and (method == 'association'):
+            warnings.warn("Not encoding since using associations (con-con, cat-con, cat-cat)")
 
         tic_corr = time.time()
 
@@ -720,7 +723,8 @@ class FeatureSelector:
             self.corr_matrix = compute_associations(self.data,
                                                     nominal_columns=nom_features,
                                                     mark_columns=True,
-                                                    theil_u=True,
+                                                    num_num_assoc='spearman',
+                                                    nom_nom_assoc='theil',
                                                     clustering=True,
                                                     bias_correction=True,
                                                     nan_strategy='drop_samples')
@@ -728,9 +732,6 @@ class FeatureSelector:
             upper = self.corr_matrix.where(np.triu(np.ones(self.corr_matrix.shape), k=1).astype(np.bool))
             to_drop = [column for column in upper.columns if
                        any(upper[column].abs() > correlation_threshold)]
-            
-            
-
 
         elif method == 'spearman':
             self.corr_matrix = self.data.corr(method="spearman").fillna(0)
