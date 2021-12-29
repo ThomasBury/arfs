@@ -23,7 +23,7 @@ The module structure is the following:
 - The ``BoostAGroota`` class, a modified version of BoostARoota, PR still to be submitted
   https://github.com/chasedehan/BoostARoota
 
-- The ``GrootCV`` class for a new method for all relevant feature selection using a lgGBM model,
+- The ``GrootCV`` class for a new method for all relevant feature selection using a lightgGBM model,
   cross-validated SHAP importances and shadowing.
 """
 
@@ -68,25 +68,36 @@ Those dependencies are critical to improve and speed up the All Relevant Feature
 The native feature importance is biased and does not uncover the real impact of each feature (aka
 "feature impact" in the literature). 
 
-The reason is that scikit-contrib tries to be as "vanilla" as possible, but giving a large coverage
-to biased methods is harmful to the community IMHO (native feature importance flaws are known for 
-10 years or so). In the case where a small increase of complexity (lightGBM+SHAP) fixes known problem,
-it's not too much a burden.
+https://github.com/scikit-learn-contrib/boruta_py/pull/100
+is a new PR based on #77 making all the changes optional. Waiting for merge
 
-Leshy is actually a re-work of the PR I submitted.
+Leshy is a re-work of the PR I submitted.
 
 License: BSD 3 clause
 """
 
 
 class Leshy(BaseEstimator, TransformerMixin):
-    """
-    This is an improved version of BorutaPy which itself is an
+    """This is an improved version of BorutaPy which itself is an
     improved Python implementation of the Boruta R package.
+    Boruta is an all relevant feature selection method, while most other are
+    minimal optimal; this means it tries to find all features carrying
+    information usable for prediction, rather than finding a possibly compact
+    subset of features on which some estimator has a minimal error.
+    Why bother with all relevant feature selection?
+    When you try to understand the phenomenon that made your data, you should
+    care about all factors that contribute to it, not just the bluntest signs
+    of it in context of your methodology (minimal optimal set of features
+    by definition depends on your estimator choice).
+
+    
+    
+    Notes
+    -----
     For chronological dev, see https://github.com/scikit-learn-contrib/boruta_py/pull/77
+    and https://github.com/scikit-learn-contrib/boruta_py/pull/100
 
     Leshy vs BorutaPy:
-    ------------------
     To summarize, this PR solves/enhances:
      - The categorical features (they are detected, encoded. The tree-based models are working
        better with integer encoding rather than with OHE, which leads to deep and unstable trees).
@@ -100,7 +111,6 @@ class Leshy(BaseEstimator, TransformerMixin):
      - Visualization like in the R package
 
     BorutaPy vs Boruta R:
-    ---------------------
     The improvements of this implementation include:
     - Faster run times:
         Thanks to scikit-learn's fast implementation of the ensemble methods.
@@ -149,8 +159,7 @@ class Leshy(BaseEstimator, TransformerMixin):
     by definition depends on your classifier choice).
 
 
-    Summary
-    -------
+    Summary:
          - Loop over n_iter or until dec_reg == 0
          - add shadows
             o find features that are tentative
@@ -280,7 +289,9 @@ class Leshy(BaseEstimator, TransformerMixin):
 
     References
     ----------
-    [1] Kursa M., Rudnicki W., "Feature Selection with the Boruta Package"
+    See the original paper [1]_ for more details.
+    
+    ..[1] Kursa M., Rudnicki W., "Feature Selection with the Boruta Package"
         Journal of Statistical Software, Vol. 36, Issue 11, Sep 2010
     """
 
@@ -308,8 +319,8 @@ class Leshy(BaseEstimator, TransformerMixin):
         self.tag_df = None
 
     def fit(self, X, y, sample_weight=None):
-        """
-        Fits the Boruta feature selection with the provided estimator.
+        """Fits the Boruta feature selection with the provided estimator.
+        
         Parameters
         ----------
         X : array-like, shape = [n_samples, n_features]
@@ -318,6 +329,12 @@ class Leshy(BaseEstimator, TransformerMixin):
             The target values.
         sample_weight : array-like, shape = [n_samples], default=None
             Individual weights for each sample
+        
+        Returns
+        -------
+        self : object
+            Nothing but attributes
+        
         """
         self.imp_real_hist = np.empty((0, X.shape[1]), float)
         if not isinstance(X, pd.DataFrame):
@@ -327,8 +344,8 @@ class Leshy(BaseEstimator, TransformerMixin):
         return self._fit(X, y, sample_weight=sample_weight)
 
     def transform(self, X, weak=False, return_df=False):
-        """
-        Reduces the input X to the features selected by Boruta.
+        """Reduces the input X to the features selected by Boruta.
+        
         Parameters
         ----------
         X : array-like, shape = [n_samples, n_features]
@@ -339,6 +356,7 @@ class Leshy(BaseEstimator, TransformerMixin):
         return_df : boolean, default = False
             If ``X`` if a pandas dataframe and this parameter is set to True,
             the transformed data will also be a dataframe.
+            
         Returns
         -------
         X : array-like, shape = [n_samples, n_features_]
@@ -349,8 +367,7 @@ class Leshy(BaseEstimator, TransformerMixin):
         return self._transform(X, weak, return_df)
 
     def fit_transform(self, X, y, sample_weight=None, weak=False, return_df=False):
-        """
-        Fits Boruta, then reduces the input X to the selected features.
+        """Fits Boruta, then reduces the input X to the selected features.
 
         Parameters
         ----------
@@ -365,6 +382,7 @@ class Leshy(BaseEstimator, TransformerMixin):
         return_df : boolean, default = False
             If ``X`` if a pandas dataframe and this parameter is set to True,
             the transformed data will also be a dataframe.
+            
         Returns
         -------
         X : array-like, shape = [n_samples, n_features_]
@@ -399,11 +417,19 @@ class Leshy(BaseEstimator, TransformerMixin):
         return self._transform(X, weak, return_df)
 
     def plot_importance(self, n_feat_per_inch=5):
-        """
-        Boxplot of the variable importance, ordered by magnitude
+        """Boxplot of the variable importance, ordered by magnitude
         The max shadow variable importance illustrated by the dashed line.
         Requires to apply the fit method first.
-        :return: boxplot
+        
+        Parameters
+        ----------
+        n_feat_per_inch : int, default=5
+            number of features to plot per inch (for scaling the figure)
+        
+        Returns
+        -------
+        fig : plt.figure
+            the matplotlib figure object containing the boxplot
         """
         # plt.style.use('fivethirtyeight')
         my_colors_list = ['#000000', '#7F3C8D', '#11A579', '#3969AC',
@@ -468,16 +494,27 @@ class Leshy(BaseEstimator, TransformerMixin):
 
     @staticmethod
     def _validate_pandas_input(arg):
+        """Validate if pandas or numpy arrays are provided
+
+        Parameters
+        ----------
+        arg : pd.DataFrame or np.array
+            the object to validate
+
+        Raises
+        ------
+        TypeError
+            error if pandas or numpy arrays are not provided
+        """
         try:
             return arg.values
         except AttributeError:
-            raise ValueError(
+            raise TypeError(
                 "input needs to be a numpy array or pandas data frame."
             )
 
     def _fit(self, X_raw, y, sample_weight=None):
-        """
-        Private method.
+        """Private method.
         Chaining:
          - Loop over n_iter or until dec_reg == 0
          - add shadows
@@ -509,8 +546,9 @@ class Leshy(BaseEstimator, TransformerMixin):
         sample_weight : array-like, shape = [n_samples], default=None
             Individual weights for each sample
 
-        :return:
-         self : object
+        Returns
+        -------
+        self : object
             Nothing but attributes
         """
         # self.is_cat = is_catboost(self.estimator)
@@ -679,18 +717,19 @@ class Leshy(BaseEstimator, TransformerMixin):
         return self
 
     def _transform(self, X, weak=False, return_df=False):
-        """
-        Private method
-
-        transform the predictor matrix by dropping the rejected and
+        """Private method, transform the predictor matrix by dropping the rejected and
         (optional) the undecided predictors
-        :param X: pd.DataFrame
+
+        Parameters
+        ----------
+        X: pd.DataFrame
             predictor matrix
-        :param weak: bool
+        weak: bool
             whether to drop or not the undecided predictors
-        :param return_df: bool
+        return_df: bool
             return a pandas dataframe or not
-        :return:
+        Returns
+        -------
          X: np.array or pd.DataFrame
             the transformed predictors matrix
         """
@@ -712,6 +751,19 @@ class Leshy(BaseEstimator, TransformerMixin):
         return X
 
     def _get_tree_num(self, n_feat):
+        """private method, get a good estimated for the number of trees
+           given the number of features
+
+        Parameters
+        ----------
+        n_feat : int
+            The number of features
+
+        Returns
+        -------
+        n_estimators : int
+            the number of trees
+        """
         depth = self.estimator.get_params()['max_depth']
         if depth is None:
             depth = 10
@@ -723,23 +775,36 @@ class Leshy(BaseEstimator, TransformerMixin):
         return n_estimators
 
     def _get_shuffle(self, seq):
+        """private method, shuffle a sequence
+
+        Parameters
+        ----------
+        seq : np.array
+            the sequence to shuffle
+        Returns
+        -------
+        seq : np.array
+            the shufled sequence
+        """
         self.random_state.shuffle(seq)
         return seq
 
     def _add_shadows_get_imps(self, X, y, sample_weight, dec_reg):
-        """
-        Add a shuffled copy of the columns (shadows) and get the feature
+        """Add a shuffled copy of the columns (shadows) and get the feature
         importance of the augmented data set
-
-        :param X: pd.DataFrame of shape [n_samples, n_features]
+        
+        Parameters
+        ----------
+        X: pd.DataFrame of shape [n_samples, n_features]
             predictor matrix
-        :param y: pd.series of shape [n_samples]
+        y: pd.series of shape [n_samples]
             target
-        :param sample_weight: array-like, shape = [n_samples], default=None
+        sample_weight: array-like, shape = [n_samples], default=None
             Individual weights for each sample
-        :param dec_reg: array
+        dec_reg: array
             holds the decision about each feature 1, 0, -1 (accepted, undecided, rejected)
-        :return:
+        Returns
+        -------
          imp_real: array
             feature importance of the real predictors
          imp_sha: array
@@ -774,18 +839,23 @@ class Leshy(BaseEstimator, TransformerMixin):
 
     @staticmethod
     def _assign_hits(hit_reg, cur_imp, imp_sha_max):
-        """
-        count how many times a given feature was more important than
+        """count how many times a given feature was more important than
         the best of the shadow features
-
-        :param hit_reg: array
+        
+        Parameters
+        ----------
+        hit_reg: array
             count how many times a given feature was more important than the
             best of the shadow features
-        :param cur_imp: array
+        cur_imp: array
             current importance
-        :param imp_sha_max: array
+        imp_sha_max: array
             importance of the best shadow predictor
-        :return:
+        Returns
+        -------
+        hit_reg : array
+            the how many times a given feature was more important than the 
+            best of the shadow features
         """
         # register hits for features that did better than the best of shadows
         cur_imp_no_nan = cur_imp[0]
@@ -795,19 +865,25 @@ class Leshy(BaseEstimator, TransformerMixin):
         return hit_reg
 
     def _do_tests(self, dec_reg, hit_reg, _iter):
-        """
-        Perform the rest if the feature should be tagget as relevant (confirmed), not relevant (rejected)
+        """Private method, Perform the rest if the feature should be tagget as relevant (confirmed), not relevant (rejected)
         or undecided. The test is performed by considering the binomial tentatives over several attempts.
         I.e. count how many times a given feature was more important than the best of the shadow features
         and test if the associated probability to the z-score is below, between or above the rejection or
         acceptance threshold.
-
-        :param dec_reg: array
+        
+        Parameters
+        ----------
+        dec_reg : array
             holds the decision about each feature 1, 0, -1 (accepted, undecided, rejected)
-        :param hit_reg: array
+        hit_reg : array
             counts how many times a given feature was more important than the best of the shadow features
-        :param _iter:
-        :return:
+        _iter : int
+            iteration number
+        Returns
+        -------
+        dec_reg : array
+            holds the decision about each feature 1, 0, -1 (accepted, undecided, rejected)
+        
         """
         active_features = np.where(dec_reg >= 0)[0]
         hits = hit_reg[active_features]
@@ -846,9 +922,9 @@ class Leshy(BaseEstimator, TransformerMixin):
 
     @staticmethod
     def _fdrcorrection(pvals, alpha=0.05):
-        """
-        Benjamini/Hochberg p-value correction for false discovery rate, from
+        """Benjamini/Hochberg p-value correction for false discovery rate, from
         statsmodels package. Included here for decoupling dependency on statsmodels.
+        
         Parameters
         ----------
         pvals : array_like
@@ -885,21 +961,40 @@ class Leshy(BaseEstimator, TransformerMixin):
 
     @staticmethod
     def _nanrankdata(X, axis=1):
-        """
-        Replaces bottleneck's nanrankdata with scipy and numpy alternative.
+        """Replaces bottleneck's nanrankdata with scipy and numpy alternative.
+
+        Parameters
+        ----------
+        X : array or pd.DataFrame
+            the data array
+        axis : int, optional
+            row-wise (0) or column-wise (1), by default 1
+
+        Returns
+        -------
+        ranks : array
+            the ranked array
         """
         ranks = sp.stats.mstats.rankdata(X, axis=axis)
         ranks[np.isnan(X)] = np.nan
         return ranks
 
     def _check_params(self, X, y):
-        """
-        Private method
-        Check hyperparameters as well as X and y before proceeding with fit.
-        :param X: pd.DataFrame
+        """Private method, Check hyperparameters as well as X and y before proceeding with fit.
+
+        Parameters
+        ----------
+        X : pd.DataFrame
             predictor matrix
-        :param y: pd.series
-            target
+        y : pd.series
+            target series
+
+        Raises
+        ------
+        ValueError
+            [description]
+        ValueError
+            [description]
         """
         # check X and y are consistent len, X is Array and y is column
         X, y = check_X_y(X, y, dtype=None, force_all_finite=False)
@@ -910,17 +1005,19 @@ class Leshy(BaseEstimator, TransformerMixin):
             raise ValueError('Alpha should be between 0 and 1.')
 
     def _print_results(self, dec_reg, _iter, flag):
-        """
-        Private method
-        printing the result
-        :param dec_reg: array
+        """Private method, printing the result
+        
+        Parameters
+        ----------
+        dec_reg: array
             if the feature as been tagged as relevant (confirmed),
             not relevant (rejected) or undecided
-        :param _iter: int
+        _iter: int
             the iteration number
-        :param flag: int
+        flag: int
             is still in the feature selection process or not
-        :return:
+        Returns
+        -------
          output: str
             the output to be printed out
         """
@@ -952,28 +1049,28 @@ class Leshy(BaseEstimator, TransformerMixin):
 
 
 def _split_fit_estimator(estimator, X, y, sample_weight=None, cat_feature=None):
-    """
-    Private function
-    split the train, test and fit the model
+    """Private function, split the train, test and fit the model
 
-    :param estimator: sklearn estimator
-    :param X: pd.DataFrame of shape [n_samples, n_features]
+    Parameters
+    ----------
+    estimator : estimator object implementing 'fit' and 'predict'
+        The object to use to fit the data.
+    X : pd.DataFrame of shape [n_samples, n_features]
         predictor matrix
-    :param y: pd.series of shape [n_samples]
+    y : pd.series of shape [n_samples]
         target
-    :param sample_weight: array-like, shape = [n_samples], default=None
+    sample_weight : array-like, shape = [n_samples], default=None
         Individual weights for each sample
-    :param cat_feature: list of int or None
+    cat_feature : list of int or None
         the list of integers, cols loc, of the categrocial predictors. Avoids to detect and encode
         each iteration if the exact same columns are passed to the selection methods.
-
-
-    :return:
-     model
+    Returns
+    -------
+     model : 
         fitted model
-     X_tt: array [n_samples, n_features]
+     X_tt : array [n_samples, n_features]
         the test split, predictors
-     y_tt: array [n_samples]
+     y_tt : array [n_samples]
         the test split, target
     """
     if cat_feature is None:
@@ -1025,23 +1122,23 @@ def _split_fit_estimator(estimator, X, y, sample_weight=None, cat_feature=None):
 
 
 def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
-    """
-    Private function
-    Get the SHAP feature importance
+    """Private function, Get the SHAP feature importance
 
-    :param estimator: sklearn estimator
-    :param X: pd.DataFrame of shape [n_samples, n_features]
+    Parameters
+    ----------
+    estimator: sklearn estimator
+    X : pd.DataFrame of shape [n_samples, n_features]
         predictor matrix
-    :param y: pd.series of shape [n_samples]
+    y : pd.series of shape [n_samples]
         target
-    :param sample_weight: array-like, shape = [n_samples], default=None
+    sample_weight : array-like, shape = [n_samples], default=None
         Individual weights for each sample
-    :param cat_feature: list of int or None
+    cat_feature : list of int or None
         the list of integers, cols loc, of the categorical predictors. Avoids to detect and encode
         each iteration if the exact same columns are passed to the selection methods.
-
-    :return:
-     shap_imp, array
+    Returns
+    -------
+    shap_imp : array
         the SHAP importance array
     """
 
@@ -1083,23 +1180,23 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
 
 
 def _get_perm_imp(estimator, X, y, sample_weight, cat_feature=None):
-    """
-    Private function
-    Get the permutation feature importance
+    """Private function, Get the SHAP feature importance
 
-    :param estimator: sklearn estimator
-    :param X: pd.DataFrame of shape [n_samples, n_features]
+    Parameters
+    ----------
+    estimator: sklearn estimator
+    X : pd.DataFrame of shape [n_samples, n_features]
         predictor matrix
-    :param y: pd.series of shape [n_samples]
+    y : pd.series of shape [n_samples]
         target
-    :param sample_weight: array-like, shape = [n_samples], default=None
+    sample_weight : array-like, shape = [n_samples], default=None
         Individual weights for each sample
-    :param cat_feature: list of int or None
+    cat_feature : list of int or None
         the list of integers, cols loc, of the categorical predictors. Avoids to detect and encode
         each iteration if the exact same columns are passed to the selection methods.
-
-    :return:
-     imp, array
+    Returns
+    -------
+    imp : array
         the permutation importance array
     """
     # be sure to use an non-fitted estimator
@@ -1114,28 +1211,35 @@ def _get_perm_imp(estimator, X, y, sample_weight, cat_feature=None):
 
 
 def _get_imp(estimator, X, y, sample_weight=None, cat_feature=None):
+    """Private function, Get the native feature importance (impurity based for instance)
+    
+    Notes
+    -----
+    This is know to return biased and uninformative results.
+    e.g.
+    https://scikit-learn.org/stable/auto_examples/inspection/
+    plot_permutation_importance.html#sphx-glr-auto-examples-inspection-plot-permutation-importance-py
+
+    or
+    
+    https://explained.ai/rf-importance/
+
+    Parameters
+    ----------
+    X : array-like, shape = [n_samples, n_features]
+        The training input samples.
+    y : array-like, shape = [n_samples]
+        The target values.
+    sample_weight : array-like, shape = [n_samples], default=None
+        Individual weights for each sample
+    cat_feature: list of int or None
+        the list of integers, cols loc, of the categorical predictors. Avoids to detect and encode
+        each iteration if the exact same columns are passed to the selection methods.
+    Returns
+    -------
+    imp : array
+        the permutation importance array
     """
-        Get the native feature importance (impurity based for instance)
-        This is know to return biased and uninformative results.
-        e.g.
-        https://scikit-learn.org/stable/auto_examples/inspection/
-        plot_permutation_importance.html#sphx-glr-auto-examples-inspection-plot-permutation-importance-py
-
-        or
-        https://explained.ai/rf-importance/
-
-        Parameters
-        ----------
-        X : array-like, shape = [n_samples, n_features]
-            The training input samples.
-        y : array-like, shape = [n_samples]
-            The target values.
-        sample_weight : array-like, shape = [n_samples], default=None
-            Individual weights for each sample
-        cat_feature: list of int or None
-            the list of integers, cols loc, of the categorical predictors. Avoids to detect and encode
-            each iteration if the exact same columns are passed to the selection methods.
-        """
     # be sure to use an non-fitted estimator
     estimator = clone(estimator)
 
@@ -1180,9 +1284,21 @@ def _get_imp(estimator, X, y, sample_weight=None, cat_feature=None):
 ###################################
 
 class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
-    """
-    BoostARoota becomes BoostAGroota, I'm Groot
-
+    """BoostARoota becomes BoostAGroota, I'm Groot
+    
+    BoostAGroota is an all relevant feature selection method, while most other are
+    minimal optimal; this means it tries to find all features carrying
+    information usable for prediction, rather than finding a possibly compact
+    subset of features on which some estimator has a minimal error.
+    Why bother with all relevant feature selection?
+    When you try to understand the phenomenon that made your data, you should
+    care about all factors that contribute to it, not just the bluntest signs
+    of it in context of your methodology (minimal optimal set of features
+    by definition depends on your estimator choice).
+    
+    Notes
+    -----
+    
     Original version of BoostARoota:
     * One-Hot-Encode the feature set
     * Double width of the data set, making a copy of all features in original dataset
@@ -1218,40 +1334,40 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
     - Work with sample_weight, for Poisson or any application requiring a weighting.
 
 
-    Params:
-    -------
-    :param est: sklear estimator
+    Params
+    ------
+    est : sklear estimator
         the model to train, lightGBM recommended, see the reduce lightgbm method
-    :param cutoff: float
+    cutoff : float
         the value by which the max of shadow imp is divided, to compare to real importance
-    :param iters: int (>0)
+    iters : int (>0)
         The number of iterations to average for the feature importance (on the same split),
         to reduce the variance
-    :param max_rounds: int (>0)
+    max_rounds : int (>0)
         The number of times the core BoostARoota algorithm will run.
         Each round eliminates more and more features
-    :param delta: float (0 < delta <= 1)
+    delta : float (0 < delta <= 1)
         Stopping criteria for whether another round is started
-    :param silent: bool
+    silent : bool
         Set to True if don't want to see the BoostARoota output printed.
-    :param importance: str, default='shap'
+    importance : str, default='shap'
         the kind of feature importance to use. Possible values: 'shap' (Shapley values),
         'pimp' (permutation importance) and 'native' (Gini/impurity)
 
 
-    Attributes:
-    -----------
-    support_names_: list of str
+    Attributes
+    ----------
+    support_names_ : list of str
         the list of columns to keep
-    tag_df: dataframe
+    tag_df : dataframe
         the df with the details (accepted or rejected) of the feature selection
-    sha_cutoff_df: dataframe
+    sha_cutoff_df : dataframe
         feature importance of the real+shadow predictors over iterations
-    mean_shadow: float
+    mean_shadow : float
         the threshold below which the predictors are rejected
 
 
-    Example:
+    Examples
     --------
     X = df[filtered_features].copy()
     y = df['re_cl'].copy()
@@ -1261,8 +1377,8 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
 
     model = LGBMRegressor(n_jobs=-1, n_estimators=100, objective='poisson',
                           random_state=42, verbose=0)
-    br = noglmgroot.BoostARoota(est=model, cutoff=1, iters=10, max_rounds=10,
-                                delta=0.1, silent=False, weight=w)
+    br = BoostARoota(est=model, cutoff=1, iters=10, max_rounds=10,
+                     delta=0.1, silent=False, weight=w)
     br.fit(X, y)
     br.plot_importance()
     """
@@ -1313,16 +1429,17 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
         return s
 
     def fit(self, X, y, sample_weight=None):
-        """
-        Fit the transformer
+        """Fit the BoostAGroota transformer with the provided estimator.
 
-        :param x: pd.DataFrame
+        Parameters
+        ----------
+        X : pd.DataFrame
             the predictors matrix
-        :param y: pd.Series
+        y : pd.Series
             the target
-        :param sample_weight: pd.series
+        sample_weight : pd.series
             sample_weight, if any
-        :return:
+
         """
 
         if isinstance(X, pd.DataFrame) is not True:
@@ -1354,43 +1471,64 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
         self.tag_df['BoostAGroota'] = 1
         self.tag_df['BoostAGroota'] = np.where(self.tag_df['predictor'].isin(list(self.support_names_)), 1, 0)
         return self
+        
+            
+    def transform(self, X):
+        """Reduces the input X to the features selected
 
-    def transform(self, x):
-        """
-        Transform the predictors matrix by dropping the rejected columns
-        :param x: pd.DataFrame
+        Parameters
+        ----------
+        X : pd.DataFrame
             the predictors matrix
-        :return:
+
+        Returns
+        -------
+        X : pd.DataFrame
             the transformed predictors matrix
+
+        Raises
+        ------
+        ValueError
+            Error if the estimator is not fitted
         """
         if self.support_names_ is None:
             raise ValueError("You need to fit the model first")
-        return x[self.support_names_]
-
+        return X[self.support_names_]
+        
     def fit_transform(self, X, y=None, **fit_params):
-        """
-        chain fit and transform
-        :param X: pd.DataFrame
+        """Fits BoostAGroota, then reduces the input X to the selected features.
+
+        Parameters
+        ----------
+        X : pd.DataFrame
             the predictors matrix
-        :param y: pd.Series
+        y : pd.Series
             the target
-        :param fit_params : dict
-            Additional fit parameters: e.g. {'sample_weight': sample_weight}
-        :return:
-            the transformed predictors matrix
+        sample_weight : pd.series
+            sample_weight, if any
+
+        Returns
+        -------
+        pd.DataFrame
+            the predictors matrix, with non-necessary columns dropped
         """
         self.fit(X, y, **fit_params)
         return self.transform(X)
 
     def plot_importance(self, n_feat_per_inch=5):
-        """
-        Boxplot of the variable importance, ordered by magnitude
+        """Boxplot of the variable importance, ordered by magnitude
         The max shadow variable importance illustrated by the dashed line.
-
-        :param n_feat_per_inch: int
-            the number of features per inch in the figure, for readability
-
-        :return: boxplot
+        Requires to apply the fit method first.
+        
+        Parameters
+        ----------
+        n_feat_per_inch : int, default=5
+            number of features to plot per inch (for scaling the figure)
+        
+        Returns
+        -------
+        fig : plt.figure
+            the matplotlib figure object containing the boxplot
         """
         # plt.style.use('fivethirtyeight')
         my_colors_list = ['#000000', '#7F3C8D', '#11A579', '#3969AC',
@@ -1445,17 +1583,18 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
 # Helper Functions to do the Heavy Lifting
 ############################################
 
-
 def _create_shadow(x_train):
-    """
-    Take all X variables, creating copies and randomly shuffling them
-    :param x_train: pd.DataFrame
+    """Private function, Take all X variables, creating copies and randomly shuffling them
+
+    Parameters
+    ----------
+    x_train : pd.DataFrame
         the dataframe to create shadow features on
-    :return:
-     new_x: pd.DataFrame
+
+    Returns
+    -------
+    new_x : pd.DataFrame
         dataframe 2x width and the names of the shadows for removing later
-     shadow_names: list of str
-        the name of the new columns
     """
     x_shadow = x_train.copy()
     for c in x_shadow.columns:
@@ -1474,47 +1613,52 @@ def _create_shadow(x_train):
 ########################################################################################
 
 def _reduce_vars_sklearn(x, y, est, this_round, cutoff, n_iterations, delta, silent, weight, imp_kind, cat_feature):
-    """
-    Private function
-    reduce the number of predictors using a sklearn estimator
-
-    :param x: pd.DataFrame
+    """Private function, reduce the number of predictors using a sklearn estimator
+    
+    Parameters
+    ----------
+    x : pd.DataFrame
         the dataframe to create shadow features on
-    :param y: pd.Series
+    y : pd.Series
         the target
-    :param est: sklear estimator
+    est : sklear estimator
         the model to train, lightGBM recommended
-    :param this_round: int
+    this_round : int
         The number of times the core BoostARoota algorithm will run.
         Each round eliminates more and more features
-    :param cutoff: float
+    cutoff : float
         the value by which the max of shadow imp is divided, to compare to real importance
-    :param n_iterations: int
+    n_iterations : int
         The number of iterations to average for the feature importance (on the same split),
         to reduce the variance
-    :param delta: float (0 < delta <= 1)
+    delta : float (0 < delta <= 1)
         Stopping criteria for whether another round is started
-    :param silent: bool
+    silent : bool
         Set to True if don't want to see the BoostARoota output printed.
         Will still show any errors or warnings that may occur
-    :param weight: pd.series
+    weight : pd.series
         sample_weight, if any
-    :param imp_kind: str
+    imp_kind : str
         whether if native, shap or permutation importance should be used
-    :param cat_feature: list of int or None
+    cat_feature : list of int or None
         the list of integers, cols loc, of the categorical predictors. Avoids to detect and encode
         each iteration if the exact same columns are passed to the selection methods.
 
-    :return:
-     criteria: bool
+    Returns
+    -------
+    criteria : bool
         if the criteria has been reached or not
-     real_vars['feature']: pd.dataframe
+    real_vars['feature'] : pd.dataframe
         feature importance of the real predictors over iter
-     df: pd.DataFrame
+    df : pd.DataFrame
         feature importance of the real+shadow predictors over iter
-     mean_shadow: float
+    mean_shadow : float
         the feature importance threshold, to reject or not the predictors
-    """
+
+    Raises
+    ------
+    ValueError
+        error if the feature importance type is not    """
     # Set up the parameters for running the model in XGBoost - split is on multi log loss
 
     for i in range(1, n_iterations + 1):
@@ -1573,41 +1717,41 @@ def _reduce_vars_sklearn(x, y, est, this_round, cutoff, n_iterations, delta, sil
 
 # Main function exposed to run the algorithm
 def _BoostARoota(x, y, est, cutoff, iters, max_rounds, delta, silent, weight, imp):
-    """
+    """ Private function, reduce the number of predictors using a sklearn estimator
 
-    Private function
-    reduce the number of predictors using a sklearn estimator
+    Parameters
 
-    :param x: pd.DataFrame
+    x : pd.DataFrame
         the dataframe to create shadow features on
-    :param y: pd.Series
+    y : pd.Series
         the target
-    :param est: sklear estimator
+    est : sklear estimator
         the model to train, lightGBM recommended, see the reduce lightgbm method
-    :param cutoff: float
+    cutoff : float
         the value by which the max of shadow imp is divided, to compare to real importance
-    :param iters: int (>0)
+    iters : int (>0)
         The number of iterations to average for the feature importances (on the same split),
         to reduce the variance
-    :param max_rounds: int (>0)
+    max_rounds : int (>0)
         The number of times the core BoostARoota algorithm will run.
         Each round eliminates more and more features
-    :param delta: float (0 < delta <= 1)
+    delta : float (0 < delta <= 1)
         Stopping criteria for whether another round is started
-    :param silent: bool
+    silent : bool
         Set to True if don't want to see the BoostARoota output printed.
         Will still show any errors or warnings that may occur
-    :param weight: pd.series
+    weight : pd.series
         sample_weight, if any
 
-    :return:
-     crit: bool
+    Returns
+    -------
+    crit : bool
         if the criteria has been reached or not
-     keep_vars: pd.dataframe
+    keep_vars : pd.dataframe
         feature importance of the real predictors over iter
-     df_vimp: pd.DataFrame
+    df_vimp : pd.DataFrame
         feature importance of the real+shadow predictors over iter
-     mean_shadow: float
+    mean_shadow : float
         the feature importance threshold, to reject or not the predictors
     """
     t_boostaroota = time.time()
@@ -1666,12 +1810,11 @@ def _BoostARoota(x, y, est, cutoff, iters, max_rounds, delta, silent, weight, im
 ###################################
 
 class GrootCV(BaseEstimator, TransformerMixin):
-    """
-    A shuffled copy of the predictors matrix is added (shadows) to the original set of predictors.
+    """A shuffled copy of the predictors matrix is added (shadows) to the original set of predictors.
     The lightGBM is fitted using repeated cross-validation, the feature importance
     is extracted each time and averaged to smooth out the noise.
     If the feature importance is larger than the average shadow feature importance then the predictors
-     are rejected, the others are kept.
+    are rejected, the others are kept.
 
 
     - Cross-validated feature importance to smooth out the noise, based on lightGBM only
@@ -1682,23 +1825,23 @@ class GrootCV(BaseEstimator, TransformerMixin):
     - Not based on a given percentage of cols needed to be deleted
     - Plot method for var. imp
 
-    Params:
-    -------
-    :param objective: str
+    Params
+    ------
+    objective: str
         the lightGBM objective
-    :param cutoff: float
+    cutoff: float
         the value by which the max of shadow imp is divided, to compare to real importance
-    :param n_folds: int, default=5
+    n_folds: int, default=5
         the number of folds for the cross-val
-    :param n_iter: int, default=5
+    n_iter: int, default=5
         the number of times the cross-validation is repeated
-    :param silent: bool, default=False
+    silent: bool, default=False
         print out details or not
-    :param rf: bool, default=False
+    rf: bool, default=False
         the lightGBM implementation of the random forest
 
-    Attributes:
-    -----------
+    Attributes
+    ----------
     support_names_: list of str
         the list of columns to keep
     tag_df: dataframe
@@ -1708,8 +1851,8 @@ class GrootCV(BaseEstimator, TransformerMixin):
     sha_cutoff: float
         the threshold below which the predictors are rejected
 
-    Example:
-    --------
+    Examples
+    -------
     X = df[filtered_features].copy()
     y = df['re_cl'].copy()
     w = df["exp_yr"].copy()
@@ -1720,7 +1863,7 @@ class GrootCV(BaseEstimator, TransformerMixin):
     br = noglmgroot.GrootCV(objective = 'poisson', cutoff = 1,
                             weight=w, silent=False, n_folds=3, n_iter=10)
     br.fit(X, y)
-    br.plot_importance()
+    br.plot_importanc
     """
 
     def __init__(self, objective=None, cutoff=1, n_folds=5, n_iter=5,
@@ -1746,16 +1889,17 @@ class GrootCV(BaseEstimator, TransformerMixin):
             raise ValueError('n_folds should be greater than 0. You entered' + str(n_folds))
 
     def fit(self, x, y, sample_weight=None):
-        """
-        Fit the transformer
+        """Fit the GrootCV transformer with the provided estimator.
 
-        :param x: pd.DataFrame
+        Parameters
+        ----------
+        X : pd.DataFrame
             the predictors matrix
-        :param y: pd.Series
+        y : pd.Series
             the target
-        :param sample_weight: pd.series
+        sample_weight : pd.series
             sample_weight, if any
-        :return:
+
         """
 
         if isinstance(x, pd.DataFrame) is not True:
@@ -1797,44 +1941,63 @@ class GrootCV(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, x):
-        """
-        Transform the predictors matrix by dropping the rejected columns
-        :param x: pd.DataFrame
+        """Reduces the input X to the features selected
+
+        Parameters
+        ----------
+        X : pd.DataFrame
             the predictors matrix
-        :return:
+
+        Returns
+        -------
+        X : pd.DataFrame
             the transformed predictors matrix
+
+        Raises
+        ------
+        ValueError
+            Error if the estimator is not fitted
         """
         if self.support_names_ is None:
             raise ValueError("You need to fit the model first")
         return x[self.support_names_]
 
     def fit_transform(self, X, y=None, **fit_params):
-        """
-        chain fit and transform
-        :param X: pd.DataFrame
+        """Fits GrootCV, then reduces the input X to the selected features.
+
+        Parameters
+        ----------
+        X : pd.DataFrame
             the predictors matrix
-        :param y: pd.Series
+        y : pd.Series
             the target
-        :param fit_params : dict
-            Additional fit parameters: e.g. {'sample_weight': sample_weight}
-        :return:
-            the transformed predictors matrix
+        sample_weight : pd.series
+            sample_weight, if any
+
+        Returns
+        -------
+        pd.DataFrame
+            the predictors matrix, with non-necessary columns dropped
         """
         self.fit(X, y, **fit_params)
         return self.transform(X)
 
     def plot_importance(self, n_feat_per_inch=5):
-        """
-        Boxplot of the variable importance, ordered by magnitude
+        """Boxplot of the variable importance, ordered by magnitude
         The max shadow variable importance illustrated by the dashed line.
-        The statistics are computed over the different repetition and different folds
-        of the repeated cross-validation.
-
-        :param n_feat_per_inch: int
-            the number of features per inch in the figure, for readability
-
-        :return: boxplot
+        Requires to apply the fit method first.
+        
+        Parameters
+        ----------
+        n_feat_per_inch : int, default=5
+            number of features to plot per inch (for scaling the figure)
+        
+        Returns
+        -------
+        fig : plt.figure
+            the matplotlib figure object containing the boxplot
         """
+    
         # plt.style.use('fivethirtyeight')
         my_colors_list = ['#000000', '#7F3C8D', '#11A579', '#3969AC',
                           '#F2B701', '#E73F74', '#80BA5A', '#E68310',
@@ -1909,36 +2072,38 @@ class GrootCV(BaseEstimator, TransformerMixin):
 ########################################################################################
 
 def _reduce_vars_lgb_cv(x, y, objective, n_folds, cutoff, n_iter, silent, weight, rf):
-    """
-    Private function
-    reduce the number of predictors using a lightgbm (python API)
+    """Private function, reduce the number of predictors using a lightgbm (python API)
 
-    :param x: pd.DataFrame
+    Parameters
+    ----------
+    x : pd.DataFrame
         the dataframe to create shadow features on
-    :param y: pd.Series
+    y : pd.Series
         the target
-    :param objective: str
+    objective : str
         the lightGBM objective
-    :param cutoff: float
+    cutoff : float
         the value by which the max of shadow imp is divided, to compare to real importance
-    :param n_iter: int
+    n_iter : int
         The number of repetition of the cross-validation, smooth out the feature importance noise
-    :param silent: bool
+    silent : bool
         Set to True if don't want to see the BoostARoota output printed.
         Will still show any errors or warnings that may occur
-    :param weight: pd.series
+    weight : pd.series
         sample_weight, if any
-    :param rf: bool, default=False
+    rf : bool, default=False
         the lightGBM implementation of the random forest
 
-    :return:
-     real_vars['feature']: pd.dataframe
+    returns
+    -------
+     real_vars['feature'] : pd.dataframe
         feature importance of the real predictors over iter
-     df: pd.DataFrame
+     df : pd.DataFrame
         feature importance of the real+shadow predictors over iter
-     cutoff_shadow: float
+     cutoff_shadow : float
         the feature importance threshold, to reject or not the predictors
     """
+    
     # Set up the parameters for running the model in LGBM - split is on multi log loss
 
     n_feat = x.shape[1]
