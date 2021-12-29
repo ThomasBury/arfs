@@ -235,7 +235,7 @@ class Leshy(BaseEstimator, TransformerMixin):
         The mask of selected features - only confirmed ones are True.
     support_weak_ : array of shape [n_features]
         The mask of selected tentative features, which haven't gained enough
-        support during the max_iter number of iterations..
+        support during the max_iter number of iterations.
     ranking_ : array of shape [n_features]
         The feature ranking, such that ``ranking_[i]`` corresponds to the
         ranking position of the i-th feature. Selected (i.e., estimated
@@ -466,9 +466,10 @@ class Leshy(BaseEstimator, TransformerMixin):
                                 )
             blue_color = "#2590fa"
             yellow_color = "#f0be00"
+            
             n_strong = sum(self.support_)
-            n_weak = sum(self.support_weak_)
-            n_discarded = len(self.col_names) - n_weak - n_strong
+            n_weak = np.sum(self.support_weak_)
+            n_discarded = np.sum(~(self.support_|self.support_weak_))
             box_face_col = [blue_color] * n_strong + [yellow_color] * n_weak + ['gray'] * n_discarded
             for c in range(len(box_face_col)):
                 bp.findobj(mpl.patches.Patch)[len(self.support_) - c - 1].set_facecolor(box_face_col[c])
@@ -730,7 +731,7 @@ class Leshy(BaseEstimator, TransformerMixin):
             return a pandas dataframe or not
         Returns
         -------
-         X: np.array or pd.DataFrame
+        X: np.array or pd.DataFrame
             the transformed predictors matrix
         """
         # sanity check
@@ -1038,6 +1039,7 @@ class Leshy(BaseEstimator, TransformerMixin):
         # Boruta finished running and tentatives have been filtered
         else:
             n_tentative = np.sum(self.support_weak_)
+            n_rejected = np.sum(~(self.support_|self.support_weak_))
             content = map(str, [n_iter, n_confirmed, n_tentative, n_rejected])
             result = '\n'.join([x[0] + '\t' + x[1] for x in zip(cols, content)])
             if self.importance in ['shap', 'pimp']:
