@@ -1692,7 +1692,7 @@ def _reduce_vars_sklearn(x, y, est, this_round, cutoff, n_iterations, delta, sil
 
         # df2 = pd.DataFrame(importance, columns=['feature', 'fscore'+str(i)])
         df2['fscore' + str(i)] = df2['fscore' + str(i)] / df2['fscore' + str(i)].sum()
-        df = pd.merge(df, df2, on='feature', how='outer')
+        df = pd.merge(df, df2, on='feature', how='outer', suffixes=('_x' + str(i), '_y' + str(i)))
         if not silent:
             print("Round: ", this_round, " iteration: ", i)
 

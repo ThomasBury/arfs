@@ -52,24 +52,22 @@ hv.renderer('bokeh').theme = 'light_minimal'
 #####################
 
 def reset_plot():
-    """
-    reset matplotlib default
-    :return: None
+    """Reset plot style
     """
     plt.rcParams = plt.rcParamsDefault
 
 
 def set_my_plt_style(height=3, width=5, linewidth=2):
-    """
-    This set the style of matplotlib to fivethirtyeight with some modifications (colours, axes)
+    """This set the style of matplotlib to fivethirtyeight with some modifications (colours, axes)
 
-    :param linewidth: int, default=2
+    Parameters
+    ----------
+    linewidth: int, default=2
         line width
-    :param height: int, default=3
+    height: int, default=3
         fig height in inches (yeah they're still struggling with the metric system)
-    :param width: int, default=5
+    width: int, default=5
         fig width in inches (yeah they're still struggling with the metric system)
-    :return: Nothing
     """
     plt.style.use('fivethirtyeight')
     my_colors_list = Bold_10.hex_colors
@@ -86,27 +84,29 @@ def set_my_plt_style(height=3, width=5, linewidth=2):
 
 
 def cat_var(df, col_excl=None, return_cat=True):
-    """
-    Categorical encoding (as integer). Automatically detect the non-numerical columns,
+    """Categorical encoding (as integer). Automatically detect the non-numerical columns,
     save the index and name of those columns, encode them as integer,
     save the direct and inverse mappers as
     dictionaries.
     Return the data-set with the encoded columns with a data type either int or pandas categorical.
 
-    :param df: pd.DataFrame
+    Parameters
+    ----------
+    df: pd.DataFrame
         the dataset
-    :param col_excl: list of str, default=None
+    col_excl: list of str, default=None
         the list of columns names not being encoded (e.g. the ID column)
-    :param return_cat: bool, default=True
+    return_cat: bool, default=True
         return encoded object columns as pandas categoricals or not.
-    :return:
-     df: pd.DataFrame
+    Returns
+    -------
+    df: pd.DataFrame
         the dataframe with encoded columns
-     cat_var_df: pd.DataFrame
+    cat_var_df: pd.DataFrame
         the dataframe with the indices and names of the categorical columns
-     inv_mapper: dict
+    inv_mapper: dict
         the dictionary to map integer --> category
-     mapper: dict
+    mapper: dict
         the dictionary to map category --> integer
     """
 
@@ -145,14 +145,22 @@ def cat_var(df, col_excl=None, return_cat=True):
         df[non_num_cols] = df[non_num_cols].astype('category')
     return df, cat_var_df, inv_mapper, mapper
 
+    
 
 def plot_corr(df, size=10):
-    """
-    Plot a graphical correlation matrix for a dataframe.
+    """Plot a graphical correlation matrix for a dataframe.
 
-    Input:
-        df: pandas DataFrame
-        size: vertical and horizontal size of the plot
+    Parameters
+    ----------
+    df : pd.DataFrame
+        the data
+    size : int, optional
+        figure size, by default 10
+
+    Returns
+    -------
+    fig : plt.figure
+        the correlation matrix figure
     """
     set_my_plt_style()
     corr = df.corr()
@@ -177,6 +185,27 @@ def plot_corr(df, size=10):
 
 
 def plot_associations(df, features=None, size=1200, theil_u=False):
+    """Plot associations, equivalent of correlation but for
+    continuous-continuous, categorical-continuous, categorical-categorical
+    variables. 
+    
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        the data
+    features : list of str, optional
+        the list of the features to consider, if none is given all the columns are used, by default None
+    size : int, optional
+        figure size in dpi, by default 1200
+    theil_u : bool, optional
+        consider or not the Theyl's U statistics for cat-cat association, by default False
+
+    Returns
+    -------
+    panel_layout : panel
+        the interactive plot
+    """
 
     if features is None:
         features = df.columns
@@ -227,8 +256,7 @@ def plot_associations(df, features=None, size=1200, theil_u=False):
 
 
 class FeatureSelector:
-    """
-    Class for performing feature selection for machine learning or data preprocessing.
+    """Class for performing feature selection for machine learning or data preprocessing.
     Heavily inspired from https://github.com/WillKoehrsen
 
     Implements five different methods to identify features for removal
@@ -336,8 +364,8 @@ class FeatureSelector:
         the dataframe with the tag "to drop" or "to keep" (== not to drop)
 
 
-    Methods:
-    --------
+    Methods
+    -------
     identify_patterns(patterns=None):
         Drop the columns by identifying patterns in their name
 
@@ -399,7 +427,7 @@ class FeatureSelector:
         `threshold` cumulative importance.
 
 
-    Example:
+    Examples
     --------
 
     # Initiate an instance of the feature selector
@@ -518,13 +546,12 @@ class FeatureSelector:
         return s
 
     def identify_patterns(self, patterns=None):
-        """
-        Drop the columns by identifying patterns in their name
-        :param patterns: str
+        """Drop the columns by identifying patterns in their name
+        
+        Parameters
+        ----------
+        patterns: str
             the pattern to look for e.g. emb_ or bel_
-        :return:
-         self : object
-            Nothing but attributes
         """
         if patterns is None:
             patterns = ['_Prop']
@@ -537,12 +564,11 @@ class FeatureSelector:
         print('%d features with the pattern(s). \n' % len(self.ops['pattern']))
 
     def identify_missing(self, missing_threshold=0.1):
-        """
-        Find the features with a fraction of missing values above `missing_threshold`
-        :param missing_threshold: float, between 0 and 1. Default=0.1
-        :return:
-         self : object
-            Nothing but attributes
+        """Find the features with a fraction of missing values above `missing_threshold`
+        
+        Parameters
+        ----------
+        missing_threshold: float, between 0 and 1. Default=0.1
         """
 
         self.missing_threshold = missing_threshold
@@ -573,11 +599,7 @@ class FeatureSelector:
             len(self.ops['missing']), self.missing_threshold))
 
     def identify_single_unique(self):
-        """
-        Finds features with only a single unique value. NaNs do not count as a unique value.
-        :return:
-         self : object
-            Nothing but attributes
+        """Finds features with only a single unique value. NaNs do not count as a unique value.
         """
 
         # Calculate the unique counts in each column
@@ -601,16 +623,14 @@ class FeatureSelector:
         print('%d features with a single unique value.\n' % len(self.ops['single_unique']))
 
     def identify_high_cardinality(self, max_card=1000):
-        """
-        Finds the categorical columns with more than max_card unique values
+        """Finds the categorical columns with more than max_card unique values
         (might be relevant for GLM or if the categorical column has as many
         levels than rows in the data set)
 
-        :param max_card: int
+        Parameters
+        ----------
+        max_card: int
             the maximum number of the unique values
-        :return:
-         self : object
-            Nothing but attributes
         """
 
         col_names = list(self.data)
@@ -638,22 +658,23 @@ class FeatureSelector:
         )
 
     def encode_cat_var(self, df=None, col_excl=None, return_cat=False):
-        """
-        Categorical encoding (as integer). Automatically detect the non-numerical columns,
+        """Categorical encoding (as integer). Automatically detect the non-numerical columns,
         save the index and name of those columns, encode them as integer,
         save the direct and inverse mappers as dictionaries.
         Return the data-set with the encoded columns with a data type either int or pandas categorical.
 
-
-        :param df: pd.DataFrame
+        Parameters
+        ----------
+        df: pd.DataFrame
             the dataset
-        :param col_excl: list of str, default=None
+        col_excl: list of str, default=None
             the list of columns names not being encoded (e.g. the ID column)
-        :param return_cat: Boolean, default=False
+        return_cat: Boolean, default=False
             wether or not return pandas categorical (if false --> integer)
 
-        :return:
-         df: pd.DataFrame
+        Returns
+        -------
+        df: pd.DataFrame
             the dataframe with encoded columns
         """
         if df is None:
@@ -674,8 +695,7 @@ class FeatureSelector:
         return df
 
     def identify_collinear(self, correlation_threshold, encode=False, method='association'):
-        """
-        Finds collinear features based on the correlation coefficient between features.
+        """Finds collinear features based on the correlation coefficient between features.
         For each pair of features with a correlation coefficient greather than `correlation_threshold`,
         only one of the pair is identified for removal.
 
@@ -684,7 +704,6 @@ class FeatureSelector:
 
         Parameters
         ----------
-
         correlation_threshold : float between 0 and 1
             Value of the Pearson correlation cofficient for identifying correlation features
 
@@ -785,17 +804,14 @@ class FeatureSelector:
 
     def identify_zero_importance(self, task, eval_metric=None, objective=None,
                                  n_iterations=10, early_stopping=True, zero_as_missing=False):
-        """
-
-        Identify the features with zero importance according to a gradient boosting machine.
+        """Identify the features with zero importance according to a gradient boosting machine.
         The gbm can be trained with early stopping using a utils set to prevent overfitting.
         The feature importances are averaged over `n_iterations` to reduce variance.
 
         Uses the LightGBM implementation (http://lightgbm.readthedocs.io/en/latest/index.html)
 
         Parameters
-        --------
-
+        ----------
         eval_metric : string
             Evaluation metric to use for the gradient boosting machine for early stopping. Must be
             provided if `early_stopping` is True
@@ -817,8 +833,7 @@ class FeatureSelector:
 
 
         Notes
-        --------
-
+        -----
         - Features are one-hot encoded to handle the categorical variables before training.
         - The gbm is not optimized for any particular task and might need some hyperparameter tuning
         - Feature importances, including zero importance features,
@@ -938,14 +953,13 @@ class FeatureSelector:
         print('\n%d features with zero importance after encoding.\n' % len(self.ops['zero_importance']))
 
     def identify_low_importance(self, cumulative_importance):
-        """
-        Finds the lowest importance features not needed to account for `cumulative_importance` fraction
+        """Finds the lowest importance features not needed to account for `cumulative_importance` fraction
         of the total feature importance from the gradient boosting machine. As an example, if cumulative
         importance is set to 0.95, this will retain only the most important features needed to
         reach 95% of the total feature importance. The identified features are those not needed.
 
         Parameters
-        --------
+        ----------
         cumulative_importance : float between 0 and 1
             The fraction of cumulative importance to account for
 
@@ -981,12 +995,10 @@ class FeatureSelector:
               'importance of %0.2f.\n' % (len(self.ops['low_importance']), self.cumulative_importance))
 
     def identify_all(self, selection_params):
-        """
-        Use all five of the methods to identify features to remove.
+        """Use all five of the methods to identify features to remove.
 
         Parameters
-        --------
-
+        ----------
         selection_params : dict Parameters to use in the five feature selection methhods.
         Params must contain the keys
         ['patterns', 'missing_threshold', 'max_card','correlation_threshold', 'eval_metric', 'task',
@@ -1033,27 +1045,25 @@ class FeatureSelector:
 
         return list(self.all_identified)
 
-    def remove(self, methods):
-        """
-        Remove the features from the data according to the specified methods.
+    def remove(self, methods='all'):
+        """Remove the features from the data according to the specified methods.
 
         Parameters
-        --------
-            methods : 'all' or list of methods
-                If methods == 'all', any methods that have identified features will be used
-                Otherwise, only the specified methods will be used.
-                Can be one of ['missing', 'single_unique', 'collinear', 'zero_importance', 'low_importance']
+        ----------
+        methods : str or list of str
+            If methods == 'all', any methods that have identified features will be used
+            Otherwise, only the specified methods will be used.
+            Can be one of ['missing', 'single_unique', 'collinear', 'zero_importance', 'low_importance']
         Return
-        --------
-            data : dataframe
-                Dataframe with identified features removed
-
+        ------
+        data : dataframe
+            Dataframe with identified features removed
 
         Notes
-        --------
-            - If feature importances are used, the one-hot encoded columns will be
+        -----
+        - If feature importances are used, the one-hot encoded columns will be
               added to the data (and then may be removed)
-            - Check the features that will be removed before transforming data!
+        - Check the features that will be removed before transforming data!
 
         """
 
@@ -1154,18 +1164,34 @@ class FeatureSelector:
         # plt.yscale("log", nonposy='clip')
 
     def plot_collinear(self, plot_all=False, size=1000):
-        """
-        Heatmap of the correlation values. If plot_all = True plots all the correlations otherwise
-        plots only those features that have a correlation above the threshold
+        """Heatmap of the correlation values, reduced or not
 
+        Parameters
+        ----------
+        plot_all : bool, optional
+            If plot_all = True plots all the correlations otherwise
+            plots only those features that have a correlation above the threshold
+        size : int, optional
+            figure size in dpi, by default 1000
+
+        Returns
+        -------
+        panel_layout : panel
+            the interactive plot
+            
         Notes
-        --------
-            - Not all of the plotted correlations are above the threshold because this plots
-            all the variables that have been idenfitied as having even one correlation above the threshold
-            - The features on the x-axis are those that will be removed. The features on the y-axis
-            are the correlated features with those on the x-axis
+        -----
+        - Not all of the plotted correlations are above the threshold because this plots
+        all the variables that have been idenfitied as having even one correlation above the threshold
+        - The features on the x-axis are those that will be removed. The features on the y-axis
+        are the correlated features with those on the x-axis
 
         Code adapted from https://seaborn.pydata.org/examples/many_pairwise_correlations.html
+
+        Raises
+        ------
+        NotImplementedError
+            if correlation matrix has not been computed yet
         """
 
         if self.record_collinear is None:
@@ -1219,20 +1245,21 @@ class FeatureSelector:
 
 
     def plot_feature_importances(self, plot_n=15, threshold=None, figsize=None):
-        """
-        Plots `plot_n` most important features and the cumulative importance of features.
+        """Plots `plot_n` most important features and the cumulative importance of features.
         If `threshold` is provided, prints the number of features needed to reach `threshold`
         cumulative importance.
 
         Parameters
-        --------
-
+        ----------
         plot_n : int, default = 15
             Number of most important features to plot. Defaults to 15 or the maximum
             number of features whichever is smaller
 
         threshold : float, between 0 and 1 default = None
             Threshold for printing information about cumulative importances
+            
+        figsize : tuple of int
+            the figure size in dpi
 
         """
 
