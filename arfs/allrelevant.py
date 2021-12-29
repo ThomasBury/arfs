@@ -1707,7 +1707,7 @@ def _reduce_vars_sklearn(x, y, est, this_round, cutoff, n_iterations, delta, sil
 
     # Check for the stopping criteria
     # Basically looking to make sure we are removing at least 10% of the variables, or we should stop
-    if len(x.columns) == 0:
+    if len(x.columns) == 0 | len(real_vars['feature']) == 0:
         criteria = True
     elif (len(real_vars['feature']) / len(x.columns)) > (1 - delta):
         criteria = True
@@ -1789,7 +1789,7 @@ def _BoostARoota(x, y, est, cutoff, iters, max_rounds, delta, silent, weight, im
                                                                      cat_feature=cat_idx
                                                                      )
 
-        if crit | (i >= max_rounds):
+        if crit | (i >= max_rounds) | len(keep_vars) == 0:
             break  # exit and use keep_vars as final variables
         else:
             new_x = new_x[keep_vars].copy()
