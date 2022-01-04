@@ -28,6 +28,7 @@ import numpy as np
 from dython.nominal import compute_associations
 # model used for feature importance, Shapley values are builtin
 import lightgbm as lgb
+from sklearn.model_selection import ShuffleSplit, StratifiedShuffleSplit
 # visualizations
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -155,7 +156,7 @@ def plot_corr(df, size=10):
     df : pd.DataFrame
         the data
     size : int, optional
-        figure size, by default 10
+        figure size in inches, by default 10
 
     Returns
     -------
@@ -197,7 +198,7 @@ def plot_associations(df, features=None, size=1200, theil_u=False):
     features : list of str, optional
         the list of the features to consider, if none is given all the columns are used, by default None
     size : int, optional
-        figure size in dpi, by default 1200
+        The rendered size, in pixels, by default 1200
     theil_u : bool, optional
         consider or not the Theyl's U statistics for cat-cat association, by default False
 
@@ -535,6 +536,7 @@ class FeatureSelector:
         self.mapper = None
         self.collinear_method = None
         self.tag_df = pd.DataFrame({'predictor': self.base_features})
+        self.stratified = False
 
         # Dictionary to hold removal operations
         self.ops = {}
@@ -870,6 +872,7 @@ class FeatureSelector:
             progress_bar.set_description('Iteration nb: {0:<3}'.format(_))
 
             if task == 'classification':
+                self.stratified = True
                 model = lgb.LGBMClassifier(n_estimators=1000, learning_rate=0.05, verbose=-1,
                                            zero_as_missing=zero_as_missing)
 
@@ -885,21 +888,32 @@ class FeatureSelector:
 
             # If training using early stopping need a utils set
             if early_stopping:
-                train_idx = random.sample(range(features.shape[0]), k=int(features.shape[0] * .85))
-                mask = np.zeros(features.shape[0], dtype=bool)
-                mask[train_idx] = True
-                weight = self.weight
-                train_features = features[mask]
-                valid_features = features[~mask]  # features.drop(features.index[train_idx])
-                train_labels = labels[mask]
-                valid_labels = labels[~mask]
-                train_weight = weight[mask]
-                valid_weight = weight[~mask]
+                if self.stratified:
+                    rs = StratifiedShuffleSplit(n_splits=1, test_size=.20, random_state=42)
+                    for train_index, test_index in rs.split(features, labels):
+                        valid_features, valid_labels, valid_weight = features.iloc[test_index], labels.iloc[test_index], weights.iloc[test_index] 
+                        train_features, train_labels, train_weight = features.iloc[train_index], labels.iloc[train_index], weights.iloc[train_index]
+                else:
+                    rs = ShuffleSplit(n_splits=1, test_size=.20, random_state=42)
+                    for train_index, test_index in rs.split(features):
+                        valid_features, valid_labels = features.iloc[test_index], labels.iloc[test_index]
+                        train_features, train_labels = features.iloc[train_index], labels.iloc[train_index]
+                
+                # train_idx = random.sample(range(features.shape[0]), k=int(features.shape[0] * .85))
+                # mask = np.zeros(features.shape[0], dtype=bool)
+                # mask[train_idx] = True
+                # weight = self.weight
+                # train_features = features[mask]
+                # valid_features = features[~mask]  # features.drop(features.index[train_idx])
+                # train_labels = labels[mask]
+                # valid_labels = labels[~mask]
+                # train_weight = weight[mask]
+                # valid_weight = weight[~mask]
 
                 # Train the model with early stopping
                 model.fit(train_features, train_labels, eval_metric=eval_metric,
                           eval_set=[(valid_features, valid_labels)],
-                          early_stopping_rounds=100, verbose=-1, sample_weight=train_weight,
+                          early_stopping_rounds=20, verbose=-1, sample_weight=train_weight,
                           eval_sample_weight=[valid_weight])
                 # pimp cool but too slow
                 # perm_imp =  permutation_importance(
@@ -908,7 +922,16 @@ class FeatureSelector:
                 # perm_imp = perm_imp.importances_mean
 
                 shap_matrix = model.predict(valid_features, pred_contrib=True)
-                shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
+                # the dim changed in lightGBM 3
+                # X_SHAP_values array-like of shape = [n_samples, n_features + 1] or 
+                # shape = [n_samples, (n_features + 1) * n_classes] or list with n_classes length of such objects
+                if task == 'regression':
+                    shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
+                elif task == 'classification':
+                    n_features = valid_features.shape[1]
+                    shap_imp = np.mean(np.abs(shap_matrix[:, np.mod(np.arange(shap_matrix.shape[1]), n_features)!=0]))
+                else:
+                    raise ValueError('Task must be either "classification" or "regression"')
 
                 # Clean up memory
                 del train_features, train_labels, valid_features, valid_labels
@@ -1054,8 +1077,8 @@ class FeatureSelector:
             If methods == 'all', any methods that have identified features will be used
             Otherwise, only the specified methods will be used.
             Can be one of ['missing', 'single_unique', 'collinear', 'zero_importance', 'low_importance']
-        Return
-        ------
+        Returns
+        -------
         data : dataframe
             Dataframe with identified features removed
 
@@ -1172,7 +1195,7 @@ class FeatureSelector:
             If plot_all = True plots all the correlations otherwise
             plots only those features that have a correlation above the threshold
         size : int, optional
-            figure size in dpi, by default 1000
+            figure size in in pixels, by default 1000
 
         Returns
         -------
@@ -1259,7 +1282,12 @@ class FeatureSelector:
             Threshold for printing information about cumulative importances
             
         figsize : tuple of int
-            the figure size in dpi
+            The rendered size as a percentage size
+            
+        Returns
+        -------
+        hv.plot
+            the feature importances holoviews object 
 
         """
 
