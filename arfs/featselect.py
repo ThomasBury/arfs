@@ -861,6 +861,11 @@ class FeatureSelector:
         # Convert to np array
         features = np.array(features)
         labels = np.array(self.labels).reshape((-1,))
+        
+        if self.weight is not None:
+            weights = np.array(self.weight).reshape((-1,))
+        else:
+            weights = np.ones_like(labels)
 
         # Empty array for feature importances
         feature_importance_values = np.zeros(len(feature_names))
@@ -911,9 +916,12 @@ class FeatureSelector:
                 # valid_weight = weight[~mask]
 
                 # Train the model with early stopping
-                model.fit(train_features, train_labels, eval_metric=eval_metric,
+                model.fit(train_features, train_labels, 
+                          eval_metric=eval_metric,
                           eval_set=[(valid_features, valid_labels)],
-                          early_stopping_rounds=20, verbose=-1, sample_weight=train_weight,
+                          early_stopping_rounds=20, 
+                          verbose=-1, 
+                          sample_weight=train_weight,
                           eval_sample_weight=[valid_weight])
                 # pimp cool but too slow
                 # perm_imp =  permutation_importance(
