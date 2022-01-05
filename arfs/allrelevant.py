@@ -47,7 +47,7 @@ from sklearn.inspection import permutation_importance
 from sklearn.utils.validation import _check_sample_weight
 from matplotlib.lines import Line2D
 
-from arfs.utils import check_if_tree_based, is_lightgbm, is_catboost
+from arfs.utils import check_if_tree_based, is_lightgbm, is_catboost, find_sample
 
 ########################################################################################
 #
@@ -225,6 +225,11 @@ class Leshy(BaseEstimator, TransformerMixin):
         - 0: no output
         - 1: displays iteration number
         - 2: which features have been selected already
+    sample : boolean, default = False
+        wether or not to sample the rows for faster performance. 
+        Finds a sample by comparing the distributions of the anomally 
+        scores between the sample and the original
+        distribution using the KS-test
 
 
     Attributes
@@ -296,7 +301,7 @@ class Leshy(BaseEstimator, TransformerMixin):
     """
 
     def __init__(self, estimator, n_estimators=1000, perc=90, alpha=0.05, importance='shap',
-                 two_step=True, max_iter=100, random_state=None, verbose=0):
+                 two_step=True, max_iter=100, random_state=None, verbose=0, sample=False):
         self.estimator = estimator
         self.n_estimators = n_estimators
         self.perc = perc
@@ -317,6 +322,7 @@ class Leshy(BaseEstimator, TransformerMixin):
         self.sha_max = None
         self.col_names = None
         self.tag_df = None
+        self.sample = sample
 
     def fit(self, X, y, sample_weight=None):
         """Fits the Boruta feature selection with the provided estimator.
@@ -1165,7 +1171,8 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
         if is_classifier(estimator):
             # remove every (n_features+1)th element, python indexes from zero
             n_features = X_tt.shape[1]
-            shap_imp = np.mean(np.abs(shap_matrix[:, np.mod(np.arange(shap_matrix.shape[1]), n_features)!=0]))
+            shap_matrix = np.delete(shap_matrix, list(range(n_features, shap_matrix.shape[1], n_features+1)), axis=1)
+            shap_imp = np.mean(np.abs(shap_matrix), axis=0)
         else:
             shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
     else:
@@ -1422,6 +1429,9 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
             warnings.warn("WARNING: Setting a delta below 0.02 may not converge on a solution.")
         if max_rounds < 1:
             warnings.warn("WARNING: Setting max_rounds below 1 will automatically be set to 1.")
+            
+        if importance=='native':
+            warnings.warn("[BoostAGroota]: using native variable importance might break the FS")
 
     def __repr__(self):
         s = "BoostARoota(est={est}, \n" \
@@ -1557,13 +1567,14 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
         if self.mean_shadow is None:
             raise ValueError('Apply fit method first')
 
-        b_df = self.sha_cutoff_df.T.copy()
-        b_df.columns = b_df.iloc[0]
-        b_df = b_df.drop(b_df.index[0])
-        b_df = b_df.drop(b_df.index[-1])
+        # b_df = self.sha_cutoff_df.T.copy()
+        # b_df.columns = b_df.iloc[0]
+        # b_df = b_df.drop(b_df.index[0])
+        # b_df = b_df.drop(b_df.index[-1])
+        b_df = self.sha_cutoff_df
         real_df = b_df.iloc[:, :int(b_df.shape[1] / 2)].copy()
         blue_color = "#2590fa"
-        color = {'boxes': blue_color, 'whiskers': 'gray', 'medians': '#000000', 'caps': 'gray'}
+        color = {'boxes': 'gray', 'whiskers': 'gray', 'medians': '#000000', 'caps': 'gray'}
         real_df = real_df.reindex(real_df.mean().sort_values(ascending=True).index, axis=1)
 
         if real_df.dropna().empty:
@@ -1572,7 +1583,7 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
         else:
             bp = real_df.plot.box(  # kind='box',
             color=color,
-            boxprops=dict(linestyle='-', linewidth=1.5, color=blue_color, facecolor=blue_color),
+            boxprops=dict(linestyle='-', linewidth=1.5, color='gray', facecolor='gray'),
             flierprops=dict(linestyle='-', linewidth=1.5),
             medianprops=dict(linestyle='-', linewidth=1.5, color='#000000'),
             whiskerprops=dict(linestyle='-', linewidth=1.5),
@@ -1582,6 +1593,17 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
             )
             # xrange = real_df.max(skipna=True).max(skipna=True)-real_df.min(skipna=True).min(skipna=True)
             bp.set_xlim(left=real_df.min(skipna=True).min(skipna=True) - 0.025)
+            
+            for c in range(len(self.support_names_)):
+                bp.findobj(mpl.patches.Patch)[real_df.shape[1] - c - 1].set_facecolor(blue_color)
+                bp.findobj(mpl.patches.Patch)[real_df.shape[1]  - c - 1].set_color(blue_color)
+                
+            custom_lines = [Line2D([0], [0], color=blue_color, lw=5),
+                            Line2D([0], [0], color="gray", lw=5),
+                            Line2D([0], [0], linestyle='--', color="gray", lw=2)]
+            bp.legend(custom_lines, ['confirmed', 'rejected', 'sha. max'], loc="lower right")
+            plt.axvline(x=self.mean_shadow, linestyle='--', color='gray')
+            
             fig = bp.get_figure()
             plt.title('BoostAGroota importance of selected predictors')
             # plt.tight_layout()
@@ -1680,7 +1702,6 @@ def _reduce_vars_sklearn(x, y, est, this_round, cutoff, n_iterations, delta, sil
         elif imp_kind == 'pimp':
             imp = _get_perm_imp(est, new_x, y, sample_weight=weight, cat_feature=cat_feature)
         elif imp_kind == 'native':
-            warnings.warn("[BoostAGroota]: using native variable importance might break the FS")
             imp = _get_imp(est, new_x, y, sample_weight=weight, cat_feature=cat_feature)
         else:
             raise ValueError("'imp' should be either 'native', 'shap' or 'pimp', "
@@ -1701,17 +1722,17 @@ def _reduce_vars_sklearn(x, y, est, this_round, cutoff, n_iterations, delta, sil
 
         # df2 = pd.DataFrame(importance, columns=['feature', 'fscore'+str(i)])
         df2['fscore' + str(i)] = df2['fscore' + str(i)] / df2['fscore' + str(i)].sum()
-        df = pd.merge(df, df2, on='feature', how='outer', suffixes=('_x' + str(i), '_y' + str(i)))
+        df = pd.merge(df, df2, on='feature', how='outer', suffixes=('_x'+ str(i), '_y'+ str(i)))
         if not silent:
             print("Round: ", this_round, " iteration: ", i)
 
-    df['Mean'] = df.mean(axis=1)
+    df['Mean'] = df.select_dtypes(include=[np.number]).mean(axis=1, skipna=True)
     # Split them back out
-    real_vars = df[~df['feature'].isin(shadow_names)]
-    shadow_vars = df[df['feature'].isin(shadow_names)]
+    real_vars = df.loc[~df['feature'].isin(shadow_names)]
+    shadow_vars = df.loc[df['feature'].isin(shadow_names)]
 
     # Get mean value from the shadows (max, like in Boruta, median to mitigate variance)
-    mean_shadow = shadow_vars.select_dtypes(include=[np.number]).max().mean() / cutoff
+    mean_shadow = shadow_vars.select_dtypes(include=[np.number]).max(skipna=True).mean(skipna=True) / cutoff
     real_vars = real_vars[(real_vars.Mean >= mean_shadow)]
 
     # Check for the stopping criteria
@@ -1782,6 +1803,7 @@ def _BoostARoota(x, y, est, cutoff, iters, max_rounds, delta, silent, weight, im
     # Run through loop until "crit" changes
     i = 0
     pbar = tqdm(total=max_rounds, desc="BoostaGRoota round")
+    imp_dic = {}
     while True:
         # Inside this loop we reduce the dataset on each iteration exiting with keep_vars
         i += 1
@@ -1797,8 +1819,15 @@ def _BoostARoota(x, y, est, cutoff, iters, max_rounds, delta, silent, weight, im
                                                                      imp_kind=imp,
                                                                      cat_feature=cat_idx
                                                                      )
-
-        if crit | (i >= max_rounds) | len(keep_vars) == 0:
+        
+        b_df = df_vimp.T.copy()
+        b_df.columns = b_df.iloc[0]
+        b_df = b_df.drop(b_df.index[0])
+        b_df = b_df.drop(b_df.index[-1])
+        for c in b_df.columns:
+            imp_dic[c] = b_df[c].values 
+            
+        if crit | (i >= max_rounds) | (len(keep_vars) == 0):
             break  # exit and use keep_vars as final variables
         else:
             new_x = new_x[keep_vars].copy()
@@ -1811,6 +1840,9 @@ def _BoostARoota(x, y, est, cutoff, iters, max_rounds, delta, silent, weight, im
     if not silent:
         print("BoostARoota ran successfully! Algorithm went through ", i, " rounds.")
         print("\nThe feature selection BoostARoota running time is {0:8.2f} min".format(elapsed))
+    
+    df_vimp = pd.DataFrame(imp_dic)
+    
     return crit, keep_vars, df_vimp, mean_shadow
 
 
