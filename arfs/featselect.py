@@ -929,7 +929,8 @@ class FeatureSelector:
                     shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
                 elif task == 'classification':
                     n_features = valid_features.shape[1]
-                    shap_imp = np.mean(np.abs(shap_matrix[:, np.mod(np.arange(shap_matrix.shape[1]), n_features)!=0]))
+                    shap_matrix = np.delete(shap_matrix, list(range(n_features, shap_matrix.shape[1], n_features+1)), axis=1)
+                    shap_imp = np.mean(np.abs(shap_matrix), axis=0)
                 else:
                     raise ValueError('Task must be either "classification" or "regression"')
 
