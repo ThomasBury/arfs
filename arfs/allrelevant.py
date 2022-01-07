@@ -46,6 +46,7 @@ from sklearn.model_selection import RepeatedKFold, train_test_split
 from sklearn.inspection import permutation_importance
 from sklearn.utils.validation import _check_sample_weight
 from matplotlib.lines import Line2D
+from lightgbm import early_stopping, log_evaluation, record_evaluation
 
 from arfs.utils import check_if_tree_based, is_lightgbm, is_catboost
 
@@ -2259,14 +2260,15 @@ def _reduce_vars_lgb_cv(x, y, objective, n_folds, cutoff, n_iter, silent, weight
         d_valid = lgb.Dataset(new_x_val, label=y_val, weight=weight_val,
                               categorical_feature=category_cols)
         watchlist = [d_train, d_valid]
-
+        params['verbose'] = -1
         bst = lgb.train(param,
                         train_set=d_train,
                         num_boost_round=10000,
                         valid_sets=watchlist,
-                        early_stopping_rounds=20,
+                        # early_stopping_rounds=20,
                         verbose_eval=0,
-                        categorical_feature=category_cols
+                        categorical_feature=category_cols,
+                        callbacks=[early_stopping(20)]
                         )
         if i == 0:
             df = pd.DataFrame({'feature': new_x_tr.columns})
