@@ -302,7 +302,7 @@ def compare_varimp(feat_selector, models, X, y, sample_weight=None):
     varimp_list = ['shap', 'pimp', 'native']
     for model, varimp in itertools.product(models, varimp_list):
         print('=' * 20 + ' ' + str(feat_selector.__class__.__name__) +
-              ' - testing: {mod:>55} for var.imp: {vimp:<15} '.format(mod=str(model), vimp=varimp) + '=' * 20)
+              ' - testing: {mod:>55} for var.imp: {vimp:<15} '.format(mod=str(model.__class__.__name__), vimp=varimp) + '=' * 20)
         # change the varimp
         feat_selector.importance = varimp
         # change model
