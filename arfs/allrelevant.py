@@ -2260,7 +2260,7 @@ def _reduce_vars_lgb_cv(x, y, objective, n_folds, cutoff, n_iter, silent, weight
         d_valid = lgb.Dataset(new_x_val, label=y_val, weight=weight_val,
                               categorical_feature=category_cols)
         watchlist = [d_train, d_valid]
-        param['verbose'] = -1
+        
         bst = lgb.train(param,
                         train_set=d_train,
                         num_boost_round=10000,
@@ -2268,7 +2268,7 @@ def _reduce_vars_lgb_cv(x, y, objective, n_folds, cutoff, n_iter, silent, weight
                         # early_stopping_rounds=20,
                         verbose_eval=0,
                         categorical_feature=category_cols,
-                        callbacks=[early_stopping(20)]
+                        callbacks=[early_stopping(20, False, False)]
                         )
         if i == 0:
             df = pd.DataFrame({'feature': new_x_tr.columns})
