@@ -688,7 +688,6 @@ class Leshy(BaseEstimator, TransformerMixin):
         iter_ranks = self._nanrankdata(imp_history, axis=1)
         rank_medians = np.nanmedian(iter_ranks, axis=0)
         ranks = self._nanrankdata(rank_medians, axis=0)
-        self.ranking_absolutes_ = rank
 
         # ranking, confirmed variables are rank 1
         self.ranking_ = np.ones(n_feat, dtype=np.int)
