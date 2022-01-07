@@ -2266,7 +2266,7 @@ def _reduce_vars_lgb_cv(x, y, objective, n_folds, cutoff, n_iter, silent, weight
                         num_boost_round=10000,
                         valid_sets=watchlist,
                         # early_stopping_rounds=20,
-                        verbose_eval=0,
+                        # verbose_eval=0,
                         categorical_feature=category_cols,
                         callbacks=[early_stopping(20, False, False)]
                         )
