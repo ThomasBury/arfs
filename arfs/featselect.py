@@ -28,6 +28,7 @@ import numpy as np
 from dython.nominal import compute_associations
 # model used for feature importance, Shapley values are builtin
 import lightgbm as lgb
+from lightgbm import early_stopping
 from sklearn.model_selection import ShuffleSplit, StratifiedShuffleSplit
 # visualizations
 import matplotlib as mpl
@@ -919,9 +920,9 @@ class FeatureSelector:
                 model.fit(train_features, train_labels, 
                           eval_metric=eval_metric,
                           eval_set=[(valid_features, valid_labels)],
-                          early_stopping_rounds=20, 
                           verbose=-1, 
                           sample_weight=train_weight,
+                          callbacks=[early_stopping(20, False, False)],
                           eval_sample_weight=[valid_weight])
                 # pimp cool but too slow
                 # perm_imp =  permutation_importance(
