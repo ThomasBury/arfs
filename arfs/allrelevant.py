@@ -686,9 +686,8 @@ class Leshy(BaseEstimator, TransformerMixin):
             ), 1, 0)
 
         # absolute ranking
-        iter_ranks = self._nanrankdata(imp_history, axis=1)
-        rank_medians = np.nanmedian(iter_ranks, axis=0)
-        ranks = self._nanrankdata(rank_medians, axis=0)
+        vimp_df = pd.DataFrame(self.imp_real_hist, columns=self.col_names)
+        self.ranking_absolutes_ = list(vimp_df.mean().sort_values(ascending=False).index)
 
         # ranking, confirmed variables are rank 1
         self.ranking_ = np.ones(n_feat, dtype=np.int)
@@ -1510,7 +1509,7 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
         
         b_df = self.sha_cutoff_df
         real_df = b_df.iloc[:, :int(b_df.shape[1] / 2)].copy()
-        self.ranking_absolutes_ = real_df.mean().sort_values(ascending=True).index
+        self.ranking_absolutes_ = list(real_df.mean().sort_values(ascending=False).index)
         self.ranking_ = self.tag_df['BoostAGroota'].values
         self.ranking_ = np.where(self.ranking_ == 0, 2, 1)
         return self
@@ -2021,7 +2020,7 @@ class GrootCV(BaseEstimator, TransformerMixin):
         b_df = b_df.drop(b_df.index[-1])
         b_df = b_df.convert_dtypes()
         real_df = b_df.iloc[:, :int(b_df.shape[1] / 2)].copy()
-        self.ranking_absolutes_ = real_df.mean().sort_values(ascending=True).index
+        self.ranking_absolutes_ = list(real_df.mean().sort_values(ascending=False).index)
         self.ranking_ = self.tag_df['GrootCV'].values
         self.ranking_ = np.where(self.ranking_ == 0, 2, 1)
         
