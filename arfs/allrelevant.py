@@ -46,7 +46,7 @@ from sklearn.model_selection import RepeatedKFold, train_test_split
 from sklearn.inspection import permutation_importance
 from sklearn.utils.validation import _check_sample_weight
 from matplotlib.lines import Line2D
-from lightgbm import early_stopping, log_evaluation, record_evaluation
+from lightgbm import early_stopping
 
 from arfs.utils import check_if_tree_based, is_lightgbm, is_catboost
 
