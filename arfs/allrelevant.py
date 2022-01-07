@@ -47,7 +47,7 @@ from sklearn.inspection import permutation_importance
 from sklearn.utils.validation import _check_sample_weight
 from matplotlib.lines import Line2D
 
-from arfs.utils import check_if_tree_based, is_lightgbm, is_catboost, find_sample
+from arfs.utils import check_if_tree_based, is_lightgbm, is_catboost
 
 ########################################################################################
 #
@@ -225,13 +225,8 @@ class Leshy(BaseEstimator, TransformerMixin):
         - 0: no output
         - 1: displays iteration number
         - 2: which features have been selected already
-    sample : boolean, default = False
-        wether or not to sample the rows for faster performance. 
-        Finds a sample by comparing the distributions of the anomally 
-        scores between the sample and the original
-        distribution using the KS-test
-
-
+        
+        
     Attributes
     ----------
     n_features_ : int
@@ -246,6 +241,10 @@ class Leshy(BaseEstimator, TransformerMixin):
         ranking position of the i-th feature. Selected (i.e., estimated
         best) features are assigned rank 1 and tentative features are assigned
         rank 2.
+    ranking_absolutes_ : array of shape [n_features]
+        The absolute feature ranking as ordered by selection process. It does not guarantee
+        that this order is correct for all models. For a model agnostic ranking, see the
+        the attribute ``ranking``
     cat_name : list of str
         the name of the categorical columns
     cat_idx : list of int
@@ -301,7 +300,7 @@ class Leshy(BaseEstimator, TransformerMixin):
     """
 
     def __init__(self, estimator, n_estimators=1000, perc=90, alpha=0.05, importance='shap',
-                 two_step=True, max_iter=100, random_state=None, verbose=0, sample=False):
+                 two_step=True, max_iter=100, random_state=None, verbose=0):
         self.estimator = estimator
         self.n_estimators = n_estimators
         self.perc = perc
@@ -322,8 +321,8 @@ class Leshy(BaseEstimator, TransformerMixin):
         self.sha_max = None
         self.col_names = None
         self.tag_df = None
-        self.sample = sample
-
+        
+        
     def fit(self, X, y, sample_weight=None):
         """Fits the Boruta feature selection with the provided estimator.
         
@@ -587,6 +586,8 @@ class Leshy(BaseEstimator, TransformerMixin):
                 sample_weight = self._validate_pandas_input(sample_weight)
 
         self.random_state = check_random_state(self.random_state)
+        
+        
         # setup variables for Boruta
         n_sample, n_feat = X.shape
         _iter = 1
@@ -683,7 +684,13 @@ class Leshy(BaseEstimator, TransformerMixin):
                 list(self.support_names_ + self.support_weak_names_)
             ), 1, 0)
 
-            # ranking, confirmed variables are rank 1
+        # absolute ranking
+        iter_ranks = self._nanrankdata(imp_history, axis=1)
+        rank_medians = np.nanmedian(iter_ranks, axis=0)
+        ranks = self._nanrankdata(rank_medians, axis=0)
+        self.ranking_absolutes_ = rank
+
+        # ranking, confirmed variables are rank 1
         self.ranking_ = np.ones(n_feat, dtype=np.int)
         # tentative variables are rank 2
         self.ranking_[tentative] = 2
@@ -1377,6 +1384,15 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
     ----------
     support_names_ : list of str
         the list of columns to keep
+    ranking_ : array of shape [n_features]
+        The feature ranking, such that ``ranking_[i]`` corresponds to the
+        ranking position of the i-th feature. Selected (i.e., estimated
+        best) features are assigned rank 1 and tentative features are assigned
+        rank 2.
+    ranking_absolutes_ : array of shape [n_features]
+        The absolute feature ranking as ordered by selection process. It does not guarantee
+        that this order is correct for all models. For a model agnostic ranking, see the
+        the attribute ``ranking``
     tag_df : dataframe
         the df with the details (accepted or rejected) of the feature selection
     sha_cutoff_df : dataframe
@@ -1491,6 +1507,12 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
         self.tag_df = pd.DataFrame({'predictor': list(X.columns)})
         self.tag_df['BoostAGroota'] = 1
         self.tag_df['BoostAGroota'] = np.where(self.tag_df['predictor'].isin(list(self.support_names_)), 1, 0)
+        
+        b_df = self.sha_cutoff_df
+        real_df = b_df.iloc[:, :int(b_df.shape[1] / 2)].copy()
+        self.ranking_absolutes_ = real_df.mean().sort_values(ascending=True).index
+        self.ranking_ = self.tag_df['BoostAGroota'].values
+        self.ranking_ = np.where(self.ranking_ == 0, 2, 1)
         return self
         
             
@@ -1887,6 +1909,15 @@ class GrootCV(BaseEstimator, TransformerMixin):
     ----------
     support_names_: list of str
         the list of columns to keep
+    ranking_ : array of shape [n_features]
+        The feature ranking, such that ``ranking_[i]`` corresponds to the
+        ranking position of the i-th feature. Selected (i.e., estimated
+        best) features are assigned rank 1 and tentative features are assigned
+        rank 2.
+    ranking_absolutes_ : array of shape [n_features]
+        The absolute feature ranking as ordered by selection process. It does not guarantee
+        that this order is correct for all models. For a model agnostic ranking, see the
+        the attribute ``ranking``
     tag_df: dataframe
         the df with the details (accepted or rejected) of the feature selection
     cv_df: dataframe
@@ -1981,6 +2012,17 @@ class GrootCV(BaseEstimator, TransformerMixin):
         self.tag_df = pd.DataFrame({'predictor': list(x.columns)})
         self.tag_df['GrootCV'] = 1
         self.tag_df['GrootCV'] = np.where(self.tag_df['predictor'].isin(list(self.support_names_)), 1, 0)
+        
+
+        b_df = self.cv_df.T.copy()
+        b_df.columns = b_df.iloc[0]
+        b_df = b_df.drop(b_df.index[0])
+        b_df = b_df.drop(b_df.index[-1])
+        real_df = b_df.iloc[:, :int(b_df.shape[1] / 2)].copy()
+        self.ranking_absolutes_ = real_df.mean().sort_values(ascending=True).index
+        self.ranking_ = self.tag_df['GrootCV'].values
+        self.ranking_ = np.where(self.ranking_ == 0, 2, 1)
+        
         return self
 
     def transform(self, x):

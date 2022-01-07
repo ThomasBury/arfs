@@ -7,6 +7,8 @@
  - Numpy docstring style
  - Implement the new lightGBM callbacks
  - Fix a bug for computing the shap importance when the estimator is lightGBM and the task is classification
+ - Add ranking and absolute ranking attributes for all the classes
+
 ## 0.2.3
 
  - Update syntax to stick to the new argument names in Dython
