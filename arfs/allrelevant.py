@@ -2107,7 +2107,7 @@ class GrootCV(BaseEstimator, TransformerMixin):
         sha_df = b_df.iloc[:, int(b_df.shape[1] / 2):].copy()
 
         color = {'boxes': 'gray', 'whiskers': 'gray', 'medians': '#000000', 'caps': 'gray'}
-        real_df = real_df.reindex(real_df.mean().sort_values(ascending=True).index, axis=1)
+        real_df = real_df.reindex(real_df.select_dtypes(include=[np.number]).mean().sort_values(ascending=True).index, axis=1)
 
         if real_df.dropna().empty:
             warnings.warn("No feature selected - No data to plot")
@@ -2260,7 +2260,7 @@ def _reduce_vars_lgb_cv(x, y, objective, n_folds, cutoff, n_iter, silent, weight
         d_valid = lgb.Dataset(new_x_val, label=y_val, weight=weight_val,
                               categorical_feature=category_cols)
         watchlist = [d_train, d_valid]
-        params['verbose'] = -1
+        param['verbose'] = -1
         bst = lgb.train(param,
                         train_set=d_train,
                         num_boost_round=10000,
@@ -2303,7 +2303,7 @@ def _reduce_vars_lgb_cv(x, y, objective, n_folds, cutoff, n_iter, silent, weight
 
         i += 1
 
-    df['Med'] = df.mean(axis=1)
+    df['Med'] = df.select_dtypes(include=[np.number]).mean(axis=1)
     # Split them back out
     real_vars = df[~df['feature'].isin(shadow_names)]
     shadow_vars = df[df['feature'].isin(shadow_names)]
