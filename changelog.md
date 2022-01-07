@@ -2,12 +2,13 @@
 
 ## 0.3.0
 
- - Fix the Boruta_py counts
- - Fix the boxplot colours
+ - Fix the Boruta_py feature counts, now adds up to n_features
+ - Fix the boxplot colours, when only rejected and accepted (no tentative) the background color was the tentative color
  - Numpy docstring style
- - Implement the new lightGBM callbacks
+ - Implement the new lightGBM callbacks. The new lgbm version (>3.3.0) implements the early stopping using a callback rather than an argument
  - Fix a bug for computing the shap importance when the estimator is lightGBM and the task is classification
  - Add ranking and absolute ranking attributes for all the classes
+ - Fix future pandas TypeError when computing numerical values on a dataframe containing non-numerical columns
 
 ## 0.2.3
 
