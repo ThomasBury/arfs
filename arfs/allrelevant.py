@@ -1846,6 +1846,7 @@ def _BoostARoota(x, y, est, cutoff, iters, max_rounds, delta, silent, weight, im
         b_df.columns = b_df.iloc[0]
         b_df = b_df.drop(b_df.index[0])
         b_df = b_df.drop(b_df.index[-1])
+        b_df = b_df.convert_dtypes()
         for c in b_df.columns:
             imp_dic[c] = b_df[c].values 
             
@@ -2018,6 +2019,7 @@ class GrootCV(BaseEstimator, TransformerMixin):
         b_df.columns = b_df.iloc[0]
         b_df = b_df.drop(b_df.index[0])
         b_df = b_df.drop(b_df.index[-1])
+        b_df = b_df.convert_dtypes()
         real_df = b_df.iloc[:, :int(b_df.shape[1] / 2)].copy()
         self.ranking_absolutes_ = real_df.mean().sort_values(ascending=True).index
         self.ranking_ = self.tag_df['GrootCV'].values
@@ -2103,6 +2105,7 @@ class GrootCV(BaseEstimator, TransformerMixin):
         b_df.columns = b_df.iloc[0]
         b_df = b_df.drop(b_df.index[0])
         b_df = b_df.drop(b_df.index[-1])
+        b_df = b_df.convert_dtypes()
         real_df = b_df.iloc[:, :int(b_df.shape[1] / 2)].copy()
         sha_df = b_df.iloc[:, int(b_df.shape[1] / 2):].copy()
 
@@ -2141,8 +2144,8 @@ class GrootCV(BaseEstimator, TransformerMixin):
                             Line2D([0], [0], color="gray", lw=5),
                             Line2D([0], [0], linestyle='--', color="gray", lw=2)]
             bp.legend(custom_lines, ['confirmed', 'rejected', 'threshold'], loc="lower right")
-            fig = bp.get_figure()
             plt.title('Groot CV importance and selected predictors')
+            fig = bp.get_figure()
             # plt.tight_layout()
             # plt.show()
             return fig
