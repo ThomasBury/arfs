@@ -32,13 +32,14 @@ from __future__ import print_function, division
 import lightgbm as lgb
 import matplotlib as mpl
 import seaborn as sns
-from matplotlib import pyplot as plt
+import itertools
+import numpy as np
+import pandas as pd
 
+from numpy.random import choice
+from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.inspection import permutation_importance
-from palettable.cartocolors.qualitative import Bold_10
-import itertools
-import gc
 from sklearn.impute import SimpleImputer
 from sklearn.base import clone
 from sklearn.compose import ColumnTransformer
@@ -46,10 +47,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.datasets import fetch_openml
 from sklearn.datasets import load_boston, load_breast_cancer
 from sklearn.utils import Bunch
-import numpy as np
-import pandas as pd
-import random
-import string
+from palettable.cartocolors.qualitative import Bold_10
+
 
 
 #####################
@@ -107,6 +106,68 @@ def LightForestClassifier(n_feat, n_estimators=10):
     feat_frac = np.sqrt(n_feat) / n_feat
     return lgb.LGBMClassifier(verbose=-1, force_col_wise=True, n_estimators=n_estimators, subsample=0.632,
                               colsample_bytree=feat_frac, boosting_type="rf", subsample_freq=1)
+    
+    
+    
+def is_list_of_str(str_list):
+    """Check if ``str_list`` is not a list of strings
+
+    Parameters
+    ----------
+    str_list : list of str
+        the list we want to check for
+
+    Returns
+    -------
+    bool
+        True if list of strings, else False
+    """
+    if str_list is not None:
+        if not (isinstance(str_list, list) and all(isinstance(s, str) for s in str_list)):
+            return False
+        else:
+            return True
+
+def is_list_of_bool(bool_list):
+    """Check if ``bool_list`` is not a list of Booleans
+
+    Parameters
+    ----------
+    bool_list : list of bool
+        the list we want to check for
+
+    Returns
+    -------
+    bool
+        True if list of Booleans, else False
+    """
+    if bool_list is not None:
+        if not (isinstance(bool_list, list) and all(isinstance(s, bool) for s in bool_list)):
+            return False
+        else:
+            return True
+        
+def is_list_of_int(int_list):
+    """Check if ``int_list`` is not a list of integers
+
+    Parameters
+    ----------
+    int_list : list of int
+        the list we want to check for
+
+    Returns
+    -------
+    bool
+        True if list of integers, else False
+    """
+    if int_list is not None:
+        if not (isinstance(int_list, list) and all(isinstance(s, int) for s in int_list)):
+            return False
+        else:
+            return True
+        
+    
+
 
 
 def set_my_plt_style(height=3, width=5, linewidth=2):
@@ -319,11 +380,13 @@ def _get_titanic_data():
     X['family_size'] = X['parch'] + X['sibsp']
     X.drop(['parch', 'sibsp'], axis=1, inplace=True)
     X['is_alone'] = 1
-    X['is_alone'].loc[X['family_size'] > 1] = 0
+    X.loc[X['family_size'] > 1, 'is_alone'] = 0
     X['title'] = X['name'].str.split(", ", expand=True)[1].str.split(".", expand=True)[0]
-    X.title.loc[X.title == 'Miss'] = 'Mrs'
-    rare_titles = (X['title'].value_counts() < 10)
-    X['title'] = X.title.apply(lambda x: 'rare' if rare_titles[x] else x)
+    X.loc[X.title == 'Miss', 'title'] = 'Mrs'
+    title_counts = X['title'].value_counts()
+    rare_titles = title_counts[title_counts<10].index
+    X.loc[X['title'].isin(rare_titles), 'title'] = 'rare'
+    # X['title'] = X.title.apply(lambda x: 'rare' if rare_titles[x] else x)
 
     categorical_columns = ['pclass', 'sex', 'embarked', 'random_cat', 'is_alone', 'title']
     numerical_columns = ['age', 'family_size', 'fare', 'random_num']
