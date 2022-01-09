@@ -125,7 +125,7 @@ def cat_var(df, col_excl=None, return_cat=True):
 
     # avoid having datetime objects as keys in the mapping dic
     date_cols = [s for s in list(df) if "date" in s]
-    df[date_cols] = df[date_cols].astype(str)
+    df.loc[:, date_cols] = df.loc[:, date_cols].astype(str)
 
     cols_need_mapped = cat_var_df.cat_name.to_list()
     inv_mapper = {col: dict(enumerate(df[col].astype('category').cat.categories))
@@ -135,7 +135,7 @@ def cat_var(df, col_excl=None, return_cat=True):
     progress_bar = tqdm(cols_need_mapped)
     for c in progress_bar:
         progress_bar.set_description('Processing {0:<30}'.format(c))
-        df[c] = df[c].map(mapper[c]).fillna(0).astype(int)
+        df.loc[:, c] = df.loc[:, c].map(mapper[c]).fillna(0).astype(int)
         # I could have use df[c].update(df[c].map(mapper[c])) while slower,
         # prevents values not included in an incomplete map from being changed to nans.
         # But then I could have outputs
@@ -144,7 +144,7 @@ def cat_var(df, col_excl=None, return_cat=True):
         # Map is faster than replace
 
     if return_cat:
-        df[non_num_cols] = df[non_num_cols].astype('category')
+        df.loc[:, non_num_cols] = df.loc[:, non_num_cols].astype('category')
     return df, cat_var_df, inv_mapper, mapper
 
     
@@ -686,16 +686,16 @@ class FeatureSelector:
         else:
             is_external_data = True
 
-        df, cat_var_df, inv_mapper, mapper = cat_var(df, col_excl=col_excl, return_cat=return_cat)
+        df_enc, cat_var_df, inv_mapper, mapper = cat_var(df, col_excl=col_excl, return_cat=return_cat)
 
         self.cat_var_df = cat_var_df
         self.mapper = inv_mapper
 
         if not is_external_data:
             self.encoded = True
-            self.data = df
+            self.data = df_enc
 
-        return df
+        return df_enc
 
     def identify_collinear(self, correlation_threshold, encode=False, method='association'):
         """Finds collinear features based on the correlation coefficient between features.
@@ -806,7 +806,7 @@ class FeatureSelector:
             len(self.ops['collinear']), self.correlation_threshold))
 
     def identify_zero_importance(self, task, eval_metric=None, objective=None,
-                                 n_iterations=10, early_stopping=True, zero_as_missing=False):
+                                 n_iterations=10, use_early_stopping=True, zero_as_missing=False):
         """Identify the features with zero importance according to a gradient boosting machine.
         The gbm can be trained with early stopping using a utils set to prevent overfitting.
         The feature importances are averaged over `n_iterations` to reduce variance.
@@ -817,7 +817,7 @@ class FeatureSelector:
         ----------
         eval_metric : string
             Evaluation metric to use for the gradient boosting machine for early stopping. Must be
-            provided if `early_stopping` is True
+            provided if `use_early_stopping` is True
 
         objective : string
             define the LGBM specific objective if any
@@ -828,7 +828,7 @@ class FeatureSelector:
         n_iterations : int, default = 10
             Number of iterations to train the gradient boosting machine
 
-        early_stopping : boolean, default = True
+        use_early_stopping : boolean, default = True
             Whether or not to use early stopping with a utils set when training
 
         zero_as_missing : Bool, default = False
@@ -844,7 +844,7 @@ class FeatureSelector:
 
         """
 
-        if early_stopping and eval_metric is None:
+        if use_early_stopping and eval_metric is None:
             raise ValueError("""eval metric must be provided with early stopping. 
             Examples include "auc" for classification or "l2" for regression.""")
 
@@ -893,17 +893,17 @@ class FeatureSelector:
                 model.set_params(**{'objective': objective})
 
             # If training using early stopping need a utils set
-            if early_stopping:
+            if use_early_stopping:
                 if self.stratified:
                     rs = StratifiedShuffleSplit(n_splits=1, test_size=.20, random_state=42)
                     for train_index, test_index in rs.split(features, labels):
-                        valid_features, valid_labels, valid_weight = features.iloc[test_index], labels.iloc[test_index], weights.iloc[test_index] 
-                        train_features, train_labels, train_weight = features.iloc[train_index], labels.iloc[train_index], weights.iloc[train_index]
+                        valid_features, valid_labels, valid_weight = features[test_index, :], labels[test_index], weights[test_index] 
+                        train_features, train_labels, train_weight = features[train_index, :], labels[train_index], weights[train_index]
                 else:
                     rs = ShuffleSplit(n_splits=1, test_size=.20, random_state=42)
                     for train_index, test_index in rs.split(features):
-                        valid_features, valid_labels = features.iloc[test_index], labels.iloc[test_index]
-                        train_features, train_labels = features.iloc[train_index], labels.iloc[train_index]
+                        valid_features, valid_labels, valid_weight = features[test_index, :], labels[test_index], weights[test_index] 
+                        train_features, train_labels, train_weight = features[train_index, :], labels[train_index], weights[train_index]
                 
                 # train_idx = random.sample(range(features.shape[0]), k=int(features.shape[0] * .85))
                 # mask = np.zeros(features.shape[0], dtype=bool)
@@ -920,7 +920,6 @@ class FeatureSelector:
                 model.fit(train_features, train_labels, 
                           eval_metric=eval_metric,
                           eval_set=[(valid_features, valid_labels)],
-                          verbose=-1, 
                           sample_weight=train_weight,
                           callbacks=[early_stopping(20, False, False)],
                           eval_sample_weight=[valid_weight])
