@@ -85,7 +85,7 @@ def set_my_plt_style(height=3, width=5, linewidth=2):
     mpl.rcParams.update(params)
 
 
-def cat_var(df, col_excl=None, return_cat=True):
+def cat_var(data, col_excl=None, return_cat=True):
     """Categorical encoding (as integer). Automatically detect the non-numerical columns,
     save the index and name of those columns, encode them as integer,
     save the direct and inverse mappers as
@@ -94,7 +94,7 @@ def cat_var(df, col_excl=None, return_cat=True):
 
     Parameters
     ----------
-    df: pd.DataFrame
+    data: pd.DataFrame
         the dataset
     col_excl: list of str, default=None
         the list of columns names not being encoded (e.g. the ID column)
@@ -112,6 +112,7 @@ def cat_var(df, col_excl=None, return_cat=True):
         the dictionary to map category --> integer
     """
 
+    df = data.copy()
     if col_excl is None:
         non_num_cols = list(set(list(df.columns)) - set(list(df.select_dtypes(include=[np.number]))))
     else:
