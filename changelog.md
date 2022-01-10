@@ -9,6 +9,9 @@
  - Fix a bug for computing the shap importance when the estimator is lightGBM and the task is classification
  - Add ranking and absolute ranking attributes for all the classes
  - Fix future pandas TypeError when computing numerical values on a dataframe containing non-numerical columns
+ - Add housing data to the distribution
+ - Add "extreme" sampling methods
+ - Re-run the NBs
 
 ## 0.2.3
 
