@@ -34,5 +34,7 @@ setup(name="arfs",
       extras_require=EXTRAS_REQUIRE,
       python_requires='>=3.6',
       license='MIT',
-      keywords=KEYWORDS
+      keywords=KEYWORDS,
+      package_data={'': ['datasets/data/*.zip',
+                         'datasets/descr/*.rst']},
       )
