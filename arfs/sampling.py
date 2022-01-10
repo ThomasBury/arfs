@@ -45,8 +45,10 @@ def sample(df, n=1000, sample_weight=None, method='gower'):
     
     if method == 'gower':
         # basic imputation
-        X[non_num_cols] =  X[non_num_cols].fillna(X[non_num_cols].mode().iloc[0])
-        X[num_cols] =  X[num_cols].fillna(X[num_cols].mean().iloc[0])
+        if non_num_cols:
+            X[non_num_cols] =  X[non_num_cols].fillna(X[non_num_cols].mode().iloc[0])
+        if num_cols:    
+            X[num_cols] =  X[num_cols].fillna(X[num_cols].mean().iloc[0])
         
         # no need for scaling, it is built-in the computation of the Gower distance
         gd = gower_matrix(X, cat_features=non_num_cols, weight=sample_weight)
