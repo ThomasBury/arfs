@@ -59,50 +59,110 @@ from palettable.cartocolors.qualitative import Bold_10
 #####################
 
 def check_if_tree_based(model):
+    """check if estimator is tree based
+
+    Parameters
+    ----------
+    model : object
+        the estimator to check
+
+    Returns
+    -------
+    condition : boolean
+        if tree based or not
+    """
     tree_based_models = ['lightgbm', 'xgboost', 'catboost', '_forest', 'boosting']
     condition = any(i in str(type(model)).lower() for i in tree_based_models)
     return condition
 
 def is_lightgbm(estimator):
+    """check if estimator is lightgbm
+
+    Parameters
+    ----------
+    model : object
+        the estimator to check
+
+    Returns
+    -------
+    condition : boolean
+        if lgbm based or not
+    """
     is_lgb = 'lightgbm' in str(type(estimator))
     return is_lgb
 
 
 def is_catboost(estimator):
+    """check if estimator is catboost
+
+    Parameters
+    ----------
+    model : object
+        the estimator to check
+
+    Returns
+    -------
+    condition : boolean
+        if catboost based or not
+    """
     is_cat = 'catboost' in str(type(estimator))
     return is_cat
 
 
 def is_xgboost(estimator):
+    """check if estimator is xgboost
+
+    Parameters
+    ----------
+    model : object
+        the estimator to check
+
+    Returns
+    -------
+    condition : boolean
+        if xgboost based or not
+    """
     is_xgb = 'xgboost' in str(type(estimator))
     return is_xgb
 
-
+    
 def LightForestRegressor(n_feat, n_estimators=10):
-    """
-    lightGBM implementation of the Random Forest regressor with the
+    """lightGBM implementation of the Random Forest regressor with the
     ideal number of features, according to Elements of statistical learning
-    :param n_feat: int
+
+    Parameters
+    ----------
+    n_feat: int
         the number of predictors (nbr of columns of the X matrix)
-    :param n_estimators, int
-        the number of trees/estimators
-    :return: lightgbm regressor
+    n_estimators : int, optional
+        the number of trees/estimators, by default 10
+
+    Returns
+    -------
+    lightgbm regressor
+        sklearn random forest estimator based on lightgbm
     """
+
     feat_frac = n_feat / (3 * n_feat)
     return lgb.LGBMRegressor(verbose=-1, force_col_wise=True, n_estimators=n_estimators, subsample=0.632,
                              colsample_bytree=feat_frac, boosting_type="rf", subsample_freq=1)
 
 
 def LightForestClassifier(n_feat, n_estimators=10):
-    """
-    lightGBM implementation of the Random Forest classifier with the
+    """lightGBM implementation of the Random Forest classifier with the
     ideal number of features, according to Elements of statistical learning
-    :param n_feat: int
-        the number of predictors (nbr of columns of the X matrix)
-    :param n_estimators, int
-        the number of trees/estimators
 
-    :return: lightgbm regressor
+    Parameters
+    ----------
+    n_feat: int
+        the number of predictors (nbr of columns of the X matrix)
+    n_estimators : int, optional
+        the number of trees/estimators, by default 10
+
+    Returns
+    -------
+    lightgbm classifier
+        sklearn random forest estimator based on lightgbm
     """
     feat_frac = np.sqrt(n_feat) / n_feat
     return lgb.LGBMClassifier(verbose=-1, force_col_wise=True, n_estimators=n_estimators, subsample=0.632,
@@ -167,22 +227,20 @@ def is_list_of_int(int_list):
         else:
             return True
         
-    
-
-
 
 def set_my_plt_style(height=3, width=5, linewidth=2):
-    """
-    This set the style of matplotlib to fivethirtyeight with some modifications (colours, axes)
+    """This set the style of matplotlib to fivethirtyeight with some modifications (colours, axes)
 
-    :param linewidth: int, default=2
-        line width
-    :param height: int, default=3
-        fig height in inches (yeah they're still struggling with the metric system)
-    :param width: int, default=5
-        fig width in inches (yeah they're still struggling with the metric system)
-    :return: Nothing
+    Parameters
+    ----------
+    height : int, optional
+        global line width, by default 3
+    width : int, optional
+        fig height in inches, by default 5
+    linewidth : int, optional
+        fig width in inches, by default 2
     """
+
     plt.style.use('fivethirtyeight')
     my_colors_list = Bold_10.hex_colors
     myorder = [2, 3, 4, 1, 0, 6, 5, 8, 9, 7]
@@ -198,16 +256,28 @@ def set_my_plt_style(height=3, width=5, linewidth=2):
 
 
 def highlight_tick(str_match, figure, color='red', axis='y'):
-    """
-    Highlight the x/y tick-labels if they contains a given string
-    :param str_match: str,
+    """Highlight the x/y tick-labels if they contains a given string
+
+    Parameters
+    ----------
+    str_match : str
         the substring to match
-    :param color: str, default='red'
-        the matplotlib color for highlighting tick-labels
-    :param figure: object
+    figure : object
         the matplotlib figure
-    :return: object,
+    color : str, optional
+        the matplotlib color for highlighting tick-labels, by default 'red'
+    axis : str, optional
+        axis to use for highlighting, by default 'y'
+
+    Returns
+    -------
+    plt.figure
         the modified matplotlib figure
+
+    Raises
+    ------
+    ValueError
+        if axis is not 'x' or 'y'
     """
 
     if axis == 'y':
@@ -225,22 +295,32 @@ def highlight_tick(str_match, figure, color='red', axis='y'):
 
 
 def sklearn_pimp_bench(model, X, y, task='regression', sample_weight=None):
-    """
-    Benchmark using sklearn permutation importance, works for regression and classification.
+    """Benchmark using sklearn permutation importance, works for regression and classification.
 
-
-    :param model: object
+    Parameters
+    ----------
+    model: object
         An estimator that has not been fitted, sklearn compatible.
-    :param X: ndarray or DataFrame, shape (n_samples, n_features)
+    X : ndarray or DataFrame, shape (n_samples, n_features)
         Data on which permutation importance will be computed.
-    :param y: array-like or None, shape (n_samples, ) or (n_samples, n_classes)
+    y : array-like or None, shape (n_samples, ) or (n_samples, n_classes)
         Targets for supervised or None for unsupervised.
-    :param task: str, default='regression"
-        kind of task, either 'regression' or 'classification"
-    :param sample_weight: array-like of shape (n_samples,), default=None
-        Sample weights used in scoring.
-    :return:
+    task : str, optional
+        kind of task, either 'regression' or 'classification", by default 'regression'
+    sample_weight : array-like of shape (n_samples,), optional
+        Sample weights, by default None
+
+    Returns
+    -------
+    plt.figure
+        the figure corresponding to the feature selection
+
+    Raises
+    ------
+    ValueError
+        if task is not 'regression' or 'classification'
     """
+
     # for lightGBM cat feat as contiguous int
     # https://lightgbm.readthedocs.io/en/latest/Advanced-Topics.html
     # same for Random Forest and XGBoost (OHE leads to deep and sparse trees).
@@ -284,20 +364,20 @@ def sklearn_pimp_bench(model, X, y, task='regression', sample_weight=None):
 
 
 def compare_varimp(feat_selector, models, X, y, sample_weight=None):
-    """
-    Utility function to compare the results for the three possible king of feature importance
+    """Utility function to compare the results for the three possible king of feature importance
 
-    :param feat_selector: object
+    Parameters
+    ----------
+    feat_selector : object
         an instance of either Leshy, BoostaGRoota or GrootCV
-    :param models: list of objects
+    models : list of objects
         list of tree based scikit-learn estimators
-    :param X: pd.DataFrame, shape (n_samples, n_features)
+    X : pd.DataFrame, shape (n_samples, n_features)
         the predictors frame
-    :param y: pd.Series, shape (n_features,)
+    y : pd.Series
         the target (same length as X)
-    :param sample_weight: None or pd.Series shape (n_features,)
-        the sample weights if any (same length as target)
-    :return:
+    sample_weight : None or pd.Series, optional
+        sample weights if any, by default None
     """
 
     varimp_list = ['shap', 'pimp', 'native']
@@ -322,8 +402,6 @@ def compare_varimp(feat_selector, models, X, y, sample_weight=None):
             plt.show()
 
 
-
-def cat_var(df, col_excl=None, return_cat=True):
     """Identify categorical features.
 
         Parameters
@@ -337,6 +415,23 @@ def cat_var(df, col_excl=None, return_cat=True):
         :param df: pd.DF, the encoded data-frame
         :param col_excl: list, colums not to be encoded
         """
+def cat_var(df, col_excl=None, return_cat=True):
+    """Encode categorical variables using integers
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        the dataframe to be encoded
+    col_excl : None or list of str, optional
+        list of column names to exclude from the encoding, by default None
+    return_cat : bool, optional
+        return or not as pandas categorical columns, by default True
+
+    Returns
+    -------
+    pd.DataFrame, pd.DataFrame, dict
+        The encoded pandas dataframe, the dataframe with the details and the mapping dictionary
+    """
 
     if col_excl is None:
         non_num_cols = list(set(list(df.columns)) - set(list(df.select_dtypes(include=[np.number]))))
@@ -362,13 +457,13 @@ def cat_var(df, col_excl=None, return_cat=True):
 
 
 def _get_titanic_data():
-    """
-    Load Titanic data and add dummies (random predictors, numeric and categorical) and
+    """Load Titanic data and add dummies (random predictors, numeric and categorical) and
     a genuine one, for benchmarking purpose. Classification (binary)
 
-    :return: object
+    Returns
+    -------
+    object
         Bunch sklearn, extension of dictionary
-
     """
     # Fetch Titanic data and add random cat and numbers
     # Example taken from https://scikit-learn.org/stable/auto_examples/inspection/
@@ -412,13 +507,15 @@ def _get_titanic_data():
 
 
 def _get_cancer_data():
-    """
-    Load breast cancer data and add dummies (random predictors) and a genuine one, for benchmarking purpose
+    """Load breast cancer data and add dummies (random predictors) and a genuine one, for benchmarking purpose
     Classification (binary)
 
-    :return: object
+    Returns
+    -------
+    object
         Bunch sklearn, extension of dictionary
     """
+
     rng = np.random.RandomState(seed=42)
     data = load_breast_cancer()
     X, y = data.data, data.target
@@ -436,14 +533,15 @@ def _get_cancer_data():
 
 
 def _get_boston_data():
-    """
-    Load Boston data and add dummies (random predictors, numeric and categorical) and
+    """Load Boston data and add dummies (random predictors, numeric and categorical) and
     a genuine one, for benchmarking purpose. Regression (positive domain).
 
-    :return: object
+    Returns
+    -------
+    object
         Bunch sklearn, extension of dictionary
-
     """
+
     boston = load_boston()
     rng = np.random.RandomState(seed=42)
     X = pd.DataFrame(boston.data)
@@ -509,93 +607,26 @@ def _load_housing(as_frame: bool = False):
                      filename=data_file_name)
 
 
-def generated_corr_dataset_regr(size):
-    # weights
-    size = size
-    w = np.random.beta(a=1, b=0.5, size=size)
-    # fixing the seed and the target
-    np.random.seed(42)
-    sigma = 0.2
-    y = np.random.gamma(1, 4, size)
-    z = y + np.random.gamma(2, 2, size) - 2 * np.random.gamma(1, 1, size)
-    X = np.zeros((size, 11))
-
-    # 5 relevant features, with positive and negative correlation to the target
-    # and non-linearity
-    X[:, 0] = z
-    X[:, 1] = y * np.random.gamma(5, .5, size) + np.random.normal(2, sigma, size)
-    X[:, 2] = -y * z + np.random.normal(0, sigma, size)
-    X[:, 3] = y ** (2 + np.random.normal(0, sigma / 2, size))
-    X[:, 4] = np.sqrt(y) + np.random.gamma(1, .2, size)
-    X[:, 5] = X[:, 3] * X[:, 0] / X[:, 1]
-
-    # 5 irrelevant features (with one having high cardinality)
-    X[:, 6] = np.random.gamma(1, .2, size)
-    X[:, 7] = np.random.binomial(1, 0.3, size)
-    X[:, 8] = np.random.normal(0, 1, size)
-    X[:, 9] = np.random.gamma(1, 2, size)
-    X[:, 10] = np.arange(start=0, stop=size, step=1)
-
-    # make  it a pandas DF
-    column_names = ['var' + str(i) for i in range(11)]
-    X = pd.DataFrame(X)
-    X.columns = column_names
-
-    return X, y, w
-
-
-def generated_corr_dataset_classification(size):
-    # weights
-    size = size
-    w = np.random.beta(a=1, b=0.5, size=size)
-    # fixing the seed and the target
-    np.random.seed(42)
-    y = np.random.binomial(1, 0.5, size)
-    X = np.zeros((size, 11))
-
-    z = y - np.random.binomial(1, 0.1, size) + np.random.binomial(1, 0.1, size)
-    z[z == -1] = 0
-    z[z == 2] = 1
-
-    # 5 relevant features, with positive and negative correlation to the target
-    # and non-linearity
-    X[:, 0] = z
-    X[:, 1] = y * np.abs(np.random.normal(0, .1, size)) + np.random.normal(0, 0.1, size)
-    X[:, 2] = -y + np.random.normal(0, 1, size)
-    X[:, 3] = y ** 2 + np.random.normal(0, 1, size)
-    X[:, 4] = X[:, 3] * X[:, 2]  # np.sqrt(y) + np.random.binomial(2, 0.1, size)
-
-    # 6 irrelevant features (with one having high cardinality)
-    X[:, 5] = np.random.normal(0, 1, size)
-    X[:, 6] = np.random.poisson(1, size)
-    X[:, 7] = np.random.binomial(1, 0.3, size)
-    X[:, 8] = np.random.normal(0, 1, size)
-    X[:, 9] = np.random.poisson(1, size)
-    X[:, 10] = np.arange(start=0, stop=size, step=1)
-
-    # make  it a pandas DF
-    column_names = ['var' + str(i) for i in range(11)]
-    X = pd.DataFrame(X)
-    X.columns = column_names
-
-    return X, y, w
-
-
 def plot_y_vs_X(X, y, ncols=2, figsize=(10, 10)):
-    """
-    Plot target vs relevant and non-relevant predictors
+    """Plot target vs relevant and non-relevant predictors
 
-    :param X: pd.DataFrame
+    Parameters
+    ----------
+    X : pd.DataFrame
         the pd DF of the predictors
-    :param y: np.array
+    y : np.array
         the target
-    :param ncols: int, default=2
-        the number of columns in the facet plot
-    :param figsize: 2-uple of float, default=(10, 10)
-        the figure size
-    :return:f, matplotlib objects
+    ncols : int, optional
+        the number of columns in the facet plot, by default 2
+    figsize : tuple, optional
+        the figure size, by default (10, 10)
+
+    Returns
+    -------
+    plt.figure
         the univariate plots y vs pred_i
     """
+
 
     X = pd.DataFrame(X)
     ncols_to_plot = X.shape[1]
@@ -634,8 +665,7 @@ def plot_y_vs_X(X, y, ncols=2, figsize=(10, 10)):
 
 
 def load_data(name='Titanic'):
-    """
-    Load some toy data set to test the All Relevant Feature Selection methods.
+    """    Load some toy data set to test the All Relevant Feature Selection methods.
     Dummies (random) predictors are added and ARFS should be able to filter them out.
     The Titanic predictors are encoded (needed for scikit estimators).
 
@@ -645,11 +675,21 @@ def load_data(name='Titanic'):
 
     Boston is for regression, this data set contains
 
-    :param name: str, default='Titanic'
+    Parameters
+    ----------
+    name : str, optional
         the name of the data set. Titanic is for classification with sample_weight,
-        Boston for regression and cancer for classification (without sample weight)
-    :return: Bunch
+        Boston for regression and cancer for classification (without sample weight), by default 'Titanic'
+
+    Returns
+    -------
+    Bunch
         extension of dictionary, accessible by key
+
+    Raises
+    ------
+    ValueError
+        if the dataset name is invalid
     """
 
     if name == 'Titanic':
@@ -665,6 +705,19 @@ def load_data(name='Titanic'):
 
 
 def _generated_corr_dataset_regr(size=1000):
+    """Generate artificial dataset for regression tasks. Some columns are
+    correlated, have no variance, large cardinality, numerical and categorical.
+
+    Parameters
+    ----------
+    size : int, optional
+        number of rows to generate, by default 1000
+
+    Returns
+    -------
+    pd.DataFrame, pd.Series, pd.Series
+        the predictors matrix, the target and the weights
+    """
     # weights
     w = np.random.beta(a=1, b=0.5, size=size)
     # fixing the seed and the target
@@ -717,6 +770,19 @@ def _generated_corr_dataset_regr(size=1000):
 
 
 def _generated_corr_dataset_classification(size=1000):
+    """Generate artificial dataset for classification tasks. Some columns are
+    correlated, have no variance, large cardinality, numerical and categorical.
+
+    Parameters
+    ----------
+    size : int, optional
+        number of rows to generate, by default 1000
+
+    Returns
+    -------
+    pd.DataFrame, pd.Series, pd.Series
+        the predictors matrix, the target and the weights
+    """
     # weights
     w = np.random.beta(a=1, b=0.5, size=size)
     # fixing the seed and the target
