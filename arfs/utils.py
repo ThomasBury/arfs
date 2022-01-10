@@ -36,6 +36,7 @@ import itertools
 import numpy as np
 import pandas as pd
 
+from pkg_resources import resource_filename
 from numpy.random import choice
 from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
@@ -471,6 +472,41 @@ def _get_boston_data():
                  target=y,
                  sample_weight=None,
                  categorical=cat_f)
+    
+    
+def _load_housing(as_frame: bool = False):
+    """Load the California housing data. See here
+    https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html
+    for the downloadable version.
+
+    Parameters
+    ----------
+    as_frame :
+        return a pandas dataframe? if not then a "Bunch" (enhanced dictionary) is returned (default ``True``)
+    
+    Returns
+    -------
+    pd.DataFrame or Bunch
+        the dataset
+
+    """
+    fdescr_name = resource_filename(__name__, 'dataset/descr/housing.rst')
+    with open(fdescr_name) as f:
+        descr_text = f.read()
+
+    data_file_name = resource_filename(__name__, 'dataset/data/housing.zip')
+    data = pd.read_csv(data_file_name)
+    feature_names = ['MedInc', 'HouseAge', 'AveRooms', 'AveBedrms',
+                     'Population', 'AveOccup', 'Latitude', 'Longitude']
+
+    if as_frame:
+        return data
+    else:
+        return Bunch(data=data[feature_names].values,
+                     target=data['target'].values,
+                     feature_names=feature_names,
+                     DESCR=descr_text,
+                     filename=data_file_name)
 
 
 def generated_corr_dataset_regr(size):
@@ -622,8 +658,10 @@ def load_data(name='Titanic'):
         return _get_boston_data()
     elif name == 'cancer':
         return _get_cancer_data()
+    elif name =="housing":
+        return _load_housing(as_frame=False)
     else:
-        raise ValueError("`name should be in ['Titanic', 'Boston', 'cancer']`")
+        raise ValueError("`name should be in ['Titanic', 'Boston', 'cancer', 'housing']`")
 
 
 def _generated_corr_dataset_regr(size=1000):
@@ -660,10 +698,20 @@ def _generated_corr_dataset_regr(size=1000):
 
     # make  it a pandas DF
     column_names = ['var' + str(i) for i in range(13)]
-    column_names[11] = 'emb_dummy'
+    column_names[11] = 'dummy_cat'
     X = pd.DataFrame(X)
     X.columns = column_names
-    X['emb_dummy'] = X['emb_dummy'].astype('category')
+    X['dummy_cat'] = X['dummy_cat'].astype('category')
+        # low cardinality
+    nice_guys = ['Rick', 'Bender', 'Cartman', 'Morty', 'Fry', 'Vador',
+                 'Thanos', 'Bejita', 'Cell', 'Tinkywinky', 'Lecter',
+                 'Alien', 'Terminator', 'Drago', 'Dracula',
+                 'Krueger', 'Geoffrey', 'Goldfinder', 'Blackbeard',
+                 'Excel', 'SAS', 'Bias', 'Variance', 'Scrum',
+                 'Human', 'Garry', 'Coldplay', 'Imaginedragons',
+                 'Platist', 'Creationist', 'Gruber', 'KeyserSoze', 'Luthor',
+                 'Klaue', 'Bane', 'MarkZ']
+    X['nice_guys'] = np.random.choice(nice_guys, X.shape[0])
 
     return X, y, w
 
@@ -704,9 +752,19 @@ def _generated_corr_dataset_classification(size=1000):
 
     # make  it a pandas DF
     column_names = ['var' + str(i) for i in range(13)]
-    column_names[11] = 'emb_dummy'
+    column_names[11] = 'dummy'
     X = pd.DataFrame(X)
     X.columns = column_names
-    X['emb_dummy'] = X['emb_dummy'].astype('category')
+    X['dummy'] = X['dummy'].astype('category')
+
+    nice_guys = ['Rick', 'Bender', 'Cartman', 'Morty', 'Fry', 'Vador',
+                 'Thanos', 'Bejita', 'Cell', 'Tinkywinky', 'Lecter',
+                 'Alien', 'Terminator', 'Drago', 'Dracula',
+                 'Krueger', 'Geoffrey', 'Goldfinder', 'Blackbeard',
+                 'Excel', 'SAS', 'Bias', 'Variance', 'Scrum',
+                 'Human', 'Garry', 'Coldplay', 'Imaginedragons',
+                 'Platist', 'Creationist', 'Gruber', 'KeyserSoze', 'Luthor',
+                 'Klaue', 'Bane', 'MarkZ']
+    X['nice_guys'] = np.random.choice(nice_guys, X.shape[0])
 
     return X, y, w
