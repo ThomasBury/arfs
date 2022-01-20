@@ -59,6 +59,7 @@ def sample(df, n=1000, sample_weight=None, method='gower'):
         X_nonnum = X.groupby('label')[non_num_cols].agg(get_most_common)
         X_num = X.groupby('label')[num_cols].agg('mean')
         X_sampled = X_num.join(X_nonnum)
+        X_sampled = X_sampled.reindex(X.columns, axis=1)
         return X_sampled
     elif method == 'isoforest':
         X[non_num_cols] = X[non_num_cols].astype('str').astype('category')

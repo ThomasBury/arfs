@@ -12,6 +12,7 @@
  - Add housing data to the distribution
  - Add "extreme" sampling methods
  - Re-run the NBs
+ - reindex to keep the original columns order
 
 ## 0.2.3
 
