@@ -25,7 +25,7 @@ import warnings
 # numpy and pandas for data manipulation
 import pandas as pd
 import numpy as np
-from dython.nominal import compute_associations
+from dython.nominal import associations
 # model used for feature importance, Shapley values are builtin
 import lightgbm as lgb
 from lightgbm import early_stopping
@@ -219,13 +219,16 @@ def plot_associations(df, features=None, size=1200, theil_u=False):
     # nominal features
     nom_features = set(features) - set(con_features)
 
-    assoc_df = compute_associations(df,
-                                    nominal_columns=nom_features,
-                                    mark_columns=True,
-                                    theil_u=theil_u,
-                                    clustering=True,
-                                    bias_correction=True,
-                                    nan_strategy='drop_samples')
+    nom_nom_assoc = 'theil' if theil_u else 'cramer'
+    assoc_df = associations(df,
+                            nominal_columns=nom_features,
+                            mark_columns=True,
+                            num_num_assoc='spearman',
+                            nom_nom_assoc=nom_nom_assoc,
+                            clustering=True,
+                            bias_correction=True,
+                            nan_strategy='drop_samples',
+                            compute_only=True)['corr']
 
     heatmap = hv.HeatMap((assoc_df.columns, assoc_df.index, assoc_df)).redim.range(z=(-1, 1))
 
@@ -743,14 +746,14 @@ class FeatureSelector:
             # nominal features
             nom_features = set(features) - set(con_features)
 
-            self.corr_matrix = compute_associations(self.data,
-                                                    nominal_columns=nom_features,
-                                                    mark_columns=True,
-                                                    num_num_assoc='spearman',
-                                                    nom_nom_assoc='theil',
-                                                    clustering=True,
-                                                    bias_correction=True,
-                                                    nan_strategy='drop_samples')
+            self.corr_matrix = associations(self.data,
+                                            nominal_columns=nom_features,
+                                            mark_columns=True,
+                                            num_num_assoc='spearman',
+                                            nom_nom_assoc='theil',
+                                            clustering=True,
+                                            nan_strategy='drop_samples',
+                                            compute_only=True)['corr']
 
             upper = self.corr_matrix.where(np.triu(np.ones(self.corr_matrix.shape), k=1).astype(np.bool))
             to_drop = [column for column in upper.columns if
@@ -1271,7 +1274,7 @@ class FeatureSelector:
         panel_layout = pn.Column(
                 pn.pane.Markdown(title_str, align="start"),  # bold
                 pn.pane.Markdown(sub_title_str, align="start"),  # italic
-                heatmap, background='#ebebeb'
+                heatmap, background='#b3b3b3'
         )
 
         return panel_layout
