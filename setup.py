@@ -37,9 +37,9 @@ setup(name=ABOUT['__title__'],
       zip_safe=False,  # the package can run out of an .egg file
       install_requires=INSTALL_REQUIRES,
       extras_require=EXTRAS_REQUIRE,
-      python_requires='>=3.6',
+      python_requires='>=3.6, <3.10',
       license=ABOUT['__license__'],
       keywords=KEYWORDS,
-      package_data={'': ['datasets/data/*.zip',
-                         'datasets/descr/*.rst']},
+      package_data={'': ['dataset/data/*.zip',
+                         'dataset/descr/*.rst']},
       )

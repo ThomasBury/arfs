@@ -1,8 +1,12 @@
 # Changes
 
+## 0.3.2
+
+ - fix typo for distributing the dataset and pinned the dependencies
 ## 0.3.1 
 
  - Update the syntax for computing associations using the latest version of dython
+
 ## 0.3.0
 
  - Fix the Boruta_py feature counts, now adds up to n_features
