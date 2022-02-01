@@ -12,7 +12,7 @@ Moreover, it provides a module for performing pre-filtering (columns with too ma
 
 ## Installation
 
-`$ pip install arfs`
+`$ pip install arfs`, requires python <3.10
 
 ## Example
 
