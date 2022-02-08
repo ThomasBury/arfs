@@ -18,14 +18,14 @@ Moreover, it provides a module for performing pre-filtering (columns with too ma
 
 Working examples for:
 
- - [Regression](./examples/Regression.ipynb)
- - [Classification](./examples/Classification.ipynb)
- - [Categoricals](./examples/Categoricals.ipynb)
- - [Collinearity](./examples/Collinearity.ipynb)
- - [Pre-filters](./examples/pre-filtering.ipynb)
- - [Reducing run time for large data](large_data_sampling.ipynb)
- - [Comparison to Boruta](./examples/Boruta_comparison.ipynb)
- - [Comparison to BorutaShap](./examples/BorutaShap_comparison.ipynb)
+ - [Regression](./docs/notebooks/Regression.ipynb)
+ - [Classification](./docs/notebooks/Classification.ipynb)
+ - [Categoricals](./docs/notebooks/Categoricals.ipynb)
+ - [Collinearity](./docs/notebooks/Collinearity.ipynb)
+ - [Pre-filters](./docs/notebooks/pre-filtering.ipynb)
+ - [Reducing run time for large data](./docs/notebooks/large_data_sampling.ipynb)
+ - [Comparison to Boruta](./docs/notebooks/Boruta_comparison.ipynb)
+ - [Comparison to BorutaShap](./docs/notebooks/BorutaShap_comparison.ipynb)
 
 For imbalanced classification:
  - GrootCV will automatically detect imbalanced data and set the lightGBM `'is_unbalance' = True`
