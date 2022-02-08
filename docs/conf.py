@@ -13,8 +13,9 @@
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
-
-
+import sys
+import os
+sys.path.insert(0, os.path.abspath('../../arfs'))
 # -- Project information -----------------------------------------------------
 
 project = 'arfs'
@@ -46,6 +47,7 @@ extensions = [
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
+autosummary_generate = True
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -66,3 +68,21 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 html_title = 'ARFS Documentation'
 html_show_sourcelink = True
+html_logo = "logo.png"
+
+# -- Napoleon settings (for numpydoc parsing) --------------------------------
+# https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html#configuration
+napoleon_google_docstring = False
+napoleon_numpy_docstring = True
+napoleon_include_init_with_doc = True
+napoleon_include_private_with_doc = True
+napoleon_include_special_with_doc = True
+napoleon_use_admonition_for_examples = False
+napoleon_use_admonition_for_notes = False
+napoleon_use_admonition_for_references = False
+napoleon_use_ivar = True
+napoleon_use_param = True
+napoleon_use_rtype = False
+napoleon_preprocess_types = True
+napoleon_type_aliases = None
+napoleon_attr_annotations = True

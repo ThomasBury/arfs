@@ -1,5 +1,4 @@
-"""
-This module provides 3 different methods to perform 'all relevant feature selection'
+"""This module provides 3 different methods to perform 'all relevant feature selection'
 
 
 Reference:
@@ -14,8 +13,8 @@ J Stat Softw, 2010, vol. 36, no 11, p. 1-13.
 
 https://github.com/chasedehan/BoostARoota
 
-The module structure is the following:
----------------------------------------
+The module structure:
+---------------------
 - The ``Leshy`` class, a heavy re-work of ``BorutaPy`` class
   itself a modified version of Boruta, the pull request I submitted and still pending:
   https://github.com/scikit-learn-contrib/boruta_py/pull/77
@@ -25,6 +24,7 @@ The module structure is the following:
 
 - The ``GrootCV`` class for a new method for all relevant feature selection using a lightgGBM model,
   cross-validated SHAP importances and shadowing.
+  
 """
 
 from __future__ import print_function, division
@@ -262,35 +262,34 @@ class Leshy(BaseEstimator, TransformerMixin):
 
     Examples
     --------
-
-    import pandas as pd
-    from sklearn.ensemble import RandomForestClassifier
-    from boruta import BorutaPy
-
-    # load X and y
-    # NOTE BorutaPy accepts numpy arrays only, hence the .values attribute
-    X = pd.read_csv('examples/test_X.csv', index_col=0).values
-    y = pd.read_csv('examples/test_y.csv', header=None, index_col=0).values
-    y = y.ravel()
-
-    # define random forest classifier, with utilising all cores and
-    # sampling in proportion to y labels
-    rf = RandomForestClassifier(n_jobs=-1, class_weight='balanced', max_depth=5)
-
-    # define Boruta feature selection method
-    feat_selector = Leshy(rf, n_estimators='auto', verbose=2, random_state=1)
-
-    # find all relevant features - 5 features should be selected
-    feat_selector.fit(X, y)
-
-    # check selected features - first 5 features are selected
-    feat_selector.support_
-
-    # check ranking of features
-    feat_selector.ranking_
-
-    # call transform() on X to filter it down to selected features
-    X_filtered = feat_selector.transform(X)
+    >>> import pandas as pd
+    >>> from sklearn.ensemble import RandomForestClassifier
+    >>> from boruta import BorutaPy
+    >>> 
+    >>> # load X and y
+    >>> # NOTE BorutaPy accepts numpy arrays only, hence the .values attribute
+    >>> X = pd.read_csv('examples/test_X.csv', index_col=0).values
+    >>> y = pd.read_csv('examples/test_y.csv', header=None, index_col=0).values
+    >>> y = y.ravel()
+    >>> 
+    >>> # define random forest classifier, with utilising all cores and
+    >>> # sampling in proportion to y labels
+    >>> rf = RandomForestClassifier(n_jobs=-1, class_weight='balanced', max_depth=5)
+    >>> 
+    >>> # define Boruta feature selection method
+    >>> feat_selector = Leshy(rf, n_estimators='auto', verbose=2, random_state=1)
+    >>> 
+    >>> # find all relevant features - 5 features should be selected
+    >>> feat_selector.fit(X, y)
+    >>> 
+    >>> # check selected features - first 5 features are selected
+    >>> feat_selector.support_names_
+    >>> 
+    >>> # check ranking of features
+    >>> feat_selector.ranking_
+    >>> 
+    >>> # call transform() on X to filter it down to selected features
+    >>> X_filtered = feat_selector.transform(X)
 
     References
     ----------
@@ -298,6 +297,7 @@ class Leshy(BaseEstimator, TransformerMixin):
     
     ..[1] Kursa M., Rudnicki W., "Feature Selection with the Boruta Package"
         Journal of Statistical Software, Vol. 36, Issue 11, Sep 2010
+        
     """
 
     def __init__(self, estimator, n_estimators=1000, perc=90, alpha=0.05, importance='shap',
@@ -1308,10 +1308,9 @@ def _get_imp(estimator, X, y, sample_weight=None, cat_feature=None):
 ###################################
 
 class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
-    """BoostARoota becomes BoostAGroota, I'm Groot
-    
-    BoostAGroota is an all relevant feature selection method, while most other are
-    minimal optimal; this means it tries to find all features carrying
+    """BoostARoota becomes BoostAGroota, I'm Groot. BoostAGroota is an all relevant 
+    feature selection method, while most other are minimal optimal; 
+    this means it tries to find all features carrying
     information usable for prediction, rather than finding a possibly compact
     subset of features on which some estimator has a minimal error.
     Why bother with all relevant feature selection?
@@ -1402,18 +1401,17 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
 
     Examples
     --------
-    X = df[filtered_features].copy()
-    y = df['re_cl'].copy()
-    w = df["exp_yr"].copy()
-    y = y/w.replace(0,1)
-    y = y.fillna(0)
-
-    model = LGBMRegressor(n_jobs=-1, n_estimators=100, objective='poisson',
-                          random_state=42, verbose=0)
-    br = BoostARoota(est=model, cutoff=1, iters=10, max_rounds=10,
-                     delta=0.1, silent=False, weight=w)
-    br.fit(X, y)
-    br.plot_importance()
+    >>> X = df[filtered_features].copy()
+    >>> y = df['target'].copy()
+    >>> w = df['weight'].copy()
+    >>> 
+    >>> model = LGBMRegressor(n_jobs=-1, n_estimators=100, objective='rmse',
+    >>>                       random_state=42, verbose=0)
+    >>> feat_selector = BoostAGroota(est=model, cutoff=1, iters=10, max_rounds=10, delta=0.1, importance='shap')
+    >>> feat_selector.fit(X, y, sample_weight=None)
+    >>> print(feat_selector.support_names_)
+    >>> feat_selector.plot_importance(n_feat_per_inch=5)
+    
     """
 
     def __init__(self, est=None, cutoff=4, iters=10, max_rounds=500, delta=0.1,
@@ -1927,17 +1925,14 @@ class GrootCV(BaseEstimator, TransformerMixin):
 
     Examples
     -------
-    X = df[filtered_features].copy()
-    y = df['re_cl'].copy()
-    w = df["exp_yr"].copy()
-    y = y/w.replace(0,1)
-    y = y.fillna(0)
-    # The smaller the cutoff, the more aggresive the feature selection
-    #br = noglmgroot.BoostARoota(objective = 'binary', cutoff = 1.1, weight=w, silent=True)
-    br = noglmgroot.GrootCV(objective = 'poisson', cutoff = 1,
-                            weight=w, silent=False, n_folds=3, n_iter=10)
-    br.fit(X, y)
-    br.plot_importanc
+    >>> X = df[filtered_features].copy()
+    >>> y = df['target'].copy()
+    >>> w = df['weight'].copy()
+    >>> 
+    >>> feat_selector = arfsgroot.GrootCV(objective='rmse', cutoff = 1, n_folds=5, n_iter=5)
+    >>> feat_selector.fit(X, y, sample_weight=None)
+    >>> feat_selector.plot_importance(n_feat_per_inch=5)
+    
     """
 
     def __init__(self, objective=None, cutoff=1, n_folds=5, n_iter=5,

@@ -1,43 +1,17 @@
 """
-This module provides 3 different methods to perform 'all relevant feature selection'
-
-
-Reference:
-----------
-NILSSON, Roland, PEÑA, José M., BJÖRKEGREN, Johan, et al.
-Consistent feature selection for pattern recognition in polynomial time.
-Journal of Machine Learning Research, 2007, vol. 8, no Mar, p. 589-612.
-
-KURSA, Miron B., RUDNICKI, Witold R., et al.
-Feature selection with the Boruta package.
-J Stat Softw, 2010, vol. 36, no 11, p. 1-13.
-
-https://github.com/chasedehan/BoostARoota
-
-The module structure is the following:
----------------------------------------
-- The ``Leshy`` class, a heavy re-work of ``BorutaPy`` class
-  itself a modified version of Boruta, the pull request I submitted and still pending:
-  https://github.com/scikit-learn-contrib/boruta_py/pull/77
-
-- The ``BoostAGroota`` class, a modified version of BoostARoota, PR still to be submitted
-  https://github.com/chasedehan/BoostARoota
-
-- The ``GrootCV`` class for a new method for all relevant feature selection using a lgGBM model,
-  cross-validated SHAP importances and shadowing.
+Utility and validation functions
+  
 """
 
 from __future__ import print_function, division
 
 import lightgbm as lgb
 import matplotlib as mpl
-import seaborn as sns
 import itertools
 import numpy as np
 import pandas as pd
 
 from pkg_resources import resource_filename
-from numpy.random import choice
 from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.inspection import permutation_importance

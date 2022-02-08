@@ -1,5 +1,4 @@
-"""
-This module provides a class for basic feature selection based on the following rationals:
+"""This module provides a class for basic feature selection based on the following rationals:
         1. Find columns with a missing percentage greater than a specified threshold
         2. Find columns with a single unique value
         3. Find collinear variables with a correlation greater than a specified correlation coefficient
@@ -435,74 +434,74 @@ class FeatureSelector:
 
     Examples
     --------
-
-    # Initiate an instance of the feature selector
-    fs = noglmfs.FeatureSelector(data = df[predictors], labels = df.re_cl_RCC, weight = df.exp_yr)
-
-    # A dictionary to store the output of each step (to combine with further selection,
-    not provided by this FS, or to split the process in two parts to speed up the
-    computation of the correlation matrix.)
-    fsDic = {}
-    # Missing values
-    fs.identify_missing(missing_threshold=0.2)
-    fsDic['starting_list'] = predictors
-    fsDic['missing'] = fs.ops['missing']
-    fs.plot_missing()
-
-    # Unique value
-    fs.identify_single_unique()
-    fs.plot_unique()
-    fsDic['single_unique'] = fs.ops['single_unique']
-
-    # Large cardinality
-    fs.identify_high_cardinality(max_card=2500)
-    fs.plot_cardinality()
-    fsDic['high_cardinality'] = fs.ops['high_cardinality']
-
-    # Remove the tagged predictors so far to speed up the computation of the sorted correlation matrix
-    cols_to_drop = fs.check_removal()
-    filtered_features = list( set(predictors) - set(cols_to_drop) )
-    survivors_cols = targets + exposure  + filtered_features
-    df_red = df[survivors_cols].copy()
-    fs_df = fs.tag_df
-
-    # New instance of the feature selector
-    gc.enable()
-    del(fs)
-    gc.collect()
-    fs = noglmfs.FeatureSelector(data = df_red[filtered_features],
-                                 labels = df_red.re_cl_RCC,
-                                 weight = df_red.exp_yr)
-
-    # Correlation
-    fs.identify_collinear(correlation_threshold=0.85, encode=False)
-    fs_df = fs_df.merge(fs.tag_df, how='left') # tag the discarded predictors and store the results
-    fsDic['collinear'] = sorted(fs.ops['collinear']
-    heatmap = fs.plot_collinear(plot_all=True, size=1500)
-    hv.save(heatmap, outpath + "heatmap_corr_TPLMD_freq.html")
-
-    # Drop the predictors tagged by the correlation step and remove them in order to speed up the next steps
-    prefiltered_feat_to_remove = fs.check_removal()
-    features_all_corrfilt = list(set(filtered_features) - set(prefiltered_feat_to_remove))
-
-    # New instance of the feature selector
-    gc.enable()
-    del(fs)
-    gc.collect()
-    X = df[features_all_corrfilt].copy()
-    fs = noglmfs.FeatureSelector(data = X, labels = df.re_cl_RCC, weight = df.exp_yr)
-    fs.encoded = True
-
-    # Identify the zero and low importance predictors
-    fs.identify_zero_importance(task = 'regression', eval_metric = 'poisson',
-                                n_iterations = 10, early_stopping = True)
-    cum_imp_threshold = 0.95
-    fs.identify_low_importance(cumulative_importance = cum_imp_threshold)
-    fsDic['zero_importance'] = fs.ops['zero_importance']
-    fsDic['low_importance'] = fs.ops['low_importance']
-    fs_df = fs_df.merge(fs.tag_df, how='left')
-    feat_imp = fs.plot_feature_importances(threshold = 0.9, plot_n = 50)
-    hv.save(feat_imp, outpath+"feat_imp_TPLMD_freq.html")
+    >>> # Initiate an instance of the feature selector
+    >>> fs = noglmfs.FeatureSelector(data = df[predictors], labels = df.re_cl_RCC, weight = df.exp_yr)
+    >>> 
+    >>> # A dictionary to store the output of each step (to combine with further selection,
+    >>> not provided by this FS, or to split the process in two parts to speed up the
+    >>> computation of the correlation matrix.)
+    >>> fsDic = {}
+    >>> # Missing values
+    >>> fs.identify_missing(missing_threshold=0.2)
+    >>> fsDic['starting_list'] = predictors
+    >>> fsDic['missing'] = fs.ops['missing']
+    >>> fs.plot_missing()
+    >>> 
+    >>> # Unique value
+    >>> fs.identify_single_unique()
+    >>> fs.plot_unique()
+    >>> fsDic['single_unique'] = fs.ops['single_unique']
+    >>> 
+    >>> # Large cardinality
+    >>> fs.identify_high_cardinality(max_card=2500)
+    >>> fs.plot_cardinality()
+    >>> fsDic['high_cardinality'] = fs.ops['high_cardinality']
+    >>> 
+    >>> # Remove the tagged predictors so far to speed up the computation of the sorted correlation matrix
+    >>> cols_to_drop = fs.check_removal()
+    >>> filtered_features = list( set(predictors) - set(cols_to_drop) )
+    >>> survivors_cols = targets + exposure  + filtered_features
+    >>> df_red = df[survivors_cols].copy()
+    >>> fs_df = fs.tag_df
+    >>> 
+    >>> # New instance of the feature selector
+    >>> gc.enable()
+    >>> del(fs)
+    >>> gc.collect()
+    >>> fs = noglmfs.FeatureSelector(data = df_red[filtered_features],
+    >>>                              labels = df_red.re_cl_RCC,
+    >>>                              weight = df_red.exp_yr)
+    >>> 
+    >>> # Correlation
+    >>> fs.identify_collinear(correlation_threshold=0.85, encode=False)
+    >>> fs_df = fs_df.merge(fs.tag_df, how='left') # tag the discarded predictors and store the results
+    >>> fsDic['collinear'] = sorted(fs.ops['collinear']
+    >>> heatmap = fs.plot_collinear(plot_all=True, size=1500)
+    >>> hv.save(heatmap, outpath + "heatmap_corr_TPLMD_freq.html")
+    >>> 
+    >>> # Drop the predictors tagged by the correlation step and remove them in order to speed up the next steps
+    >>> prefiltered_feat_to_remove = fs.check_removal()
+    >>> features_all_corrfilt = list(set(filtered_features) - set(prefiltered_feat_to_remove))
+    >>> 
+    >>> # New instance of the feature selector
+    >>> gc.enable()
+    >>> del(fs)
+    >>> gc.collect()
+    >>> X = df[features_all_corrfilt].copy()
+    >>> fs = noglmfs.FeatureSelector(data = X, labels = df.re_cl_RCC, weight = df.exp_yr)
+    >>> fs.encoded = True
+    >>> 
+    >>> # Identify the zero and low importance predictors
+    >>> fs.identify_zero_importance(task = 'regression', eval_metric = 'poisson',
+    >>>                             n_iterations = 10, early_stopping = True)
+    >>> cum_imp_threshold = 0.95
+    >>> fs.identify_low_importance(cumulative_importance = cum_imp_threshold)
+    >>> fsDic['zero_importance'] = fs.ops['zero_importance']
+    >>> fsDic['low_importance'] = fs.ops['low_importance']
+    >>> fs_df = fs_df.merge(fs.tag_df, how='left')
+    >>> feat_imp = fs.plot_feature_importances(threshold = 0.9, plot_n = 50)
+    >>> hv.save(feat_imp, outpath+"feat_imp_TPLMD_freq.html")
+    >>> 
     """
 
     def __init__(self, X, y=None, sample_weight=None):

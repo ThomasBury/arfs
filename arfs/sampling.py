@@ -1,3 +1,6 @@
+"""This module provide methods for sampling large datasets for reducing the running time
+    
+"""
 import numpy as np
 import pandas as pd
 from typing import Union, List
