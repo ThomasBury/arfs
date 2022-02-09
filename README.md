@@ -2,6 +2,10 @@
 
 [buy me caffeine](https://ko-fi.com/V7V72SOHX)
 
+[![Documentation Status](https://readthedocs.org/projects/arfs/badge/?version=latest)](https://arfs.readthedocs.io/en/latest/?badge=latest)
+
+[ARFS readthedocs](https://arfs.readthedocs.io/en/latest/#)
+
 # All relevant feature selection
 
 All relevant feature selection means trying to find all features carrying information usable for prediction, rather than finding a possibly compact subset of features on which some particular model has a minimal error. This might include redundant predictors. All relevant feature selection is model agnostic in the sense that it doesn't optimize a scoring function for a *specific* model but rather tries to select all the predictors which are related to the response. 
