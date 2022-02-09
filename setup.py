@@ -19,19 +19,24 @@ EXTRAS_REQUIRE = {
         'pytest-cov',
         ],
     'docs': [
-        'coverage',
-        'nbsphinx',
-        'pandoc',
-        'sphinx',
-        'sphinx_autodoc',
-        'sphinx-autodoc-typehints',
-        'sphinx-copybutton',
-        'sphinx-rtd-theme',
-        'sphinx-tabs'
+        'nbsphinx==0.8.8',
+        'pandoc==2.17',
+        'sphinx==4.4.0',
+        'sphinx-autodoc-typehints==1.16.0',
+        'sphinx-copybutton==0.5.0',
+        'sphinx-rtd-theme==1.0.0',
+        'sphinx-tabs==3.2.0'
         ]
 }
 
 
+sphinxcontrib-applehelp   1.0.2                    pypi_0    pypi
+sphinxcontrib-devhelp     1.0.2                    pypi_0    pypi
+sphinxcontrib-htmlhelp    2.0.0                    pypi_0    pypi
+sphinxcontrib-jsmath      1.0.1                    pypi_0    pypi
+sphinxcontrib-napoleon    0.7                      pypi_0    pypi
+sphinxcontrib-qthelp      1.0.3                    pypi_0    pypi
+sphinxcontrib-serializinghtml 1.1.5                    pypi_0    pypi
 
 
 # Get the requirements list by reading the file and splitting it up
