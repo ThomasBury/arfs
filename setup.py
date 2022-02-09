@@ -23,6 +23,7 @@ EXTRAS_REQUIRE = {
         'nbsphinx',
         'pandoc',
         'sphinx',
+        'sphinx_autodoc',
         'sphinx-autodoc-typehints',
         'sphinx-copybutton',
         'sphinx-rtd-theme',
