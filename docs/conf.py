@@ -25,6 +25,17 @@ author = 'Thomas Bury'
 # The full version, including alpha/beta/rc tags
 release = '0.3.2'
 
+# If extensions (or modules to document with autodoc) are in another
+# directory, add these directories to sys.path here. If the directory is
+# relative to the documentation root, use os.path.abspath to make it
+# absolute, like shown here.
+sys.path.append(os.path.join(os.path.abspath(os.pardir)))
+autodoc_mock_imports = ["_tkinter"]
+
+# Get the project root dir, which is the parent dir of this
+cwd = os.getcwd()
+project_root = os.path.dirname(cwd)
+
 
 # -- General configuration ---------------------------------------------------
 
@@ -41,7 +52,6 @@ extensions = [
     'sphinx_copybutton',
     'sphinx_rtd_theme',
     'nbsphinx',
-    'nbsphinx_link',
     'sphinx_tabs.tabs',
 ]
 

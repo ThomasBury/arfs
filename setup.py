@@ -16,8 +16,22 @@ with open(os.path.join(HERE, "README.md")) as fid:
 EXTRAS_REQUIRE = {
     'tests': [
         'pytest',
-        'pytest-cov']
+        'pytest-cov',
+        ],
+    'docs': [
+        'coverage',
+        'nbsphinx',
+        'pandoc',
+        'sphinx',
+        'sphinx-autodoc-typehints',
+        'sphinx-copybutton',
+        'sphinx-rtd-theme',
+        'sphinx-tabs'
+        ]
 }
+
+
+
 
 # Get the requirements list by reading the file and splitting it up
 with open('requirements.txt', 'r') as f:
