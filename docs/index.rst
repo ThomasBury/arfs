@@ -12,12 +12,8 @@ Welcome to arfs's documentation!
 
    Introduction
    Methods overview
+   modules
 
-.. toctree::
-   :maxdepth: 3
-   :caption: API reference
-
-   api.rst
 
 .. toctree::
    :maxdepth: 4
