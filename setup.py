@@ -20,7 +20,7 @@ EXTRAS_REQUIRE = {
         ],
     'docs': [
         'nbsphinx==0.8.8',
-        'pandoc==2.17',
+        'pandoc',
         'sphinx==4.4.0',
         'sphinx-autodoc-typehints==1.16.0',
         'sphinx-copybutton==0.5.0',
