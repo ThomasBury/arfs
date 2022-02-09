@@ -54,6 +54,7 @@ hv.renderer('bokeh').theme = 'light_minimal'
 
 def reset_plot():
     """Reset plot style
+    
     """
     plt.rcParams = plt.rcParamsDefault
 
@@ -69,6 +70,7 @@ def set_my_plt_style(height=3, width=5, linewidth=2):
         fig height in inches (yeah they're still struggling with the metric system)
     width: int, default=5
         fig width in inches (yeah they're still struggling with the metric system)
+        
     """
     plt.style.use('fivethirtyeight')
     my_colors_list = Bold_10.hex_colors
@@ -109,6 +111,7 @@ def cat_var(data, col_excl=None, return_cat=True):
         the dictionary to map integer --> category
     mapper: dict
         the dictionary to map category --> integer
+        
     """
 
     df = data.copy()
@@ -163,6 +166,7 @@ def plot_corr(df, size=10):
     -------
     fig : plt.figure
         the correlation matrix figure
+        
     """
     set_my_plt_style()
     corr = df.corr()
@@ -265,17 +269,16 @@ class FeatureSelector:
     Heavily inspired from https://github.com/WillKoehrsen
 
     Implements five different methods to identify features for removal
-
-        1. Find columns with a missing percentage greater than a specified threshold
-        2. Find columns with a single unique value
-        3. Find collinear variables with a correlation greater than a specified correlation coefficient
-        4. Find features with 0.0 feature importance from a gradient boosting machine (gbm)
-        5. Find low importance features that do not contribute to a specified
-        cumulative feature importance from
-           the gbm SHAP feature importance.
+    Find columns with a missing percentage greater than a specified threshold.
+    Find columns with a single unique value.
+    Find collinear variables with a correlation greater than a specified correlation coefficient.
+    Find features with 0.0 feature importance from a gradient boosting machine (gbm).
+    Find low importance features that do not contribute to a specified cumulative feature importance from
+    the gbm SHAP feature importance.
 
     Parameters
     ----------
+    
         X : pd.DataFrame
             A dataset with observations in the rows and features in the columns
 
@@ -371,6 +374,7 @@ class FeatureSelector:
 
     Methods
     -------
+    
     identify_patterns(patterns=None):
         Drop the columns by identifying patterns in their name
 
@@ -434,6 +438,7 @@ class FeatureSelector:
 
     Examples
     --------
+    
     >>> # Initiate an instance of the feature selector
     >>> fs = noglmfs.FeatureSelector(data = df[predictors], labels = df.re_cl_RCC, weight = df.exp_yr)
     >>> 
@@ -501,7 +506,8 @@ class FeatureSelector:
     >>> fs_df = fs_df.merge(fs.tag_df, how='left')
     >>> feat_imp = fs.plot_feature_importances(threshold = 0.9, plot_n = 50)
     >>> hv.save(feat_imp, outpath+"feat_imp_TPLMD_freq.html")
-    >>> 
+    
+    
     """
 
     def __init__(self, X, y=None, sample_weight=None):
@@ -557,7 +563,7 @@ class FeatureSelector:
         Parameters
         ----------
         patterns: str
-            the pattern to look for e.g. emb_ or bel_
+            the pattern to look for e.g. ``"prefix_"``
         """
         if patterns is None:
             patterns = ['_Prop']
@@ -840,10 +846,9 @@ class FeatureSelector:
 
         Notes
         -----
-        - Features are one-hot encoded to handle the categorical variables before training.
-        - The gbm is not optimized for any particular task and might need some hyperparameter tuning
-        - Feature importances, including zero importance features,
-          can change across runs, using Shapley values.
+        Features are one-hot encoded to handle the categorical variables before training.
+        The gbm is not optimized for any particular task and might need some hyperparameter tuning
+        Feature importances, including zero importance features, can change across runs, using Shapley values.
 
         """
 
@@ -1034,17 +1039,12 @@ class FeatureSelector:
 
         Parameters
         ----------
-        selection_params : dict Parameters to use in the five feature selection methhods.
-        Params must contain the keys
-        ['patterns', 'missing_threshold', 'max_card','correlation_threshold', 'eval_metric', 'task',
-        'cumulative_importance']
-        identify_all = {'patterns': 'emb_',
-                        'missing_threshold': 0.1,
-                        'max_card':100,
-                        'correlation_threshold': 0.5,
-                        'eval_metric':'l2',
-                        'task': 'regression',
-                        'cumulative_importance': 0.95}
+        selection_params : dict 
+            Parameters to use in the five feature selection methhods.
+            Params must contain the keys
+            ['patterns', 'missing_threshold', 'max_card','correlation_threshold', 'eval_metric', 'task',
+            'cumulative_importance']
+                        
         """
 
         # Check for all required parameters
@@ -1096,9 +1096,8 @@ class FeatureSelector:
 
         Notes
         -----
-        - If feature importances are used, the one-hot encoded columns will be
-              added to the data (and then may be removed)
-        - Check the features that will be removed before transforming data!
+        If feature importances are used, the one-hot encoded columns will be added to the data (and then may be removed).
+        Check the features that will be removed before transforming data!
 
         """
 
@@ -1216,9 +1215,9 @@ class FeatureSelector:
             
         Notes
         -----
-        - Not all of the plotted correlations are above the threshold because this plots
-        all the variables that have been idenfitied as having even one correlation above the threshold
-        - The features on the x-axis are those that will be removed. The features on the y-axis
+        Not all of the plotted correlations are above the threshold because this plots
+        all the variables that have been idenfitied as having even one correlation above the threshold.
+        The features on the x-axis are those that will be removed. The features on the y-axis
         are the correlated features with those on the x-axis
 
         Code adapted from https://seaborn.pydata.org/examples/many_pairwise_correlations.html
