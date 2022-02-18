@@ -1,5 +1,5 @@
 """
-Information about the package.
+Provide the information about the package.
 """
 
 __title__ = 'arfs'
