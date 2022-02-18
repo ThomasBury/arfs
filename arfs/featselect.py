@@ -16,19 +16,23 @@ It is the first step of the feature selection, ideally followed by a
 
 # memory management
 import gc
+
 # utilities
 from itertools import chain
 import time
 import random
 import warnings
+
 # numpy and pandas for data manipulation
 import pandas as pd
 import numpy as np
 from dython.nominal import associations
+
 # model used for feature importance, Shapley values are builtin
 import lightgbm as lgb
 from lightgbm import early_stopping
 from sklearn.model_selection import ShuffleSplit, StratifiedShuffleSplit
+
 # visualizations
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -36,14 +40,16 @@ from palettable.cmocean.diverging import Curl_5_r
 from palettable.cartocolors.qualitative import Bold_10
 import holoviews as hv
 import panel as pn
+
 # progress bar
 from tqdm.autonotebook import trange, tqdm
+
 # ML
 import scipy.cluster.hierarchy as sch
 
 # set style
-hv.extension('bokeh', logo=False)
-hv.renderer('bokeh').theme = 'light_minimal'
+hv.extension("bokeh", logo=False)
+hv.renderer("bokeh").theme = "light_minimal"
 
 
 #####################
@@ -52,10 +58,9 @@ hv.renderer('bokeh').theme = 'light_minimal'
 #                   #
 #####################
 
+
 def reset_plot():
-    """Reset plot style
-    
-    """
+    """Reset plot style"""
     plt.rcParams = plt.rcParamsDefault
 
 
@@ -70,19 +75,25 @@ def set_my_plt_style(height=3, width=5, linewidth=2):
         fig height in inches (yeah they're still struggling with the metric system)
     width: int, default=5
         fig width in inches (yeah they're still struggling with the metric system)
-        
+
     """
-    plt.style.use('fivethirtyeight')
+    plt.style.use("fivethirtyeight")
     my_colors_list = Bold_10.hex_colors
     myorder = [2, 3, 4, 1, 0, 6, 5, 8, 9, 7]
     my_colors_list = [my_colors_list[i] for i in myorder]
     bckgnd_color = "#f5f5f5"
-    params = {'figure.figsize': (width, height), "axes.prop_cycle": plt.cycler(color=my_colors_list),
-              "axes.facecolor": bckgnd_color, "patch.edgecolor": bckgnd_color,
-              "figure.facecolor": bckgnd_color,
-              "axes.edgecolor": bckgnd_color, "savefig.edgecolor": bckgnd_color,
-              "savefig.facecolor": bckgnd_color, "grid.color": "#d2d2d2",
-              'lines.linewidth': linewidth}  # plt.cycler(color=my_colors_list)
+    params = {
+        "figure.figsize": (width, height),
+        "axes.prop_cycle": plt.cycler(color=my_colors_list),
+        "axes.facecolor": bckgnd_color,
+        "patch.edgecolor": bckgnd_color,
+        "figure.facecolor": bckgnd_color,
+        "axes.edgecolor": bckgnd_color,
+        "savefig.edgecolor": bckgnd_color,
+        "savefig.facecolor": bckgnd_color,
+        "grid.color": "#d2d2d2",
+        "lines.linewidth": linewidth,
+    }  # plt.cycler(color=my_colors_list)
     mpl.rcParams.update(params)
 
 
@@ -111,33 +122,41 @@ def cat_var(data, col_excl=None, return_cat=True):
         the dictionary to map integer --> category
     mapper: dict
         the dictionary to map category --> integer
-        
+
     """
 
     df = data.copy()
     if col_excl is None:
-        non_num_cols = list(set(list(df.columns)) - set(list(df.select_dtypes(include=[np.number]))))
+        non_num_cols = list(
+            set(list(df.columns)) - set(list(df.select_dtypes(include=[np.number])))
+        )
     else:
         non_num_cols = list(
-            set(list(df.columns)) - set(list(df.select_dtypes(include=[np.number]))) - set(col_excl))
+            set(list(df.columns))
+            - set(list(df.select_dtypes(include=[np.number])))
+            - set(col_excl)
+        )
 
     cat_var_index = [df.columns.get_loc(c) for c in non_num_cols if c in df]
 
-    cat_var_df = pd.DataFrame({'cat_ind': cat_var_index,
-                               'cat_name': non_num_cols})
+    cat_var_df = pd.DataFrame({"cat_ind": cat_var_index, "cat_name": non_num_cols})
 
     # avoid having datetime objects as keys in the mapping dic
     date_cols = [s for s in list(df) if "date" in s]
     df.loc[:, date_cols] = df.loc[:, date_cols].astype(str)
 
     cols_need_mapped = cat_var_df.cat_name.to_list()
-    inv_mapper = {col: dict(enumerate(df[col].astype('category').cat.categories))
-                  for col in df[cols_need_mapped]}
-    mapper = {col: {v: k for k, v in inv_mapper[col].items()} for col in df[cols_need_mapped]}
+    inv_mapper = {
+        col: dict(enumerate(df[col].astype("category").cat.categories))
+        for col in df[cols_need_mapped]
+    }
+    mapper = {
+        col: {v: k for k, v in inv_mapper[col].items()} for col in df[cols_need_mapped]
+    }
 
     progress_bar = tqdm(cols_need_mapped)
     for c in progress_bar:
-        progress_bar.set_description('Processing {0:<30}'.format(c))
+        progress_bar.set_description("Processing {0:<30}".format(c))
         df.loc[:, c] = df.loc[:, c].map(mapper[c]).fillna(0).astype(int)
         # I could have use df[c].update(df[c].map(mapper[c])) while slower,
         # prevents values not included in an incomplete map from being changed to nans.
@@ -147,10 +166,10 @@ def cat_var(data, col_excl=None, return_cat=True):
         # Map is faster than replace
 
     if return_cat:
-        df.loc[:, non_num_cols] = df.loc[:, non_num_cols].astype('category')
+        df.loc[:, non_num_cols] = df.loc[:, non_num_cols].astype("category")
     return df, cat_var_df, inv_mapper, mapper
 
-    
+
 
 def plot_corr(df, size=10):
     """Plot a graphical correlation matrix for a dataframe.
@@ -166,14 +185,14 @@ def plot_corr(df, size=10):
     -------
     fig : plt.figure
         the correlation matrix figure
-        
+
     """
     set_my_plt_style()
     corr = df.corr()
     # Re-order the rows and columns using clustering
     d = sch.distance.pdist(corr)
-    L = sch.linkage(d, method='ward')
-    ind = sch.fcluster(L, 0.5 * d.max(), 'distance')
+    L = sch.linkage(d, method="ward")
+    ind = sch.fcluster(L, 0.5 * d.max(), "distance")
     columns = [df.columns.tolist()[i] for i in list((np.argsort(ind)))]
     corr = corr.reindex(columns, axis=1)
     corr = corr.reindex(columns, axis=0)
@@ -185,7 +204,7 @@ def plot_corr(df, size=10):
     plt.yticks(range(len(corr.columns)), corr.columns)
 
     # Add the colorbar legend
-    cbar = fig.colorbar(cax, ticks=[-1, -0.5, 0, 0.5, 1], aspect=10, shrink=.8)
+    cbar = fig.colorbar(cax, ticks=[-1, -0.5, 0, 0.5, 1], aspect=10, shrink=0.8)
     # plt.show()
     return fig
 
@@ -193,8 +212,8 @@ def plot_corr(df, size=10):
 def plot_associations(df, features=None, size=1200, theil_u=False):
     """Plot associations, equivalent of correlation but for
     continuous-continuous, categorical-continuous, categorical-categorical
-    variables. 
-    
+    variables.
+
 
     Parameters
     ----------
@@ -217,38 +236,56 @@ def plot_associations(df, features=None, size=1200, theil_u=False):
         features = df.columns
 
     # continuous features
-    con_features = set(features).intersection(set(list(df.select_dtypes(include=[np.number]))))
+    con_features = set(features).intersection(
+        set(list(df.select_dtypes(include=[np.number])))
+    )
 
     # nominal features
     nom_features = set(features) - set(con_features)
 
-    nom_nom_assoc = 'theil' if theil_u else 'cramer'
-    assoc_df = associations(df,
-                            nominal_columns=nom_features,
-                            mark_columns=True,
-                            num_num_assoc='spearman',
-                            nom_nom_assoc=nom_nom_assoc,
-                            clustering=True,
-                            bias_correction=True,
-                            nan_strategy='drop_samples',
-                            compute_only=True)['corr']
+    nom_nom_assoc = "theil" if theil_u else "cramer"
+    assoc_df = associations(
+        df,
+        nominal_columns=nom_features,
+        mark_columns=True,
+        num_num_assoc="spearman",
+        nom_nom_assoc=nom_nom_assoc,
+        clustering=True,
+        bias_correction=True,
+        nan_strategy="drop_samples",
+        compute_only=True,
+    )["corr"]
 
-    heatmap = hv.HeatMap((assoc_df.columns, assoc_df.index, assoc_df)).redim.range(z=(-1, 1))
+    heatmap = hv.HeatMap((assoc_df.columns, assoc_df.index, assoc_df)).redim.range(
+        z=(-1, 1)
+    )
 
-    heatmap.opts(tools=['tap', 'hover'], height=size, width=size + 50, toolbar='left', colorbar=True,
-                cmap=Curl_5_r.mpl_colormap, fontsize={'title': 12, 'ticks': 12, 'minor_ticks': 12}, xrotation=90,
-                invert_xaxis=False, invert_yaxis=True,  # title=title_str,
-                xlabel='', ylabel=''
-                     )
+    heatmap.opts(
+        tools=["tap", "hover"],
+        height=size,
+        width=size + 50,
+        toolbar="left",
+        colorbar=True,
+        cmap=Curl_5_r.mpl_colormap,
+        fontsize={"title": 12, "ticks": 12, "minor_ticks": 12},
+        xrotation=90,
+        invert_xaxis=False,
+        invert_yaxis=True,  # title=title_str,
+        xlabel="",
+        ylabel="",
+    )
     title_str = "**Continuous (con) and Categorical (nom) Associations **"
-    sub_title_str = "*Categorical(nom): uncertainty coefficient & correlation ratio from 0 to 1. The uncertainty " \
-                        "coefficient is assymmetrical, (approximating how much the elements on the " \
-                        "left PROVIDE INFORMATION on elements in the row). Continuous(con): symmetrical numerical " \
-                        "correlations (Pearson's) from -1 to 1*"
+    sub_title_str = (
+        "*Categorical(nom): uncertainty coefficient & correlation ratio from 0 to 1. The uncertainty "
+        "coefficient is assymmetrical, (approximating how much the elements on the "
+        "left PROVIDE INFORMATION on elements in the row). Continuous(con): symmetrical numerical "
+        "correlations (Pearson's) from -1 to 1*"
+    )
     panel_layout = pn.Column(
-            pn.pane.Markdown(title_str, align="start"),  # bold
-            pn.pane.Markdown(sub_title_str, align="start"),  # italic
-            heatmap, background='#ebebeb'
+        pn.pane.Markdown(title_str, align="start"),  # bold
+        pn.pane.Markdown(sub_title_str, align="start"),  # italic
+        heatmap,
+        background="#ebebeb",
     )
 
     gc.enable()
@@ -278,7 +315,7 @@ class FeatureSelector:
 
     Parameters
     ----------
-    
+
         X : pd.DataFrame
             A dataset with observations in the rows and features in the columns
 
@@ -374,7 +411,7 @@ class FeatureSelector:
 
     Methods
     -------
-    
+
     identify_patterns(patterns=None):
         Drop the columns by identifying patterns in their name
 
@@ -438,10 +475,10 @@ class FeatureSelector:
 
     Examples
     --------
-    
+
     >>> # Initiate an instance of the feature selector
     >>> fs = noglmfs.FeatureSelector(data = df[predictors], labels = df.re_cl_RCC, weight = df.exp_yr)
-    >>> 
+    >>>
     >>> # A dictionary to store the output of each step (to combine with further selection,
     >>> not provided by this FS, or to split the process in two parts to speed up the
     >>> computation of the correlation matrix.)
@@ -451,24 +488,24 @@ class FeatureSelector:
     >>> fsDic['starting_list'] = predictors
     >>> fsDic['missing'] = fs.ops['missing']
     >>> fs.plot_missing()
-    >>> 
+    >>>
     >>> # Unique value
     >>> fs.identify_single_unique()
     >>> fs.plot_unique()
     >>> fsDic['single_unique'] = fs.ops['single_unique']
-    >>> 
+    >>>
     >>> # Large cardinality
     >>> fs.identify_high_cardinality(max_card=2500)
     >>> fs.plot_cardinality()
     >>> fsDic['high_cardinality'] = fs.ops['high_cardinality']
-    >>> 
+    >>>
     >>> # Remove the tagged predictors so far to speed up the computation of the sorted correlation matrix
     >>> cols_to_drop = fs.check_removal()
     >>> filtered_features = list( set(predictors) - set(cols_to_drop) )
     >>> survivors_cols = targets + exposure  + filtered_features
     >>> df_red = df[survivors_cols].copy()
     >>> fs_df = fs.tag_df
-    >>> 
+    >>>
     >>> # New instance of the feature selector
     >>> gc.enable()
     >>> del(fs)
@@ -476,18 +513,18 @@ class FeatureSelector:
     >>> fs = noglmfs.FeatureSelector(data = df_red[filtered_features],
     >>>                              labels = df_red.re_cl_RCC,
     >>>                              weight = df_red.exp_yr)
-    >>> 
+    >>>
     >>> # Correlation
     >>> fs.identify_collinear(correlation_threshold=0.85, encode=False)
     >>> fs_df = fs_df.merge(fs.tag_df, how='left') # tag the discarded predictors and store the results
     >>> fsDic['collinear'] = sorted(fs.ops['collinear']
     >>> heatmap = fs.plot_collinear(plot_all=True, size=1500)
     >>> hv.save(heatmap, outpath + "heatmap_corr_TPLMD_freq.html")
-    >>> 
+    >>>
     >>> # Drop the predictors tagged by the correlation step and remove them in order to speed up the next steps
     >>> prefiltered_feat_to_remove = fs.check_removal()
     >>> features_all_corrfilt = list(set(filtered_features) - set(prefiltered_feat_to_remove))
-    >>> 
+    >>>
     >>> # New instance of the feature selector
     >>> gc.enable()
     >>> del(fs)
@@ -495,7 +532,7 @@ class FeatureSelector:
     >>> X = df[features_all_corrfilt].copy()
     >>> fs = noglmfs.FeatureSelector(data = X, labels = df.re_cl_RCC, weight = df.exp_yr)
     >>> fs.encoded = True
-    >>> 
+    >>>
     >>> # Identify the zero and low importance predictors
     >>> fs.identify_zero_importance(task = 'regression', eval_metric = 'poisson',
     >>>                             n_iterations = 10, early_stopping = True)
@@ -506,8 +543,8 @@ class FeatureSelector:
     >>> fs_df = fs_df.merge(fs.tag_df, how='left')
     >>> feat_imp = fs.plot_feature_importances(threshold = 0.9, plot_n = 50)
     >>> hv.save(feat_imp, outpath+"feat_imp_TPLMD_freq.html")
-    
-    
+
+
     """
 
     def __init__(self, X, y=None, sample_weight=None):
@@ -518,7 +555,9 @@ class FeatureSelector:
         self.weight = sample_weight
 
         if y is None:
-            print('No labels provided. Feature importance based methods are not available.')
+            print(
+                "No labels provided. Feature importance based methods are not available."
+            )
 
         self.base_features = list(self.data.columns)
         self.cat_features = None
@@ -545,7 +584,7 @@ class FeatureSelector:
         self.encoded = False
         self.mapper = None
         self.collinear_method = None
-        self.tag_df = pd.DataFrame({'predictor': self.base_features})
+        self.tag_df = pd.DataFrame({"predictor": self.base_features})
         self.stratified = False
 
         # Dictionary to hold removal operations
@@ -559,25 +598,27 @@ class FeatureSelector:
 
     def identify_patterns(self, patterns=None):
         """Drop the columns by identifying patterns in their name
-        
+
         Parameters
         ----------
         patterns: str
             the pattern to look for e.g. ``"prefix_"``
         """
         if patterns is None:
-            patterns = ['_Prop']
-        to_drop = self.data.columns[self.data.columns.str.contains('|'.join(patterns))].tolist()
-        self.ops['pattern'] = to_drop
+            patterns = ["_Prop"]
+        to_drop = self.data.columns[
+            self.data.columns.str.contains("|".join(patterns))
+        ].tolist()
+        self.ops["pattern"] = to_drop
 
-        self.tag_df['pattern'] = 1
-        self.tag_df['pattern'] = np.where(self.tag_df['predictor'].isin(to_drop), 0, 1)
+        self.tag_df["pattern"] = 1
+        self.tag_df["pattern"] = np.where(self.tag_df["predictor"].isin(to_drop), 0, 1)
 
-        print('%d features with the pattern(s). \n' % len(self.ops['pattern']))
+        print("%d features with the pattern(s). \n" % len(self.ops["pattern"]))
 
     def identify_missing(self, missing_threshold=0.1):
         """Find the features with a fraction of missing values above `missing_threshold`
-        
+
         Parameters
         ----------
         missing_threshold: float, between 0 and 1. Default=0.1
@@ -588,51 +629,63 @@ class FeatureSelector:
         # Calculate the fraction of missing in each column
         missing_series = self.data.isnull().sum() / self.data.shape[0]
         self.missing_stats = pd.DataFrame(missing_series).rename(
-            columns={'index': 'feature', 0: 'missing_fraction'}
+            columns={"index": "feature", 0: "missing_fraction"}
         )
 
         # Sort with highest number of missing values on top
-        self.missing_stats = self.missing_stats.sort_values('missing_fraction', ascending=False)
+        self.missing_stats = self.missing_stats.sort_values(
+            "missing_fraction", ascending=False
+        )
 
         # Find the columns with a missing percentage above the threshold
-        record_missing = pd.DataFrame(missing_series[missing_series > missing_threshold]).reset_index(). \
-            rename(columns={
-            'index': 'feature',
-            0: 'missing_fraction'})
-        to_drop = list(record_missing['feature'])
+        record_missing = (
+            pd.DataFrame(missing_series[missing_series > missing_threshold])
+            .reset_index()
+            .rename(columns={"index": "feature", 0: "missing_fraction"})
+        )
+        to_drop = list(record_missing["feature"])
 
         self.record_missing = record_missing
-        self.ops['missing'] = to_drop
+        self.ops["missing"] = to_drop
         # tagging
-        self.tag_df['missing'] = 1
-        self.tag_df['missing'] = np.where(self.tag_df['predictor'].isin(to_drop), 0, 1)
+        self.tag_df["missing"] = 1
+        self.tag_df["missing"] = np.where(self.tag_df["predictor"].isin(to_drop), 0, 1)
 
-        print('%d features with greater than %0.2f missing values.\n' % (
-            len(self.ops['missing']), self.missing_threshold))
+        print(
+            "%d features with greater than %0.2f missing values.\n"
+            % (len(self.ops["missing"]), self.missing_threshold)
+        )
 
     def identify_single_unique(self):
-        """Finds features with only a single unique value. NaNs do not count as a unique value.
-        """
+        """Finds features with only a single unique value. NaNs do not count as a unique value."""
 
         # Calculate the unique counts in each column
         unique_counts = self.data.nunique()
-        self.unique_stats = pd.DataFrame(unique_counts).rename(columns={'index': 'feature', 0: 'nunique'})
-        self.unique_stats = self.unique_stats.sort_values('nunique', ascending=True)
+        self.unique_stats = pd.DataFrame(unique_counts).rename(
+            columns={"index": "feature", 0: "nunique"}
+        )
+        self.unique_stats = self.unique_stats.sort_values("nunique", ascending=True)
 
         # Find the columns with only one unique count
-        record_single_unique = pd.DataFrame(unique_counts[unique_counts == 1]).reset_index().rename(
-            columns={'index': 'feature',
-                     0: 'nunique'})
+        record_single_unique = (
+            pd.DataFrame(unique_counts[unique_counts == 1])
+            .reset_index()
+            .rename(columns={"index": "feature", 0: "nunique"})
+        )
 
-        to_drop = list(record_single_unique['feature'])
+        to_drop = list(record_single_unique["feature"])
 
         self.record_single_unique = record_single_unique
-        self.ops['single_unique'] = to_drop
+        self.ops["single_unique"] = to_drop
         # tagging
-        self.tag_df['single_unique'] = 1
-        self.tag_df['single_unique'] = np.where(self.tag_df['predictor'].isin(to_drop), 0, 1)
+        self.tag_df["single_unique"] = 1
+        self.tag_df["single_unique"] = np.where(
+            self.tag_df["predictor"].isin(to_drop), 0, 1
+        )
 
-        print('%d features with a single unique value.\n' % len(self.ops['single_unique']))
+        print(
+            "%d features with a single unique value.\n" % len(self.ops["single_unique"])
+        )
 
     def identify_high_cardinality(self, max_card=1000):
         """Finds the categorical columns with more than max_card unique values
@@ -647,26 +700,40 @@ class FeatureSelector:
 
         col_names = list(self.data)
 
-        char_cols = list(set(list(self.data.columns)) - set(list(self.data.select_dtypes(include=[np.number]))))
+        char_cols = list(
+            set(list(self.data.columns))
+            - set(list(self.data.select_dtypes(include=[np.number])))
+        )
 
         # cat_var_index = [i for i, x in enumerate(self.data.dtypes.tolist()) if
         #                  isinstance(x, pd.CategoricalDtype) or x == 'object']
         # char_cols = [x for i, x in enumerate(col_names) if i in cat_var_index]
 
         unique_counts = self.data[char_cols].nunique()
-        self.cardinality_stats = pd.DataFrame(unique_counts).rename(columns={'index': 'feature', 0: 'nunique'})
-        self.cardinality_stats = self.cardinality_stats.sort_values('nunique', ascending=False)
+        self.cardinality_stats = pd.DataFrame(unique_counts).rename(
+            columns={"index": "feature", 0: "nunique"}
+        )
+        self.cardinality_stats = self.cardinality_stats.sort_values(
+            "nunique", ascending=False
+        )
 
-        record_high_cardinality = pd.DataFrame(unique_counts[unique_counts > max_card]).reset_index().rename(
-            columns={'index': 'feature', 0: 'nunique'})
-        to_drop = list(record_high_cardinality['feature'])
-        self.ops['high_cardinality'] = to_drop
+        record_high_cardinality = (
+            pd.DataFrame(unique_counts[unique_counts > max_card])
+            .reset_index()
+            .rename(columns={"index": "feature", 0: "nunique"})
+        )
+        to_drop = list(record_high_cardinality["feature"])
+        self.ops["high_cardinality"] = to_drop
         # tagging
-        self.tag_df['high_cardinality'] = 1
-        self.tag_df['high_cardinality'] = np.where(self.tag_df['predictor'].isin(to_drop), 0, 1)
+        self.tag_df["high_cardinality"] = 1
+        self.tag_df["high_cardinality"] = np.where(
+            self.tag_df["predictor"].isin(to_drop), 0, 1
+        )
 
-        print('{0:d} features with a cardinality larger than {1:d}'.format(
-            len(self.ops['high_cardinality']), max_card)
+        print(
+            "{0:d} features with a cardinality larger than {1:d}".format(
+                len(self.ops["high_cardinality"]), max_card
+            )
         )
 
     def encode_cat_var(self, df=None, col_excl=None, return_cat=False):
@@ -695,7 +762,9 @@ class FeatureSelector:
         else:
             is_external_data = True
 
-        df_enc, cat_var_df, inv_mapper, mapper = cat_var(df, col_excl=col_excl, return_cat=return_cat)
+        df_enc, cat_var_df, inv_mapper, mapper = cat_var(
+            df, col_excl=col_excl, return_cat=return_cat
+        )
 
         self.cat_var_df = cat_var_df
         self.mapper = inv_mapper
@@ -706,7 +775,9 @@ class FeatureSelector:
 
         return df_enc
 
-    def identify_collinear(self, correlation_threshold, encode=False, method='association'):
+    def identify_collinear(
+        self, correlation_threshold, encode=False, method="association"
+    ):
         """Finds collinear features based on the correlation coefficient between features.
         For each pair of features with a correlation coefficient greather than `correlation_threshold`,
         only one of the pair is identified for removal.
@@ -733,89 +804,135 @@ class FeatureSelector:
         # Calculate the correlations between every column
         tic = time.time()
         # Calculate the correlations between every column
-        if encode and (method != 'association'):
+        if encode and (method != "association"):
             self.data = self.encode_cat_var()
-            print('Encoding done, {0:4.0f} min'.format(round((tic - time.time()) / 60)))
-        elif encode and (method == 'association'):
-            warnings.warn("Not encoding since using associations (con-con, cat-con, cat-cat)")
+            print("Encoding done, {0:4.0f} min".format(round((tic - time.time()) / 60)))
+        elif encode and (method == "association"):
+            warnings.warn(
+                "Not encoding since using associations (con-con, cat-con, cat-cat)"
+            )
 
         tic_corr = time.time()
 
         self.collinear_method = method
-        if method == 'association':
+        if method == "association":
             features = self.data.columns
 
             # continuous features
-            con_features = set(features).intersection(set(list(self.data.select_dtypes(include=[np.number]))))
+            con_features = set(features).intersection(
+                set(list(self.data.select_dtypes(include=[np.number])))
+            )
 
             # nominal features
             nom_features = set(features) - set(con_features)
 
-            self.corr_matrix = associations(self.data,
-                                            nominal_columns=nom_features,
-                                            mark_columns=True,
-                                            num_num_assoc='spearman',
-                                            nom_nom_assoc='theil',
-                                            clustering=True,
-                                            nan_strategy='drop_samples',
-                                            compute_only=True)['corr']
+            self.corr_matrix = associations(
+                self.data,
+                nominal_columns=nom_features,
+                mark_columns=True,
+                num_num_assoc="spearman",
+                nom_nom_assoc="theil",
+                clustering=True,
+                nan_strategy="drop_samples",
+                compute_only=True,
+            )["corr"]
 
-            upper = self.corr_matrix.where(np.triu(np.ones(self.corr_matrix.shape), k=1).astype(np.bool))
-            to_drop = [column for column in upper.columns if
-                       any(upper[column].abs() > correlation_threshold)]
+            upper = self.corr_matrix.where(
+                np.triu(np.ones(self.corr_matrix.shape), k=1).astype(np.bool)
+            )
+            to_drop = [
+                column
+                for column in upper.columns
+                if any(upper[column].abs() > correlation_threshold)
+            ]
 
-        elif method == 'spearman':
+        elif method == "spearman":
             self.corr_matrix = self.data.corr(method="spearman").fillna(0)
             # Extract the upper triangle of the correlation matrix
-            upper = self.corr_matrix.where(np.triu(np.ones(self.corr_matrix.shape), k=1).astype(np.bool))
-            to_drop = [column for column in upper.columns if
-                       any(upper[column].abs() > correlation_threshold)]
-        elif method == 'pearson':
+            upper = self.corr_matrix.where(
+                np.triu(np.ones(self.corr_matrix.shape), k=1).astype(np.bool)
+            )
+            to_drop = [
+                column
+                for column in upper.columns
+                if any(upper[column].abs() > correlation_threshold)
+            ]
+        elif method == "pearson":
             # Using both Spearman and Pearson because we might have ordinal and non ordinal respectively.
-            corr_matrix = self.data.corr(method='pearson').fillna(0)
+            corr_matrix = self.data.corr(method="pearson").fillna(0)
             # Extract the upper triangle of the correlation matrix
-            upper = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(np.bool))
-            to_drop = [column for column in upper.columns if
-                       any(upper[column].abs() > correlation_threshold)]
+            upper = corr_matrix.where(
+                np.triu(np.ones(corr_matrix.shape), k=1).astype(np.bool)
+            )
+            to_drop = [
+                column
+                for column in upper.columns
+                if any(upper[column].abs() > correlation_threshold)
+            ]
         else:
-            raise ValueError('method should be spearman or pearson')
+            raise ValueError("method should be spearman or pearson")
 
         time_corr = round((time.time() - tic_corr) / 60)
         time_start = round((time.time() - tic) / 60)
-        print('Corr matrix done, {0:4.0f} min and {1:4.0f} min from start'.format(time_corr, time_start))
+        print(
+            "Corr matrix done, {0:4.0f} min and {1:4.0f} min from start".format(
+                time_corr, time_start
+            )
+        )
 
         # Dataframe to hold correlated pairs
-        record_collinear = pd.DataFrame(columns=['drop_feature', 'corr_feature', 'corr_value'])
+        record_collinear = pd.DataFrame(
+            columns=["drop_feature", "corr_feature", "corr_value"]
+        )
 
         # Iterate through the columns to drop to record pairs of correlated features
         for column in to_drop:
             # Find the correlated features
-            corr_features = list(upper.index[upper[column].abs() > correlation_threshold])
+            corr_features = list(
+                upper.index[upper[column].abs() > correlation_threshold]
+            )
 
             # Find the correlated values
-            corr_values = list(upper[column][upper[column].abs() > correlation_threshold])
+            corr_values = list(
+                upper[column][upper[column].abs() > correlation_threshold]
+            )
             drop_features = [column for _ in range(len(corr_features))]
 
             # Record the information (need a temp df for now)
-            temp_df = pd.DataFrame.from_dict({'drop_feature': drop_features,
-                                              'corr_feature': corr_features,
-                                              'corr_value': corr_values})
+            temp_df = pd.DataFrame.from_dict(
+                {
+                    "drop_feature": drop_features,
+                    "corr_feature": corr_features,
+                    "corr_value": corr_values,
+                }
+            )
 
             # Add to dataframe
             record_collinear = record_collinear.append(temp_df, ignore_index=True)
 
         self.record_collinear = record_collinear
         to_drop = [x[:-6] for x in to_drop]
-        self.ops['collinear'] = to_drop
+        self.ops["collinear"] = to_drop
         # tagging
-        self.tag_df['collinear'] = 1
-        self.tag_df['collinear'] = np.where(self.tag_df['predictor'].isin(to_drop), 0, 1)
+        self.tag_df["collinear"] = 1
+        self.tag_df["collinear"] = np.where(
+            self.tag_df["predictor"].isin(to_drop), 0, 1
+        )
 
-        print('%d features with a correlation magnitude greater than %0.2f.\n' % (
-            len(self.ops['collinear']), self.correlation_threshold))
+        print(
+            "%d features with a correlation magnitude greater than %0.2f.\n"
+            % (len(self.ops["collinear"]), self.correlation_threshold)
+        )
 
-    def identify_zero_importance(self, task, eval_metric=None, objective=None,
-                                 n_iterations=10, use_early_stopping=True, zero_as_missing=False):
+    def identify_zero_importance(
+        self,
+        task,
+        eval_metric=None,
+        objective=None,
+        n_iterations=10,
+        use_early_stopping=True,
+        zero_as_missing=False,
+    ):
         """Identify the features with zero importance according to a gradient boosting machine.
         The gbm can be trained with early stopping using a utils set to prevent overfitting.
         The feature importances are averaged over `n_iterations` to reduce variance.
@@ -853,8 +970,10 @@ class FeatureSelector:
         """
 
         if use_early_stopping and eval_metric is None:
-            raise ValueError("""eval metric must be provided with early stopping. 
-            Examples include "auc" for classification or "l2" for regression.""")
+            raise ValueError(
+                """eval metric must be provided with early stopping. 
+            Examples include "auc" for classification or "l2" for regression."""
+            )
 
         if self.labels is None:
             raise ValueError("No training labels provided.")
@@ -870,7 +989,7 @@ class FeatureSelector:
         # Convert to np array
         features = np.array(features)
         labels = np.array(self.labels).reshape((-1,))
-        
+
         if self.weight is not None:
             weights = np.array(self.weight).reshape((-1,))
         else:
@@ -879,40 +998,66 @@ class FeatureSelector:
         # Empty array for feature importances
         feature_importance_values = np.zeros(len(feature_names))
 
-        print('Training Gradient Boosting Model\n')
+        print("Training Gradient Boosting Model\n")
         progress_bar = trange(n_iterations)
         # Iterate through each fold
         for _ in progress_bar:
-            progress_bar.set_description('Iteration nb: {0:<3}'.format(_))
+            progress_bar.set_description("Iteration nb: {0:<3}".format(_))
 
-            if task == 'classification':
+            if task == "classification":
                 self.stratified = True
-                model = lgb.LGBMClassifier(n_estimators=1000, learning_rate=0.05, verbose=-1,
-                                           zero_as_missing=zero_as_missing)
+                model = lgb.LGBMClassifier(
+                    n_estimators=1000,
+                    learning_rate=0.05,
+                    verbose=-1,
+                    zero_as_missing=zero_as_missing,
+                )
 
-            elif task == 'regression':
-                model = lgb.LGBMRegressor(n_estimators=1000, learning_rate=0.05, verbose=-1,
-                                          zero_as_missing=zero_as_missing)  # , objective='gamma')
+            elif task == "regression":
+                model = lgb.LGBMRegressor(
+                    n_estimators=1000,
+                    learning_rate=0.05,
+                    verbose=-1,
+                    zero_as_missing=zero_as_missing,
+                )  # , objective='gamma')
 
             else:
                 raise ValueError('Task must be either "classification" or "regression"')
 
             if objective is not None:
-                model.set_params(**{'objective': objective})
+                model.set_params(**{"objective": objective})
 
             # If training using early stopping need a utils set
             if use_early_stopping:
                 if self.stratified:
-                    rs = StratifiedShuffleSplit(n_splits=1, test_size=.20, random_state=42)
+                    rs = StratifiedShuffleSplit(
+                        n_splits=1, test_size=0.20, random_state=42
+                    )
                     for train_index, test_index in rs.split(features, labels):
-                        valid_features, valid_labels, valid_weight = features[test_index, :], labels[test_index], weights[test_index] 
-                        train_features, train_labels, train_weight = features[train_index, :], labels[train_index], weights[train_index]
+                        valid_features, valid_labels, valid_weight = (
+                            features[test_index, :],
+                            labels[test_index],
+                            weights[test_index],
+                        )
+                        train_features, train_labels, train_weight = (
+                            features[train_index, :],
+                            labels[train_index],
+                            weights[train_index],
+                        )
                 else:
-                    rs = ShuffleSplit(n_splits=1, test_size=.20, random_state=42)
+                    rs = ShuffleSplit(n_splits=1, test_size=0.20, random_state=42)
                     for train_index, test_index in rs.split(features):
-                        valid_features, valid_labels, valid_weight = features[test_index, :], labels[test_index], weights[test_index] 
-                        train_features, train_labels, train_weight = features[train_index, :], labels[train_index], weights[train_index]
-                
+                        valid_features, valid_labels, valid_weight = (
+                            features[test_index, :],
+                            labels[test_index],
+                            weights[test_index],
+                        )
+                        train_features, train_labels, train_weight = (
+                            features[train_index, :],
+                            labels[train_index],
+                            weights[train_index],
+                        )
+
                 # train_idx = random.sample(range(features.shape[0]), k=int(features.shape[0] * .85))
                 # mask = np.zeros(features.shape[0], dtype=bool)
                 # mask[train_idx] = True
@@ -925,12 +1070,15 @@ class FeatureSelector:
                 # valid_weight = weight[~mask]
 
                 # Train the model with early stopping
-                model.fit(train_features, train_labels, 
-                          eval_metric=eval_metric,
-                          eval_set=[(valid_features, valid_labels)],
-                          sample_weight=train_weight,
-                          callbacks=[early_stopping(20, False, False)],
-                          eval_sample_weight=[valid_weight])
+                model.fit(
+                    train_features,
+                    train_labels,
+                    eval_metric=eval_metric,
+                    eval_set=[(valid_features, valid_labels)],
+                    sample_weight=train_weight,
+                    callbacks=[early_stopping(20, False, False)],
+                    eval_sample_weight=[valid_weight],
+                )
                 # pimp cool but too slow
                 # perm_imp =  permutation_importance(
                 # model, valid_features, valid_labels, n_repeats=10, random_state=42, n_jobs=-1
@@ -939,16 +1087,22 @@ class FeatureSelector:
 
                 shap_matrix = model.predict(valid_features, pred_contrib=True)
                 # the dim changed in lightGBM 3
-                # X_SHAP_values array-like of shape = [n_samples, n_features + 1] or 
+                # X_SHAP_values array-like of shape = [n_samples, n_features + 1] or
                 # shape = [n_samples, (n_features + 1) * n_classes] or list with n_classes length of such objects
-                if task == 'regression':
+                if task == "regression":
                     shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
-                elif task == 'classification':
+                elif task == "classification":
                     n_features = valid_features.shape[1]
-                    shap_matrix = np.delete(shap_matrix, list(range(n_features, shap_matrix.shape[1], n_features+1)), axis=1)
+                    shap_matrix = np.delete(
+                        shap_matrix,
+                        list(range(n_features, shap_matrix.shape[1], n_features + 1)),
+                        axis=1,
+                    )
                     shap_imp = np.mean(np.abs(shap_matrix), axis=0)
                 else:
-                    raise ValueError('Task must be either "classification" or "regression"')
+                    raise ValueError(
+                        'Task must be either "classification" or "regression"'
+                    )
 
                 # Clean up memory
                 del train_features, train_labels, valid_features, valid_labels
@@ -964,33 +1118,47 @@ class FeatureSelector:
                 shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
 
             # Record the feature importances
-            feature_importance_values += shap_imp / n_iterations  # model.feature_importances_ / n_iterations
+            feature_importance_values += (
+                shap_imp / n_iterations
+            )  # model.feature_importances_ / n_iterations
 
-        feature_importances = pd.DataFrame({'feature': feature_names,
-                                            'importance': feature_importance_values})
+        feature_importances = pd.DataFrame(
+            {"feature": feature_names, "importance": feature_importance_values}
+        )
 
         # Sort features according to importance
         feature_importances = feature_importances.sort_values(
-            'importance', ascending=False).reset_index(drop=True)
+            "importance", ascending=False
+        ).reset_index(drop=True)
 
         # Normalize the feature importances to add up to one
-        feature_importances['normalized_importance'] = feature_importances['importance'] / feature_importances[
-            'importance'].sum()
-        feature_importances['cumulative_importance'] = np.cumsum(feature_importances['normalized_importance'])
+        feature_importances["normalized_importance"] = (
+            feature_importances["importance"] / feature_importances["importance"].sum()
+        )
+        feature_importances["cumulative_importance"] = np.cumsum(
+            feature_importances["normalized_importance"]
+        )
 
         # Extract the features with zero importance
-        record_zero_importance = feature_importances[feature_importances['importance'] == 0.0]
+        record_zero_importance = feature_importances[
+            feature_importances["importance"] == 0.0
+        ]
 
-        to_drop = list(record_zero_importance['feature'])
+        to_drop = list(record_zero_importance["feature"])
 
         self.feature_importances = feature_importances
         self.record_zero_importance = record_zero_importance
-        self.ops['zero_importance'] = to_drop
+        self.ops["zero_importance"] = to_drop
         # tagging
-        self.tag_df['zero_importance'] = 1
-        self.tag_df['zero_importance'] = np.where(self.tag_df['predictor'].isin(to_drop), 0, 1)
+        self.tag_df["zero_importance"] = 1
+        self.tag_df["zero_importance"] = np.where(
+            self.tag_df["predictor"].isin(to_drop), 0, 1
+        )
 
-        print('\n%d features with zero importance after encoding.\n' % len(self.ops['zero_importance']))
+        print(
+            "\n%d features with zero importance after encoding.\n"
+            % len(self.ops["zero_importance"])
+        )
 
     def identify_low_importance(self, cumulative_importance):
         """Finds the lowest importance features not needed to account for `cumulative_importance` fraction
@@ -1009,78 +1177,104 @@ class FeatureSelector:
 
         # The feature importances need to be calculated before running
         if self.feature_importances is None:
-            raise NotImplementedError("""Feature importances have not yet been determined. 
-                                         Call the `identify_zero_importance` method first.""")
+            raise NotImplementedError(
+                """Feature importances have not yet been determined. 
+                                         Call the `identify_zero_importance` method first."""
+            )
 
         # Make sure most important features are on top
-        self.feature_importances = self.feature_importances.sort_values('cumulative_importance')
+        self.feature_importances = self.feature_importances.sort_values(
+            "cumulative_importance"
+        )
 
         # Identify the features not needed to reach the cumulative_importance
         record_low_importance = self.feature_importances[
-            self.feature_importances['cumulative_importance'] > cumulative_importance]
+            self.feature_importances["cumulative_importance"] > cumulative_importance
+        ]
 
-        to_drop = list(record_low_importance['feature'])
+        to_drop = list(record_low_importance["feature"])
 
         self.record_low_importance = record_low_importance
-        self.ops['low_importance'] = to_drop
+        self.ops["low_importance"] = to_drop
 
         # tagging
-        self.tag_df['low_importance'] = 1
-        self.tag_df['low_importance'] = np.where(self.tag_df['predictor'].isin(to_drop), 0, 1)
+        self.tag_df["low_importance"] = 1
+        self.tag_df["low_importance"] = np.where(
+            self.tag_df["predictor"].isin(to_drop), 0, 1
+        )
 
-        print('%d features required for cumulative importance of %0.2f after encoding.' % (
-            len(self.feature_importances) -
-            len(self.record_low_importance), self.cumulative_importance))
-        print('%d features do not contribute to cumulative '
-              'importance of %0.2f.\n' % (len(self.ops['low_importance']), self.cumulative_importance))
+        print(
+            "%d features required for cumulative importance of %0.2f after encoding."
+            % (
+                len(self.feature_importances) - len(self.record_low_importance),
+                self.cumulative_importance,
+            )
+        )
+        print(
+            "%d features do not contribute to cumulative "
+            "importance of %0.2f.\n"
+            % (len(self.ops["low_importance"]), self.cumulative_importance)
+        )
 
     def identify_all(self, selection_params):
         """Use all five of the methods to identify features to remove.
 
         Parameters
         ----------
-        selection_params : dict 
+        selection_params : dict
             Parameters to use in the five feature selection methhods.
             Params must contain the keys
             ['patterns', 'missing_threshold', 'max_card','correlation_threshold', 'eval_metric', 'task',
             'cumulative_importance']
-                        
+
         """
 
         # Check for all required parameters
-        list_of_params = ['patterns', 'missing_threshold', 'max_card', 'correlation_threshold',
-                          'eval_metric', 'task', 'cumulative_importance']
+        list_of_params = [
+            "patterns",
+            "missing_threshold",
+            "max_card",
+            "correlation_threshold",
+            "eval_metric",
+            "task",
+            "cumulative_importance",
+        ]
 
         progress_bar = tqdm(list_of_params)
         for param in progress_bar:
-            progress_bar.set_description('Processing method: {0:<23}'.format(param))
+            progress_bar.set_description("Processing method: {0:<23}".format(param))
             if param not in selection_params.keys():
-                raise ValueError('%s is a required parameter for this method.' % param)
+                raise ValueError("%s is a required parameter for this method." % param)
 
         # Implement each of the five methods
-        self.identify_patterns(selection_params['patterns'])
-        self.identify_missing(selection_params['missing_threshold'])
+        self.identify_patterns(selection_params["patterns"])
+        self.identify_missing(selection_params["missing_threshold"])
         self.identify_single_unique()
-        self.identify_high_cardinality(selection_params['max_card'])
-        self.identify_collinear(selection_params['correlation_threshold'])
-        self.identify_zero_importance(task=selection_params['task'], eval_metric=selection_params['eval_metric'])
-        self.identify_low_importance(selection_params['cumulative_importance'])
+        self.identify_high_cardinality(selection_params["max_card"])
+        self.identify_collinear(selection_params["correlation_threshold"])
+        self.identify_zero_importance(
+            task=selection_params["task"], eval_metric=selection_params["eval_metric"]
+        )
+        self.identify_low_importance(selection_params["cumulative_importance"])
 
         # Find the number of features identified to drop
         self.all_identified = set(list(chain(*list(self.ops.values()))))
         self.n_identified = len(self.all_identified)
 
-        print('%d total features out of %d identified for removal.\n' % (self.n_identified, self.data.shape[1]))
+        print(
+            "%d total features out of %d identified for removal.\n"
+            % (self.n_identified, self.data.shape[1])
+        )
 
     def check_removal(self):
         """Check the identified features before removal. Returns a list of the unique features identified."""
 
         self.all_identified = set(list(chain(*list(self.ops.values()))))
-        print('Total of %d features identified for removal' % len(self.all_identified))
+        print("Total of %d features identified for removal" % len(self.all_identified))
 
         return list(self.all_identified)
 
-    def remove(self, methods='all'):
+    def remove(self, methods="all"):
         """Remove the features from the data according to the specified methods.
 
         Parameters
@@ -1103,12 +1297,12 @@ class FeatureSelector:
 
         features_to_drop = []
 
-        if methods == 'all':
+        if methods == "all":
 
             # Need to use one-hot encoded data as well
             data = self.data
 
-            print('{} methods have been run\n'.format(list(self.ops.keys())))
+            print("{} methods have been run\n".format(list(self.ops.keys())))
 
             # Find the unique features to drop
             features_to_drop = set(list(chain(*list(self.ops.values()))))
@@ -1120,7 +1314,7 @@ class FeatureSelector:
 
                 # Check to make sure the method has been run
                 if method not in self.ops.keys():
-                    raise NotImplementedError('%s method has not been run' % method)
+                    raise NotImplementedError("%s method has not been run" % method)
 
                 # Append the features identified for removal
                 else:
@@ -1140,7 +1334,9 @@ class FeatureSelector:
     def plot_missing(self):
         """Histogram of missing fraction in each feature"""
         if self.record_missing is None:
-            raise NotImplementedError("Missing values have not been calculated. Run `identify_missing`")
+            raise NotImplementedError(
+                "Missing values have not been calculated. Run `identify_missing`"
+            )
 
         # self.reset_plot()
         set_my_plt_style()
@@ -1148,53 +1344,62 @@ class FeatureSelector:
         # Histogram of missing values
         # plt.style.use('seaborn-white')
         plt.figure(figsize=(7, 5))
-        plt.hist(self.missing_stats['missing_fraction'], bins=np.linspace(0, 1, 21))
+        plt.hist(self.missing_stats["missing_fraction"], bins=np.linspace(0, 1, 21))
         # , edgecolor='k', color='red', linewidth=1.5)
         plt.xticks(np.linspace(0, 1, 11))
-        plt.xlabel('Missing Fraction', size=14)
-        plt.ylabel('Count of Features', size=14)
+        plt.xlabel("Missing Fraction", size=14)
+        plt.ylabel("Count of Features", size=14)
         plt.title("Fraction of Missing Values Histogram", size=16)
-        plt.yscale("log", nonpositive='clip')
+        plt.yscale("log", nonpositive="clip")
         return plt.show()
 
     def plot_unique(self):
         """Histogram of number of unique values in each feature"""
         if self.record_single_unique is None:
-            raise NotImplementedError('Unique values have not been calculated. '
-                                      'Run `identify_single_unique`')
+            raise NotImplementedError(
+                "Unique values have not been calculated. "
+                "Run `identify_single_unique`"
+            )
 
         # self.reset_plot()
         set_my_plt_style()
 
         # Histogram of number of unique values
         lower_bound = max([self.unique_stats.min()[0], 1])
-        logbins = np.logspace(np.log10(lower_bound), np.log10(self.unique_stats.max()[0]), 21)
+        logbins = np.logspace(
+            np.log10(lower_bound), np.log10(self.unique_stats.max()[0]), 21
+        )
         self.unique_stats.plot.hist(figsize=(7, 5), bins=logbins)
 
-        plt.ylabel('Frequency', size=14)
-        plt.xlabel('Unique Values', size=14)
-        plt.title('Number of Unique Values Histogram', size=16)
-        plt.xscale("log", nonpositive='clip')
-        plt.yscale("log", nonpositive='clip')
+        plt.ylabel("Frequency", size=14)
+        plt.xlabel("Unique Values", size=14)
+        plt.title("Number of Unique Values Histogram", size=16)
+        plt.xscale("log", nonpositive="clip")
+        plt.yscale("log", nonpositive="clip")
 
     def plot_cardinality(self):
         """Histogram of number of unique values in each feature"""
         if self.cardinality_stats is None:
-            raise NotImplementedError('Cardinality values have not been '
-                                      'calculated. Run `identify_cardinality`')
+            raise NotImplementedError(
+                "Cardinality values have not been "
+                "calculated. Run `identify_cardinality`"
+            )
 
         # self.reset_plot()
         set_my_plt_style()
 
         # Histogram of number of unique values
-        logbins = np.logspace(np.log10(self.cardinality_stats.min()[0]),
-                              np.log10(self.cardinality_stats.max()[0]), 21)
+        logbins = np.logspace(
+            np.log10(self.cardinality_stats.min()[0]),
+            np.log10(self.cardinality_stats.max()[0]),
+            21,
+        )
         self.cardinality_stats.plot.hist(figsize=(7, 5), bins=logbins)
 
-        plt.ylabel('Frequency', size=14)
-        plt.xlabel('Cardinality', size=14)
-        plt.title('Cardinality of categorical predictors', size=16)
-        plt.xscale("log", nonpositive='clip')
+        plt.ylabel("Frequency", size=14)
+        plt.xlabel("Cardinality", size=14)
+        plt.title("Cardinality of categorical predictors", size=16)
+        plt.xscale("log", nonpositive="clip")
         # plt.yscale("log", nonposy='clip')
 
     def plot_collinear(self, plot_all=False, size=1000):
@@ -1212,7 +1417,7 @@ class FeatureSelector:
         -------
         panel_layout : panel
             the interactive plot
-            
+
         Notes
         -----
         Not all of the plotted correlations are above the threshold because this plots
@@ -1229,50 +1434,71 @@ class FeatureSelector:
         """
 
         if self.record_collinear is None:
-            raise NotImplementedError('Collinear features have not been identified. '
-                                      'Run `identify_collinear`.')
+            raise NotImplementedError(
+                "Collinear features have not been identified. "
+                "Run `identify_collinear`."
+            )
 
         if plot_all:
             corr_matrix_plot = self.corr_matrix
-            subtitle_str = 'All Correlations'
+            subtitle_str = "All Correlations"
 
         else:
             # Identify the correlations that were above the threshold
             # columns (x-axis) are features to drop and rows (y_axis) are correlated pairs
-            corr_matrix_plot = self.corr_matrix.loc[list(set(self.record_collinear['corr_feature'])),
-                                                    list(set(self.record_collinear['drop_feature']))]
+            corr_matrix_plot = self.corr_matrix.loc[
+                list(set(self.record_collinear["corr_feature"])),
+                list(set(self.record_collinear["drop_feature"])),
+            ]
             subtitle_str = "Correlations Above Threshold"
 
             d = sch.distance.pdist(corr_matrix_plot)
-            L = sch.linkage(d, method='ward')
-            ind = sch.fcluster(L, 0.5 * np.nanmax(d), 'distance')
-            columns = [corr_matrix_plot.columns.tolist()[i] for i in list((np.argsort(ind)))]
+            L = sch.linkage(d, method="ward")
+            ind = sch.fcluster(L, 0.5 * np.nanmax(d), "distance")
+            columns = [
+                corr_matrix_plot.columns.tolist()[i] for i in list((np.argsort(ind)))
+            ]
             corr_matrix_plot = corr_matrix_plot.reindex(columns, axis=1)
             corr_matrix_plot = corr_matrix_plot.reindex(columns, axis=0)
         # interactive plot of the correlation matrix
-        heatmap = hv.HeatMap((corr_matrix_plot.columns, corr_matrix_plot.index, corr_matrix_plot)).redim.range(
-                                 z=(-1, 1))
+        heatmap = hv.HeatMap(
+            (corr_matrix_plot.columns, corr_matrix_plot.index, corr_matrix_plot)
+        ).redim.range(z=(-1, 1))
 
-        heatmap.opts(tools=['tap', 'hover'], height=size, width=size + 50, toolbar='left', colorbar=True,
-                cmap=Curl_5_r.mpl_colormap, fontsize={'title': 12, 'ticks': 12, 'minor_ticks': 12}, xrotation=90,
-                invert_xaxis=False, invert_yaxis=True,  # title=title_str,
-                xlabel='', ylabel=''
-                     )
-        if self.collinear_method == 'association':
+        heatmap.opts(
+            tools=["tap", "hover"],
+            height=size,
+            width=size + 50,
+            toolbar="left",
+            colorbar=True,
+            cmap=Curl_5_r.mpl_colormap,
+            fontsize={"title": 12, "ticks": 12, "minor_ticks": 12},
+            xrotation=90,
+            invert_xaxis=False,
+            invert_yaxis=True,  # title=title_str,
+            xlabel="",
+            ylabel="",
+        )
+        if self.collinear_method == "association":
             title_str = "**Continuous (con) and Categorical (nom) Associations **"
-            sub_title_str = "*Categorical(nom): uncertainty coefficient & correlation ratio from 0 to 1. The uncertainty " \
-                        "coefficient is assymmetrical, (approximating how much the elements on the " \
-                        "left PROVIDE INFORMATION on elements in the row). Continuous(con): symmetrical numerical " \
-                        "correlations (Pearson's) from -1 to 1*"
+            sub_title_str = (
+                "*Categorical(nom): uncertainty coefficient & correlation ratio from 0 to 1. The uncertainty "
+                "coefficient is assymmetrical, (approximating how much the elements on the "
+                "left PROVIDE INFORMATION on elements in the row). Continuous(con): symmetrical numerical "
+                "correlations (Pearson's) from -1 to 1*"
+            )
         else:
             title_str = "**Correlations (continuous variables only) **"
-            subtitle_str = "Use `method='association'` if there are categorical variables. "  + subtitle_str 
+            subtitle_str = (
+                "Use `method='association'` if there are categorical variables. "
+                + subtitle_str
+            )
 
-            
         panel_layout = pn.Column(
-                pn.pane.Markdown(title_str, align="start"),  # bold
-                pn.pane.Markdown(sub_title_str, align="start"),  # italic
-                heatmap, background='#b3b3b3'
+            pn.pane.Markdown(title_str, align="start"),  # bold
+            pn.pane.Markdown(sub_title_str, align="start"),  # italic
+            heatmap,
+            background="#b3b3b3",
         )
 
         return panel_layout
@@ -1291,20 +1517,22 @@ class FeatureSelector:
 
         threshold : float, between 0 and 1 default = None
             Threshold for printing information about cumulative importances
-            
+
         figsize : tuple of int
             The rendered size as a percentage size
-            
+
         Returns
         -------
         hv.plot
-            the feature importances holoviews object 
+            the feature importances holoviews object
 
         """
 
         if self.record_zero_importance is None:
-            raise NotImplementedError('Feature importances have not been determined. '
-                                      'Run `idenfity_zero_importance`')
+            raise NotImplementedError(
+                "Feature importances have not been determined. "
+                "Run `idenfity_zero_importance`"
+            )
 
         # Need to adjust number of features if greater than the features in the data
         if plot_n > self.feature_importances.shape[0]:
@@ -1331,23 +1559,48 @@ class FeatureSelector:
                 plot_height = 1500
                 plot_width = 1500
 
-        bars = hv.Bars(self.feature_importances.iloc[:plot_n], kdims='feature',
-                       vdims='normalized_importance').opts(color='#2961ba', invert_axes=True,
-                                                           invert_yaxis=True, width=400,
-                                                           height=plot_height, tools=['hover'],
-                                                           fontsize={'title': 20, 'ticks': 10}, xlabel='')
+        bars = hv.Bars(
+            self.feature_importances.iloc[:plot_n],
+            kdims="feature",
+            vdims="normalized_importance",
+        ).opts(
+            color="#2961ba",
+            invert_axes=True,
+            invert_yaxis=True,
+            width=400,
+            height=plot_height,
+            tools=["hover"],
+            fontsize={"title": 20, "ticks": 10},
+            xlabel="",
+        )
 
-        curve = hv.Scatter(self.feature_importances.iloc[:plot_n], kdims='feature',
-                           vdims='cumulative_importance').opts(color='#2961ba', width=plot_width, size=8,
-                                                               height=plot_height, tools=['hover'],
-                                                               fontsize={'title': 20, 'ticks': 10}, xrotation=45,
-                                                               xlabel='')
+        curve = hv.Scatter(
+            self.feature_importances.iloc[:plot_n],
+            kdims="feature",
+            vdims="cumulative_importance",
+        ).opts(
+            color="#2961ba",
+            width=plot_width,
+            size=8,
+            height=plot_height,
+            tools=["hover"],
+            fontsize={"title": 20, "ticks": 10},
+            xrotation=45,
+            xlabel="",
+        )
         plot = bars + curve
 
         if threshold:
-            importance_index = np.min(np.where(self.feature_importances['cumulative_importance'] > threshold))
-            curve = curve * hv.VLine(importance_index + 1).opts(color='darkred', line_dash='dashed')
+            importance_index = np.min(
+                np.where(self.feature_importances["cumulative_importance"] > threshold)
+            )
+            curve = curve * hv.VLine(importance_index + 1).opts(
+                color="darkred", line_dash="dashed"
+            )
             plot = bars + curve
             plot = plot.opts(title="Importance from the GBM dummy  model")
-            print('%d features required for %0.2f of cumulative importance' % (importance_index + 1, threshold))
+            print(
+                "%d features required for %0.2f of cumulative importance"
+                % (importance_index + 1, threshold)
+            )
         return plot.opts(shared_axes=False, axiswise=True)
