@@ -1,3 +1,6 @@
+"""init module, providing information about the arfs package
+"""
+
 import os.path
 
 # The directory containing this file
