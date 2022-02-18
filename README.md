@@ -2,7 +2,8 @@
 
 [buy me caffeine](https://ko-fi.com/V7V72SOHX)
 
-[![PyPI version](https://badge.fury.io/py/arfs.svg)](https://badge.fury.io/py/arfs) [![Downloads](https://static.pepy.tech/personalized-badge/arfs?period=total&units=international_system&left_color=grey&right_color=yellow&left_text=Downloads)](https://pepy.tech/project/arfs) [![Documentation Status](https://readthedocs.org/projects/arfs/badge/?version=latest)](https://arfs.readthedocs.io/en/latest/?badge=latest)
+[![PyPI version](https://badge.fury.io/py/arfs.svg)](https://badge.fury.io/py/arfs) [![Downloads](https://static.pepy.tech/personalized-badge/arfs?period=total&units=international_system&left_color=grey&right_color=yellow&left_text=Downloads)](https://pepy.tech/project/arfs) [![Documentation Status](https://readthedocs.org/projects/arfs/badge/?version=latest)](https://arfs.readthedocs.io/en/latest/?badge=latest) [![Code Style](https://img.shields.io/badge/code%20style-black-black)](https://img.shields.io/badge/code%20style-black-black)
+
 
 [ARFS readthedocs](https://arfs.readthedocs.io/en/latest/#)
 
