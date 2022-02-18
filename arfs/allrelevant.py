@@ -40,7 +40,7 @@ is a new PR based on #77 making all the changes optional. Waiting for merge
 Leshy is a re-work of the PR I submitted.
 
 License: BSD 3 clause
-  
+
 """
 
 from __future__ import print_function, division
@@ -54,7 +54,7 @@ import lightgbm as lgb
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import scipy as sp
-# from tqdm.autonotebook import tqdm
+
 from tqdm import tqdm
 from sklearn.utils import check_random_state, check_X_y
 from sklearn.base import TransformerMixin, BaseEstimator, is_regressor, is_classifier, clone
@@ -130,7 +130,7 @@ class Leshy(BaseEstimator, TransformerMixin):
         by `np.random`.
     verbose : int, default=0
         Controls verbosity of output. 0: no output, 1: displays iteration number, 
-        2: which features have been selected already
+        2: which features have been selected already  
         
         
     Attributes
@@ -162,8 +162,8 @@ class Leshy(BaseEstimator, TransformerMixin):
     col_names : list of str
         the names of the real predictors
     tag_df : dataframe
-        the df with the details (accepted or rejected) of the feature selection
-    
+        the df with the details (accepted or rejected) of the feature selection 
+
 
     Examples
     --------
@@ -227,6 +227,10 @@ class Leshy(BaseEstimator, TransformerMixin):
         self.sha_max = None
         self.col_names = None
         self.tag_df = None
+        self.n_features_ = 0
+        self.support_ = None
+        self.support_weak_ = None
+
         
         
     def fit(self, X, y, sample_weight=None):
@@ -245,7 +249,7 @@ class Leshy(BaseEstimator, TransformerMixin):
         -------
         self : object
             Nothing but attributes
-        
+            
         """
         self.imp_real_hist = np.empty((0, X.shape[1]), float)
         if not isinstance(X, pd.DataFrame):
@@ -298,8 +302,7 @@ class Leshy(BaseEstimator, TransformerMixin):
         -------
         X : array-like, shape = [n_samples, n_features_]
             The input matrix X's columns are reduced to the features which were
-            selected by Boruta.
-
+            selected by Boruta
         """
 
         self._fit(X, y, sample_weight=sample_weight)
@@ -759,7 +762,7 @@ class Leshy(BaseEstimator, TransformerMixin):
         -------
         dec_reg : array
             holds the decision about each feature 1, 0, -1 (accepted, undecided, rejected)
-        
+            
         """
         active_features = np.where(dec_reg >= 0)[0]
         hits = hit_reg[active_features]
@@ -1253,6 +1256,8 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
         self.tag_df = None
         self.sha_cutoff_df = None
         self.mean_shadow = None
+        self.ranking_absolutes_ = None
+        self.ranking_ = None
 
         # Throw errors if the inputted parameters don't meet the necessary criteria
         if cutoff <= 0:
@@ -1298,7 +1303,7 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
             the target
         sample_weight : pd.series
             sample_weight, if any
-
+            
         """
 
         if isinstance(X, pd.DataFrame) is not True:
@@ -1375,7 +1380,7 @@ class BoostAGroota(BaseEstimator, TransformerMixin):  # (object):
         Returns
         -------
         pd.DataFrame
-            the predictors matrix, with non-necessary columns dropped
+            the predictors matrix, with non-necessary columns dropped      
             
         """
         self.fit(X, y, **fit_params)
@@ -1774,6 +1779,8 @@ class GrootCV(BaseEstimator, TransformerMixin):
         self.tag_df = None
         self.cv_df = None
         self.sha_cutoff = None
+        self.ranking_absolutes_ = None
+        self.ranking_ = None
 
         # Throw errors if the inputted parameters don't meet the necessary criteria
         if cutoff <= 0:

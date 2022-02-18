@@ -8,7 +8,7 @@ HERE = os.path.abspath(os.path.dirname(__file__))
 
 # get key package details from taco/__version__.py
 ABOUT = {}  # type: ignore
-with open(os.path.join(HERE, '__version__.py'), encoding="utf-8") as f:
+with open(os.path.join(HERE, "__version__.py"), encoding="utf-8") as f:
     exec(f.read(), ABOUT)
 
-__version__ = ABOUT['__version__']
+__version__ = ABOUT["__version__"]
