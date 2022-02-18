@@ -2,7 +2,7 @@
 
 [buy me caffeine](https://ko-fi.com/V7V72SOHX)
 
-[![Documentation Status](https://readthedocs.org/projects/arfs/badge/?version=latest)](https://arfs.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](https://readthedocs.org/projects/arfs/badge/?version=latest)](https://arfs.readthedocs.io/en/latest/?badge=latest) [![Downloads](https://static.pepy.tech/personalized-badge/arfs?period=month&units=international_system&left_color=black&right_color=blue&left_text=Downloads)](https://pepy.tech/project/arfs)
 
 [ARFS readthedocs](https://arfs.readthedocs.io/en/latest/#)
 
