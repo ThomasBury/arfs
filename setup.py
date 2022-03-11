@@ -20,6 +20,7 @@ EXTRAS_REQUIRE = {
         ],
     'docs': [
         'nbsphinx==0.8.8',
+        'ipykernel==6.9.1',
         'pandoc',
         'sphinx==4.4.0',
         'sphinx-autodoc-typehints==1.16.0',
