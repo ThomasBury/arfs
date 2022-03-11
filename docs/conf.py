@@ -48,7 +48,7 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
     'sphinx_autodoc_typehints',
-    # 'numpydoc',
+    'ipykernel',
     'sphinx_copybutton',
     'sphinx_rtd_theme',
     'nbsphinx',
