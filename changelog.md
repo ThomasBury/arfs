@@ -1,5 +1,13 @@
 # Changes
 
+## 0.3.4
+
+ - Update requirements 
+
+## 0.3.3
+
+ - Upgrade documentation
+
 ## 0.3.2
 
  - fix typo for distributing the dataset and pinned the dependencies
