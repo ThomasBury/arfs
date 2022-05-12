@@ -1,5 +1,10 @@
 # Changes
 
+## 0.3.5
+
+- Enable clustering before plotting the correlation/association matrix, optional
+- Decrease fontsize for the lables of the correlation matrix
+
 ## 0.3.4
 
  - Update requirements 
