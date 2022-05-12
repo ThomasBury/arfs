@@ -1,5 +1,9 @@
 # Changes
 
+## 0.3.7
+
+ - Add defensive check if no categorical found in the subsampling of the dataset
+ - Re-run the notebooks with the new version
 ## 0.3.6
 
  - Fix clustering when plotting only strongly correlated predictors
