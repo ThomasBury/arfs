@@ -1402,7 +1402,7 @@ class FeatureSelector:
         plt.xscale("log", nonpositive="clip")
         # plt.yscale("log", nonposy='clip')
 
-    def plot_collinear(self, plot_all=False, size=1000):
+    def plot_collinear(self, plot_all=False, size=1000, clustering=False):
         """Heatmap of the correlation values, reduced or not
 
         Parameters
@@ -1412,6 +1412,8 @@ class FeatureSelector:
             plots only those features that have a correlation above the threshold
         size : int, optional
             figure size in in pixels, by default 1000
+        clustering : bool, optional
+            perform or not clustering into meaningful blocks before plotting the
 
         Returns
         -------
@@ -1451,7 +1453,8 @@ class FeatureSelector:
                 list(set(self.record_collinear["drop_feature"])),
             ]
             subtitle_str = "Correlations Above Threshold"
-
+            
+        if clustering:
             d = sch.distance.pdist(corr_matrix_plot)
             L = sch.linkage(d, method="ward")
             ind = sch.fcluster(L, 0.5 * np.nanmax(d), "distance")
@@ -1460,6 +1463,8 @@ class FeatureSelector:
             ]
             corr_matrix_plot = corr_matrix_plot.reindex(columns, axis=1)
             corr_matrix_plot = corr_matrix_plot.reindex(columns, axis=0)
+            
+            #correlations, _ = cluster_correlations(correlations)
         # interactive plot of the correlation matrix
         heatmap = hv.HeatMap(
             (corr_matrix_plot.columns, corr_matrix_plot.index, corr_matrix_plot)
