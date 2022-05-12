@@ -1,5 +1,10 @@
 # Changes
 
+## 0.3.6
+
+ - Fix clustering when plotting only strongly correlated predictors
+ - Remove palettable dependencies for plotting 
+ - Add default colormap but implement the user defined option
 ## 0.3.5
 
 - Enable clustering before plotting the correlation/association matrix, optional
@@ -15,7 +20,7 @@
 
 ## 0.3.2
 
- - fix typo for distributing the dataset and pinned the dependencies
+ - Fix typo for distributing the dataset and pinned the dependencies
 ## 0.3.1 
 
  - Update the syntax for computing associations using the latest version of dython
