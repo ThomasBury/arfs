@@ -36,8 +36,6 @@ from sklearn.model_selection import ShuffleSplit, StratifiedShuffleSplit
 # visualizations
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from palettable.cmocean.diverging import Curl_5_r
-from palettable.cartocolors.qualitative import Bold_10
 import holoviews as hv
 import panel as pn
 
@@ -51,6 +49,16 @@ import scipy.cluster.hierarchy as sch
 hv.extension("bokeh", logo=False)
 hv.renderer("bokeh").theme = "light_minimal"
 
+qualitative_colors = ['#7F3C8D', 
+                      '#11A579',
+                      '#3969AC',
+                      '#F2B701',
+                      '#E73F74',
+                      '#80BA5A',
+                      '#E68310',
+                      '#008695',
+                      '#CF1C90',
+                      '#F97B72']
 
 #####################
 #                   #
@@ -78,7 +86,7 @@ def set_my_plt_style(height=3, width=5, linewidth=2):
 
     """
     plt.style.use("fivethirtyeight")
-    my_colors_list = Bold_10.hex_colors
+    my_colors_list = qualitative_colors
     myorder = [2, 3, 4, 1, 0, 6, 5, 8, 9, 7]
     my_colors_list = [my_colors_list[i] for i in myorder]
     bckgnd_color = "#f5f5f5"
@@ -199,7 +207,7 @@ def plot_corr(df, size=10):
 
     # Plot the correlation matrix
     fig, ax = plt.subplots(figsize=(size, size))
-    cax = ax.matshow(corr, cmap=Curl_5_r.mpl_colormap, vmin=-1, vmax=1)
+    cax = ax.matshow(corr, cmap='PiYG', vmin=-1, vmax=1)
     plt.xticks(range(len(corr.columns)), corr.columns, rotation=90)
     plt.yticks(range(len(corr.columns)), corr.columns)
 
@@ -209,7 +217,7 @@ def plot_corr(df, size=10):
     return fig
 
 
-def plot_associations(df, features=None, size=1200, theil_u=False):
+def plot_associations(df, features=None, size=1200, theil_u=False, cmap=None):
     """Plot associations, equivalent of correlation but for
     continuous-continuous, categorical-continuous, categorical-categorical
     variables.
@@ -225,6 +233,8 @@ def plot_associations(df, features=None, size=1200, theil_u=False):
         The rendered size, in pixels, by default 1200
     theil_u : bool, optional
         consider or not the Theyl's U statistics for cat-cat association, by default False
+    cmap : object, optional
+        matplotlibe like color map
 
     Returns
     -------
@@ -266,7 +276,7 @@ def plot_associations(df, features=None, size=1200, theil_u=False):
         width=size + 50,
         toolbar="left",
         colorbar=True,
-        cmap=Curl_5_r.mpl_colormap,
+        cmap=cmap if cmap is not None else 'PiYG',
         fontsize={"title": 12, "ticks": 12, "minor_ticks": 12},
         xrotation=90,
         invert_xaxis=False,
@@ -1402,7 +1412,7 @@ class FeatureSelector:
         plt.xscale("log", nonpositive="clip")
         # plt.yscale("log", nonposy='clip')
 
-    def plot_collinear(self, plot_all=False, size=1000, clustering=False):
+    def plot_collinear(self, plot_all=False, size=1000, clustering=False, cmap=None):
         """Heatmap of the correlation values, reduced or not
 
         Parameters
@@ -1414,6 +1424,8 @@ class FeatureSelector:
             figure size in in pixels, by default 1000
         clustering : bool, optional
             perform or not clustering into meaningful blocks before plotting the
+        cmap : object, optional
+            matplotlib like color map
 
         Returns
         -------
@@ -1447,10 +1459,10 @@ class FeatureSelector:
 
         else:
             # Identify the correlations that were above the threshold
-            # columns (x-axis) are features to drop and rows (y_axis) are correlated pairs
+            corr_cols = list(set(self.record_collinear["corr_feature"]).union(set(self.record_collinear["drop_feature"])))
             corr_matrix_plot = self.corr_matrix.loc[
-                list(set(self.record_collinear["corr_feature"])),
-                list(set(self.record_collinear["drop_feature"])),
+                corr_cols,
+                corr_cols,
             ]
             subtitle_str = "Correlations Above Threshold"
             
@@ -1476,7 +1488,7 @@ class FeatureSelector:
             width=size + 50,
             toolbar="left",
             colorbar=True,
-            cmap=Curl_5_r.mpl_colormap,
+            cmap=cmap if cmap is not None else 'PiYG',
             fontsize={"title": 12, "ticks": 9, "minor_ticks": 9},
             xrotation=90,
             invert_xaxis=False,
