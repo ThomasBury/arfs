@@ -1472,7 +1472,7 @@ class FeatureSelector:
             toolbar="left",
             colorbar=True,
             cmap=Curl_5_r.mpl_colormap,
-            fontsize={"title": 12, "ticks": 12, "minor_ticks": 12},
+            fontsize={"title": 12, "ticks": 9, "minor_ticks": 9},
             xrotation=90,
             invert_xaxis=False,
             invert_yaxis=True,  # title=title_str,
