@@ -22,9 +22,17 @@ from sklearn.pipeline import Pipeline
 from sklearn.datasets import fetch_openml
 from sklearn.datasets import load_boston, load_breast_cancer
 from sklearn.utils import Bunch
-from palettable.cartocolors.qualitative import Bold_10
 
-
+qualitative_colors = ['#7F3C8D', 
+                      '#11A579',
+                      '#3969AC',
+                      '#F2B701',
+                      '#E73F74',
+                      '#80BA5A',
+                      '#E68310',
+                      '#008695',
+                      '#CF1C90',
+                      '#F97B72']
 
 #####################
 #                   #
@@ -239,7 +247,7 @@ def set_my_plt_style(height=3, width=5, linewidth=2):
     """
 
     plt.style.use("fivethirtyeight")
-    my_colors_list = Bold_10.hex_colors
+    my_colors_list = qualitative_colors
     myorder = [2, 3, 4, 1, 0, 6, 5, 8, 9, 7]
     my_colors_list = [my_colors_list[i] for i in myorder]
     bckgnd_color = "#f5f5f5"
