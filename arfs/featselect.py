@@ -917,7 +917,7 @@ class FeatureSelector:
             )
 
             # Add to dataframe
-            record_collinear = record_collinear.append(temp_df, ignore_index=True)
+            record_collinear = pd.concat([record_collinear, temp_df], ignore_index=True)
 
         self.record_collinear = record_collinear
         to_drop = [x[:-6] for x in to_drop]
@@ -1487,7 +1487,7 @@ class FeatureSelector:
             width=size + 50,
             toolbar="left",
             colorbar=True,
-            cmap=cmap if cmap is not None else 'PiYG',
+            cmap=cmap if cmap is not None else 'RdBu',
             fontsize={"title": 12, "ticks": 9, "minor_ticks": 9},
             xrotation=90,
             invert_xaxis=False,
