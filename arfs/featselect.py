@@ -20,7 +20,6 @@ import gc
 # utilities
 from itertools import chain
 import time
-import random
 import warnings
 
 # numpy and pandas for data manipulation
