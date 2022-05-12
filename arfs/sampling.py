@@ -61,9 +61,12 @@ def sample(df, n=1000, sample_weight=None, method="gower"):
         ).fit_predict(gd)
         X["label"] = labels
         X["label"] = "clus_" + X["label"].astype(str)
-        X_nonnum = X.groupby("label")[non_num_cols].agg(get_most_common)
         X_num = X.groupby("label")[num_cols].agg("mean")
-        X_sampled = X_num.join(X_nonnum)
+        if non_num_cols:
+            X_nonnum = X.groupby("label")[non_num_cols].agg(get_most_common)
+            X_sampled = X_num.join(X_nonnum)
+        else:
+            X_sampled = X_num
         X_sampled = X_sampled.reindex(X.columns, axis=1)
         return X_sampled
     elif method == "isoforest":
