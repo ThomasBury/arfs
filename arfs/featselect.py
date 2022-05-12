@@ -11,7 +11,7 @@ It is the first step of the feature selection, ideally followed by a
 
 """
 
-# from https://github.com/WillKoehrsen
+# Adapted from https://github.com/WillKoehrsen
 # modified by Thomas Bury
 
 # memory management
