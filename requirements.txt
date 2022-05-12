@@ -3,7 +3,6 @@ holoviews>=1.14.8
 lightgbm>=3.3.2
 matplotlib==3.5
 numpy==1.21
-palettable==3.3
 pandas>=1.4
 panel>=0.13
 scikit_learn>=1.0
