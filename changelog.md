@@ -1,5 +1,9 @@
 # Changes
 
+## 0.3.8
+
+ - FIx bug when compute shap importance for classifier in GrootCV
+
 ## 0.3.7
 
  - Add defensive check if no categorical found in the subsampling of the dataset
