@@ -1727,7 +1727,7 @@ def _reduce_vars_sklearn(
         the feature importance threshold, to reject or not the predictors
 
     Raises
-    ------
+    ------_reduce_vars_sklearn
     ValueError
         error if the feature importance type is not"""
     # Set up the parameters for running the model in XGBoost - split is on multi log loss
@@ -2311,8 +2311,8 @@ def _reduce_vars_lgb_cv(x, y, objective, n_folds, cutoff, n_iter, silent, weight
                 "bagging_freq": "1",
             }
         )
-
-    if objective in ["softmax", "binary"]:
+    clf_losses = ['binary', 'softmax', 'multi_logloss', 'multiclassova', 'multiclass', 'multiclass_ova', 'ova', 'ovr', 'binary_logloss']
+    if objective in clf_losses:
         y = y.astype(int)
         y_freq_table = pd.Series(y.fillna(0)).value_counts(normalize=True)
         n_classes = y_freq_table.size
@@ -2390,14 +2390,16 @@ def _reduce_vars_lgb_cv(x, y, objective, n_folds, cutoff, n_iter, silent, weight
         shap_matrix = bst.predict(new_x_tr, pred_contrib=True)
 
         # the dim changed in lightGBM >= 3.0.0
-        if objective in ['softmax', 'binary']:
+        if objective == 'softmax':
             # X_SHAP_values (array-like of shape = [n_samples, n_features + 1]
             # or shape = [n_samples, (n_features + 1) * n_classes])
+            # index starts from 0
             n_feat = new_x_tr.shape[1]
             shap_matrix = np.delete(shap_matrix,
-            list(range(n_feat + 1, 1 + (n_feat + 1) * n_classes, n_feat + 1)), axis=1)
+            list(range(n_feat, (n_feat + 1) * n_classes, n_feat+1)), axis=1)
             shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
         else:
+            # for binary, only one class is returned, for regression a single column added as well
             shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
 
         importance = dict(
