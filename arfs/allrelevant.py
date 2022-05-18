@@ -2288,7 +2288,6 @@ def _reduce_vars_lgb_cv(x, y, objective, n_folds, cutoff, n_iter, silent, weight
     if objective == "softmax":
         param = {
             "objective": objective,
-            "eval_metric": "mlogloss",
             "num_class": len(np.unique(y)),
         }
     else:
@@ -2311,6 +2310,7 @@ def _reduce_vars_lgb_cv(x, y, objective, n_folds, cutoff, n_iter, silent, weight
                 "bagging_freq": "1",
             }
         )
+
     clf_losses = ['binary', 'softmax', 'multi_logloss', 'multiclassova', 'multiclass', 'multiclass_ova', 'ova', 'ovr', 'binary_logloss']
     if objective in clf_losses:
         y = y.astype(int)
@@ -2318,6 +2318,7 @@ def _reduce_vars_lgb_cv(x, y, objective, n_folds, cutoff, n_iter, silent, weight
         n_classes = y_freq_table.size
         if n_classes > 2 and objective != "softmax":
             param["objective"] = "softmax"
+            param["num_class"] = len(np.unique(y)),
             if not silent:
                 print("Multi-class task, setting objective to softmax")
 
