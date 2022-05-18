@@ -2389,19 +2389,16 @@ def _reduce_vars_lgb_cv(x, y, objective, n_folds, cutoff, n_iter, silent, weight
 
         shap_matrix = bst.predict(new_x_tr, pred_contrib=True)
 
-        # the dim changed in lightGBM 3
-        shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
-
-        # For LGBM version < 3
-        # if objective in ['softmax', 'binary']:
-        #     # X_SHAP_values (array-like of shape = [n_samples, n_features + 1]
-        #     # or shape = [n_samples, (n_features + 1) * n_classes])
-        #     n_feat = new_x_tr.shape[1]
-        #     shap_matrix = np.delete(shap_matrix,
-        #     list(range(n_feat + 1, 1 + (n_feat + 1) * n_classes, n_feat + 1)), axis=1)
-        #     shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
-        # else:
-        #     shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
+        # the dim changed in lightGBM >= 3.0.0
+        if objective in ['softmax', 'binary']:
+            # X_SHAP_values (array-like of shape = [n_samples, n_features + 1]
+            # or shape = [n_samples, (n_features + 1) * n_classes])
+            n_feat = new_x_tr.shape[1]
+            shap_matrix = np.delete(shap_matrix,
+            list(range(n_feat + 1, 1 + (n_feat + 1) * n_classes, n_feat + 1)), axis=1)
+            shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
+        else:
+            shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
 
         importance = dict(
             zip(new_x_tr.columns, shap_imp)
