@@ -2,7 +2,7 @@ dython>=0.7.0
 holoviews>=1.14.8
 lightgbm>=3.3.2
 matplotlib==3.5
-numpy==1.21
+numpy>=1.20.3
 pandas>=1.4
 panel>=0.13
 scikit_learn>=1.0
