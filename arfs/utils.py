@@ -22,6 +22,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.datasets import fetch_openml
 from sklearn.datasets import load_boston, load_breast_cancer
 from sklearn.utils import Bunch
+from arfs.preprocessing import OrdinalEncoderPandas
 
 qualitative_colors = ['#7F3C8D', 
                       '#11A579',
@@ -39,6 +40,93 @@ qualitative_colors = ['#7F3C8D',
 #     Utilities     #
 #                   #
 #####################
+
+
+def reset_plot():
+    """Reset plot style"""
+    plt.rcParams = plt.rcParamsDefault
+
+
+def set_my_plt_style(height=3, width=5, linewidth=2):
+    """This set the style of matplotlib to fivethirtyeight with some modifications (colours, axes)
+
+    Parameters
+    ----------
+    linewidth: int, default=2
+        line width
+    height: int, default=3
+        fig height in inches (yeah they're still struggling with the metric system)
+    width: int, default=5
+        fig width in inches (yeah they're still struggling with the metric system)
+
+    """
+    plt.style.use("fivethirtyeight")
+    my_colors_list = qualitative_colors
+    myorder = [2, 3, 4, 1, 0, 6, 5, 8, 9, 7]
+    my_colors_list = [my_colors_list[i] for i in myorder]
+    bckgnd_color = "#f5f5f5"
+    params = {
+        "figure.figsize": (width, height),
+        "axes.prop_cycle": plt.cycler(color=my_colors_list),
+        "axes.facecolor": bckgnd_color,
+        "patch.edgecolor": bckgnd_color,
+        "figure.facecolor": bckgnd_color,
+        "axes.edgecolor": bckgnd_color,
+        "savefig.edgecolor": bckgnd_color,
+        "savefig.facecolor": bckgnd_color,
+        "grid.color": "#d2d2d2",
+        "lines.linewidth": linewidth,
+    }  # plt.cycler(color=my_colors_list)
+    mpl.rcParams.update(params)
+
+
+
+def create_dtype_dict(df: pd.DataFrame, dic_keys: str = 'col_names'):
+    """create a custom dictionary of data type for adding suffixes
+    to column names in the plotting utility for association matrix
+
+    Parameters
+    ----------
+    df :
+        the dataframe used for computing the association matrix
+    dic_keys :
+        Either "col_names" or "dtypes" for returning either a dictionary
+        with column names or dtypes as keys.
+    """
+    cat_cols = list(df.select_dtypes(include=['object', 'category', 'bool']))
+    time_cols = list(df.select_dtypes(include=['datetime', 'timedelta', 'datetimetz']))
+    num_cols = list(df.select_dtypes(include=[np.number]))
+    remaining_cols = list(set(df.columns) - set(cat_cols).union(set(num_cols)).union(time_cols))
+
+    if dic_keys == 'col_names':
+        cat_dic = {c: "cat" for c in cat_cols}
+        num_dic = {c: "num" for c in num_cols}
+        time_dic = {c: "time" for c in time_cols}
+        remainder_dic = {c: "unk" for c in remaining_cols}
+        return {**cat_dic, **num_dic, **time_dic,**remainder_dic}
+    elif dic_keys == 'dtypes':
+        cat_dic = {"cat": cat_cols}
+        num_dic = {"num": num_cols}
+        time_dic = {"time": time_cols}
+        remainder_dic = {"unk": remaining_cols}
+        return {**cat_dic, **num_dic, **time_dic,**remainder_dic}
+    else:
+        raise ValueError("'dic_keys' should be either 'col_names' or 'dtypes'")
+        
+
+def get_pandas_cat_codes(X):
+    dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
+    obj_feat = dtypes_dic['cat'] + dtypes_dic['time'] + dtypes_dic['unk']  
+
+    if obj_feat:                
+        cat = X[obj_feat].stack().astype("str").astype("category").cat.codes.unstack()
+        X = pd.concat([X[X.columns.difference(obj_feat)], cat], axis=1)
+        cat_idx = [X.columns.get_loc(col) for col in obj_feat]
+    else:
+        obj_feat = None
+        cat_idx = None
+        
+    return X, obj_feat, cat_idx
 
 
 def check_if_tree_based(model):
@@ -338,7 +426,9 @@ def sklearn_pimp_bench(model, X, y, task="regression", sample_weight=None):
     # For illustrations, see
     # https://towardsdatascience.com/one-hot-encoding-is-making-
     # your-tree-based-ensembles-worse-heres-why-d64b282b5769
-    X, cat_var_df, inv_mapper = cat_var(X)
+    
+    # X, cat_var_df, inv_mapper, mapper = cat_var(X)
+    X = OrdinalEncoderPandas().fit_transform(X)
 
     if task == "regression":
         stratify = None
@@ -431,55 +521,6 @@ def compare_varimp(feat_selector, models, X, y, sample_weight=None):
             fig = highlight_tick(figure=fig, str_match="genuine", color="green")
             plt.show()
 
-
-def cat_var(df, col_excl=None, return_cat=True):
-    """Encode categorical variables using integers
-
-    Parameters
-    ----------
-    df : pd.DataFrame
-        the dataframe to be encoded
-    col_excl : None or list of str, optional
-        list of column names to exclude from the encoding, by default None
-    return_cat : bool, optional
-        return or not as pandas categorical columns, by default True
-
-    Returns
-    -------
-    pd.DataFrame, pd.DataFrame, dict
-        The encoded pandas dataframe, the dataframe with the details and the mapping dictionary
-    """
-
-    if col_excl is None:
-        non_num_cols = list(
-            set(list(df.columns)) - set(list(df.select_dtypes(include=[np.number])))
-        )
-    else:
-        non_num_cols = list(
-            set(list(df.columns))
-            - set(list(df.select_dtypes(include=[np.number])))
-            - set(col_excl)
-        )
-
-    cat_var_index = [df.columns.get_loc(c) for c in non_num_cols if c in df]
-
-    cat_var_df = pd.DataFrame({"cat_ind": cat_var_index, "cat_name": non_num_cols})
-
-    cols_need_mapped = cat_var_df.cat_name.to_list()
-    inv_mapper = {
-        col: dict(enumerate(df[col].astype("category").cat.categories))
-        for col in df[cols_need_mapped]
-    }
-    mapper = {
-        col: {v: k for k, v in inv_mapper[col].items()} for col in df[cols_need_mapped]
-    }
-
-    for c in cols_need_mapped:
-        df.loc[:, c] = df.loc[:, c].map(mapper[c]).fillna(0).astype(int)
-
-    if return_cat:
-        df[non_num_cols] = df[non_num_cols].astype("category")
-    return df, cat_var_df, inv_mapper
 
 
 def _get_titanic_data():
