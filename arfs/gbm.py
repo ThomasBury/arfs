@@ -122,8 +122,7 @@ class GradientBoosting:
     -------
     >>> # set up the trainer
     >>> save_path = "C:/Users/mtpl_bi_pp/base/"
-    >>> gbm_model = GradientBoosting(objective='tweedie',
-    >>>                              method='lgb',
+    >>> gbm_model = GradientBoosting(method='lgb',
     >>>                              cat_feat='auto',
     >>>                              stratified=False,
     >>>                              params={
@@ -143,7 +142,7 @@ class GradientBoosting:
     """
 
     def __init__(
-        self, method="lgb", cat_feat="auto", params=None, stratified=False, show_learning_curve=True, verbose_eval=50
+        self, method="lgb", cat_feat="auto", params=None, stratified=False, show_learning_curve=True, verbose_eval=50, return_valid_features=False
     ):
         self.method = method
         self.model = None
@@ -155,6 +154,8 @@ class GradientBoosting:
         self.stratified = stratified
         self.show_learning_curve = show_learning_curve
         self.verbose_eval = verbose_eval
+        self.return_valid_features = return_valid_features
+        self.valid_features = None
 
     def __repr__(self):
         s = (
@@ -226,6 +227,7 @@ class GradientBoosting:
                 groups=groups,
                 learning_curve=self.show_learning_curve,
                 verbose_eval=self.verbose_eval,
+                return_valid_features=self.return_valid_features
             )
         elif self.method == "lgb":
             output = _fit_early_stopped_lgb(
@@ -239,14 +241,21 @@ class GradientBoosting:
                 groups=groups,
                 learning_curve=self.show_learning_curve,
                 verbose_eval=self.verbose_eval,
+                return_valid_features=self.return_valid_features
             )
         else:
             raise Exception("method not found")
 
         if self.show_learning_curve:
-            self.model, self.learning_curve = output[0], output[1]
+            if self.return_valid_features:
+                self.model, self.valid_features, self.learning_curve = output[0], output[1], output[2]
+            else:
+                self.model, self.learning_curve = output[0], output[1]
         else:
-            self.model = output
+            if self.return_valid_features:
+                self.model, self.valid_features = output[0], output[1]
+            else:
+                self.model = output
 
         self.model_params = self.model.params if self.method == "lgb" else self.model.get_all_params()
 
@@ -388,7 +397,8 @@ def _fit_early_stopped_catboost(
     stratified=False,
     learning_curve=True,
     verbose_eval=0,
-) -> Tuple[object, plt.figure]:
+    return_valid_features=False
+) :
 
     """CONVENIENCE FUNCTION, IT SHOULD NOT BE ACCESSED/IMPORTED BY THE USER
 
@@ -425,6 +435,8 @@ def _fit_early_stopped_catboost(
         if show or not the learning curve
     verbose_eval : int, default=0
         period for printing the train and validation results. If < 1, no output
+    return_valid_features : bool, default = False
+        Whether or not to return validation features
 
     Raises
     ------
@@ -441,9 +453,9 @@ def _fit_early_stopped_catboost(
     """
 
     (
-        x_train,
+        X_train,
         y_train,
-        x_val,
+        X_val,
         y_val,
         sample_weight_val,
         sample_weight_train,
@@ -458,8 +470,8 @@ def _fit_early_stopped_catboost(
         stratified=stratified,
         test_size=0.2,
     )
-    d_train = Pool(x_train, label=y_train, cat_features=cat_feat)
-    d_valid = Pool(x_val, label=y_val, cat_features=cat_feat)
+    d_train = Pool(X_train, label=y_train, cat_features=cat_feat)
+    d_valid = Pool(X_val, label=y_val, cat_features=cat_feat)
 
     if sample_weight is not None:
         d_train = d_train.set_weight(sample_weight_train)
@@ -473,7 +485,7 @@ def _fit_early_stopped_catboost(
         warnings.warn("No params dictionary provided, using RMSE as default")
         params = {
             "loss_function": "RMSE",
-            "n_estimators": 10000,
+            "num_boost_round": 10000,
             "silent": False,
             "od_wait": 10,
         }
@@ -502,14 +514,20 @@ def _fit_early_stopped_catboost(
         del d_valid
         gc.enable()
         gc.collect()
-
-        return model, fig
+        if return_valid_features:
+            return model, X_val, fig
+        else:
+            return model, fig
     else:
         del d_train
         del d_valid
         gc.enable()
         gc.collect()
-        return model
+        
+        if return_valid_features:
+            return model, X_val
+        else:
+            return model
 
 
 def _fit_early_stopped_lgb(
@@ -523,6 +541,7 @@ def _fit_early_stopped_lgb(
     stratified=False,
     learning_curve=True,
     verbose_eval=0,
+    return_valid_features=False
 ):
     """convenience function, early stopping for lightGBM, using dataset and setting categorical feature, sample weights
     and baseline (init_score), if any. User defined params can be passed.
@@ -560,6 +579,8 @@ def _fit_early_stopped_lgb(
         if show or not the learning curve
     verbose_eval : int, default = 0
         period for printing the train and validation results. If < 1, no output
+    return_valid_features : bool, default = False
+        Whether or not to return validation features
 
     Returns
     -------
@@ -570,9 +591,9 @@ def _fit_early_stopped_lgb(
 
     """
     (
-        x_train,
+        X_train,
         y_train,
-        x_val,
+        X_val,
         y_val,
         sample_weight_val,
         sample_weight_train,
@@ -590,9 +611,9 @@ def _fit_early_stopped_lgb(
 
     col_list = list(X.columns)
     # cat_idx = [col_list.index(c) for c in cat_feat if c in x]
-    d_train = lgb.Dataset(x_train, label=y_train, categorical_feature=cat_feat, free_raw_data=False)
+    d_train = lgb.Dataset(X_train, label=y_train, categorical_feature=cat_feat, free_raw_data=False)
     d_valid = lgb.Dataset(
-        x_val,
+        X_val,
         label=y_val,
         categorical_feature=cat_feat,
         reference=d_train,
@@ -611,10 +632,13 @@ def _fit_early_stopped_lgb(
     # check that if the params argument is not None, it is a dictionary
     if params is None:
         warnings.warn("No params dictionary provided, using RMSE as default")
-        params = {"objective": "rmse", "metric": "rmse"}
+        params = {"objective": "rmse", "metric": "rmse", "num_boost_round": 10_000}
     elif not isinstance(params, dict):
         raise TypeError("params should be either None or a dictionary of lightgbm params")
 
+    if "num_boost_round" not in params:
+        # a very large number of trees, to guarantee early stopping and convergence
+        params["num_boost_round"] = 10_000
     # Check if the objective is passed as an argument, dictionary key or both
     if "objective" not in params:
         raise KeyError("No objective provided in the params dictionary")
@@ -650,11 +674,15 @@ def _fit_early_stopped_lgb(
     evals_result = {}
     params["verbosity"] = -1
 
+    n_trees = params["num_boost_round"] if "num_boost_round" in params else 10_000
+    # remove key if exists to avoid LGB userwarnings
+    params.pop("num_boost_round", None)
+    
     model = lgb.train(
         params,
+        num_boost_round=n_trees,
         train_set=d_train,
         valid_sets=watchlist,
-        num_boost_round=10000,
         feval=feval_call,
         fobj=fobj_call,
         callbacks=[
@@ -676,10 +704,15 @@ def _fit_early_stopped_lgb(
         del d_valid
         gc.enable()
         gc.collect()
-
-        return model, fig
+        if return_valid_features:
+            return model, X_val, fig
+        else:
+            return model, fig
     else:
-        return model
+        if return_valid_features:
+            return model, X_val
+        else:
+            return model
 
 
 def _make_split(
@@ -728,8 +761,8 @@ def _make_split(
         splitter = rs.split(X, y)
 
     for train_index, test_index in splitter:
-        x_val, y_val = X.iloc[test_index], y.iloc[test_index]
-        x_train, y_train = X.iloc[train_index], y.iloc[train_index]
+        X_val, y_val = X.iloc[test_index], y.iloc[test_index]
+        X_train, y_train = X.iloc[train_index], y.iloc[train_index]
         if sample_weight is not None:
             sample_weight_val, sample_weight_train = (
                 sample_weight.iloc[test_index],
@@ -747,9 +780,9 @@ def _make_split(
             init_score_val, init_score_train = None, None
 
     return (
-        x_train,
+        X_train,
         y_train,
-        x_val,
+        X_val,
         y_val,
         sample_weight_val,
         sample_weight_train,
