@@ -35,6 +35,10 @@ def parallel_matrix_entries(
     pd.DataFrame
         concatenated results into a single pandas DF
     """
+    
+    if n_jobs == 1:
+        return func(X=df, sample_weight=sample_weight, comb_list=comb_list)
+    
     n_jobs = (
         min(cpu_count(), len(df.columns))
         if n_jobs == -1
@@ -78,6 +82,11 @@ def parallel_df(
     pd.DataFrame
         concatenated results into a single pandas DF
     """
+    
+    if n_jobs == 1:
+        return func(df, series, sample_weight).sort_values(ascending=False)
+        
+    
     n_jobs = (
         min(cpu_count(), len(df.columns))
         if n_jobs == -1
