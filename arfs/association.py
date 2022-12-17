@@ -2,11 +2,15 @@ import math
 import warnings
 import matplotlib
 import numpy as np
+import gc
 import pandas as pd
 import scipy.stats as ss
 import matplotlib.pyplot as plt
 import scipy.cluster.hierarchy as sch
 import scipy.stats as ss
+import holoviews as hv
+import panel as pn
+
 
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from typing import Union, Tuple, List, Optional, Dict, Callable
@@ -22,26 +26,9 @@ from scipy.stats import rankdata
 from functools import partial
 
 from arfs.parallel import parallel_matrix_entries, parallel_df, _compute_series, _compute_matrix_entries
+from arfs.utils import create_dtype_dict
 
 _PRECISION = 1e-13
-
-def create_dtype_dict(df: pd.DataFrame):
-    """create a custom dictionary of data type for adding suffixes
-    to column names in the plotting utility for association matrix
-
-    Parameters
-    ----------
-    df :
-        the dataframe used for computing the association matrix
-    """
-    cat_cols = list(df.select_dtypes(include=["object", "category", "bool"]))
-    num_cols = list(df.select_dtypes(include=[np.number]))
-    remaining_cols = set(df.columns) - set(cat_cols).union(set(num_cols))
-
-    cat_dic = {c: "cat" for c in cat_cols}
-    num_dic = {c: "num" for c in num_cols}
-    remainder_dic = {c: "unk" for c in remaining_cols}
-    return {**cat_dic, **num_dic, **remainder_dic}
 
 ########################
 # Redundancy measures
@@ -215,8 +202,9 @@ def theils_u_matrix(
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
 
     # Cramer's V only for categorical columns
-    # in GLM supposed to be all the columns
-    cat_cols = list(X.select_dtypes(include=["object", "category"]))
+    col_dtypes_dic = create_dtype_dict(X)
+    dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
+    cat_cols = dtypes_dic['cat']
 
     if cat_cols:
         # explicitely store the unique 2-permutation of column names
@@ -280,13 +268,14 @@ def theils_u_series(
     """
     # sanity checks
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
-
-    if X.loc[:, target].dtypes not in ["object", "category"]:
+    col_dtypes_dic = create_dtype_dict(X)
+    dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
+    
+    if col_dtypes_dic['target'] != 'cat':
         raise TypeError("the target column is not categorical")
 
     # Cramer's V only for categorical columns
-    # in GLM supposed to be all the columns
-    cat_cols = list(X.select_dtypes(include=["object", "category"]))
+    cat_cols = dtypes_dic['cat']
 
     if cat_cols:
         # define the number of cores
@@ -386,10 +375,11 @@ def cramer_v_matrix(
     """
     # sanity checks
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
+    dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
 
     # Cramer's V only for categorical columns
     # in GLM supposed to be all the columns
-    cat_cols = list(X.select_dtypes(include=["object", "category"]))
+    cat_cols = dtypes_dic['cat']
 
     if cat_cols:
         # explicitely store the unique 2-combinations of column names
@@ -450,13 +440,14 @@ def cramer_v_series(
     """
     # sanity checks
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
+    col_dtypes_dic = create_dtype_dict(X)
+    dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
 
-    if X.loc[:, target].dtypes not in ["object", "category"]:
+    if col_dtypes_dic['target'] != 'cat':
         raise TypeError("the target column is not categorical")
 
     # Cramer's V only for categorical columns
-    # in GLM supposed to be all the columns
-    cat_cols = list(X.select_dtypes(include=["object", "category"]))
+    cat_cols = dtypes_dic['cat']
 
     if cat_cols:
         X = X[cat_cols]
@@ -555,7 +546,7 @@ def correlation_ratio(
         sample_weight = np.ones_like(y)
 
     # one 2-uple per level of the categorical feature x
-    if x.dtype in ["category", "object"]:
+    if x.dtype in ["category", "object", "bool"]:
         args = [
             (
                 y[safe_mask(y, x == k)],
@@ -563,7 +554,7 @@ def correlation_ratio(
             )
             for k in np.unique(x)
         ]
-    elif y.dtype in ["category", "object"]:
+    elif y.dtype in ["category", "object", "bool"]:
         args = [
             (
                 x[safe_mask(x, y == k)],
@@ -620,9 +611,9 @@ def correlation_ratio_matrix(
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
 
     # Cramer's V only for categorical columns
-    # in GLM supposed to be all the columns
-    cat_cols = list(X.select_dtypes(include=["object", "category"]))
-    num_cols = list(X.select_dtypes(include=[np.number]))
+    dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
+    cat_cols = dtypes_dic['cat']
+    num_cols = dtypes_dic['num']
 
     if cat_cols and num_cols:
         # explicitely store the unique 2-combinations of column names
@@ -684,13 +675,15 @@ def correlation_ratio_series(
     """
     # sanity checks
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
-
-    if X.loc[:, target].dtypes in ["object", "category"]:
+    col_dtypes_dic = create_dtype_dict(X)
+    dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
+    
+    if col_dtypes_dic['target'] == 'cat':
         # if the target is categorical, pick only num predictors
-        pred_list = list(X.select_dtypes(include=[np.number]))
+        pred_list = dtypes_dic['num'] 
     else:
         # if the target is numerical, the 2nd pred should be categorical
-        pred_list = list(X.select_dtypes(include=["object", "category"]))
+        pred_list = dtypes_dic['cat'] 
 
     if pred_list:
         # define the number of cores
@@ -896,11 +889,13 @@ def wcorr_series(
     """
     # sanity checks
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
+    col_dtypes_dic = create_dtype_dict(X)
+    dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
 
-    if X.loc[:, target].dtypes in ["object", "category"]:
+    if col_dtypes_dic['target'] == 'cat':
         raise TypeError("the target column is categorical")
 
-    num_cols = list(X.select_dtypes(include=[np.number]))
+    num_cols = dtypes_dic['num']
     y = X[target]
 
     if num_cols:
@@ -953,7 +948,10 @@ def wcorr_matrix(
     """
     # sanity checks
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
-    num_cols = list(X.select_dtypes(include=[np.number]))
+    col_dtypes_dic = create_dtype_dict(X)
+    dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
+    
+    num_cols = dtypes_dic['num']
     if num_cols:
         # explicitely store the unique 2-combinations of column names
         comb_list = [comb for comb in combinations(num_cols, 2)]
@@ -1016,7 +1014,11 @@ def weighted_correlation_1cpu(
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
     # degree of freedom for the second moment estimator
     ddof = 1
-    numeric_cols = list(X.select_dtypes(include=[np.number]))
+    
+    col_dtypes_dic = create_dtype_dict(X)
+    dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
+    
+    numeric_cols = dtypes_dic['num']
 
     if numeric_cols:
         data = X[numeric_cols]
@@ -1113,6 +1115,8 @@ def association_series(
         raise TypeError("features is not a list of strings")
     elif features is None:
         data = X
+        
+    dtypes_dic = create_dtype_dict(X)
 
     # only numeric, NaN already checked, not repeating the process
     if X.dtypes.map(is_numeric_dtype).all():
@@ -1135,11 +1139,8 @@ def association_series(
                 method=num_num_assoc,
             )
 
-    # only categorical
-    if (
-        X.dtypes.map(is_object_dtype).all()
-        or X.dtypes.map(is_categorical_dtype).all()
-    ):
+    # only categorical (here understood as no numerical columns)
+    if not X.dtypes.map(is_numeric_dtype).any():
         if callable(nom_nom_assoc):
             return _callable_association_series_fn(
                 assoc_fn=nom_nom_assoc,
@@ -1173,13 +1174,13 @@ def association_series(
             data, target, sample_weight, n_jobs, handle_na=None
         )
 
-    if normalize:
+    if normalize and assoc_series:
         assoc_series = (assoc_series - assoc_series.min()) / np.ptp(
             assoc_series
         )
 
     # cat-cat
-    if X.loc[:, target].dtypes in ["object", "category"]:
+    if dtypes_dic['target'] == 'cat':
         if callable(nom_nom_assoc):
             assoc_series_complement = _callable_association_series_fn(
                 assoc_fn=nom_nom_assoc,
@@ -1198,7 +1199,7 @@ def association_series(
                 data, target, sample_weight, n_jobs, handle_na=None
             )
 
-        if normalize:
+        if normalize and assoc_series_complement:
             assoc_series_complement = (
                 assoc_series_complement - assoc_series_complement.min()
             ) / np.ptp(assoc_series_complement)
@@ -1206,7 +1207,7 @@ def association_series(
         assoc_series = pd.concat([assoc_series, assoc_series_complement])
 
     # num-num
-    if X.loc[:, target].dtypes not in ["object", "category"]:
+    if dtypes_dic['target'] == 'num':
         if callable(num_num_assoc):
             assoc_series_complement = _callable_association_series_fn(
                 assoc_fn=num_num_assoc,
@@ -1233,7 +1234,7 @@ def association_series(
 
         assoc_series = pd.concat([assoc_series, assoc_series_complement])
 
-    return assoc_series
+    return assoc_series.sort_values(ascending=False)
 
 
 def association_matrix(
@@ -1378,11 +1379,13 @@ def _callable_association_series_fn(
     ValueError
         if kind is not 'num-num' or 'nom-nom' or 'nom-num'
     """
-
+    col_dtypes_dic = create_dtype_dict(X)
+    dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
+    
     if kind == "nom-nom":
-        if X.loc[:, target].dtypes not in ["object", "category"]:
+        if col_dtypes_dic['target'] != 'cat':
             raise TypeError("the target column is not categorical")
-        nom_cols = list(X.select_dtypes(include=["object", "category"]))
+        nom_cols = dtypes_dic['cat']
         if nom_cols:
             # define the number of cores
             n_jobs = (
@@ -1403,12 +1406,12 @@ def _callable_association_series_fn(
             return None
 
     elif kind == "nom-num":
-        if X.loc[:, target].dtypes in ["object", "category"]:
+        if col_dtypes_dic['target'] == 'cat':
             # if the target is categorical, pick only num predictors
-            pred_list = list(X.select_dtypes(include=[np.number]))
+            pred_list = dtypes_dic['num']
         else:
             # if the target is numerical, the 2nd pred should be categorical
-            pred_list = list(X.select_dtypes(include=["object", "category"]))
+            pred_list = dtypes_dic['cat']
 
         if pred_list:
             # define the number of cores
@@ -1430,7 +1433,7 @@ def _callable_association_series_fn(
             return None
 
     elif kind == "num-num":
-        num_cols = list(X.select_dtypes(include=[np.number]))
+        num_cols = dtypes_dic['num']
         if num_cols:
             # parallelize jobs
             _assoc_fn = partial(_compute_series, func_xyw=assoc_fn)
@@ -1478,17 +1481,16 @@ def _callable_association_matrix_fn(
     pd.DataFrame
         the association matrix
     """
-
+    dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
+    
     if cols_comb is None:
         if kind == "num-num":
-            selected_cols = list(X.select_dtypes(include=[np.number]))
+            selected_cols = dtypes_dic['num']
         elif kind == "nom-nom":
-            selected_cols = list(
-                X.select_dtypes(include=["object", "category"])
-            )
+            selected_cols = dtypes_dic['cat']
         elif kind == "nom-num":
-            cat_cols = list(X.select_dtypes(include=["object", "category"]))
-            num_cols = list(X.select_dtypes(include=[np.number]))
+            cat_cols = dtypes_dic['cat']
+            num_cols = dtypes_dic['num']
             if cat_cols and num_cols:
                 # explicitely store the unique 2-combinations of column names
                 # the first one should be the categorical predictor
@@ -1656,8 +1658,9 @@ def f_cat_regression_parallel(
     """
 
     # Cramer's V only for categorical columns
-    # in GLM supposed to be all the columns
-    cat_cols = list(X.select_dtypes(include=["object", "category"]))
+    dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
+    
+    cat_cols = dtypes_dic['cat']
 
     if not isinstance(y, pd.Series):
         y = pd.Series(y)
@@ -1926,8 +1929,9 @@ def f_cont_classification_parallel(
     pd.Series
         the value of the F-statistic for each predictor
     """
-
-    num_cols = list(X.select_dtypes(include=[np.number]))
+    dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
+    
+    num_cols = dtypes_dic['num']
 
     if not isinstance(y, pd.Series):
         y = pd.Series(y)
@@ -2362,8 +2366,6 @@ def heatmap(
     return im, cbar
 
 
-
-
 def annotate_heatmap(
     im,
     data=None,
@@ -2428,16 +2430,54 @@ def annotate_heatmap(
 
 
 def plot_association_matrix(
-    assoc_mat: pd.DataFrame,
-    suffix_dic: Dict[str, str] = None,
-    ax: matplotlib.axes.Axes = None,
-    cmap: str = "coolwarm",
-    cbarlabel: str = None,
-    figsize: Tuple[float, float] = None,
-    show: bool = True,
-    cbar_kw: Dict = None,
-    imgshow_kw: Dict = None,
+    assoc_mat,
+    suffix_dic=None,
+    ax=None,
+    cmap="PuOr",
+    cbarlabel=None,
+    figsize=None,
+    show=True,
+    cbar_kw=None,
+    imgshow_kw=None,
+    annotate=False,
 ):
+    """plot_association_matrix renders the sorted associations/correlation matrix.
+    The sorting is done using hierarchical clustering,
+    very like in seaborn or other packages.
+    Categorical(nom): uncertainty coefficient & correlation ratio from 0 to 1.
+    The uncertainty coefficient is assymmetrical, (approximating how much the elements on the
+    left PROVIDE INFORMATION on elements in the row). Continuous(con): symmetrical numerical
+    correlations (Pearson's) from -1 to 1
+
+    Parameters
+    ----------
+    assoc_mat : pd.DataFrame
+        the square association frame
+    suffix_dic : Dict[str, str], optional
+        dictionary of data type for adding suffixes to column names 
+        in the plotting utility for association matrix, by default None
+    ax : matplotlib.axes.Axes, optional
+        _description_, by default None
+    cmap : str, optional
+        the colormap. Please use a scientific colormap. See the ``scicomap`` package, by default "PuOr"
+    cbarlabel : str, optional
+        the colorbar label, by default None
+    figsize : Tuple[float, float], optional
+        figure size in inches, by default None
+    show : bool, optional
+        Whether or not to display the figure, by default True
+    cbar_kw : Dict, optional
+        colorbar kwargs, by default None
+    imgshow_kw : Dict, optional
+        imgshow kwargs, by default None
+    annotate : bool
+        Whether to annotate or not the colormap
+
+    Returns
+    -------
+    matplotlib.figure and matplotlib.axes.Axes
+        the figure and the axes
+    """
     # default size if None
     if figsize is None:
         ncol = len(assoc_mat)
@@ -2475,11 +2515,96 @@ def plot_association_matrix(
         **imgshow_kw,
     )
 
-    texts = annotate_heatmap(
-        im, valfmt="{x:.1f}", textcolors=("white", "black")
-    )
+    if annotate:
+        texts = annotate_heatmap(im, valfmt="{x:.1f}", textcolors=("white", "black"))
 
     fig.tight_layout()
     if show:
         plt.show()
     return fig, ax
+
+
+def plot_association_matrix_int(
+    assoc_mat,
+    suffix_dic=None,
+    cmap="PuOr",
+    figsize=(800, 600),
+    cluster_matrix=True):
+    """Plot the interactive sorted associations/correlation matrix.
+    The sorting is done using hierarchical clustering,
+    very like in seaborn or other packages.
+    Categorical(nom): uncertainty coefficient & correlation ratio from 0 to 1.
+    The uncertainty coefficient is assymmetrical, (approximating how much the elements on the
+    left PROVIDE INFORMATION on elements in the row). Continuous(con): symmetrical numerical
+    correlations (Pearson's) from -1 to 1
+
+    Parameters
+    ----------
+    assoc_mat : pd.DataFrame
+        the square association frame
+    suffix_dic : Dict[str, str], optional
+        dictionary of data type for adding suffixes to column names 
+        in the plotting utility for association matrix, by default None
+    cmap : str, optional
+        the colormap. Please use a scientific colormap. See the ``scicomap`` package, by default "PuOr"
+    figsize : Tuple[float, float], optional
+        figure size in inches, by default None
+    cluster_matrix : bool
+        whether or not to cluster the square matrix, by default True
+        
+    Returns
+    -------
+    panel.Column
+        the panel object
+    """
+
+    cmap = cmap if cmap is not None else "coolwarm"
+
+    # if features is None:
+    #     features = list(assoc_mat.columns)
+    
+    # rename the columns for keeping track of num vs cat columns
+    if suffix_dic is not None:
+        rename_dic = {c: f"{c}_{suffix_dic[c]}" for c in assoc_mat.columns}
+        assoc_mat = assoc_mat.rename(columns=rename_dic)
+        assoc_mat = assoc_mat.rename(index=rename_dic)
+    
+    if cluster_matrix:
+        assoc_mat = cluster_sq_matrix(assoc_mat)
+
+    heatmap = hv.HeatMap((assoc_mat.columns, assoc_mat.index, assoc_mat)).redim.range(z=(-1, 1))
+
+    heatmap.opts(
+        tools=["tap", "hover"],
+        height=figsize[1],
+        width=figsize[0],
+        toolbar="left",
+        colorbar=True,
+        cmap=cmap,
+        fontsize={"title": 12, "ticks": 12, "minor_ticks": 12},
+        xrotation=90,
+        invert_xaxis=False,
+        invert_yaxis=True,  # title=title_str,
+        xlabel="",
+        ylabel="",
+        # gridstyle={'grid_line_color': 'black', 'grid_line_width': 20},
+        # show_grid=True
+    )
+    title_str = "**Continuous (con) and Categorical (nom) Associations **"
+    sub_title_str = (
+        "*Categorical(nom): uncertainty coefficient & correlation ratio from 0 to 1. The uncertainty "
+        "coefficient is assymmetrical, (approximating how much the elements on the "
+        "left PROVIDE INFORMATION on elements in the row). Continuous(con): symmetrical numerical "
+        "correlations (Pearson's) from -1 to 1*"
+    )
+    panel_layout = pn.Column(
+        pn.pane.Markdown(title_str, align="start", style={"color": "#575757"}),  # bold
+        pn.pane.Markdown(sub_title_str, align="start", style={"color": "#575757"}),  # italic
+        heatmap,
+        background="#ebebeb",
+    )
+
+    gc.enable()
+    del assoc_mat
+    gc.collect()
+    return panel_layout
