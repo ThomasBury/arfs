@@ -50,6 +50,7 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
     show_progress: bool (optional, default=True)
         If False, no progress bar is displayed.
         If True, a TQDM progress bar shows the number of features processed.
+        
     Returns
     -------
     selected_features: list of str
@@ -122,6 +123,24 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
             )
 
     def fit(self, X, y, sample_weight=None):
+        """fit the MRmr selector by learning the associations
+        
+        Parameters
+        ----------
+        X : pd.DataFrame, shape (n_samples, n_features)
+            Data from which to compute variances, where `n_samples` is
+            the number of samples and `n_features` is the number of features.
+        y : any, default=None
+            Ignored. This parameter exists only for compatibility with
+            sklearn.pipeline.Pipeline.
+        sample_weight : pd.Series, optional, shape (n_samples,)
+            weights for computing the statistics (e.g. weighted average)
+            
+        Returns
+        -------
+        self : object
+            Returns the instance itself.
+        """
         
         if isinstance(X, pd.DataFrame):
             self.feature_names_in_ = X.columns.to_numpy()
@@ -232,6 +251,19 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         self.not_selected_features_ = not_selected_features
         
     def transform(self, X):
+        """
+        Transform the data, returns a transformed version of `X`.
+        
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Input samples.
+
+        Returns
+        -------
+        X_new : ndarray array of shape (n_samples, n_features_new)
+            Transformed array.
+        """
         if not isinstance(X, pd.DataFrame):
             raise TypeError("X is not a dataframe")
         return X[self.selected_features_]
@@ -239,8 +271,10 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
     def fit_transform(self, X, y=None, sample_weight=None):
         """
         Fit to data, then transform it.
-        Fits transformer to `X` and `y` with optional parameters `fit_params`
+        Fits transformer to `X` and `y` and optionally sample_weight
+        with optional parameters `fit_params`
         and returns a transformed version of `X`.
+        
         Parameters
         ----------
         X : array-like of shape (n_samples, n_features)
@@ -248,8 +282,12 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         y :  array-like of shape (n_samples,) or (n_samples, n_outputs), \
                 default=None
             Target values (None for unsupervised transformations).
+        sample_weight :  array-like of shape (n_samples,) or (n_samples, n_outputs), \
+                default=None
+            sample weight values.
         **fit_params : dict
             Additional fit parameters.
+            
         Returns
         -------
         X_new : ndarray array of shape (n_samples, n_features_new)
