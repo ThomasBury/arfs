@@ -1,3 +1,14 @@
+"""
+This module provides preprocessing classes
+
+**The module structure is the following:**
+
+- The ``OrdinalEncoderPandas`` main class for ordinal encoding, takes in a DF and returns a DF of the same shape
+- The ``dtype_column_selector`` for standardizing selection of columns based on their dtypes
+- The ``TreeDiscretizer`` for discretizing continuous columns and auto-group levels of categorical columns
+
+"""
+
 # Settings and libraries
 from __future__ import print_function
 from tqdm import tqdm, trange

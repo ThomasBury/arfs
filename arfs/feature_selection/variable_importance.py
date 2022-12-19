@@ -1,4 +1,12 @@
-# Settings and libraries
+"""
+This module provides selectors using supervised statistics and a threshold
+
+**The module structure is the following:**
+
+- The ``VariableImportance`` main class for identifying non-important features
+
+"""
+
 from __future__ import print_function
 from tqdm import tqdm, trange
 

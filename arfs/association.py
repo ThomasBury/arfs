@@ -1,3 +1,10 @@
+"""
+This module provides parallelized methods for computing associations.
+Namely, correlation, correlation ratio, Theil's U, Cramer's V
+
+They are the basis of the MRmr feature selection
+"""
+
 import math
 import warnings
 import matplotlib

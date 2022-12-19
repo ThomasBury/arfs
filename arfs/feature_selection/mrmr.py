@@ -1,3 +1,12 @@
+"""
+This module provides a class for the Maximal Relevance, minimal redundancy feature selection
+
+**The module structure is the following:**
+
+- The ``MinRedundancyMaxRelevance`` parent class for the "treshold-based" selectors
+
+"""
+
 import functools
 import numpy as np
 import pandas as pd

@@ -1,3 +1,12 @@
+"""
+This module provides utilities for parallelizing operations on pd.DataFrame
+
+**The module structure is the following:**
+
+- The ``parallel_matrix_entries`` for parallelizing operations returning a matrix (2D) (apply on pairs of columns)
+- The ``parallel_df`` for parallelizing operations returning a series (1D) (apply on a single column at a time)
+"""
+
 import numpy as np
 import pandas as pd
 from typing import Union, Tuple, List, Optional, Dict, Callable

@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 import lightgbm as lgb
-from arfs.allrelevant import Leshy, BoostAGroota, GrootCV
+from arfs.feature_selection.allrelevant import Leshy, BoostAGroota, GrootCV
 from arfs.utils import generated_corr_dataset_regr, generated_corr_dataset_classification
 from arfs.utils import LightForestClassifier, LightForestRegressor
 

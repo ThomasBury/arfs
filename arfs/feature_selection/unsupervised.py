@@ -1,4 +1,14 @@
-# Settings and libraries
+"""
+This module provides selectors using unsupervised statistics and a threshold
+
+**The module structure is the following:**
+
+- The ``MissingValueThreshold`` child of the ``BaseThresholdSelector``
+- The ``UniqueValuesThreshold`` child of the ``BaseThresholdSelector``
+- The ``CardinalityThreshold`` child of the ``BaseThresholdSelector``
+- The ``CollinearityThreshold`` child of the ``BaseThresholdSelector``
+"""
+
 from __future__ import print_function
 from tqdm import trange
 

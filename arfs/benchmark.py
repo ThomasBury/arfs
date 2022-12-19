@@ -1,3 +1,12 @@
+"""
+This module provides utilities for comparing and benchmarking feature selection methods
+
+**The module structure is the following:**
+
+- The ``sklearn_pimp_bench`` function for comparing using the sklearn permutation importance
+- The ``compare_varimp`` function for comparing using 3 kinds of var.imp.
+"""
+
 from __future__ import print_function, division
 
 import itertools
@@ -95,7 +104,7 @@ def sklearn_pimp_bench(model, X, y, task="regression", sample_weight=None):
 
 
 def compare_varimp(feat_selector, models, X, y, sample_weight=None):
-    """Utility function to compare the results for the three possible king of feature importance
+    """Utility function to compare the results for the three possible kind of feature importance
 
     Parameters
     ----------
