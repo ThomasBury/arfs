@@ -61,8 +61,6 @@ def weighted_conditional_entropy(
     """weighted_conditional_entropy computes the weighted conditional entropy between two
     categorical predictors.
 
-    _extended_summary_
-
     Parameters
     ----------
     x :
@@ -271,7 +269,7 @@ def theils_u_series(
     col_dtypes_dic = create_dtype_dict(X)
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
     
-    if col_dtypes_dic['target'] != 'cat':
+    if col_dtypes_dic[target] != 'cat':
         raise TypeError("the target column is not categorical")
 
     # Cramer's V only for categorical columns
@@ -443,7 +441,7 @@ def cramer_v_series(
     col_dtypes_dic = create_dtype_dict(X)
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
 
-    if col_dtypes_dic['target'] != 'cat':
+    if col_dtypes_dic[target] != 'cat':
         raise TypeError("the target column is not categorical")
 
     # Cramer's V only for categorical columns
@@ -678,7 +676,7 @@ def correlation_ratio_series(
     col_dtypes_dic = create_dtype_dict(X)
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
     
-    if col_dtypes_dic['target'] == 'cat':
+    if col_dtypes_dic[target] == 'cat':
         # if the target is categorical, pick only num predictors
         pred_list = dtypes_dic['num'] 
     else:
@@ -892,7 +890,7 @@ def wcorr_series(
     col_dtypes_dic = create_dtype_dict(X)
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
 
-    if col_dtypes_dic['target'] == 'cat':
+    if col_dtypes_dic[target] == 'cat':
         raise TypeError("the target column is categorical")
 
     num_cols = dtypes_dic['num']
@@ -1174,13 +1172,13 @@ def association_series(
             data, target, sample_weight, n_jobs, handle_na=None
         )
 
-    if normalize and assoc_series:
+    if normalize:
         assoc_series = (assoc_series - assoc_series.min()) / np.ptp(
             assoc_series
         )
 
     # cat-cat
-    if dtypes_dic['target'] == 'cat':
+    if dtypes_dic[target] == 'cat':
         if callable(nom_nom_assoc):
             assoc_series_complement = _callable_association_series_fn(
                 assoc_fn=nom_nom_assoc,
@@ -1199,7 +1197,7 @@ def association_series(
                 data, target, sample_weight, n_jobs, handle_na=None
             )
 
-        if normalize and assoc_series_complement:
+        if normalize:
             assoc_series_complement = (
                 assoc_series_complement - assoc_series_complement.min()
             ) / np.ptp(assoc_series_complement)
@@ -1207,7 +1205,7 @@ def association_series(
         assoc_series = pd.concat([assoc_series, assoc_series_complement])
 
     # num-num
-    if dtypes_dic['target'] == 'num':
+    if dtypes_dic[target] == 'num':
         if callable(num_num_assoc):
             assoc_series_complement = _callable_association_series_fn(
                 assoc_fn=num_num_assoc,
@@ -1383,7 +1381,7 @@ def _callable_association_series_fn(
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
     
     if kind == "nom-nom":
-        if col_dtypes_dic['target'] != 'cat':
+        if col_dtypes_dic[target] != 'cat':
             raise TypeError("the target column is not categorical")
         nom_cols = dtypes_dic['cat']
         if nom_cols:
@@ -1406,7 +1404,7 @@ def _callable_association_series_fn(
             return None
 
     elif kind == "nom-num":
-        if col_dtypes_dic['target'] == 'cat':
+        if col_dtypes_dic[target] == 'cat':
             # if the target is categorical, pick only num predictors
             pred_list = dtypes_dic['num']
         else:
