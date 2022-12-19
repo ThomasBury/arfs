@@ -529,7 +529,8 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
             if (self.cat_features is not None) and (col in self.cat_features):
                 encoder = OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=np.nan)
                 # create a category for missing
-                X[col] = X[col].astype("category").cat.add_categories("missing").fillna("missing")
+                # X[col] = X[col].astype("category").cat.add_categories("missing").fillna("missing")
+                X[col] = X[col].astype("category").cat.add_categories("missing_added").fillna("missing_added")
                 # encode
                 self.ordinal_encoder_dic[col] = encoder.fit(X[[col]])
                 X[col] = encoder.transform(X[[col]]).ravel()
@@ -611,7 +612,7 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
                     # apply the systematic imputation (missing might be grouped
                     # with other categories depending on the results of the tree
                     # splitting)
-                    X[col] = X[col].astype("category").cat.add_categories("missing").fillna("missing")
+                    X[col] = X[col].astype("category").cat.add_categories("missing_added").fillna("missing_added")
                     dum = self.ordinal_encoder_dic[col].transform(X[[col]])
                     X[col] = self.tree_dic[col].predict(dum)
                     X[col] = X[col].map(self.cat_bin_dict[col])
