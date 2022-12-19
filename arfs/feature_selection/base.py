@@ -110,6 +110,19 @@ class BaseThresholdSelector(SelectorMixin, BaseEstimator):
         return self.support_
     
     def transform(self, X):
+        """
+        Transform the data, returns a transformed version of `X`.
+        
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Input samples.
+
+        Returns
+        -------
+        X_new : ndarray array of shape (n_samples, n_features_new)
+            Transformed array.
+        """
         if not isinstance(X, pd.DataFrame):
             raise TypeError("X is not a dataframe")
         return X[self.selected_features_]
@@ -126,6 +139,9 @@ class BaseThresholdSelector(SelectorMixin, BaseEstimator):
         y :  array-like of shape (n_samples,) or (n_samples, n_outputs), \
                 default=None
             Target values (None for unsupervised transformations).
+        sample_weight :  array-like of shape (n_samples,) or (n_samples, n_outputs), \
+                default=None
+            sample weight values.
         **fit_params : dict
             Additional fit parameters.
         Returns
