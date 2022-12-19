@@ -492,21 +492,20 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
 
     def fit(self, X, y, sample_weight=None):
         """Fit the discretizer on `X`.
-                Parameters
-                ----------
-                X :
-                    Input data shape (n_samples, n_features), where `n_samples` is the number of samples and
-                    `n_features` is the number of features.
-                y :
-                    target for internally fitting the tree(s)
-        OrdinalEncoder
-                sample_weight :
-                    sample weight (e.g. exposure) if any
+        Parameters
+        ----------
+        X :
+            Input data shape (n_samples, n_features), where `n_samples` is the number of samples and
+            `n_features` is the number of features.
+        y :
+            target for internally fitting the tree(s)
+        sample_weight :
+            sample weight (e.g. exposure) if any
 
-                Returns
-                -------
-                X :
-                    pd.DataFrame with the binned and grouped columns
+        Returns
+        -------
+        X :
+            pd.DataFrame with the binned and grouped columns
         """
         X = X.copy()
         if self.bin_features is None:
