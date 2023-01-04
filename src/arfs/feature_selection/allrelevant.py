@@ -62,8 +62,7 @@ from sklearn.base import (
     BaseEstimator,
     is_regressor,
     is_classifier,
-    clone,
-    _OneToOneFeatureMixin
+    clone
 )
 
 from sklearn.utils.validation import check_is_fitted
