@@ -1,8 +1,19 @@
 # Changes
 
+## 1.0.0
+
+ - Parallelization of functions applied on pandas dataframe
+ - Faster and more modular association measures 
+ - Removing dependencies (e.g. dython)
+ - Better static and interactive visualization
+ - Sklearn selectors rather than a big class
+ - Discretization of continuous and categoricals predictors
+ - Minimal redundancy maximal relevance feature selection added (subset of all relevant predictors)
+ - Arichitecture closer to the scikit-learn one
+  
 ## 0.3.8
 
- - FIx bug when compute shap importance for classifier in GrootCV
+ - Fix bug when compute shap importance for classifier in GrootCV
 
 ## 0.3.7
 
