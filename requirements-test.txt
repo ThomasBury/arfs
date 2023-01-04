@@ -1,0 +1,13 @@
+pandas >= 1.0.0
+numpy >= 1.18.0
+scipy >= 1.4.0
+scikit-learn >= 0.23.0
+lightgbm >= 3.3.0
+matplotlib >= 3.3.0
+holoviews >= 1.13.0
+shap >= 0.37.0
+tqdm >= 4.40.0
+dython >= 0.6.7
+pytest
+seaborn
+Ipython
