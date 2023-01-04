@@ -20,15 +20,16 @@ Welcome to arfs's documentation!
    :glob:
    :caption: Tutorials
 
-   notebooks/Classification.ipynb
-   notebooks/Regression.ipynb
-   notebooks/pre-filtering.ipynb
-   notebooks/Categoricals.ipynb
-   notebooks/Collinearity.ipynb
-   notebooks/large_data_sampling.ipynb
-   notebooks/Boruta_comparison.ipynb
-   notebooks/BorutaShap_comparison.ipynb
-   
+   notebooks/arfs_boruta_borutaShap_comparison.ipynb
+   notebooks/arfs_classification.ipynb
+   notebooks/arfs_large_data_sampling.ipynb
+   notebooks/arfs_regression.ipynb
+   notebooks/basic_feature_selection.ipynb
+   notebooks/issue_categoricals.ipynb
+   notebooks/issue_collinearity.ipynb
+   notebooks/mrmr_feature_selection.ipynb
+   notebooks/mrmr_fs_VS_arfs.ipynb
+   notebooks/preprocessing.ipynb
 
 
 Indices and tables

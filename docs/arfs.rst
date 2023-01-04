@@ -12,10 +12,50 @@ arfs.allrelevant module
    :undoc-members:
    :show-inheritance:
 
-arfs.featselect module
-----------------------
+arfs.feature_selection.allrelevant module
+-----------------------------------------
 
-.. automodule:: arfs.featselect
+.. automodule:: arfs.feature_selection.allrelevant
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+arfs.feature_selection.base module
+----------------------------------
+
+.. automodule:: arfs.feature_selection.base
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+arfs.feature_selection.mrmr module
+----------------------------------
+
+.. automodule:: arfs.feature_selection.mrmr
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+arfs.feature_selection.summary module
+-------------------------------------
+
+.. automodule:: arfs.feature_selection.summary
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+arfs.feature_selection.unsupervised module
+------------------------------------------
+
+.. automodule:: arfs.feature_selection.unsupervised
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+arfs.feature_selection.variable_importance module
+-------------------------------------------------
+
+.. automodule:: arfs.feature_selection.variable_importance
    :members:
    :undoc-members:
    :show-inheritance:
