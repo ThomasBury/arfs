@@ -74,7 +74,7 @@ from sklearn.utils.validation import _check_sample_weight
 from matplotlib.lines import Line2D
 from lightgbm import early_stopping
 
-from arfs.utils import check_if_tree_based, is_lightgbm, is_catboost, create_dtype_dict, get_pandas_cat_codes
+from ..utils import check_if_tree_based, is_lightgbm, is_catboost, create_dtype_dict, get_pandas_cat_codes
 
 ########################################################################################
 #

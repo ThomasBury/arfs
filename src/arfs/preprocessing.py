@@ -29,7 +29,7 @@ from sklearn.base import BaseEstimator, TransformerMixin
 
 
 # ARFS
-from arfs.gbm import GradientBoosting
+from .gbm import GradientBoosting
 
 
 # fix random seed for reproducibility

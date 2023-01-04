@@ -9,7 +9,7 @@ from collections import Counter
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.ensemble import IsolationForest
 from scipy.stats import ks_2samp
-from arfs.utils import is_list_of_str, is_list_of_bool, is_list_of_int
+from .utils import is_list_of_str, is_list_of_bool, is_list_of_int
 
 
 def sample(df, n=1000, sample_weight=None, method="gower"):

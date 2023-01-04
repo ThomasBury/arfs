@@ -32,8 +32,8 @@ from pandas.api.types import (
 from scipy.stats import rankdata
 from functools import partial
 
-from arfs.parallel import parallel_matrix_entries, parallel_df, _compute_series, _compute_matrix_entries
-from arfs.utils import create_dtype_dict
+from .parallel import parallel_matrix_entries, parallel_df, _compute_series, _compute_matrix_entries
+from .utils import create_dtype_dict
 
 _PRECISION = 1e-13
 

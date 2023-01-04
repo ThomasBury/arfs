@@ -16,7 +16,7 @@ from sklearn.inspection import permutation_importance
 
 from sklearn.base import clone
 
-from arfs.preprocessing import OrdinalEncoderPandas
+from .preprocessing import OrdinalEncoderPandas
 
 
 def sklearn_pimp_bench(model, X, y, task="regression", sample_weight=None):
