@@ -3,7 +3,6 @@
 """
 import numpy as np
 import pandas as pd
-from typing import Union, List
 from scipy.sparse import issparse
 from collections import Counter
 from sklearn.cluster import AgglomerativeClustering
@@ -86,10 +85,10 @@ def get_most_common(srs):
 
 
 def gower_matrix(
-    data_x: Union[np.array, pd.DataFrame],
-    data_y: Union[np.array, pd.DataFrame, pd.Series] = None,
-    weight: Union[np.array, pd.Series] = None,
-    cat_features: Union[List[str], str, List[bool], List[int]] = "auto",
+    data_x,
+    data_y=None,
+    weight=None,
+    cat_features="auto",
 ):
     """Computes the gower distances between X and Y
 
@@ -98,13 +97,13 @@ def gower_matrix(
 
     Parameters
     ----------
-    data_x : Union[np.array, pd.DataFrame]
+    data_x : np.array or pd.DataFrame
         The data for computing the Gower distance
-    data_y : Union[np.array, pd.DataFrame, pd.Series], optional
+    data_y : np.array or pd.DataFrame or pd.Series, optional
         The reference matrix or vector to compare with, optional
-    weight : Union[np.array, pd.Series], optional
+    weight : np.array or pd.Series, optional
         sample weight, optional
-    cat_features : Union[List[str], str, List[bool], List[int]], optional
+    cat_features : list of str or bool or int, optional
         auto-detect cat features or a list of cat features, by default 'auto'
 
     Returns
@@ -262,14 +261,14 @@ def gower_matrix(
 
 
 def _gower_distance_row(
-    xi_cat: np.array,
-    xi_num: np.array,
-    xj_cat: np.array,
-    xj_num: np.array,
-    feature_weight_cat: np.array,
-    feature_weight_num: np.array,
-    feature_weight_sum: np.array,
-    ranges_of_numeric: np.array,
+    xi_cat,
+    xi_num,
+    xj_cat,
+    xj_num,
+    feature_weight_cat,
+    feature_weight_num,
+    feature_weight_sum,
+    ranges_of_numeric,
 ):
     """Compute a row of the Gower matrix
 
@@ -342,24 +341,24 @@ def smallest_indices(ary, n):
 
 
 def gower_topn(
-    data_x: Union[np.array, pd.DataFrame],
-    data_y: Union[np.array, pd.DataFrame, pd.Series] = None,
-    weight: Union[np.array, pd.Series] = None,
-    cat_features: Union[List[str], str, List[bool], List[int]] = "auto",
-    n: int = 5,
-    key: str = None,
+    data_x,
+    data_y=None,
+    weight=None,
+    cat_features= "auto",
+    n=5,
+    key=None,
 ):
     """Get the n most similar elements
 
     Parameters
     ----------
-    data_x : Union[np.array, pd.DataFrame]
+    data_x : np.array or pd.DataFrame
         The data for the look up
-    data_y : Union[np.array, pd.DataFrame, pd.Series], optional
+    data_y : np.array or pd.DataFrame or pd.Series, optional
         elements for which to return the most similar elements, should be a single row
-    weight : Union[np.array, pd.Series], optional
+    weight : np.array or pd.Series, optional
         sample weight, by default None
-    cat_features : Union[List[str], str, List[bool], List[int]], optional
+    cat_features : list of str or bool or int, optional
         auto detection of cat features or a list of strings, booleans or integers, by default 'auto'
     n : int, optional
         the number of neighbors/similar rows to find, by default 5

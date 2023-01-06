@@ -8,7 +8,7 @@ This module provides selectors using supervised statistics and a threshold
 """
 
 from __future__ import print_function
-from tqdm import tqdm, trange
+from tqdm import trange
 
 # pandas
 import pandas as pd
@@ -169,6 +169,25 @@ class VariableImportance(SelectorMixin, BaseEstimator):
         return self.support_
     
     def transform(self, X):
+        """
+        Transform the data, returns a transformed version of `X`.
+        
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Input samples.
+
+        Returns
+        -------
+        X : ndarray array of shape (n_samples, n_features_new)
+            Transformed array.
+            
+        Raises
+        ------
+        TypeError
+            if the input is not a pd.DataFrame
+        """
+        
         if not isinstance(X, pd.DataFrame):
             raise TypeError("X is not a dataframe")
         return X[self.selected_features_]

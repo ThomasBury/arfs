@@ -9,41 +9,35 @@ This module provides utilities for parallelizing operations on pd.DataFrame
 
 import numpy as np
 import pandas as pd
-from typing import Union, Tuple, List, Optional, Dict, Callable
 from joblib import Parallel, delayed
 from multiprocessing import cpu_count
 from itertools import chain
 
-
-def parallel_matrix_entries(
-    func: callable,
-    df: pd.DataFrame,
-    comb_list: List[Tuple[str]],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    n_jobs: int = -1,
-):
-    """parallel_matrix_entries apply a function to each chunk of
+def parallel_matrix_entries(func, df, comb_list, sample_weight=None, n_jobs=-1):
+    """parallel_matrix_entries applies a function to each chunk of
     combinaison of columns of the dataframe, distributed by cores.
     This is similar to https://github.com/smazzanti/mrmr/mrmr/pandas.py
 
+
     Parameters
     ----------
-    func :
+    func : callable
         function to be applied to each column
-    df :
+    df : pd.DataFrame
         the dataframe on which to apply the function
-    comb_list :
-        a list of 2-uple of strings. Pairs of column names corresponding to the entries
-    sample_weight :
-        The weight vector, if any, of shape (n_samples,)
-    n_jobs :
-        the number of cores to use for the computation
+    comb_list : list of tuples of str
+        Pairs of column names corresponding to the entries
+    sample_weight : pd.Series or np.array, optional
+        The weight vector, if any, of shape (n_samples,), by default None
+    n_jobs : int, optional
+        the number of cores to use for the computation, by default -1
 
     Returns
     -------
     pd.DataFrame
         concatenated results into a single pandas DF
     """
+
     
     if n_jobs == 1:
         return func(X=df, sample_weight=sample_weight, comb_list=comb_list)
@@ -62,29 +56,22 @@ def parallel_matrix_entries(
     return pd.concat(list(chain(*lst)), ignore_index=True)
 
 
-def parallel_df(
-    func: callable,
-    df: pd.DataFrame,
-    series: Union[pd.Series, np.array],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    n_jobs: int = -1,
-):
+def parallel_df(func, df, series, sample_weight=None, n_jobs=-1):
     """parallel_df apply a function to each column of the dataframe, distributed by cores.
     This is similar to https://github.com/smazzanti/mrmr/mrmr/pandas.py
 
-
     Parameters
     ----------
-    func :
+    func : callable
         function to be applied to each column
-    df :
+    df : pd.DataFrame
         the dataframe on which to apply the function
-    series :
+    series : pd.Series
         series (target) used by the function
-    sample_weight :
-        The weight vector, if any, of shape (n_samples,)
-    n_jobs :
-        the number of cores to use for the computation
+    sample_weight : pd.Series or np.array, optional
+        The weight vector, if any, of shape (n_samples,), by default None
+    n_jobs : int, optional
+        the number of cores to use for the computation, by default -1
 
     Returns
     -------
@@ -108,26 +95,20 @@ def parallel_df(
     )
     return pd.concat(lst).sort_values(ascending=False)
 
-
-def _compute_series(
-    X: pd.DataFrame,
-    y: Union[pd.Series, np.array],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    func_xyw: Callable = None,
+def _compute_series(X, y, sample_weight=None, func_xyw=None,
 ):
-    """base closure for parallelizing the computation
-
-    apply the Cramer V computation with the target for all columns using a closure
-
+    """_compute_series is a utility function for computing the series 
+    resulting of the ``apply``
+    
     Parameters
     ----------
-    X :
-        The set of regressors that will be tested sequentially, of shape (n_samples, n_features)
-    y :
-        The target vector of shape (n_samples,)
-    sample_weight :
-        The weight vector, if any, of shape (n_samples,)
-    func_xyw :
+    X : pd.DataFrame, of shape (n_samples, n_features)
+        The set of regressors that will be tested sequentially
+    y : pd.Series or np.array, of shape (n_samples,)
+        The target vector
+    sample_weight : pd.Series or np.array, of shape (n_samples,), optional
+        The weight vector, if any, by default None
+    func_xyw : callable, optional
         callable (function) for computing the individual elements of the series
         takes two mandatory inputs (x and y) and an optional input w, sample_weights
     """
@@ -150,11 +131,7 @@ def _compute_series(
     ).fillna(0.0)
 
 
-def _compute_matrix_entries(
-    X: pd.DataFrame,
-    comb_list: List[Tuple[str]],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    func_xyw: Callable = None,
+def _compute_matrix_entries(X, comb_list, sample_weight=None, func_xyw=None,
 ):
     """base closure for computing matrix entries appling a function to each chunk of
     combinaison of columns of the dataframe, distributed by cores.
@@ -162,15 +139,15 @@ def _compute_matrix_entries(
 
     Parameters
     ----------
-    X :
-        The set of regressors that will be tested sequentially, of shape (n_samples, n_features)
-    sample_weight :
-        The weight vector, if any, of shape (n_samples,)
-    func_xyw :
-        callable (function) for computing the individual elements of the series
+    X : pd.DataFrame, of shape (n_samples, n_features)
+        The set of regressors that will be tested sequentially
+    sample_weight : pd.Series or np.array, of shape (n_samples,), optional
+        The weight vector, if any, by default None
+    func_xyw : callable, optional
+        callable (function) for computing the individual elements of the matrix
         takes two mandatory inputs (x and y) and an optional input w, sample_weights
-    comb_list :
-        a list of 2-uple of strings. Pairs of column names corresponding to the entries
+    comb_list : list of 2-uple of str
+        Pairs of column names corresponding to the entries
 
     Returns
     -------

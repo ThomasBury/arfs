@@ -49,7 +49,7 @@ class MissingValueThreshold(BaseThresholdSelector):
 
     Parameters
     ----------
-    threshold: float, .05
+    threshold: float, default = .05
         Features with a training-set missing larger than this threshold will be removed. 
 
     Returns
@@ -100,8 +100,9 @@ class UniqueValuesThreshold(BaseThresholdSelector):
 
     Parameters
     ----------
-    threshold: int, >=1
+    threshold: int, default = 1
         Features with a training-set missing larger than this threshold will be removed. 
+        The thresold should be >= 1
 
     Returns
     -------
@@ -155,8 +156,9 @@ class CardinalityThreshold(BaseThresholdSelector):
 
     Parameters
     ----------
-    threshold: int, >=1
+    threshold: int, default = 1000
         Features with a training-set missing larger than this threshold will be removed. 
+        The thresold should be >= 1
 
     Returns
     -------
@@ -213,18 +215,19 @@ class CollinearityThreshold(SelectorMixin, BaseEstimator):
 
     Parameters
     ----------
-    threshold : int, >=1
+    threshold : float, default = .8
         Features with a training-set missing larger than this threshold will be removed
-    method : str, "association"
+        The thresold should be > 0 and =< 1
+    method : str, default = "association"
         method for computing the association matrix. Either "association" or "correlation".
         Correlation leads to encoding of categorical variables as numeric
-    n_jobs : int, -1
+    n_jobs : int, default = -1
         the number of threads, -1 uses all the threads for computating the association matrix
-    nom_nom_assoc : str or callable, "theil"
+    nom_nom_assoc : str or callable, default = "theil"
         the categorical-categorical association measure, by default Theil's U, not symmetrical!
-    num_num_assoc : str or callable, "spearman"
+    num_num_assoc : str or callable, default = "spearman"
         the numeric-numeric association measure
-    nom_num_assoc : str or callable, "correlation_ratio"
+    nom_num_assoc : str or callable, default = "correlation_ratio"
         the numeric-categorical association measure
     
     Returns
@@ -344,6 +347,21 @@ class CollinearityThreshold(SelectorMixin, BaseEstimator):
         return {"allow_nan": True}
     
     def plot_association(self, ax=None, cmap="PuOr", figsize=None, cbar_kw=None, imgshow_kw=None):
+        """plot_association plots the association matrix
+
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes, optional
+            the mpl axes if the figure object exists already, by default None
+        cmap : str, optional
+            colormap name, by default "PuOr"
+        figsize : tuple of float, optional
+            figure size, by default None
+        cbar_kw : dict, optional
+            colorbar kwargs, by default None
+        imgshow_kw : dict, optional
+            imgshow kwargs, by default None
+        """
         
         if figsize is None:
             figsize = (self.assoc_matrix_.shape[0]/3, self.assoc_matrix_.shape[0]/3)
@@ -358,6 +376,8 @@ class CollinearityThreshold(SelectorMixin, BaseEstimator):
             show=True,
             cbar_kw=cbar_kw,
             imgshow_kw=imgshow_kw)
+        
+        return f
         
 
 def _most_collinear(association_matrix, threshold):

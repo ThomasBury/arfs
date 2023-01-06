@@ -58,7 +58,6 @@ import scipy as sp
 from tqdm import tqdm
 from sklearn.utils import check_random_state, check_X_y
 from sklearn.base import (
-    TransformerMixin,
     BaseEstimator,
     is_regressor,
     is_classifier,

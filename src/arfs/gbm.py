@@ -8,8 +8,6 @@ It can boost from an initial score (aka baseline for catboost), take sample weig
 - The ``GradientBoosting`` main class to train a lightGBM  or catboost with early stopping
 
 """
-from typing import Union, Tuple, List, Optional, Dict, Any
-
 from sklearn.model_selection import (
     ShuffleSplit,
     StratifiedShuffleSplit,
@@ -36,7 +34,7 @@ qual_colors_list = [
     (0.427451, 0.564706, 0.309804)
     ]
 
-def set_my_plt_style(height=3, width=5, linewidth: Any = 2):
+def set_my_plt_style(height=3, width=5, linewidth=2):
     """This set the style of matplotlib to fivethirtyeight with some modifications (colours, axes)
 
     Parameters
@@ -45,7 +43,7 @@ def set_my_plt_style(height=3, width=5, linewidth: Any = 2):
         fig height in inches (yeah they're still struggling with the metric system) (default ``3``)
     width : float, default = 5
         fig width in inches (yeah they're still struggling with the metric system) (default ``5``)
-    linewidth :
+    linewidth : float
          (default ``2``)
 
     """
@@ -311,7 +309,7 @@ class GradientBoosting:
         else:
             raise Exception("method not found")
 
-    def predict_raw(self, X: Union[pd.DataFrame, np.ndarray], **kwargs):
+    def predict_raw(self, X, **kwargs):
         """The native (either lightGBM or CatBoost) predict method, if you need raw_score, etc.
 
 
@@ -724,7 +722,7 @@ def _make_split(
     stratified=False,
     test_size=0.2,
 ):
-    """_summary_
+    """_make_split is a private function for splitting the dataset according to the task
 
     Parameters
     ----------

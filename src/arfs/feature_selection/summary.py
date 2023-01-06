@@ -16,11 +16,9 @@ def highlight_discarded(s):
 
     Parameters
     ----------
-    s : np.arrays
+    s : array-like of shape (n_features,)
+        the boolean array for defining the style 
 
-    Returns
-    -------
-    list
 
     """
     is_X = s == 0

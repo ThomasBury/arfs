@@ -20,15 +20,10 @@ import panel as pn
 
 
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-from typing import Union, Tuple, List, Optional, Dict, Callable
 from sklearn.utils import as_float_array, safe_sqr, safe_mask
 from multiprocessing import cpu_count
-from itertools import combinations, permutations, product, chain
-from pandas.api.types import (
-    is_object_dtype,
-    is_numeric_dtype,
-    is_categorical_dtype,
-)
+from itertools import combinations, permutations, product
+from pandas.api.types import is_numeric_dtype
 from scipy.stats import rankdata
 from functools import partial
 
@@ -60,22 +55,18 @@ _PRECISION = 1e-13
 ##################
 
 
-def weighted_conditional_entropy(
-    x: pd.Series,
-    y: pd.Series,
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-):
+def weighted_conditional_entropy(x, y, sample_weight=None):
     """weighted_conditional_entropy computes the weighted conditional entropy between two
     categorical predictors.
 
     Parameters
     ----------
-    x :
-        The predictor vector of shape (n_samples,)
-    y :
-        The target vector of shape (n_samples,)
-    sample_weight :
-        The weight vector, if any, of shape (n_samples,)
+    x : pd.Series of shape (n_samples,)
+        The predictor vector
+    y : pd.Series of shape (n_samples,)
+        The target vector
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
 
     Returns
     -------
@@ -103,24 +94,19 @@ def weighted_conditional_entropy(
     return h_xy
 
 
-def weighted_theils_u(
-    x: pd.Series,
-    y: pd.Series,
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    as_frame: bool = False,
-):
+def weighted_theils_u(x, y, sample_weight=None, as_frame=False):
     """weighted_theils_u computes the weighted Theil's U statistic between two
     categorical predictors.
 
     Parameters
     ----------
-    x :
-        The predictor vector of shape (n_samples,)
-    y :
-        The target vector of shape (n_samples,)
-    sample_weight :
-        The weight vector, if any, of shape (n_samples,)
-    as_frame:
+    x : pd.Series of shape (n_samples,)
+        The predictor vector
+    y : pd.Series of shape (n_samples,)
+        The target vector
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    as_frame: bool
         return output as a dataframe or a float
 
     Returns
@@ -172,13 +158,8 @@ def weighted_theils_u(
         return teil_u_val
 
 
-def theils_u_matrix(
-    X: Union[pd.DataFrame, np.ndarray],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    n_jobs: int = -1,
-    handle_na: Optional[str] = "drop",
-):
-    """theils_u_matrix computes the weighted Theil's U statistic for
+def theils_u_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop"):
+    """theils_u_matrix theils_u_matrix computes the weighted Theil's U statistic for
     categorical-categorical association. This is an asymmetric coefficient: U(x,y) != U(y,x)
     U(x, y) means the uncertainty of x given y: value is on the range of [0,1] -
     where 0 means y provides no information about x, and 1 means y provides full information about x
@@ -189,20 +170,21 @@ def theils_u_matrix(
 
     Parameters
     ----------
-    X :
+    X :  array-like of shape (n_samples, n_features)
         predictor dataframe
-    sample_weight :
-        sample weight, if any (e.g. exposure)
-    n_jobs :
-        the number of cores to use for the computation
-    handle_na :
-        either drop rows with na, fill na with 0 or do nothing
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    n_jobs : int, optional
+        the number of cores to use for the computation, by default -1
+    handle_na : str, optional
+        either drop rows with na, fill na with 0 or do nothing, by default "drop"
 
     Returns
     -------
     pd.DataFrame
         The Theil's U matrix in a tidy (long) format.
     """
+    
     # sanity checks
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
 
@@ -237,13 +219,7 @@ def theils_u_matrix(
         return None
 
 
-def theils_u_series(
-    X: Union[pd.DataFrame, np.ndarray],
-    target: Union[str, int],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    n_jobs: int = -1,
-    handle_na: Optional[str] = "drop",
-):
+def theils_u_series(X, target, sample_weight=None, n_jobs=-1, handle_na="drop"):
     """theils_u_series computes the weighted Theil's U statistic for
     categorical-categorical association. This is an asymmetric coefficient: U(x,y) != U(y,x)
     U(x, y) means the uncertainty of x given y: value is on the range of [0,1] -
@@ -255,16 +231,16 @@ def theils_u_series(
 
     Parameters
     ----------
-    X :
+    X : array-like of shape (n_samples, n_features)
         predictor dataframe
-    target :
+    target : str or int
         the predictor name or index with which to compute association
-    sample_weight :
-        sample weight, if any (e.g. exposure)
-    n_jobs :
-        the number of cores to use for the computation
-    handle_na :
-        either drop rows with na, fill na with 0 or do nothing
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    n_jobs : int, optional
+        the number of cores to use for the computation, by default -1
+    handle_na : str, optional
+        either drop rows with na, fill na with 0 or do nothing, by default "drop"
 
     Returns
     -------
@@ -303,25 +279,20 @@ def theils_u_series(
         return None
 
 
-def cramer_v(
-    x: pd.Series,
-    y: pd.Series,
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    as_frame: bool = False,
-):
+def cramer_v(x, y, sample_weight=None, as_frame=False):
     """cramer_v computes the weighted V statistic of two
     categorical predictors.
 
     Parameters
     ----------
-    x :
-        series for the first categorical predictor
-    y :
-        series for the second categorical predictor, order doesn't matter, symmetrical association
-    sample_weight :
-        sample_weight (e.g. exposure) if any
-    as_frame :
-        return the result as a single row dataframe, convenience for the parallelization
+    x : pd.Series of shape (n_samples,)
+        The predictor vector, the first categorical predictor
+    y : pd.Series of shape (n_samples,)
+        second categorical predictor, order doesn't matter, symmetrical association
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    as_frame: bool
+        return output as a dataframe or a float
 
     Returns
     -------
@@ -348,12 +319,7 @@ def cramer_v(
         return v
 
 
-def cramer_v_matrix(
-    X: Union[pd.DataFrame, np.ndarray],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    n_jobs: int = -1,
-    handle_na: Optional[str] = "drop",
-):
+def cramer_v_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop"):
     """cramer_v_matrix computes the weighted Cramer's V statistic for
     categorical-categorical association. This is a symmetric coefficient: V(x,y) = V(y,x)
 
@@ -364,15 +330,15 @@ def cramer_v_matrix(
 
     Parameters
     ----------
-    X :
+    X :  array-like of shape (n_samples, n_features)
         predictor dataframe
-    sample_weight :
-        sample weight, if any (e.g. exposure)
-    n_jobs :
-        the number of cores to use for the computation
-    handle_na :
-        either drop rows with na, fill na with 0 or do nothing
-
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    n_jobs : int, optional
+        the number of cores to use for the computation, by default -1
+    handle_na : str, optional
+        either drop rows with na, fill na with 0 or do nothing, by default "drop"
+    
     Returns
     -------
     pd.DataFrame
@@ -410,13 +376,7 @@ def cramer_v_matrix(
         return None
 
 
-def cramer_v_series(
-    X: Union[pd.DataFrame, np.ndarray],
-    target: Union[str, int],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    n_jobs: int = -1,
-    handle_na: Optional[str] = "drop",
-):
+def cramer_v_series(X, target, sample_weight=None, n_jobs=-1, handle_na="drop"):
     """cramer_v_series computes the weighted Cramer's V statistic for
     categorical-categorical association. This is a symmetric coefficient: V(x,y) = V(y,x)
 
@@ -427,20 +387,20 @@ def cramer_v_series(
 
     Parameters
     ----------
-    X :
+    X : array-like of shape (n_samples, n_features)
         predictor dataframe
-    target :
+    target : str or int
         the predictor name or index with which to compute association
-    sample_weight :
-        sample weight, if any (e.g. exposure)
-    n_jobs :
-        the number of cores to use for the computation
-    handle_na :
-        either drop rows with na, fill na with 0 or do nothing
-
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    n_jobs : int, optional
+        the number of cores to use for the computation, by default -1
+    handle_na : str, optional
+        either drop rows with na, fill na with 0 or do nothing, by default "drop"
+    
     Returns
     -------
-    pd.DataFrame
+    pd.Series
         The Cramer's V series
     """
     # sanity checks
@@ -524,27 +484,24 @@ def _weighted_correlation_ratio(*args):
     return np.sqrt(etasq)
 
 
-def correlation_ratio(
-    x: pd.Series,
-    y: pd.Series,
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    as_frame: bool = False,
-):
+def correlation_ratio(x, y, sample_weight=None, as_frame=False):
     """Compute the weighted correlation ratio. The association between a continuous predictor (y)
     and a categorical predictor (x). It can be weighted.
 
     Parameters
     ----------
-    x :
-        The categorical predictor vector of shape (n_samples,)
-    y :
-        The continuous predictor of shape (n_samples,)
-    as_frame :
-        return the result as a single row dataframe, convenience for the parallelization
+    x : pd.Series of shape (n_samples,)
+        The categorical predictor vector
+    y : pd.Series of shape (n_samples,)
+        The continuous predictor
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    as_frame: bool
+        return output as a dataframe or a float
 
     Returns
     -------
-    eta :
+    float
         value of the correlation ratio
     """
     if sample_weight is None:
@@ -583,12 +540,7 @@ def correlation_ratio(
         return _weighted_correlation_ratio(*args)[0]
 
 
-def correlation_ratio_matrix(
-    X: Union[pd.DataFrame, np.ndarray],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    n_jobs: int = -1,
-    handle_na: Optional[str] = "drop",
-):
+def correlation_ratio_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop"):
     """correlation_ratio_matrix computes the weighted Correlation Ratio for
     categorical-numerical association. This is a symmetric coefficient: CR(x,y) = CR(y,x)
 
@@ -598,14 +550,14 @@ def correlation_ratio_matrix(
 
     Parameters
     ----------
-    X :
+    X :  array-like of shape (n_samples, n_features)
         predictor dataframe
-    sample_weight :
-        sample weight, if any (e.g. exposure)
-    n_jobs :
-        the number of cores to use for the computation
-    handle_na :
-        either drop rows with na, fill na with 0 or do nothing
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    n_jobs : int, optional
+        the number of cores to use for the computation, by default -1
+    handle_na : str, optional
+        either drop rows with na, fill na with 0 or do nothing, by default "drop"
 
     Returns
     -------
@@ -646,13 +598,7 @@ def correlation_ratio_matrix(
         return None
 
 
-def correlation_ratio_series(
-    X: Union[pd.DataFrame, np.ndarray],
-    target: Union[str, int],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    n_jobs: int = -1,
-    handle_na: Optional[str] = "drop",
-):
+def correlation_ratio_series(X, target, sample_weight=None, n_jobs=-1, handle_na="drop"):
     """correlation_ratio_series computes the weighted correlation ration for
     categorical-numerical association. This is a symmetric coefficient: CR(x,y) = CR(y,x)
 
@@ -662,17 +608,17 @@ def correlation_ratio_series(
 
     Parameters
     ----------
-    X :
+    X : array-like of shape (n_samples, n_features)
         predictor dataframe
-    target :
+    target : str or int
         the predictor name or index with which to compute association
-    sample_weight :
-        sample weight, if any (e.g. exposure)
-    n_jobs :
-        the number of cores to use for the computation
-    handle_na :
-        either drop rows with na, fill na with 0 or do nothing
-
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    n_jobs : int, optional
+        the number of cores to use for the computation, by default -1
+    handle_na : str, optional
+        either drop rows with na, fill na with 0 or do nothing, by default "drop"
+    
     Returns
     -------
     pd.Series
@@ -711,14 +657,14 @@ def correlation_ratio_series(
         return None
 
 
-def wm(x: np.array, w: np.array):
+def wm(x, w):
     """wm computes the weighted mean
 
     Parameters
     ----------
-    x :
+    x : array-like of shape (n_samples,)
         the target array
-    w :
+    w : array-like of shape (n_samples,)
         the sample weights array
 
     Returns
@@ -734,11 +680,11 @@ def wcov(x, y, w):
 
     Parameters
     ----------
-    x :
-        variable 1 array
-    y :
-        variable 2 array
-    w :
+    x : array-like of shape (n_samples,)
+        the perdictor 1 array
+    y : array-like of shape (n_samples,)
+        the perdictor 2 array
+    w : array-like of shape (n_samples,)
         the sample weights array
 
     Returns
@@ -754,11 +700,11 @@ def wcorr(x, y, w):
 
     Parameters
     ----------
-    x :
-        variable 1 array
-    y :
-        variable 2 array
-    w :
+    x : array-like of shape (n_samples,)
+        the perdictor 1 array
+    y : array-like of shape (n_samples,)
+        the perdictor 2 array
+    w : array-like of shape (n_samples,)
         the sample weights array
 
     Returns
@@ -774,9 +720,9 @@ def wrank(x, w):
 
     Parameters
     ----------
-    x :
+    x : array-like of shape (n_samples,)
         the target array
-    w :
+    w : array-like of shape (n_samples,)
         the sample weights array
 
     Returns
@@ -798,11 +744,11 @@ def wspearman(x, y, w):
 
     Parameters
     ----------
-    x :
-        variable 1 array
-    y :
-        variable 2 array
-    w :
+    x : array-like of shape (n_samples,)
+        the perdictor 1 array
+    y : array-like of shape (n_samples,)
+        the perdictor 2 array
+    w : array-like of shape (n_samples,)
         the sample weights array
 
     Returns
@@ -813,28 +759,21 @@ def wspearman(x, y, w):
     return wcorr(wrank(x, w), wrank(y, w), w)
 
 
-def weighted_corr(
-    x: Union[pd.Series, np.array],
-    y: Union[pd.Series, np.array],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    as_frame: bool = False,
-    method: str = "pearson",
-):
+def weighted_corr(x, y, sample_weight=None, as_frame=False, method="pearson"):
     """weighted_corr computes the weighted correlation coefficient (Pearson or Spearman)
-
 
     Parameters
     ----------
-    x :
-        variable 1 array/series
-    y :
-        variable 2 array/series
-    sample_weight :
-        the sample weights array
-    as_frame :
-        return the result as a single row dataframe, convenience for the parallelization
-    method :
-        type of correlation, by default "pearson"
+    x : pd.Series of shape (n_samples,)
+        The categorical predictor vector
+    y : pd.Series of shape (n_samples,)
+        The continuous predictor
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    as_frame: bool
+        return output as a dataframe or a float
+    method : str
+        either "spearman" or "pearson", by default "pearson"
 
     Returns
     -------
@@ -857,14 +796,7 @@ def weighted_corr(
         return c
 
 
-def wcorr_series(
-    X: Union[pd.DataFrame, np.ndarray],
-    target: Union[str, int],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    n_jobs: int = -1,
-    handle_na: Optional[str] = "drop",
-    method: str = "pearson",
-):
+def wcorr_series(X, target, sample_weight=None, n_jobs=-1, handle_na="drop", method="pearson"):
     """wcorr_series computes the weighted correlation coefficient (Pearson or Spearman) for
     continuous-continuous association. This is an symmetric coefficient: corr(x,y) = corr(y,x)
 
@@ -874,23 +806,23 @@ def wcorr_series(
 
     Parameters
     ----------
-    X :
+    X : array-like of shape (n_samples, n_features)
         predictor dataframe
-    target :
+    target : str or int
         the predictor name or index with which to compute association
-    sample_weight :
-        sample weight, if any (e.g. exposure)
-    n_jobs :
-        the number of cores to use for the computation
-    handle_na :
-        either drop rows with na, fill na with 0 or do nothing
-    method :
-        either "spearman" or "pearson"
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    n_jobs : int, optional
+        the number of cores to use for the computation, by default -1
+    handle_na : str, optional
+        either drop rows with na, fill na with 0 or do nothing, by default "drop"
+    method : str
+        either "spearman" or "pearson", by default "pearson"
 
     Returns
     -------
     pd.Series
-        The Theil's U series.
+        The weighted correlation series.
     """
     # sanity checks
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
@@ -918,13 +850,7 @@ def wcorr_series(
         return None
 
 
-def wcorr_matrix(
-    X: Union[pd.DataFrame, np.ndarray],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    n_jobs: int = -1,
-    handle_na: Optional[str] = "drop",
-    method: str = "pearson",
-):
+def wcorr_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop", method="pearson"):
     """wcorr_matrix computes the weighted correlation statistic for
     (Pearson or Spearman) for continuous-continuous association.
     This is an symmetric coefficient: corr(x,y) = corr(y,x)
@@ -935,15 +861,15 @@ def wcorr_matrix(
 
     Parameters
     ----------
-    X :
+    X :  array-like of shape (n_samples, n_features)
         predictor dataframe
-    sample_weight :
-        sample weight, if any (e.g. exposure)
-    n_jobs :
-        the number of cores to use for the computation
-    handle_na :
-        either drop rows with na, fill na with 0 or do nothing
-    method :
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    n_jobs : int, optional
+        the number of cores to use for the computation, by default -1
+    handle_na : str, optional
+        either drop rows with na, fill na with 0 or do nothing, by default "drop"
+    method : str
         either "spearman" or "pearson"
 
     Returns
@@ -993,22 +919,18 @@ def wcorr_matrix(
         return None
 
 
-def weighted_correlation_1cpu(
-    X: Union[pd.DataFrame, np.ndarray],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    handle_na: Optional[str] = "drop",
-):
+def weighted_correlation_1cpu(X, sample_weight=None, handle_na="drop"):
     """weighted_correlation computes the lower triangular weighted correlation matrix
     using a single CPU, therefore using common numpy linear algebra
 
     Parameters
     ----------
-    X :
+    X :  array-like of shape (n_samples, n_features)
         predictor dataframe
-    sample_weight :
-        sample weight, if any (e.g. exposure)
-    handle_na :
-        either drop rows with na, fill na with 0 or do nothing
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    handle_na : str, optional
+        either drop rows with na, fill na with 0 or do nothing, by default "drop"
 
     Returns
     -------
@@ -1054,16 +976,16 @@ def weighted_correlation_1cpu(
 
 
 def association_series(
-    X: pd.DataFrame,
-    target: Union[str, int],
-    features: Optional[List[str]] = None,
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    nom_nom_assoc: str = "theil",
-    num_num_assoc: str = "pearson",
-    nom_num_assoc: str = "correlation_ratio",
-    n_jobs: int = -1,
-    normalize: bool = False,
-    handle_na: Optional[str] = "drop",
+    X,
+    target,
+    features=None,
+    sample_weight=None,
+    nom_nom_assoc="theil",
+    num_num_assoc="pearson",
+    nom_num_assoc="correlation_ratio",
+    normalize=False,
+    n_jobs=-1,
+    handle_na="drop"
 ):
     """association_series computes the association matrix for cont-cont, cat-cont and cat-cat.
     predictors. The weighted correlation matrix is used for the cont-cont predictors.
@@ -1073,33 +995,33 @@ def association_series(
 
     Parameters
     ----------
-    X :
+    X : array-like of shape (n_samples, n_features)
         predictor dataframe
-    sample_weight :
-        sample weight, if any (e.g. exposure)
-    n_jobs :
-        the number of cores to use for the computation
-    handle_na :
-        either drop rows with na, fill na with 0 or do nothing
-    features :
+    target : str or int
+        the predictor name or index with which to compute association
+    features : list of str, optional
         list of features with which to compute the association
-    nom_nom_assoc :
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    nom_nom_assoc : str or callable
         If callable, a function which receives two `pd.Series` (and optionally a weight array) and returns a single number.
         If string, name of nominal-nominal (categorical-categorical) association to use.
         Options are 'cramer' for Cramer's V or `theil` for Theil's U. If 'theil',
         heat-map columns are the provided information (U = U(row|col)).
-    num_num_assoc : str, optional
+    num_num_assoc : str or callable
         If callable, a function which receives two `pd.Series` and returns a single number.
         If string, name of numerical-numerical association to use. Options are 'pearson'
         for Pearson's R, 'spearman' for Spearman's R.
-    nom_num_assoc : str, optional
+    nom_num_assoc : str or callable
         If callable, a function which receives two `pd.Series` and returns a single number.
         If string, name of nominal-numerical association to use. Options are 'correlation_ratio'
         for correlation ratio
-    handle_na :
-        either drop rows with na, fill na with 0 or do nothing
-    normalize :
+    normalize : bool
         either to normalize or not the scores
+    n_jobs : int, optional
+        the number of cores to use for the computation, by default -1
+    handle_na : str, optional
+        either drop rows with na, fill na with 0 or do nothing, by default "drop"
 
     Returns
     -------
@@ -1243,16 +1165,16 @@ def association_series(
 
 
 def association_matrix(
-    X: Union[pd.DataFrame, np.ndarray],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    nom_nom_assoc: Union[Callable, str] = "theil",
-    num_num_assoc: Union[Callable, str] = "pearson",
-    nom_num_assoc: Union[Callable, str] = "correlation_ratio",
-    n_jobs: int = -1,
-    handle_na: Optional[str] = "drop",
-    nom_nom_comb: Optional[List[Tuple[str]]] = None,
-    num_num_comb: Optional[List[Tuple[str]]] = None,
-    nom_num_comb: Optional[List[Tuple[str]]] = None,
+    X,
+    sample_weight=None,
+    nom_nom_assoc="theil",
+    num_num_assoc="pearson",
+    nom_num_assoc="correlation_ratio",
+    n_jobs=-1,
+    handle_na="drop",
+    nom_nom_comb=None,
+    num_num_comb=None,
+    nom_num_comb=None,
 ):
     """association_matrix computes the association matrix for cont-cont, cat-cont and cat-cat.
     predictors. The weighted correlation matrix is used for the cont-cont predictors.
@@ -1263,34 +1185,34 @@ def association_matrix(
 
     Parameters
     ----------
-    X :
+    X : array-like of shape (n_samples, n_features)
         predictor dataframe
-    sample_weight :
-        sample weight, if any (e.g. exposure)
-    n_jobs :
-        the number of cores to use for the computation
-    handle_na :
-        either drop rows with na, fill na with 0 or do nothing
-    nom_nom_assoc :
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    nom_nom_assoc : str or callable
         If callable, a function which receives two `pd.Series` (and optionally a weight array) and returns a single number.
         If string, name of nominal-nominal (categorical-categorical) association to use.
         Options are 'cramer' for Cramer's V or `theil` for Theil's U. If 'theil',
         heat-map columns are the provided information (U = U(row|col)).
-    num_num_assoc : str, optional
+    num_num_assoc : str or callable
         If callable, a function which receives two `pd.Series` and returns a single number.
         If string, name of numerical-numerical association to use. Options are 'pearson'
         for Pearson's R, 'spearman' for Spearman's R.
-    nom_num_assoc : str, optional
+    nom_num_assoc : str or callable
         If callable, a function which receives two `pd.Series` and returns a single number.
         If string, name of nominal-numerical association to use. Options are 'correlation_ratio'
         for correlation ratio
-    nom_nom_comb_list :
-        a list of 2-uple of strings. Pairs of column names corresponding to the entries for nom_nom associations.
+    n_jobs : int, optional
+        the number of cores to use for the computation, by default -1
+    handle_na : str, optional
+        either drop rows with na, fill na with 0 or do nothing, by default "drop"
+    nom_nom_comb_list : list of 2-uple of strings
+        Pairs of column names corresponding to the entries for nom_nom associations.
         If asymmetrical association, take care of providing an exhaustive list of column name pairs.
-    num_num_comb_list :
-        a list of 2-uple of strings. Pairs of column names corresponding to the entries for num_num associations
-    nom_num_comb_list :
-        a list of 2-uple of strings. Pairs of column names corresponding to the entries for nom_num associations
+    num_num_comb_list : list of 2-uple of strings
+        Pairs of column names corresponding to the entries for num_num associations
+    nom_num_comb_list : list of 2-uple of strings
+        Pairs of column names corresponding to the entries for nom_num associations
 
     Returns
     -------
@@ -1348,30 +1270,23 @@ def association_matrix(
     return pd.concat([w_num_num, w_nom_num, w_nom_nom], ignore_index=True)
 
 
-def _callable_association_series_fn(
-    assoc_fn: Callable,
-    X: pd.DataFrame,
-    target: Union[str, int],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    n_jobs: int = -1,
-    kind: str = "nom-nom",
-):
+def _callable_association_series_fn(assoc_fn, X, target, sample_weight=None, n_jobs=-1, kind="nom-nom"):
     """_callable_association_series_fn private function, utility for computing association series
     for a callable custom association
 
     Parameters
     ----------
-    assoc_fn :
-        callable, a function which receives two `pd.Series` (and optionally a weight array) and returns a single number
-    X :
+    assoc_fn : callable
+        a function which receives two `pd.Series` (and optionally a weight array) and returns a single number
+    X : array-like of shape (n_samples, n_features)
         predictor dataframe
-    target :
+    target : str or int
         the predictor name or index with which to compute association
-    sample_weight :
-        sample weight, if any (e.g. exposure)
-    n_jobs :
-        the number of cores to use for the computation
-    kind :
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    n_jobs : int, optional
+        the number of cores to use for the computation, by default -1
+    kind : str
         kind of association, either 'num-num' or 'nom-nom' or 'nom-num'
 
     Returns
@@ -1455,30 +1370,23 @@ def _callable_association_series_fn(
         raise ValueError("kind can be 'num-num' or 'nom-num' or 'nom-nom'")
 
 
-def _callable_association_matrix_fn(
-    assoc_fn: Callable,
-    X: pd.DataFrame,
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    n_jobs: int = -1,
-    kind: str = "nom-nom",
-    cols_comb: Optional[List[Tuple[str]]] = None,
-):
+def _callable_association_matrix_fn(assoc_fn, X, sample_weight=None, n_jobs=-1, kind="nom-nom", cols_comb=None):
     """_callable_association_matrix_fn private function, utility for computing association matrix
     for a callable custom association
 
     Parameters
     ----------
-    assoc_fn :
-        callable, a function which receives two `pd.Series` (and optionally a weight array) and returns a single number
-    X :
+    assoc_fn : callable
+        a function which receives two `pd.Series` (and optionally a weight array) and returns a single number
+    X : array-like of shape (n_samples, n_features)
         predictor dataframe
-    sample_weight :
-        sample weight, if any (e.g. exposure)
-    n_jobs :
-        the number of cores to use for the computation
-    kind :
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    n_jobs : int, optional
+        the number of cores to use for the computation, by default -1
+    kind : str
         kind of association, either 'num-num' or 'nom-nom' or 'nom-num'
-    cols_comb :
+    cols_comb : list of 2-uple of str, optional
         combination of column names (list of 2-uples of strings)
 
     Returns
@@ -1538,7 +1446,6 @@ def f_oneway_weighted(*args):
     """f_oneway_weighted calculates the weighted F-statistic
     (continuous target, categorical predictor)
 
-
     Returns
     -------
     float
@@ -1585,29 +1492,24 @@ def f_oneway_weighted(*args):
     return f
 
 
-def f_cat_regression(
-    x: Union[pd.Series, np.array],
-    y: Union[pd.Series, np.array],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    as_frame: bool = False,
-):
+def f_cat_regression(x, y, sample_weight=None, as_frame=False):
     """f_cat_regression computes the weighted ANOVA F-value for the provided sample.
     (continuous target, categorical predictor)
 
     Parameters
     ----------
-    x :
-        The predictor vector of shape (n_samples,)
-    y :
-        The target vector of shape (n_samples,)
-    sample_weight :
-        The weight vector, if any, of shape (n_samples,)
-    as_frame:
+    x : pd.Series of shape (n_samples,)
+        The predictor vector, the first categorical predictor
+    y : pd.Series of shape (n_samples,)
+        second categorical predictor, order doesn't matter, symmetrical association
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    as_frame: bool
         return output as a dataframe or a float
 
     Returns
     -------
-    f_statistic :
+    float
         value of the F-statistic
     """
     if sample_weight is None:
@@ -1633,28 +1535,22 @@ def f_cat_regression(
         return f_oneway_weighted(*args)[0]
 
 
-def f_cat_regression_parallel(
-    X: pd.DataFrame,
-    y: Union[pd.Series, np.array],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    n_jobs: int = -1,
-    handle_na: Optional[str] = "drop",
-):
+def f_cat_regression_parallel(X, y, sample_weight=None, n_jobs=-1, handle_na="drop"):
     """f_cat_regression_parallel computes the weighted ANOVA F-value for the provided categorical predictors
     using parallelization of the code (continuous target, categorical predictor).
 
     Parameters
     ----------
-    X :
-        The set of regressors that will be tested sequentially, of shape (n_samples, n_features)
-    y :
-        The target vector of shape (n_samples,)
-    sample_weight :
-        The weight vector, if any, of shape (n_samples,)
-    n_jobs :
-        the number of cores to use for the computation
-    handle_na :
-        either drop rows with na, fill na with 0 or do nothing
+    X : array-like of shape (n_samples, n_features)
+        predictor dataframe
+    y : array-like of shape (n_samples,)
+        The target vector
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    n_jobs : int, optional
+        the number of cores to use for the computation, by default -1
+    handle_na : str, optional
+        either drop rows with na, fill na with 0 or do nothing, by default "drop"
 
     Returns
     -------
@@ -1696,14 +1592,7 @@ def f_cat_regression_parallel(
     )
 
 
-def f_cont_regression_parallel(
-    X: pd.DataFrame,
-    y: Union[pd.Series, np.array],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    n_jobs: int = -1,
-    force_finite=True,
-    handle_na="drop",
-):
+def f_cont_regression_parallel(X, y, sample_weight=None, n_jobs=-1, force_finite=True, handle_na="drop"):
     """Univariate linear regression tests returning F-statistic.
     Quick linear model for testing the effect of a single regressor,
     sequentially for many regressors.
@@ -1720,10 +1609,16 @@ def f_cont_regression_parallel(
 
     Parameters
     ----------
-    X :
-        The data matrix of shape (n_samples, n_features)
-    y :
-        The target vector of shape (n_samples,)
+    X : array-like of shape (n_samples, n_features)
+        predictor dataframe
+    y : array-like of shape (n_samples,)
+        The target vector
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    n_jobs : int, optional
+        the number of cores to use for the computation, by default -1
+    handle_na : str, optional
+        either drop rows with na, fill na with 0 or do nothing, by default "drop"
     force_finite :
         Whether or not to force the F-statistics and associated p-values to
         be finite. There are two cases where the F-statistic is expected to not
@@ -1737,16 +1632,11 @@ def f_cont_regression_parallel(
           anti-correlated) with the target `y`. In this case, the F-statistic
           is expected to be `np.inf`. When `force_finite=True`, the F-statistic
           is set to `np.finfo(dtype).max`.
-    sample_weight :
-        The weight vector, if any, of shape (n_samples,)
-    n_jobs :
-        the number of cores to use for the computation
-    handle_na :
-        either drop rows with na, fill na with 0 or do nothing
+
 
     Returns
     -------
-    f_statistic :
+    float :
         F-statistic for each feature of shape (n_features,)
     """
     if not isinstance(y, pd.Series):
@@ -1783,23 +1673,22 @@ def f_cont_regression_parallel(
     return f_statistic.drop(labels=[target]).sort_values(ascending=False)
 
 
-def f_stat_regression_parallel(
-    X: pd.DataFrame,
-    y: Union[pd.Series, np.array],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    n_jobs: int = -1,
-    force_finite=True,
-    handle_na="drop",
-):
+def f_stat_regression_parallel(X, y, sample_weight=None, n_jobs=-1, force_finite=True, handle_na="drop"):
     """f_stat_regression_parallel computes the weighted explained variance for the provided categorical
     and numerical predictors using parallelization of the code.
 
     Parameters
     ----------
-    X :
-        The data matrix of shape (n_samples, n_features)
-    y :
-        The target vector of shape (n_samples,)
+    X : array-like of shape (n_samples, n_features)
+        predictor dataframe
+    y : array-like of shape (n_samples,)
+        The target vector
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    n_jobs : int, optional
+        the number of cores to use for the computation, by default -1
+    handle_na : str, optional
+        either drop rows with na, fill na with 0 or do nothing, by default "drop"
     force_finite :
         Whether or not to force the F-statistics and associated p-values to
         be finite. There are two cases where the F-statistic is expected to not
@@ -1813,12 +1702,6 @@ def f_stat_regression_parallel(
           anti-correlated) with the target `y`. In this case, the F-statistic
           is expected to be `np.inf`. When `force_finite=True`, the F-statistic
           is set to `np.finfo(dtype).max`.
-    sample_weight :
-        The weight vector, if any, of shape (n_samples,)
-    n_jobs :
-        the number of cores to use for the computation
-    handle_na :
-        either drop rows with na, fill na with 0 or do nothing
 
     Returns
     -------
@@ -1857,29 +1740,24 @@ def f_stat_regression_parallel(
     )
 
 
-def f_cont_classification(
-    x: Union[pd.Series, np.array],
-    y: Union[pd.Series, np.array],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    as_frame: bool = False,
-):
+def f_cont_classification(x, y, sample_weight=None, as_frame=False):
     """f_cont_classification computes the weighted ANOVA F-value for the provided sample.
     Categorical target, continuous predictor.
 
     Parameters
     ----------
-    x :
-        The predictor vector of shape (n_samples,)
-    y :
-        The target vector of shape (n_samples,)
-    sample_weight :
-        The weight vector, if any, of shape (n_samples,)
-    as_frame:
+    x : pd.Series of shape (n_samples,)
+        The predictor vector, the first categorical predictor
+    y : pd.Series of shape (n_samples,)
+        second categorical predictor, order doesn't matter, symmetrical association
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    as_frame: bool
         return output as a dataframe or a float
-
+        
     Returns
     -------
-    f_statistic :
+    float :
         value of the F-statistic
     """
     if sample_weight is None:
@@ -1905,29 +1783,23 @@ def f_cont_classification(
         return f_oneway_weighted(*args)[0]
 
 
-def f_cont_classification_parallel(
-    X: pd.DataFrame,
-    y: Union[pd.Series, np.array],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    n_jobs: int = -1,
-    handle_na: Optional[str] = "drop",
-):
+def f_cont_classification_parallel(X, y, sample_weight=None, n_jobs=-1, handle_na="drop"):
     """f_cont_classification_parallel computes the weighted ANOVA F-value
     for the provided categorical predictors using parallelization of the code.
     Categorical target, continuous predictor.
 
     Parameters
     ----------
-    X :
-        The set of regressors that will be tested sequentially, of shape (n_samples, n_features)
-    y :
-        The target vector of shape (n_samples,)
-    sample_weight :
-        The weight vector, if any, of shape (n_samples,)
-    n_jobs :
-        the number of cores to use for the computation
-    handle_na :
-        either drop rows with na, fill na with 0 or do nothing
+    X : array-like of shape (n_samples, n_features)
+        The set of regressors that will be tested sequentially
+    y : array-like of shape (n_samples,)
+        The target vector
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    n_jobs : int, optional
+        the number of cores to use for the computation, by default -1
+    handle_na : str, optional
+        either drop rows with na, fill na with 0 or do nothing, by default "drop"
 
     Returns
     -------
@@ -1967,13 +1839,7 @@ def f_cont_classification_parallel(
     )
 
 
-def f_cat_classification_parallel(
-    X: pd.DataFrame,
-    y: Union[pd.Series, np.array],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    n_jobs: int = -1,
-    force_finite=True,
-    handle_na="drop",
+def f_cat_classification_parallel(X, y, sample_weight=None, n_jobs=-1, force_finite=True, handle_na="drop",
 ):
     """Univariate information dependence
     It is converted to an F score ranks features in the same order if
@@ -1984,28 +1850,29 @@ def f_cat_classification_parallel(
 
     Parameters
     ----------
-    X :
-        The data matrix of shape (n_samples, n_features)
-    y :
-        The target vector of shape (n_samples,)
+    X : array-like of shape (n_samples, n_features)
+        predictor dataframe
+    y : array-like of shape (n_samples,)
+        The target vector
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    n_jobs : int, optional
+        the number of cores to use for the computation, by default -1
+    handle_na : str, optional
+        either drop rows with na, fill na with 0 or do nothing, by default "drop"
     force_finite :
         Whether or not to force the F-statistics and associated p-values to
         be finite. There are two cases where the F-statistic is expected to not
         be finite:
         - when the target `y` or some features in `X` are constant. In this
-          case, the association coefficient is not defined leading to obtain
-          `np.nan` values in the statistic and p-value. When
-          `force_finite=True`, the statistic is set to `0.0`
+          case, the Pearson's R correlation is not defined leading to obtain
+          `np.nan` values in the F-statistic and p-value. When
+          `force_finite=True`, the F-statistic is set to `0.0` and the
+          associated p-value is set to `1.0`.
         - when the a feature in `X` is perfectly correlated (or
-          anti-correlated) with the target `y`. In this case, the statistic
-          is expected to be `np.inf`. When `force_finite=True`, the statistic
+          anti-correlated) with the target `y`. In this case, the F-statistic
+          is expected to be `np.inf`. When `force_finite=True`, the F-statistic
           is set to `np.finfo(dtype).max`.
-    sample_weight :
-        The weight vector, if any, of shape (n_samples,)
-    n_jobs :
-        the number of cores to use for the computation
-    handle_na :
-        either drop rows with na, fill na with 0 or do nothing
 
     Returns
     -------
@@ -2044,41 +1911,35 @@ def f_cat_classification_parallel(
     return f_statistic.drop(labels=[target]).sort_values(ascending=False)
 
 
-def f_stat_classification_parallel(
-    X: pd.DataFrame,
-    y: Union[pd.Series, np.array],
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    n_jobs: int = -1,
-    force_finite=True,
-    handle_na="drop",
-):
+def f_stat_classification_parallel(X, y, sample_weight=None, n_jobs=-1, force_finite=True, handle_na="drop"):
     """f_stat_classification_parallel computes the weighted ANOVA F-value for the provided categorical
     and numerical predictors using parallelization of the code.
 
     Parameters
     ----------
-    X :
-        The data matrix of shape (n_samples, n_features)
-    y :
-        The target vector of shape (n_samples,)
+    X : array-like of shape (n_samples, n_features)
+        predictor dataframe
+    y : array-like of shape (n_samples,)
+        The target vector
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    n_jobs : int, optional
+        the number of cores to use for the computation, by default -1
+    handle_na : str, optional
+        either drop rows with na, fill na with 0 or do nothing, by default "drop"
     force_finite :
         Whether or not to force the F-statistics and associated p-values to
         be finite. There are two cases where the F-statistic is expected to not
         be finite:
         - when the target `y` or some features in `X` are constant. In this
-          case, the association coefficient is not defined leading to obtain
-          `np.nan` values in the statistic and p-value. When
-          `force_finite=True`, the statistic is set to `0.0`
+          case, the Pearson's R correlation is not defined leading to obtain
+          `np.nan` values in the F-statistic and p-value. When
+          `force_finite=True`, the F-statistic is set to `0.0` and the
+          associated p-value is set to `1.0`.
         - when the a feature in `X` is perfectly correlated (or
-          anti-correlated) with the target `y`. In this case, the statistic
-          is expected to be `np.inf`. When `force_finite=True`, the statistic
+          anti-correlated) with the target `y`. In this case, the F-statistic
+          is expected to be `np.inf`. When `force_finite=True`, the F-statistic
           is set to `np.finfo(dtype).max`.
-    sample_weight :
-        The weight vector, if any, of shape (n_samples,)
-    n_jobs :
-        the number of cores to use for the computation
-    handle_na :
-        either drop rows with na, fill na with 0 or do nothing
 
     Returns
     -------
@@ -2122,26 +1983,20 @@ def f_stat_classification_parallel(
 ############
 
 
-def _check_association_input(
-    X: pd.DataFrame,
-    sample_weight: Optional[Union[pd.Series, np.array]] = None,
-    handle_na: Optional[str] = "drop",
-):
+def _check_association_input(X,sample_weight=None,handle_na="drop"):
     """_check_association_input private function. Check the inputs,
     convert X to a pd.DataFrame if needed, adds column names if non are provided.
     Check if the sample_weight is None or of the right dimensionality and handle NA
     according to the chosen methods (drop, fill, None).
 
-    _extended_summary_
-
     Parameters
     ----------
-    X :
-        The data matrix of shape (n_samples, n_features)
-    sample_weight :
-        The weight vector, if any, of shape (n_samples,)
-    handle_na :
-        either drop rows with na, fill na with 0 or do nothing
+    X : array-like of shape (n_samples, n_features)
+        predictor dataframe
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None
+    handle_na : str, optional
+        either drop rows with na, fill na with 0 or do nothing, by default "drop"
 
     Returns
     -------
@@ -2189,13 +2044,13 @@ def _check_association_input(
     return X, sample_weight
 
 
-def is_list_of_str(str_list: List[str]):
+def is_list_of_str(str_list):
     """Raise an exception if ``str_list`` is not a list of strings
     Parameters
     ----------
-    str_list :
-    name :
-         (default ``'str_list'``)
+    str_list : list
+        to list to be tested
+
     Raises
     ------
     TypeError
@@ -2211,20 +2066,14 @@ def is_list_of_str(str_list: List[str]):
             return True
 
 
-def matrix_to_xy(
-    df: pd.DataFrame,
-    columns: Optional[List[str]] = None,
-    reset_index: bool = False,
-):
+def matrix_to_xy(df, columns=None, reset_index=False):
     """matrix_to_xy wide to long format of the association matrix
-
-    _extended_summary_
 
     Parameters
     ----------
-    df :
+    df : pd.DataFrame
         the wide format of the association matrix
-    columns :
+    columns : list of str, optional
         list of column names, by default None
     reset_index : bool, optional
         wether to reset_index or not, by default False
@@ -2245,12 +2094,12 @@ def matrix_to_xy(
     return xy
 
 
-def xy_to_matrix(xy: pd.DataFrame):
+def xy_to_matrix(xy):
     """xy_to_matrix long to wide format of the association matrix
 
     Parameters
     ----------
-    xy :
+    xy : pd.DataFrame
         the long format of the association matrix, 3 columns.
 
     Returns
@@ -2267,26 +2116,22 @@ def xy_to_matrix(xy: pd.DataFrame):
 # visualization
 ###############
 
-
-def cluster_sq_matrix(sq_matrix: pd.DataFrame, method: str = "ward"):
-    """
-    Apply agglomerative clustering in order to sort
+def cluster_sq_matrix(sq_matrix, method="ward"):
+    """cluster_sq_matrix applies agglomerative clustering in order to sort
     a correlation matrix.
+    
+    Parameters
+    ----------
+    sq_matrix : pd.DataFrame
+        a square correlation matrix
+    method : str, optional
+        linkage method, by default "ward"
 
-    Based on https://github.com/TheLoneNut/CorrelationMatrixClustering/blob/master/CorrelationMatrixClustering.ipynb
-
-    Parameters:
-    -----------
-    corr_mat :
-        a square correlation matrix (pandas DataFrame)
-    method :
-        linkage method, see https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.linkage.html
-
-    Returns:
-    --------
-    sq_matrix :
-        pd.DataFrame, a sorted square matrix
-
+    Returns
+    -------
+    pd.DataFrame
+        a sorted square matrix
+        
     Example:
     --------
     >>> assoc = association_matrix(
@@ -2294,6 +2139,7 @@ def cluster_sq_matrix(sq_matrix: pd.DataFrame, method: str = "ward"):
     ...     plot=False
     ... )
     >>> assoc_clustered = cluster_sq_matrix(assoc, method="complete")
+    
     """
     d = sch.distance.pdist(sq_matrix.values)
     L = sch.linkage(d, method=method)
@@ -2303,10 +2149,6 @@ def cluster_sq_matrix(sq_matrix: pd.DataFrame, method: str = "ward"):
     sq_matrix = sq_matrix.reindex(columns, axis=0)
     return sq_matrix
 
-
-def heatmap(
-    data, row_labels, col_labels, ax=None, cbar_kw=None, cbarlabel="", **kwargs
-):
     """
     Create a heatmap from a numpy array and two lists of labels.
 
@@ -2327,6 +2169,32 @@ def heatmap(
         The label for the colorbar.  Optional.
     **kwargs
         All other arguments are forwarded to `imshow`.
+    """
+def heatmap(data, row_labels, col_labels, ax=None, cbar_kw=None, cbarlabel="", **kwargs):
+    """heatmap Create a heatmap from a numpy array and two lists of labels.
+    
+    Parameters
+    ----------
+    data : array-like of shape (M, N)
+        matrix to plot
+    row_labels : array-like of shape (M,)
+        labels for the rows
+    col_labels : array-like of shape (N,)
+        labels for the columns
+    ax : matplotlib.axes.Axes, optional
+        A `matplotlib.axes.Axes` instance to which the heatmap is plotted.  If
+        not provided, use current axes or create a new one, by default None
+    cbar_kw : dict, optional
+         A dictionary with arguments to `matplotlib.Figure.colorbar`, by default None
+    cbarlabel : str, optional
+        The label for the colorbar, by default ""
+    kwargs : dict, optional
+        All other arguments are forwarded to `imshow`.
+
+    Returns
+    -------
+    tuple
+        imgshow and cbar objects
     """
 
     if ax is None:
@@ -2370,7 +2238,6 @@ def heatmap(
 
     return im, cbar
 
-
 def annotate_heatmap(
     im,
     data=None,
@@ -2379,29 +2246,31 @@ def annotate_heatmap(
     threshold=None,
     **textkw,
 ):
-    """
-    A function to annotate a heatmap.
+    """annotate_heatmap annotates a heatmap
 
     Parameters
     ----------
-    im
-        The AxesImage to be labeled.
-    data
-        Data used to annotate.  If None, the image's data is used.  Optional.
-    valfmt
-        The format of the annotations inside the heatmap.  This should either
-        use the string format method, e.g. "$ {x:.2f}", or be a
-        `matplotlib.ticker.Formatter`.  Optional.
-    textcolors
+    im : matplotlib.axes.Axes
+        The AxesImage to be labeled
+    data : array-like of shape (M, N), optional
+        data to illustrate, if none is provided the function retrieves 
+        the array of the mlp obkect, by default None
+    valfmt : str, optional
+        annotation formating, by default "{x:.2f}"
+    textcolors : tuple, optional
         A pair of colors.  The first is used for values below a threshold,
-        the second for those above.  Optional.
-    threshold
+        the second for those above, by default ("black", "white")
+    threshold : float, optional
         Value in data units according to which the colors from textcolors are
         applied.  If None (the default) uses the middle of the colormap as
-        separation.  Optional.
-    **kwargs
-        All other arguments are forwarded to each call to `text` used to create
-        the text labels.
+        separation, by default None
+    textkw : dict, optional
+        All other arguments are forwarded to mpl annotation.
+
+    Returns
+    -------
+    _type_
+        _description_
     """
 
     if not isinstance(data, (list, np.ndarray)):

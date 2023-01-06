@@ -1,8 +1,6 @@
 arfs package
 ============
 
-Submodules
-----------
 
 arfs.allrelevant module
 -----------------------

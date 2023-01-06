@@ -11,7 +11,7 @@ This module provides preprocessing classes
 
 # Settings and libraries
 from __future__ import print_function
-from tqdm import tqdm, trange
+from tqdm import tqdm
 
 # pandas
 import pandas as pd
@@ -20,13 +20,8 @@ import pandas as pd
 import numpy as np
 
 # sklearn
-from sklearn.utils import deprecated as sk_deprecated
-from sklearn.base import _OneToOneFeatureMixin
-from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OrdinalEncoder
-from sklearn.preprocessing._encoders import _BaseEncoder
 from sklearn.base import BaseEstimator, TransformerMixin
-
 
 # ARFS
 from .gbm import GradientBoosting
