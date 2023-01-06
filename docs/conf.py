@@ -29,7 +29,12 @@ release = '1.0.0'
 # directory, add these directories to sys.path here. If the directory is
 # relative to the documentation root, use os.path.abspath to make it
 # absolute, like shown here.
-sys.path.append(os.path.join(os.path.abspath(os.pardir)))
+# sys.path.append(os.path.join(os.path.abspath(os.pardir)))
+
+sys.path.insert(0, os.path.abspath('..'))
+sys.path.append(os.path.abspath(
+    os.path.join(__file__, "../../src")
+))
 autodoc_mock_imports = ["_tkinter"]
 
 # Get the project root dir, which is the parent dir of this
@@ -47,7 +52,7 @@ extensions = [
     'sphinx.ext.autosectionlabel',
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
-    'sphinx_autodoc_typehints',
+    # 'sphinx_autodoc_typehints',
     'sphinx_copybutton',
     'sphinx_rtd_theme',
     'nbsphinx',

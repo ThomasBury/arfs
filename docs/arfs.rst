@@ -1,59 +1,53 @@
 arfs package
 ============
 
+Subpackages
+-----------
 
-arfs.allrelevant module
+.. toctree::
+   :maxdepth: 4
+
+   arfs.feature_selection
+
+Submodules
+----------
+
+arfs.association module
 -----------------------
 
-.. automodule:: arfs.allrelevant
+.. automodule:: arfs.association
    :members:
    :undoc-members:
    :show-inheritance:
 
-arfs.feature_selection.allrelevant module
------------------------------------------
+arfs.benchmark module
+---------------------
 
-.. automodule:: arfs.feature_selection.allrelevant
+.. automodule:: arfs.benchmark
    :members:
    :undoc-members:
    :show-inheritance:
 
-arfs.feature_selection.base module
-----------------------------------
+arfs.gbm module
+---------------
 
-.. automodule:: arfs.feature_selection.base
+.. automodule:: arfs.gbm
    :members:
    :undoc-members:
    :show-inheritance:
 
-arfs.feature_selection.mrmr module
-----------------------------------
+arfs.parallel module
+--------------------
 
-.. automodule:: arfs.feature_selection.mrmr
+.. automodule:: arfs.parallel
    :members:
    :undoc-members:
    :show-inheritance:
 
-arfs.feature_selection.summary module
--------------------------------------
+arfs.preprocessing module
+-------------------------
 
-.. automodule:: arfs.feature_selection.summary
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-arfs.feature_selection.unsupervised module
-------------------------------------------
-
-.. automodule:: arfs.feature_selection.unsupervised
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-arfs.feature_selection.variable_importance module
--------------------------------------------------
-
-.. automodule:: arfs.feature_selection.variable_importance
+.. automodule:: arfs.preprocessing
    :members:
    :undoc-members:
    :show-inheritance:
