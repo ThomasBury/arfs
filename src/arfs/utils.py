@@ -420,7 +420,7 @@ def _load_boston_data():
         Bunch sklearn, extension of dictionary
     """
 
-    data_file_name = resource_filename(__name__, "dataset/data/boston_bunch.zip")
+    data_file_name = resource_filename(__name__, "dataset/data/boston_bunch.joblib")
     return joblib.load(data_file_name)
 
 
