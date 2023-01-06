@@ -13,6 +13,7 @@ from joblib import Parallel, delayed
 from multiprocessing import cpu_count
 from itertools import chain
 
+
 def parallel_matrix_entries(func, df, comb_list, sample_weight=None, n_jobs=-1):
     """parallel_matrix_entries applies a function to each chunk of
     combinaison of columns of the dataframe, distributed by cores.
@@ -38,14 +39,11 @@ def parallel_matrix_entries(func, df, comb_list, sample_weight=None, n_jobs=-1):
         concatenated results into a single pandas DF
     """
 
-    
     if n_jobs == 1:
         return func(X=df, sample_weight=sample_weight, comb_list=comb_list)
-    
+
     n_jobs = (
-        min(cpu_count(), len(df.columns))
-        if n_jobs == -1
-        else min(cpu_count(), n_jobs)
+        min(cpu_count(), len(df.columns)) if n_jobs == -1 else min(cpu_count(), n_jobs)
     )
     comb_chunks = np.array_split(comb_list, n_jobs)
     lst = Parallel(n_jobs=n_jobs)(
@@ -78,15 +76,12 @@ def parallel_df(func, df, series, sample_weight=None, n_jobs=-1):
     pd.DataFrame
         concatenated results into a single pandas DF
     """
-    
+
     if n_jobs == 1:
         return func(df, series, sample_weight).sort_values(ascending=False)
-        
-    
+
     n_jobs = (
-        min(cpu_count(), len(df.columns))
-        if n_jobs == -1
-        else min(cpu_count(), n_jobs)
+        min(cpu_count(), len(df.columns)) if n_jobs == -1 else min(cpu_count(), n_jobs)
     )
     col_chunks = np.array_split(range(len(df.columns)), n_jobs)
     lst = Parallel(n_jobs=n_jobs)(
@@ -95,11 +90,16 @@ def parallel_df(func, df, series, sample_weight=None, n_jobs=-1):
     )
     return pd.concat(lst).sort_values(ascending=False)
 
-def _compute_series(X, y, sample_weight=None, func_xyw=None,
+
+def _compute_series(
+    X,
+    y,
+    sample_weight=None,
+    func_xyw=None,
 ):
-    """_compute_series is a utility function for computing the series 
+    """_compute_series is a utility function for computing the series
     resulting of the ``apply``
-    
+
     Parameters
     ----------
     X : pd.DataFrame, of shape (n_samples, n_features)
@@ -125,13 +125,15 @@ def _compute_series(X, y, sample_weight=None, func_xyw=None,
         )
 
     return X.apply(
-        lambda col: _closure_compute_series(
-            x=col, y=y, sample_weight=sample_weight
-        )
+        lambda col: _closure_compute_series(x=col, y=y, sample_weight=sample_weight)
     ).fillna(0.0)
 
 
-def _compute_matrix_entries(X, comb_list, sample_weight=None, func_xyw=None,
+def _compute_matrix_entries(
+    X,
+    comb_list,
+    sample_weight=None,
+    func_xyw=None,
 ):
     """base closure for computing matrix entries appling a function to each chunk of
     combinaison of columns of the dataframe, distributed by cores.

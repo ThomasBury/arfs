@@ -31,8 +31,9 @@ qual_colors_list = [
     (0.188235, 0.635294, 0.854902),
     (0.898039, 0.682353, 0.219608),
     (0.988235, 0.309804, 0.188235),
-    (0.427451, 0.564706, 0.309804)
-    ]
+    (0.427451, 0.564706, 0.309804),
+]
+
 
 def set_my_plt_style(height=3, width=5, linewidth=2):
     """This set the style of matplotlib to fivethirtyeight with some modifications (colours, axes)
@@ -66,6 +67,7 @@ def set_my_plt_style(height=3, width=5, linewidth=2):
         "grid.alpha": 0.5,
     }  # plt.cycler(color=my_colors_list)
     mpl.rcParams.update(params)
+
 
 class GradientBoosting:
     """Performs the training of a base lightGBM/CatBoost using early stopping. It works for any of the
@@ -140,7 +142,14 @@ class GradientBoosting:
     """
 
     def __init__(
-        self, method="lgb", cat_feat="auto", params=None, stratified=False, show_learning_curve=True, verbose_eval=50, return_valid_features=False
+        self,
+        method="lgb",
+        cat_feat="auto",
+        params=None,
+        stratified=False,
+        show_learning_curve=True,
+        verbose_eval=50,
+        return_valid_features=False,
     ):
         self.method = method
         self.model = None
@@ -159,7 +168,9 @@ class GradientBoosting:
         s = (
             "GradientBoosting(method={method}, \n"
             "                 cat_feat={cat_feat},\n"
-            "                 params={params})".format(method=self.method, cat_feat=self.cat_feat, params=self.params)
+            "                 params={params})".format(
+                method=self.method, cat_feat=self.cat_feat, params=self.params
+            )
         )
         return s
 
@@ -191,12 +202,18 @@ class GradientBoosting:
 
         """
         if (self.params is not None) and (not isinstance(self.params, dict)):
-            raise TypeError("params should be either None or a dictionary of lightgbm params")
-        elif (isinstance(self.params, dict)) and ("objective" not in self.params.keys()):
+            raise TypeError(
+                "params should be either None or a dictionary of lightgbm params"
+            )
+        elif (isinstance(self.params, dict)) and (
+            "objective" not in self.params.keys()
+        ):
             raise KeyError("Provide the objective in the params dict")
 
         if self.cat_feat == "auto":
-            self.cat_feat = list(set(list(X.columns)) - set(list(X.select_dtypes(include=[np.number]))))
+            self.cat_feat = list(
+                set(list(X.columns)) - set(list(X.select_dtypes(include=[np.number])))
+            )
 
         if not isinstance(X, (pd.Series, pd.DataFrame)):
             X = pd.DataFrame(X)
@@ -225,7 +242,7 @@ class GradientBoosting:
                 groups=groups,
                 learning_curve=self.show_learning_curve,
                 verbose_eval=self.verbose_eval,
-                return_valid_features=self.return_valid_features
+                return_valid_features=self.return_valid_features,
             )
         elif self.method == "lgb":
             output = _fit_early_stopped_lgb(
@@ -239,14 +256,18 @@ class GradientBoosting:
                 groups=groups,
                 learning_curve=self.show_learning_curve,
                 verbose_eval=self.verbose_eval,
-                return_valid_features=self.return_valid_features
+                return_valid_features=self.return_valid_features,
             )
         else:
             raise Exception("method not found")
 
         if self.show_learning_curve:
             if self.return_valid_features:
-                self.model, self.valid_features, self.learning_curve = output[0], output[1], output[2]
+                self.model, self.valid_features, self.learning_curve = (
+                    output[0],
+                    output[1],
+                    output[2],
+                )
             else:
                 self.model, self.learning_curve = output[0], output[1]
         else:
@@ -255,7 +276,9 @@ class GradientBoosting:
             else:
                 self.model = output
 
-        self.model_params = self.model.params if self.method == "lgb" else self.model.get_all_params()
+        self.model_params = (
+            self.model.params if self.method == "lgb" else self.model.get_all_params()
+        )
 
     def predict(self, X, predict_proba=False):
         """Predict the new values using the fitted model.
@@ -281,7 +304,11 @@ class GradientBoosting:
                 " Poisson or Tweedie)"
             )
 
-        obj_fn = self.model_params["objective"] if self.method == "lgb" else self.model_params["loss_function"]
+        obj_fn = (
+            self.model_params["objective"]
+            if self.method == "lgb"
+            else self.model_params["loss_function"]
+        )
         # self.params['objective']
         # LightGBM
         if self.method == "lgb":
@@ -300,7 +327,9 @@ class GradientBoosting:
         elif self.method == "cat":
             test_pool = Pool(X, cat_features=self.cat_feat)
             if predict_proba:
-                return self.model.predict(test_pool, prediction_type="Probability")[:, 1]
+                return self.model.predict(test_pool, prediction_type="Probability")[
+                    :, 1
+                ]
             elif ("Tweedie" in obj_fn) or ("Poisson" in obj_fn):
                 return np.exp(self.model.predict(test_pool))
             else:
@@ -370,7 +399,9 @@ class GradientBoosting:
         print(f"Saving model as: {file_path}")
         joblib.dump(self.model, file_path)
 
-        self.learning_curve.savefig(fig_path, bbox_inches="tight")  # save the figure to file
+        self.learning_curve.savefig(
+            fig_path, bbox_inches="tight"
+        )  # save the figure to file
         return file_path
 
     def load(self, model_path):
@@ -378,8 +409,16 @@ class GradientBoosting:
             # load model and update method
             self.model = joblib.load(model_path)
             self.method = gbm_flavour(self.model)
-            self.model_params = self.model.params if self.method == "lgb" else self.model.get_all_params()
-            self.cat_feat = self.model.params if self.method == "lgb" else self.model.get_cat_feature_indices()
+            self.model_params = (
+                self.model.params
+                if self.method == "lgb"
+                else self.model.get_all_params()
+            )
+            self.cat_feat = (
+                self.model.params
+                if self.method == "lgb"
+                else self.model.get_cat_feature_indices()
+            )
         else:
             raise ValueError("The model file does not exist, please check the path")
 
@@ -395,8 +434,8 @@ def _fit_early_stopped_catboost(
     stratified=False,
     learning_curve=True,
     verbose_eval=0,
-    return_valid_features=False
-) :
+    return_valid_features=False,
+):
 
     """CONVENIENCE FUNCTION, IT SHOULD NOT BE ACCESSED/IMPORTED BY THE USER
 
@@ -488,10 +527,14 @@ def _fit_early_stopped_catboost(
             "od_wait": 10,
         }
     elif not isinstance(params, dict):
-        raise TypeError("params should be either None or a dictionary of catboost params")
+        raise TypeError(
+            "params should be either None or a dictionary of catboost params"
+        )
 
     catmodel = CatBoost(params)
-    model = catmodel.fit(d_train, eval_set=d_valid, early_stopping_rounds=10, verbose_eval=verbose_eval)
+    model = catmodel.fit(
+        d_train, eval_set=d_valid, early_stopping_rounds=10, verbose_eval=verbose_eval
+    )
 
     # get the score values on training and validation set
     scoring_dic = model.get_evals_result()
@@ -504,7 +547,12 @@ def _fit_early_stopped_catboost(
         ax.set_xlabel("iterations")
         ax.plot(scoring_dic["learn"][loss], label="train")
         ax.plot(scoring_dic["validation"][loss], label="valid")
-        ax.axvline(x=model.get_best_iteration(), color="grey", linestyle="--", label="best_iter")
+        ax.axvline(
+            x=model.get_best_iteration(),
+            color="grey",
+            linestyle="--",
+            label="best_iter",
+        )
         ax.legend(loc="best")
         plt.tight_layout()
 
@@ -521,7 +569,7 @@ def _fit_early_stopped_catboost(
         del d_valid
         gc.enable()
         gc.collect()
-        
+
         if return_valid_features:
             return model, X_val
         else:
@@ -539,7 +587,7 @@ def _fit_early_stopped_lgb(
     stratified=False,
     learning_curve=True,
     verbose_eval=0,
-    return_valid_features=False
+    return_valid_features=False,
 ):
     """convenience function, early stopping for lightGBM, using dataset and setting categorical feature, sample weights
     and baseline (init_score), if any. User defined params can be passed.
@@ -609,7 +657,9 @@ def _fit_early_stopped_lgb(
 
     col_list = list(X.columns)
     # cat_idx = [col_list.index(c) for c in cat_feat if c in x]
-    d_train = lgb.Dataset(X_train, label=y_train, categorical_feature=cat_feat, free_raw_data=False)
+    d_train = lgb.Dataset(
+        X_train, label=y_train, categorical_feature=cat_feat, free_raw_data=False
+    )
     d_valid = lgb.Dataset(
         X_val,
         label=y_val,
@@ -632,7 +682,9 @@ def _fit_early_stopped_lgb(
         warnings.warn("No params dictionary provided, using RMSE as default")
         params = {"objective": "rmse", "metric": "rmse", "num_boost_round": 10_000}
     elif not isinstance(params, dict):
-        raise TypeError("params should be either None or a dictionary of lightgbm params")
+        raise TypeError(
+            "params should be either None or a dictionary of lightgbm params"
+        )
 
     if "num_boost_round" not in params:
         # a very large number of trees, to guarantee early stopping and convergence
@@ -675,7 +727,7 @@ def _fit_early_stopped_lgb(
     n_trees = params["num_boost_round"] if "num_boost_round" in params else 10_000
     # remove key if exists to avoid LGB userwarnings
     params.pop("num_boost_round", None)
-    
+
     model = lgb.train(
         params,
         num_boost_round=n_trees,
@@ -695,7 +747,9 @@ def _fit_early_stopped_lgb(
         fig, ax = plt.subplots()
         ax = lgb.plot_metric(evals_result, ax=ax)
         up_lim = model.best_iteration + 50
-        ax.axvline(x=model.best_iteration, color="grey", linestyle="--", label="best_iter")
+        ax.axvline(
+            x=model.best_iteration, color="grey", linestyle="--", label="best_iter"
+        )
         ax.set_xlim([0, up_lim])
 
         del d_train

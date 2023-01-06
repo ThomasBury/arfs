@@ -14,7 +14,11 @@ from sklearn.base import BaseEstimator
 from sklearn.utils.validation import check_is_fitted
 from tqdm import tqdm
 from sklearn.feature_selection._base import SelectorMixin
-from ..association import f_stat_classification_parallel, f_stat_regression_parallel, association_series
+from ..association import (
+    f_stat_classification_parallel,
+    f_stat_regression_parallel,
+    association_series,
+)
 
 FLOOR = 0.001
 
@@ -59,7 +63,7 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
     show_progress: bool (optional, default=True)
         If False, no progress bar is displayed.
         If True, a TQDM progress bar shows the number of features processed.
-        
+
     Returns
     -------
     selected_features: list of str
@@ -133,7 +137,7 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
 
     def fit(self, X, y, sample_weight=None):
         """fit the MRmr selector by learning the associations
-        
+
         Parameters
         ----------
         X : pd.DataFrame, shape (n_samples, n_features)
@@ -144,28 +148,27 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
             sklearn.pipeline.Pipeline.
         sample_weight : pd.Series, optional, shape (n_samples,)
             weights for computing the statistics (e.g. weighted average)
-            
+
         Returns
         -------
         self : object
             Returns the instance itself.
         """
-        
+
         if isinstance(X, pd.DataFrame):
             self.feature_names_in_ = X.columns.to_numpy()
         else:
             raise TypeError("X is not a pd.DataFrame")
-        
+
         if isinstance(y, pd.Series):
             y.name = "target"
         else:
             raise TypeError("yis not a pd.Series")
-        
+
         target = y.copy()
         if self.task == "classification":
             target = target.astype("category")
-        
-        
+
         self.relevance_args = {"X": X, "y": target, "sample_weight": sample_weight}
         self.redundancy_args = {"X": X, "sample_weight": sample_weight}
 
@@ -256,13 +259,15 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         # (redundancy with NULL is 0 and dividing by zero is INF)
         self.ranking_.iloc[0, 0] = float("Inf")
         self.selected_features_ = selected_features
-        self.support_ = np.asarray([x in selected_features for x in self.feature_names_in_])
+        self.support_ = np.asarray(
+            [x in selected_features for x in self.feature_names_in_]
+        )
         self.not_selected_features_ = not_selected_features
-        
+
     def transform(self, X):
         """
         Transform the data, returns a transformed version of `X`.
-        
+
         Parameters
         ----------
         X : array-like of shape (n_samples, n_features)
@@ -276,7 +281,7 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         if not isinstance(X, pd.DataFrame):
             raise TypeError("X is not a dataframe")
         return X[self.selected_features_]
-    
+
     def fit_transform(self, X, y=None, sample_weight=None):
         """
         Fit to data, then transform it.

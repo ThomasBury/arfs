@@ -20,16 +20,18 @@ from sklearn.datasets import load_breast_cancer
 from sklearn.utils import Bunch
 import joblib
 
-qualitative_colors = ['#7F3C8D', 
-                      '#11A579',
-                      '#3969AC',
-                      '#F2B701',
-                      '#E73F74',
-                      '#80BA5A',
-                      '#E68310',
-                      '#008695',
-                      '#CF1C90',
-                      '#F97B72']
+qualitative_colors = [
+    "#7F3C8D",
+    "#11A579",
+    "#3969AC",
+    "#F2B701",
+    "#E73F74",
+    "#80BA5A",
+    "#E68310",
+    "#008695",
+    "#CF1C90",
+    "#F97B72",
+]
 
 #####################
 #                   #
@@ -77,7 +79,7 @@ def set_my_plt_style(height=3, width=5, linewidth=2):
     mpl.rcParams.update(params)
 
 
-def create_dtype_dict(df: pd.DataFrame, dic_keys: str = 'col_names'):
+def create_dtype_dict(df: pd.DataFrame, dic_keys: str = "col_names"):
     """create a custom dictionary of data type for adding suffixes
     to column names in the plotting utility for association matrix
 
@@ -89,39 +91,41 @@ def create_dtype_dict(df: pd.DataFrame, dic_keys: str = 'col_names'):
         Either "col_names" or "dtypes" for returning either a dictionary
         with column names or dtypes as keys.
     """
-    cat_cols = list(df.select_dtypes(include=['object', 'category', 'bool']))
-    time_cols = list(df.select_dtypes(include=['datetime', 'timedelta', 'datetimetz']))
+    cat_cols = list(df.select_dtypes(include=["object", "category", "bool"]))
+    time_cols = list(df.select_dtypes(include=["datetime", "timedelta", "datetimetz"]))
     num_cols = list(df.select_dtypes(include=[np.number]))
-    remaining_cols = list(set(df.columns) - set(cat_cols).union(set(num_cols)).union(time_cols))
+    remaining_cols = list(
+        set(df.columns) - set(cat_cols).union(set(num_cols)).union(time_cols)
+    )
 
-    if dic_keys == 'col_names':
+    if dic_keys == "col_names":
         cat_dic = {c: "cat" for c in cat_cols}
         num_dic = {c: "num" for c in num_cols}
         time_dic = {c: "time" for c in time_cols}
         remainder_dic = {c: "unk" for c in remaining_cols}
-        return {**cat_dic, **num_dic, **time_dic,**remainder_dic}
-    elif dic_keys == 'dtypes':
+        return {**cat_dic, **num_dic, **time_dic, **remainder_dic}
+    elif dic_keys == "dtypes":
         cat_dic = {"cat": cat_cols}
         num_dic = {"num": num_cols}
         time_dic = {"time": time_cols}
         remainder_dic = {"unk": remaining_cols}
-        return {**cat_dic, **num_dic, **time_dic,**remainder_dic}
+        return {**cat_dic, **num_dic, **time_dic, **remainder_dic}
     else:
         raise ValueError("'dic_keys' should be either 'col_names' or 'dtypes'")
-        
+
 
 def get_pandas_cat_codes(X):
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
-    obj_feat = dtypes_dic['cat'] + dtypes_dic['time'] + dtypes_dic['unk']  
+    obj_feat = dtypes_dic["cat"] + dtypes_dic["time"] + dtypes_dic["unk"]
 
-    if obj_feat:                
+    if obj_feat:
         cat = X[obj_feat].stack().astype("str").astype("category").cat.codes.unstack()
         X = pd.concat([X[X.columns.difference(obj_feat)], cat], axis=1)
         cat_idx = [X.columns.get_loc(col) for col in obj_feat]
     else:
         obj_feat = None
         cat_idx = None
-        
+
     return X, obj_feat, cat_idx
 
 
@@ -317,11 +321,6 @@ def is_list_of_int(int_list):
             return True
 
 
-
-
-
-
-
 def _get_titanic_data():
     """Load Titanic data and add dummies (random predictors, numeric and categorical) and
     a genuine one, for benchmarking purpose. Classification (binary)
@@ -425,9 +424,6 @@ def _load_boston_data():
     return joblib.load(data_file_name)
 
 
-
-
-
 def _load_housing(as_frame: bool = False):
     """Load the California housing data. See here
     https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html
@@ -492,7 +488,6 @@ def plot_y_vs_X(X, y, ncols=2, figsize=(10, 10)):
     plt.figure
         the univariate plots y vs pred_i
     """
-
 
     X = pd.DataFrame(X)
     ncols_to_plot = X.shape[1]
@@ -613,8 +608,13 @@ def _generated_corr_dataset_regr(size=1000):
     # zero variance
     X[:, 10] = np.ones(size)
     # high cardinality
-    half_size = int(size/2)
-    X[:, 11] = np.concatenate([np.arange(start=0, stop=half_size, step=1), np.arange(start=0, stop=size-half_size, step=1)])
+    half_size = int(size / 2)
+    X[:, 11] = np.concatenate(
+        [
+            np.arange(start=0, stop=half_size, step=1),
+            np.arange(start=0, stop=size - half_size, step=1),
+        ]
+    )
     # a lot of missing values
     idx_nan = np.random.choice(size, int(round(size / 2)), replace=False)
     X[:, 12] = y**3 + np.abs(np.random.normal(0, 1, size))

@@ -52,7 +52,7 @@ def sklearn_pimp_bench(model, X, y, task="regression", sample_weight=None):
     # For illustrations, see
     # https://towardsdatascience.com/one-hot-encoding-is-making-
     # your-tree-based-ensembles-worse-heres-why-d64b282b5769
-    
+
     # X, cat_var_df, inv_mapper, mapper = cat_var(X)
     X = OrdinalEncoderPandas().fit_transform(X)
 
@@ -93,7 +93,7 @@ def sklearn_pimp_bench(model, X, y, task="regression", sample_weight=None):
         result.importances[sorted_idx].T, vert=False, labels=X_test.columns[sorted_idx]
     )
     ax.set_title("Permutation Importances (test set)")
-    ax.tick_params(axis='both', which='major', labelsize=9)
+    ax.tick_params(axis="both", which="major", labelsize=9)
     fig.tight_layout()
     indices = [i for i, s in enumerate(X_test.columns[sorted_idx]) if "random" in s]
     [fig.gca().get_yticklabels()[idx].set_color("red") for idx in indices]
@@ -147,7 +147,8 @@ def compare_varimp(feat_selector, models, X, y, sample_weight=None):
             fig = highlight_tick(figure=fig, str_match="random")
             fig = highlight_tick(figure=fig, str_match="genuine", color="green")
             plt.show()
-            
+
+
 def highlight_tick(str_match, figure, color="red", axis="y"):
     """Highlight the x/y tick-labels if they contains a given string
 

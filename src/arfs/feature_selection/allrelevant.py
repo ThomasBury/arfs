@@ -57,12 +57,7 @@ import scipy as sp
 
 from tqdm import tqdm
 from sklearn.utils import check_random_state, check_X_y
-from sklearn.base import (
-    BaseEstimator,
-    is_regressor,
-    is_classifier,
-    clone
-)
+from sklearn.base import BaseEstimator, is_regressor, is_classifier, clone
 
 from sklearn.utils.validation import check_is_fitted
 from sklearn.feature_selection._base import SelectorMixin
@@ -72,7 +67,13 @@ from sklearn.utils.validation import _check_sample_weight
 from matplotlib.lines import Line2D
 from lightgbm import early_stopping
 
-from ..utils import check_if_tree_based, is_lightgbm, is_catboost, create_dtype_dict, get_pandas_cat_codes
+from ..utils import (
+    check_if_tree_based,
+    is_lightgbm,
+    is_catboost,
+    create_dtype_dict,
+    get_pandas_cat_codes,
+)
 
 ########################################################################################
 #
@@ -82,7 +83,6 @@ from ..utils import check_if_tree_based, is_lightgbm, is_catboost, create_dtype_
 ########################################################################################
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 
 
 class Leshy(SelectorMixin, BaseEstimator):
@@ -224,7 +224,7 @@ class Leshy(SelectorMixin, BaseEstimator):
         max_iter=100,
         random_state=None,
         verbose=0,
-        keep_weak=False
+        keep_weak=False,
     ):
         self.estimator = estimator
         self.n_estimators = n_estimators
@@ -249,8 +249,6 @@ class Leshy(SelectorMixin, BaseEstimator):
         self.support_ = None
         self.support_weak_ = None
 
-
-
     def fit(self, X, y, sample_weight=None):
         """Fits the Boruta feature selection with the provided estimator.
 
@@ -273,24 +271,24 @@ class Leshy(SelectorMixin, BaseEstimator):
             self.feature_names_in_ = X.columns.to_numpy()
         else:
             raise TypeError("X is not a dataframe")
-        
+
         self.imp_real_hist = np.empty((0, X.shape[1]), float)
         self._fit(X, y, sample_weight=sample_weight)
         self.selected_features_ = self.feature_names_in_[self.support_]
         self.not_selected_features_ = self.feature_names_in_[~self.support_]
-        
+
         return self
 
     def _get_support_mask(self):
         check_is_fitted(self)
 
         return self.support_
-    
+
     def transform(self, X):
         if not isinstance(X, pd.DataFrame):
             raise TypeError("X is not a dataframe")
         return X[self.selected_features_]
-    
+
     def _more_tags(self):
         return {"allow_nan": True, "requires_y": True}
 
@@ -338,7 +336,7 @@ class Leshy(SelectorMixin, BaseEstimator):
         # is performed when getting importances
         # because the columns are dynamically created/rejected
         X = X_raw
-        
+
         X = np.nan_to_num(X)
         y = np.nan_to_num(y)
 
@@ -356,7 +354,6 @@ class Leshy(SelectorMixin, BaseEstimator):
                 sample_weight = self._validate_pandas_input(sample_weight)
 
         self.random_state = check_random_state(self.random_state)
-
 
         # setup variables for Boruta
         n_sample, n_feat = X.shape
@@ -446,7 +443,7 @@ class Leshy(SelectorMixin, BaseEstimator):
 
         if isinstance(X_raw, np.ndarray):
             X_raw = pd.DataFrame(X_raw)
-            
+
         # absolute ranking
         vimp_df = pd.DataFrame(self.imp_real_hist, columns=self.feature_names_in_)
         self.ranking_absolutes_ = list(
@@ -494,7 +491,7 @@ class Leshy(SelectorMixin, BaseEstimator):
             )
         )
         return self
-    
+
     def plot_importance(self, n_feat_per_inch=5):
         """Boxplot of the variable importance, ordered by magnitude
         The max shadow variable importance illustrated by the dashed line.
@@ -1136,7 +1133,7 @@ def _get_imp(estimator, X, y, sample_weight=None, cat_feature=None):
         # handle categoricals
         if not isinstance(X, pd.DataFrame):
             X = pd.DataFrame(X)
-    
+
         if cat_feature is None:
             X, _, cat_idx = get_pandas_cat_codes(X)
         else:
@@ -1342,8 +1339,13 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
             imp=self.importance,
         )
         self.selected_features_ = self.selected_features_.values
-        self.support_ = np.asarray([True if c in self.selected_features_ else False for c in self.feature_names_in_])
-        
+        self.support_ = np.asarray(
+            [
+                True if c in self.selected_features_ else False
+                for c in self.feature_names_in_
+            ]
+        )
+
         b_df = self.sha_cutoff_df
         real_df = b_df.iloc[:, : int(b_df.shape[1] / 2)].copy()
         self.ranking_absolutes_ = list(
@@ -1357,12 +1359,12 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         check_is_fitted(self)
 
         return self.support_
-    
+
     def transform(self, X):
         if not isinstance(X, pd.DataFrame):
             raise TypeError("X is not a dataframe")
         return X[self.selected_features_]
-    
+
     def _more_tags(self):
         return {"allow_nan": True, "requires_y": True}
 
@@ -1476,7 +1478,6 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
             # plt.tight_layout()
             # plt.show()
             return fig
-
 
 
 ############################################
@@ -1858,14 +1859,14 @@ class GrootCV(SelectorMixin, BaseEstimator):
             self.feature_names_in_ = X.columns.to_numpy()
         else:
             raise TypeError("X is not a dataframe")
-        
+
         if isinstance(y, pd.Series) is not True:
             y = pd.Series(y)
 
         if sample_weight is not None:
             sample_weight = _check_sample_weight(sample_weight, X)
             sample_weight = pd.Series(sample_weight)
-        
+
         # internal encoding (ordinal encoding)
         X, obj_feat, cat_idx = get_pandas_cat_codes(X)
 
@@ -1881,7 +1882,12 @@ class GrootCV(SelectorMixin, BaseEstimator):
             rf=self.rf,
         )
         self.selected_features_ = self.selected_features_.values
-        self.support_ = np.asarray([True if c in self.selected_features_ else False for c in self.feature_names_in_])
+        self.support_ = np.asarray(
+            [
+                True if c in self.selected_features_ else False
+                for c in self.feature_names_in_
+            ]
+        )
 
         b_df = self.cv_df.T.copy()
         b_df.columns = b_df.iloc[0]
@@ -1892,7 +1898,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
         self.ranking_absolutes_ = list(
             real_df.mean().sort_values(ascending=False).index
         )
-        
+
         self.ranking_ = np.where(self.support_, 2, 1)
 
         return self
@@ -1901,12 +1907,12 @@ class GrootCV(SelectorMixin, BaseEstimator):
         check_is_fitted(self)
 
         return self.support_
-    
+
     def transform(self, X):
         if not isinstance(X, pd.DataFrame):
             raise TypeError("X is not a dataframe")
         return X[self.selected_features_]
-    
+
     def _more_tags(self):
         return {"allow_nan": True, "requires_y": True}
 
@@ -2028,7 +2034,6 @@ class GrootCV(SelectorMixin, BaseEstimator):
             return fig
 
 
-
 ########################################################################################
 #
 # BoostARoota. In principle, you cannot/don't need to access those methods (reason of
@@ -2100,14 +2105,24 @@ def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight
             }
         )
 
-    clf_losses = ['binary', 'softmax', 'multi_logloss', 'multiclassova', 'multiclass', 'multiclass_ova', 'ova', 'ovr', 'binary_logloss']
+    clf_losses = [
+        "binary",
+        "softmax",
+        "multi_logloss",
+        "multiclassova",
+        "multiclass",
+        "multiclass_ova",
+        "ova",
+        "ovr",
+        "binary_logloss",
+    ]
     if objective in clf_losses:
         y = y.astype(int)
         y_freq_table = pd.Series(y.fillna(0)).value_counts(normalize=True)
         n_classes = y_freq_table.size
         if n_classes > 2 and objective != "softmax":
             param["objective"] = "softmax"
-            param["num_class"] = len(np.unique(y)),
+            param["num_class"] = (len(np.unique(y)),)
             if not silent:
                 print("Multi-class task, setting objective to softmax")
 
@@ -2121,8 +2136,8 @@ def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight
     param.update({"num_threads": 0})
 
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
-    category_cols = dtypes_dic['cat'] + dtypes_dic['time'] + dtypes_dic['unk']
-    cat_idx = [X.columns.get_loc(col) for col in category_cols] 
+    category_cols = dtypes_dic["cat"] + dtypes_dic["time"] + dtypes_dic["unk"]
+    cat_idx = [X.columns.get_loc(col) for col in category_cols]
 
     rkf = RepeatedKFold(n_splits=n_folds, n_repeats=n_iter, random_state=2652124)
     i = 0
@@ -2176,13 +2191,16 @@ def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight
         shap_matrix = bst.predict(new_x_tr, pred_contrib=True)
 
         # the dim changed in lightGBM >= 3.0.0
-        if objective == 'softmax':
+        if objective == "softmax":
             # X_SHAP_values (array-like of shape = [n_samples, n_features + 1]
             # or shape = [n_samples, (n_features + 1) * n_classes])
             # index starts from 0
             n_feat = new_x_tr.shape[1]
-            shap_matrix = np.delete(shap_matrix,
-            list(range(n_feat, (n_feat + 1) * n_classes, n_feat+1)), axis=1)
+            shap_matrix = np.delete(
+                shap_matrix,
+                list(range(n_feat, (n_feat + 1) * n_classes, n_feat + 1)),
+                axis=1,
+            )
             shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
         else:
             # for binary, only one class is returned, for regression a single column added as well

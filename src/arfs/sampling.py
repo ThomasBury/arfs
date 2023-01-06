@@ -344,7 +344,7 @@ def gower_topn(
     data_x,
     data_y=None,
     weight=None,
-    cat_features= "auto",
+    cat_features="auto",
     n=5,
     key=None,
 ):

@@ -26,7 +26,7 @@ from sklearn.feature_selection._base import SelectorMixin
 # fix random seed for reproducibility
 np.random.seed(7)
 
-    
+
 class BaseThresholdSelector(SelectorMixin, BaseEstimator):
     """Base class for threshold-based feature selection
 
@@ -36,10 +36,10 @@ class BaseThresholdSelector(SelectorMixin, BaseEstimator):
         Features with a training-set missing greater/lower (geq/leq) than this threshold will be removed
     statistic_fn : callable, optional
         The function for computing the statistic series. The index should be the column names and the
-        the values the computed statistic    
+        the values the computed statistic
     greater_than_threshold : bool, False
         Whether or not to reject the features if lower or greater than threshold
-    
+
     Returns
     -------
     selected_features: list of str
@@ -55,8 +55,9 @@ class BaseThresholdSelector(SelectorMixin, BaseEstimator):
         the list of names of selected features
     not_selected_features_ : list of str
         the list of names of rejected features
-        
+
     """
+
     def __init__(
         self,
         threshold=0.05,
@@ -69,7 +70,7 @@ class BaseThresholdSelector(SelectorMixin, BaseEstimator):
 
     def fit(self, X, y=None, sample_weight=None):
         """Learn empirical statistics from X.
-        
+
         Parameters
         ----------
         X : pd.DataFrame, shape (n_samples, n_features)
@@ -80,22 +81,22 @@ class BaseThresholdSelector(SelectorMixin, BaseEstimator):
             sklearn.pipeline.Pipeline.
         sample_weight : pd.Series, optional, shape (n_samples,)
             weights for computing the statistics (e.g. weighted average)
-            
+
         Returns
         -------
         self : object
             Returns the instance itself.
         """
-        
+
         # Calculate the fraction of missing in each column
-        
+
         if isinstance(X, pd.DataFrame):
             self.feature_names_in_ = X.columns.to_numpy()
         else:
             raise TypeError("X is not a dataframe")
-        
+
         self.statistic_series_ = self.statistic_fn(X)
-        self.statistic_df_  = pd.DataFrame(self.statistic_series_).rename(
+        self.statistic_df_ = pd.DataFrame(self.statistic_series_).rename(
             columns={"index": "feature", 0: "statistic"}
         )
 
@@ -104,24 +105,24 @@ class BaseThresholdSelector(SelectorMixin, BaseEstimator):
             "statistic", ascending=False
         )
         if self.greater_than_threshold:
-            self.support_ = self.statistic_series_.values >= self.threshold 
+            self.support_ = self.statistic_series_.values >= self.threshold
         else:
             self.support_ = self.statistic_series_.values <= self.threshold
-            
+
         self.selected_features_ = self.feature_names_in_[self.support_]
         self.not_selected_features_ = self.feature_names_in_[~self.support_]
-        
+
         return self
 
     def _get_support_mask(self):
         check_is_fitted(self)
 
         return self.support_
-    
+
     def transform(self, X):
         """
         Transform the data, returns a transformed version of `X`.
-        
+
         Parameters
         ----------
         X : array-like of shape (n_samples, n_features)
@@ -135,8 +136,8 @@ class BaseThresholdSelector(SelectorMixin, BaseEstimator):
         if not isinstance(X, pd.DataFrame):
             raise TypeError("X is not a dataframe")
         return X[self.selected_features_]
-    
-    def fit_transform(self, X, y=None, sample_weight=None,  **fit_params):
+
+    def fit_transform(self, X, y=None, sample_weight=None, **fit_params):
         """
         Fit to data, then transform it.
         Fits transformer to `X` and `y` with optional parameters `fit_params`
@@ -158,7 +159,9 @@ class BaseThresholdSelector(SelectorMixin, BaseEstimator):
         X_new : ndarray array of shape (n_samples, n_features_new)
             Transformed array.
         """
-        return self.fit(X=X, y=y, sample_weight=sample_weight, **fit_params).transform(X)
-    
+        return self.fit(X=X, y=y, sample_weight=sample_weight, **fit_params).transform(
+            X
+        )
+
     def _more_tags(self):
         return {"allow_nan": True}

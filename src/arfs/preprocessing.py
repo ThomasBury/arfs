@@ -38,12 +38,12 @@ __all__ = [
 
 
 class OrdinalEncoderPandas(OrdinalEncoder):
-#class OrdinalEncoderPandas(BaseEstimator, TransformerMixin):
+    # class OrdinalEncoderPandas(BaseEstimator, TransformerMixin):
     """Encode categorical features as an integer array and returns a pandas DF.
     The features are converted to ordinal integers. This results in
     a single column of integers (0 to n_categories - 1) per feature.
     Read more in the scikit-learn OrdinalEncoder documentation
-    
+
     Parameters
     ----------
     pattern : str, default=None
@@ -76,7 +76,7 @@ class OrdinalEncoderPandas(OrdinalEncoder):
         parameter must be a float dtype.
     return_pandas_categorical : bool, defult=False
         return encoded columns as pandas category dtype or as float
-        
+
     Attributes
     ----------
     categories_ : list of arrays
@@ -86,7 +86,7 @@ class OrdinalEncoderPandas(OrdinalEncoder):
     feature_names_in_ : ndarray of shape (`n_features_in_`,)
         Names of features seen during :term:`fit`. Defined only when `X`
         has feature names that are all strings.
-        
+
     Examples
     --------
     Given a dataset with two features, we let the encoder find the unique
@@ -118,42 +118,42 @@ class OrdinalEncoderPandas(OrdinalEncoder):
         self.unknown_value = unknown_value
         self.encoded_missing_value = encoded_missing_value
         self.return_pandas_categorical = return_pandas_categorical
-        
 
-        super().__init__(categories="auto",
-        dtype=self.output_dtype,
-        handle_unknown=self.handle_unknown,
-        unknown_value=self.unknown_value,
-        encoded_missing_value=self.encoded_missing_value)
-
+        super().__init__(
+            categories="auto",
+            dtype=self.output_dtype,
+            handle_unknown=self.handle_unknown,
+            unknown_value=self.unknown_value,
+            encoded_missing_value=self.encoded_missing_value,
+        )
 
     def fit(self, X, y=None):
         """
         Fit the OrdinalEncoder to X.
-        
+
         Parameters
         ----------
         X : pd.DataFrame, of shape (n_samples, n_features)
             The data to determine the categories of each feature.
         y : Ignored. This parameter exists only for compatibility with
             :class:`~sklearn.pipeline.Pipeline`.
-            
+
         Returns
         -------
         self :
             Fitted encoder.
         """
-        
+
         cat_features_selector = dtype_column_selector(
             dtype_include=self.dtype_include,
             dtype_exclude=self.dtype_exclude,
             pattern=self.pattern,
             exclude_cols=self.exclude_cols,
         )
-        
+
         self.feature_names_in_ = X.columns.to_numpy()
         self.categorical_features_ = cat_features_selector(X)
-        
+
         super(OrdinalEncoderPandas, self).fit(X[self.categorical_features_])
         # self.feature_names_in_ = X.columns.to_numpy()
         return self
@@ -161,26 +161,30 @@ class OrdinalEncoderPandas(OrdinalEncoder):
     def transform(self, X, y=None, sample_weight=None):
         """
         Transform X to ordinal codes.
-        
+
         Parameters
         ----------
         X : pd.DataFrame of shape (n_samples, n_features)
             The data to encode.
-            
+
         Returns
         -------
         X_out : pd.DataFrame (n_samples, n_features)
             Transformed input.
         """
         X_trans = X.copy()
-        X_trans[self.categorical_features_] = super(OrdinalEncoderPandas, self).transform(X_trans[self.categorical_features_])
+        X_trans[self.categorical_features_] = super(
+            OrdinalEncoderPandas, self
+        ).transform(X_trans[self.categorical_features_])
         # X_trans.loc[:, self.feature_names_in_] = X_trans.loc[:, self.feature_names_in_].apply(pd.to_numeric, errors="ignore", axis=1)
-        
+
         if self.return_pandas_categorical:
-            X_trans[self.categorical_features_] = X_trans[self.categorical_features_].astype("category")
+            X_trans[self.categorical_features_] = X_trans[
+                self.categorical_features_
+            ].astype("category")
         return X_trans
-    
-    def fit_transform(self, X, y=None, sample_weight=None,  **fit_params):
+
+    def fit_transform(self, X, y=None, sample_weight=None, **fit_params):
         """
         Fit to data, then transform it.
         Fits transformer to `X` and `y` with optional parameters `fit_params`
@@ -211,7 +215,7 @@ class OrdinalEncoderPandas(OrdinalEncoder):
         category will be its inverse.
         For a given input feature, if there is an infrequent category,
         'infrequent_sklearn' will be used to represent the infrequent category.
-        
+
         Parameters
         ----------
         X : pd.DataFrame of shape (n_samples, n_encoded_features)
@@ -222,17 +226,19 @@ class OrdinalEncoderPandas(OrdinalEncoder):
             Inverse transformed array.
         """
 
-        X[self.categorical_features_] = super(OrdinalEncoderPandas, self).inverse_transform(X[self.categorical_features_])
+        X[self.categorical_features_] = super(
+            OrdinalEncoderPandas, self
+        ).inverse_transform(X[self.categorical_features_])
         return X
 
-    
+
 class dtype_column_selector:
     """Create a callable to select columns to be used with
     :class:`ColumnTransformer`.
     :func:`dtype_column_selector` can select columns based on datatype or the
     columns name with a regex. When using multiple selection criteria, **all**
     criteria must match for a column to be selected.
-    
+
     Parameters
     ----------
     pattern : str, default=None
@@ -246,19 +252,19 @@ class dtype_column_selector:
         :meth:`pandas.DataFrame.select_dtypes`.
     exclude_cols : list of column names, default=None
         A selection of columns to exclude
-        
+
     Returns
     -------
     selector : callable
         Callable for column selection to be used by a
         :class:`ColumnTransformer`.
-        
+
     See Also
     --------
     ColumnTransformer : Class that allows combining the
         outputs of multiple transformer objects used on column subsets
         of the data into a single feature space.
-        
+
     Examples
     --------
     >>> from sklearn.preprocessing import StandardScaler, OneHotEncoder
@@ -273,14 +279,16 @@ class dtype_column_selector:
     ...        dtype_column_selector(dtype_include=np.number)),  # rating
     ...       (OneHotEncoder(),
     ...        dtype_column_selector(dtype_include=object)))  # city
-    >>> ct.fit_transform(X)  
+    >>> ct.fit_transform(X)
     array([[ 0.90453403,  1.        ,  0.        ,  0.        ],
            [-1.50755672,  1.        ,  0.        ,  0.        ],
            [-0.30151134,  0.        ,  1.        ,  0.        ],
            [ 0.90453403,  0.        ,  0.        ,  1.        ]])
     """
 
-    def __init__(self, pattern=None, *, dtype_include=None, dtype_exclude=None, exclude_cols=None):
+    def __init__(
+        self, pattern=None, *, dtype_include=None, dtype_exclude=None, exclude_cols=None
+    ):
         self.pattern = pattern
         self.dtype_include = dtype_include
         self.dtype_exclude = dtype_exclude
@@ -295,10 +303,14 @@ class dtype_column_selector:
             DataFrame to select columns from.
         """
         if not hasattr(df, "iloc"):
-            raise ValueError("make_column_selector can only be applied to pandas dataframes")
+            raise ValueError(
+                "make_column_selector can only be applied to pandas dataframes"
+            )
         df_row = df.iloc[:1]
         if self.dtype_include is not None or self.dtype_exclude is not None:
-            df_row = df_row.select_dtypes(include=self.dtype_include, exclude=self.dtype_exclude)
+            df_row = df_row.select_dtypes(
+                include=self.dtype_include, exclude=self.dtype_exclude
+            )
         cols = df_row.columns
         if self.pattern is not None:
             cols = cols[cols.str.contains(self.pattern, regex=True)]
@@ -308,14 +320,14 @@ class dtype_column_selector:
 
         return cols.tolist()
 
-    
+
 def cat_var(data, col_excl=None, return_cat=True):
     """Ad hoc categorical encoding (as integer). Automatically detect the non-numerical columns,
     save the index and name of those columns, encode them as integer,
     save the direct and inverse mappers as
     dictionaries.
     Return the data-set with the encoded columns with a data type either int or pandas categorical.
-    
+
     Parameters
     ----------
     data: pd.DataFrame
@@ -324,7 +336,7 @@ def cat_var(data, col_excl=None, return_cat=True):
         the list of columns names not being encoded (e.g. the ID column)
     return_cat: bool, default=True
         return encoded object columns as pandas categoricals or not.
-        
+
     Returns
     -------
     df: pd.DataFrame
@@ -373,15 +385,6 @@ def cat_var(data, col_excl=None, return_cat=True):
     if return_cat:
         df.loc[:, non_num_cols] = df.loc[:, non_num_cols].astype("category")
     return df, cat_var_df, inv_mapper, mapper
-
-
-
-
-
-
-
-
-
 
 
 class TreeDiscretizer(BaseEstimator, TransformerMixin):
@@ -480,7 +483,9 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         if self.task == "regression":
             self.boost_params["objective"] = "RMSE"
         elif self.task == "classification":
-            self.boost_params["objective"] = "binary" if self.method == "lgb" else "Logloss"
+            self.boost_params["objective"] = (
+                "binary" if self.method == "lgb" else "Logloss"
+            )
 
         self.boost_params["num_boost_round"] = 1
 
@@ -519,23 +524,35 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
             self.cat_features = []
         elif isinstance(self.bin_features, list):
             self.cat_features = list(
-                set(self.bin_features) - set(list(X[self.bin_features].select_dtypes("number").columns))
+                set(self.bin_features)
+                - set(list(X[self.bin_features].select_dtypes("number").columns))
             )
         elif isinstance(self.bin_features, str) and (self.bin_features == "all"):
             self.bin_features = list(X.columns)
-            self.cat_features = list(set(self.bin_features) - set(list(X.select_dtypes("number").columns)))
+            self.cat_features = list(
+                set(self.bin_features) - set(list(X.select_dtypes("number").columns))
+            )
         elif isinstance(self.bin_features, str) and (self.bin_features == "numerical"):
             self.bin_features = list(X.select_dtypes("number").columns)
-        elif isinstance(self.bin_features, str) and (self.bin_features == "categorical"):
+        elif isinstance(self.bin_features, str) and (
+            self.bin_features == "categorical"
+        ):
             self.bin_features = list(X.select_dtypes(["category", "object"]).columns)
             self.cat_features = self.bin_features
 
         for col in self.bin_features:
             if (self.cat_features is not None) and (col in self.cat_features):
-                encoder = OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=np.nan)
+                encoder = OrdinalEncoder(
+                    handle_unknown="use_encoded_value", unknown_value=np.nan
+                )
                 # create a category for missing
                 # X[col] = X[col].astype("category").cat.add_categories("missing").fillna("missing")
-                X[col] = X[col].astype("category").cat.add_categories("missing_added").fillna("missing_added")
+                X[col] = (
+                    X[col]
+                    .astype("category")
+                    .cat.add_categories("missing_added")
+                    .fillna("missing_added")
+                )
                 # encode
                 self.ordinal_encoder_dic[col] = encoder.fit(X[[col]])
                 X[col] = encoder.transform(X[[col]]).ravel()
@@ -566,7 +583,9 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
                         lambda x: " / ".join(
                             map(
                                 str,
-                                encoder.inverse_transform(np.expand_dims(X.loc[x.index, col].unique(), axis=1)).ravel(),
+                                encoder.inverse_transform(
+                                    np.expand_dims(X.loc[x.index, col].unique(), axis=1)
+                                ).ravel(),
                             )
                         )
                     )
@@ -574,7 +593,13 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
                 )
 
             else:
-                bin_array = X[[f"{col}_g", col]].groupby(f"{col}_g").aggregate(max).sort_values(col).values.ravel()
+                bin_array = (
+                    X[[f"{col}_g", col]]
+                    .groupby(f"{col}_g")
+                    .aggregate(max)
+                    .sort_values(col)
+                    .values.ravel()
+                )
                 # overwrite max for handling unseen larger values than max val on the train set
                 bin_array = np.delete(bin_array, [np.argmax(bin_array)])
                 # append -Inf and Inf for covering the whole interval, as in KBinsDiscretizer
@@ -588,7 +613,9 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
                 non_nan_values = X[col].dropna().unique()
                 pred_values = tree.predict(np.expand_dims(non_nan_values, axis=1))
                 # store the value for knowing the bin into which the NaN should fall
-                self.tree_imputer[col] = non_nan_values.flat[np.abs(pred_values - nan_pred_val).argmin()]
+                self.tree_imputer[col] = non_nan_values.flat[
+                    np.abs(pred_values - nan_pred_val).argmin()
+                ]
 
             del tree
         return self
@@ -617,7 +644,12 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
                     # apply the systematic imputation (missing might be grouped
                     # with other categories depending on the results of the tree
                     # splitting)
-                    X[col] = X[col].astype("category").cat.add_categories("missing_added").fillna("missing_added")
+                    X[col] = (
+                        X[col]
+                        .astype("category")
+                        .cat.add_categories("missing_added")
+                        .fillna("missing_added")
+                    )
                     dum = self.ordinal_encoder_dic[col].transform(X[[col]])
                     X[col] = self.tree_dic[col].predict(dum)
                     X[col] = X[col].map(self.cat_bin_dict[col])
@@ -634,11 +666,6 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         return X
 
 
-
-
-
-
-
 def highlight_discarded(s):
     """highlight X in red and V in green.
 
@@ -652,17 +679,20 @@ def highlight_discarded(s):
 
     """
     is_X = s == 0
-    return ["background-color: #d65f5f" if v else "background-color: #33a654" for v in is_X]
+    return [
+        "background-color: #d65f5f" if v else "background-color: #33a654" for v in is_X
+    ]
+
 
 def make_fs_summary(selector_pipe):
-    """make_fs_summary makes a summary dataframe highlighting at which step a 
+    """make_fs_summary makes a summary dataframe highlighting at which step a
     given predictor has been rejected (if any).
 
     Parameters
     ----------
     selector_pipe : sklearn.pipeline.Pipeline
         the feature selector pipeline.
-    
+
     Examples
     --------
     >>> groot_pipeline = Pipeline([
@@ -673,21 +703,29 @@ def make_fs_summary(selector_pipe):
     ... ('lowimp', VariableImportance(eval_metric='poisson', objective='poisson', verbose=2)),
     ... ('grootcv', GrootCV(objective='poisson', cutoff=1, n_folds=3, n_iter=5))])
     >>> groot_pipeline.fit_transform(
-        X=df[predictors], 
-        y=df[target], 
-        lowimp__sample_weight=df[weight], 
+        X=df[predictors],
+        y=df[target],
+        lowimp__sample_weight=df[weight],
         grootcv__sample_weight=df[weight])
     >>> fs_summary_df = make_fs_summary(groot_pipeline)
     """
-    
+
     tag_df = pd.DataFrame({"predictor": selector_pipe[0].feature_names_in_})
     for selector_name in selector_pipe.named_steps.keys():
         if hasattr(selector_pipe.named_steps[selector_name], "feature_names_in_"):
             feature_in = selector_pipe.named_steps[selector_name].feature_names_in_
-            to_drop = list(set(selector_pipe.named_steps[selector_name].feature_names_in_) - set(selector_pipe.named_steps[selector_name].get_feature_names_out()))
-            tag_df[selector_name] = np.where(tag_df["predictor"].isin(to_drop), 0, 1) * np.where(tag_df["predictor"].isin(feature_in), 1, np.nan)
+            to_drop = list(
+                set(selector_pipe.named_steps[selector_name].feature_names_in_)
+                - set(selector_pipe.named_steps[selector_name].get_feature_names_out())
+            )
+            tag_df[selector_name] = np.where(
+                tag_df["predictor"].isin(to_drop), 0, 1
+            ) * np.where(tag_df["predictor"].isin(feature_in), 1, np.nan)
 
     col_to_apply_style = tag_df.columns[1:]
-    tag_df = tag_df.style.apply(highlight_discarded, subset=col_to_apply_style).applymap(lambda x: '' if x==x else 'background-color: #ffa500').format(precision=0)
+    tag_df = (
+        tag_df.style.apply(highlight_discarded, subset=col_to_apply_style)
+        .applymap(lambda x: "" if x == x else "background-color: #ffa500")
+        .format(precision=0)
+    )
     return tag_df
-

@@ -27,7 +27,12 @@ from pandas.api.types import is_numeric_dtype
 from scipy.stats import rankdata
 from functools import partial
 
-from .parallel import parallel_matrix_entries, parallel_df, _compute_series, _compute_matrix_entries
+from .parallel import (
+    parallel_matrix_entries,
+    parallel_df,
+    _compute_series,
+    _compute_matrix_entries,
+)
 from .utils import create_dtype_dict
 
 _PRECISION = 1e-13
@@ -82,9 +87,7 @@ def weighted_conditional_entropy(x, y, sample_weight=None):
     tot_weight = df["sample_weight"].sum()
     y_counter = df[["y", "sample_weight"]].groupby("y").sum().to_dict()
     y_counter = y_counter["sample_weight"]
-    xy_counter = (
-        df[["x", "y", "sample_weight"]].groupby(["x", "y"]).sum().to_dict()
-    )
+    xy_counter = df[["x", "y", "sample_weight"]].groupby(["x", "y"]).sum().to_dict()
     xy_counter = xy_counter["sample_weight"]
     h_xy = 0.0
     for xy in xy_counter.keys():
@@ -127,9 +130,7 @@ def weighted_theils_u(x, y, sample_weight=None, as_frame=False):
     x_counter = x_counter["sample_weight"]
     p_x = list(map(lambda n: n / tot_weight, x_counter.values()))
     h_x = ss.entropy(p_x)
-    xy_counter = (
-        df[["x", "y", "sample_weight"]].groupby(["x", "y"]).sum().to_dict()
-    )
+    xy_counter = df[["x", "y", "sample_weight"]].groupby(["x", "y"]).sum().to_dict()
     xy_counter = xy_counter["sample_weight"]
     h_xy = 0.0
     for xy in xy_counter.keys():
@@ -184,14 +185,14 @@ def theils_u_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop"):
     pd.DataFrame
         The Theil's U matrix in a tidy (long) format.
     """
-    
+
     # sanity checks
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
 
     # Cramer's V only for categorical columns
     col_dtypes_dic = create_dtype_dict(X)
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
-    cat_cols = dtypes_dic['cat']
+    cat_cols = dtypes_dic["cat"]
 
     if cat_cols:
         # explicitely store the unique 2-permutation of column names
@@ -251,12 +252,12 @@ def theils_u_series(X, target, sample_weight=None, n_jobs=-1, handle_na="drop"):
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
     col_dtypes_dic = create_dtype_dict(X)
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
-    
-    if col_dtypes_dic[target] != 'cat':
+
+    if col_dtypes_dic[target] != "cat":
         raise TypeError("the target column is not categorical")
 
     # Cramer's V only for categorical columns
-    cat_cols = dtypes_dic['cat']
+    cat_cols = dtypes_dic["cat"]
 
     if cat_cols:
         # define the number of cores
@@ -338,7 +339,7 @@ def cramer_v_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop"):
         the number of cores to use for the computation, by default -1
     handle_na : str, optional
         either drop rows with na, fill na with 0 or do nothing, by default "drop"
-    
+
     Returns
     -------
     pd.DataFrame
@@ -350,7 +351,7 @@ def cramer_v_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop"):
 
     # Cramer's V only for categorical columns
     # in GLM supposed to be all the columns
-    cat_cols = dtypes_dic['cat']
+    cat_cols = dtypes_dic["cat"]
 
     if cat_cols:
         # explicitely store the unique 2-combinations of column names
@@ -361,9 +362,7 @@ def cramer_v_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop"):
             if n_jobs == -1
             else min(cpu_count(), n_jobs)
         )
-        _cramer_v_matrix_entries = partial(
-            _compute_matrix_entries, func_xyw=cramer_v
-        )
+        _cramer_v_matrix_entries = partial(_compute_matrix_entries, func_xyw=cramer_v)
         lst = parallel_matrix_entries(
             func=_cramer_v_matrix_entries,
             df=X,
@@ -397,7 +396,7 @@ def cramer_v_series(X, target, sample_weight=None, n_jobs=-1, handle_na="drop"):
         the number of cores to use for the computation, by default -1
     handle_na : str, optional
         either drop rows with na, fill na with 0 or do nothing, by default "drop"
-    
+
     Returns
     -------
     pd.Series
@@ -408,11 +407,11 @@ def cramer_v_series(X, target, sample_weight=None, n_jobs=-1, handle_na="drop"):
     col_dtypes_dic = create_dtype_dict(X)
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
 
-    if col_dtypes_dic[target] != 'cat':
+    if col_dtypes_dic[target] != "cat":
         raise TypeError("the target column is not categorical")
 
     # Cramer's V only for categorical columns
-    cat_cols = dtypes_dic['cat']
+    cat_cols = dtypes_dic["cat"]
 
     if cat_cols:
         X = X[cat_cols]
@@ -475,9 +474,7 @@ def _weighted_correlation_ratio(*args):
     ssbn -= square_of_sums_alldata / float(tot_weight)
     constant_features_idx = np.where(sstot == 0.0)[0]
     if np.nonzero(ssbn)[0].size != ssbn.size and constant_features_idx.size:
-        warnings.warn(
-            "Features %s are constant." % constant_features_idx, UserWarning
-        )
+        warnings.warn("Features %s are constant." % constant_features_idx, UserWarning)
     etasq = ssbn / sstot
     # flatten matrix to vector in sparse case
     etasq = np.asarray(etasq).ravel()
@@ -569,8 +566,8 @@ def correlation_ratio_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop")
 
     # Cramer's V only for categorical columns
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
-    cat_cols = dtypes_dic['cat']
-    num_cols = dtypes_dic['num']
+    cat_cols = dtypes_dic["cat"]
+    num_cols = dtypes_dic["num"]
 
     if cat_cols and num_cols:
         # explicitely store the unique 2-combinations of column names
@@ -598,7 +595,9 @@ def correlation_ratio_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop")
         return None
 
 
-def correlation_ratio_series(X, target, sample_weight=None, n_jobs=-1, handle_na="drop"):
+def correlation_ratio_series(
+    X, target, sample_weight=None, n_jobs=-1, handle_na="drop"
+):
     """correlation_ratio_series computes the weighted correlation ration for
     categorical-numerical association. This is a symmetric coefficient: CR(x,y) = CR(y,x)
 
@@ -618,7 +617,7 @@ def correlation_ratio_series(X, target, sample_weight=None, n_jobs=-1, handle_na
         the number of cores to use for the computation, by default -1
     handle_na : str, optional
         either drop rows with na, fill na with 0 or do nothing, by default "drop"
-    
+
     Returns
     -------
     pd.Series
@@ -628,13 +627,13 @@ def correlation_ratio_series(X, target, sample_weight=None, n_jobs=-1, handle_na
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
     col_dtypes_dic = create_dtype_dict(X)
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
-    
-    if col_dtypes_dic[target] == 'cat':
+
+    if col_dtypes_dic[target] == "cat":
         # if the target is categorical, pick only num predictors
-        pred_list = dtypes_dic['num'] 
+        pred_list = dtypes_dic["num"]
     else:
         # if the target is numerical, the 2nd pred should be categorical
-        pred_list = dtypes_dic['cat'] 
+        pred_list = dtypes_dic["cat"]
 
     if pred_list:
         # define the number of cores
@@ -734,9 +733,7 @@ def wrank(x, w):
         rankdata(x), return_counts=True, return_inverse=True
     )
     a = np.bincount(arr_inv, w)
-    return (np.cumsum(a) - a)[arr_inv] + ((counts + 1) / 2 * (a / counts))[
-        arr_inv
-    ]
+    return (np.cumsum(a) - a)[arr_inv] + ((counts + 1) / 2 * (a / counts))[arr_inv]
 
 
 def wspearman(x, y, w):
@@ -796,7 +793,9 @@ def weighted_corr(x, y, sample_weight=None, as_frame=False, method="pearson"):
         return c
 
 
-def wcorr_series(X, target, sample_weight=None, n_jobs=-1, handle_na="drop", method="pearson"):
+def wcorr_series(
+    X, target, sample_weight=None, n_jobs=-1, handle_na="drop", method="pearson"
+):
     """wcorr_series computes the weighted correlation coefficient (Pearson or Spearman) for
     continuous-continuous association. This is an symmetric coefficient: corr(x,y) = corr(y,x)
 
@@ -829,10 +828,10 @@ def wcorr_series(X, target, sample_weight=None, n_jobs=-1, handle_na="drop", met
     col_dtypes_dic = create_dtype_dict(X)
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
 
-    if col_dtypes_dic[target] == 'cat':
+    if col_dtypes_dic[target] == "cat":
         raise TypeError("the target column is categorical")
 
-    num_cols = dtypes_dic['num']
+    num_cols = dtypes_dic["num"]
     y = X[target]
 
     if num_cols:
@@ -881,8 +880,8 @@ def wcorr_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop", method="pea
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
     col_dtypes_dic = create_dtype_dict(X)
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
-    
-    num_cols = dtypes_dic['num']
+
+    num_cols = dtypes_dic["num"]
     if num_cols:
         # explicitely store the unique 2-combinations of column names
         comb_list = [comb for comb in combinations(num_cols, 2)]
@@ -908,9 +907,7 @@ def wcorr_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop", method="pea
             return lst
         else:
             return (
-                matrix_to_xy(
-                    weighted_correlation_1cpu(X, sample_weight, handle_na)
-                )
+                matrix_to_xy(weighted_correlation_1cpu(X, sample_weight, handle_na))
                 .to_frame()
                 .reset_index()
                 .rename(columns={"level_0": "row", "level_1": "col", 0: "val"})
@@ -941,11 +938,11 @@ def weighted_correlation_1cpu(X, sample_weight=None, handle_na="drop"):
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
     # degree of freedom for the second moment estimator
     ddof = 1
-    
+
     col_dtypes_dic = create_dtype_dict(X)
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
-    
-    numeric_cols = dtypes_dic['num']
+
+    numeric_cols = dtypes_dic["num"]
 
     if numeric_cols:
         data = X[numeric_cols]
@@ -985,7 +982,7 @@ def association_series(
     nom_num_assoc="correlation_ratio",
     normalize=False,
     n_jobs=-1,
-    handle_na="drop"
+    handle_na="drop",
 ):
     """association_series computes the association matrix for cont-cont, cat-cont and cat-cat.
     predictors. The weighted correlation matrix is used for the cont-cont predictors.
@@ -1042,7 +1039,7 @@ def association_series(
         raise TypeError("features is not a list of strings")
     elif features is None:
         data = X
-        
+
     dtypes_dic = create_dtype_dict(X)
 
     # only numeric, NaN already checked, not repeating the process
@@ -1078,13 +1075,9 @@ def association_series(
                 kind="nom-nom",
             )
         elif nom_nom_assoc == "theil":
-            return theils_u_series(
-                data, target, sample_weight, n_jobs, handle_na=None
-            )
+            return theils_u_series(data, target, sample_weight, n_jobs, handle_na=None)
         elif nom_nom_assoc == "cramer":
-            return cramer_v_series(
-                data, target, sample_weight, n_jobs, handle_na=None
-            )
+            return cramer_v_series(data, target, sample_weight, n_jobs, handle_na=None)
 
     # cat-num
     if callable(nom_num_assoc):
@@ -1102,12 +1095,10 @@ def association_series(
         )
 
     if normalize:
-        assoc_series = (assoc_series - assoc_series.min()) / np.ptp(
-            assoc_series
-        )
+        assoc_series = (assoc_series - assoc_series.min()) / np.ptp(assoc_series)
 
     # cat-cat
-    if dtypes_dic[target] == 'cat':
+    if dtypes_dic[target] == "cat":
         if callable(nom_nom_assoc):
             assoc_series_complement = _callable_association_series_fn(
                 assoc_fn=nom_nom_assoc,
@@ -1134,7 +1125,7 @@ def association_series(
         assoc_series = pd.concat([assoc_series, assoc_series_complement])
 
     # num-num
-    if dtypes_dic[target] == 'num':
+    if dtypes_dic[target] == "num":
         if callable(num_num_assoc):
             assoc_series_complement = _callable_association_series_fn(
                 assoc_fn=num_num_assoc,
@@ -1248,9 +1239,7 @@ def association_matrix(
             n_jobs=n_jobs,
         )
     else:
-        w_nom_num = correlation_ratio_matrix(
-            X, sample_weight, n_jobs, handle_na=None
-        )
+        w_nom_num = correlation_ratio_matrix(X, sample_weight, n_jobs, handle_na=None)
 
     # nom-nom
     if callable(nom_nom_assoc):
@@ -1270,7 +1259,9 @@ def association_matrix(
     return pd.concat([w_num_num, w_nom_num, w_nom_nom], ignore_index=True)
 
 
-def _callable_association_series_fn(assoc_fn, X, target, sample_weight=None, n_jobs=-1, kind="nom-nom"):
+def _callable_association_series_fn(
+    assoc_fn, X, target, sample_weight=None, n_jobs=-1, kind="nom-nom"
+):
     """_callable_association_series_fn private function, utility for computing association series
     for a callable custom association
 
@@ -1301,11 +1292,11 @@ def _callable_association_series_fn(assoc_fn, X, target, sample_weight=None, n_j
     """
     col_dtypes_dic = create_dtype_dict(X)
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
-    
+
     if kind == "nom-nom":
-        if col_dtypes_dic[target] != 'cat':
+        if col_dtypes_dic[target] != "cat":
             raise TypeError("the target column is not categorical")
-        nom_cols = dtypes_dic['cat']
+        nom_cols = dtypes_dic["cat"]
         if nom_cols:
             # define the number of cores
             n_jobs = (
@@ -1326,12 +1317,12 @@ def _callable_association_series_fn(assoc_fn, X, target, sample_weight=None, n_j
             return None
 
     elif kind == "nom-num":
-        if col_dtypes_dic[target] == 'cat':
+        if col_dtypes_dic[target] == "cat":
             # if the target is categorical, pick only num predictors
-            pred_list = dtypes_dic['num']
+            pred_list = dtypes_dic["num"]
         else:
             # if the target is numerical, the 2nd pred should be categorical
-            pred_list = dtypes_dic['cat']
+            pred_list = dtypes_dic["cat"]
 
         if pred_list:
             # define the number of cores
@@ -1353,7 +1344,7 @@ def _callable_association_series_fn(assoc_fn, X, target, sample_weight=None, n_j
             return None
 
     elif kind == "num-num":
-        num_cols = dtypes_dic['num']
+        num_cols = dtypes_dic["num"]
         if num_cols:
             # parallelize jobs
             _assoc_fn = partial(_compute_series, func_xyw=assoc_fn)
@@ -1370,7 +1361,9 @@ def _callable_association_series_fn(assoc_fn, X, target, sample_weight=None, n_j
         raise ValueError("kind can be 'num-num' or 'nom-num' or 'nom-nom'")
 
 
-def _callable_association_matrix_fn(assoc_fn, X, sample_weight=None, n_jobs=-1, kind="nom-nom", cols_comb=None):
+def _callable_association_matrix_fn(
+    assoc_fn, X, sample_weight=None, n_jobs=-1, kind="nom-nom", cols_comb=None
+):
     """_callable_association_matrix_fn private function, utility for computing association matrix
     for a callable custom association
 
@@ -1395,15 +1388,15 @@ def _callable_association_matrix_fn(assoc_fn, X, sample_weight=None, n_jobs=-1, 
         the association matrix
     """
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
-    
+
     if cols_comb is None:
         if kind == "num-num":
-            selected_cols = dtypes_dic['num']
+            selected_cols = dtypes_dic["num"]
         elif kind == "nom-nom":
-            selected_cols = dtypes_dic['cat']
+            selected_cols = dtypes_dic["cat"]
         elif kind == "nom-num":
-            cat_cols = dtypes_dic['cat']
-            num_cols = dtypes_dic['num']
+            cat_cols = dtypes_dic["cat"]
+            num_cols = dtypes_dic["num"]
             if cat_cols and num_cols:
                 # explicitely store the unique 2-combinations of column names
                 # the first one should be the categorical predictor
@@ -1483,9 +1476,7 @@ def f_oneway_weighted(*args):
     msw = sswn / float(dfwn)
     constant_features_idx = np.where(msw == 0.0)[0]
     if np.nonzero(msb)[0].size != msb.size and constant_features_idx.size:
-        warnings.warn(
-            "Features %s are constant." % constant_features_idx, UserWarning
-        )
+        warnings.warn("Features %s are constant." % constant_features_idx, UserWarning)
     f = msb / msw
     # flatten matrix to vector in sparse case
     f = np.asarray(f).ravel()
@@ -1560,8 +1551,8 @@ def f_cat_regression_parallel(X, y, sample_weight=None, n_jobs=-1, handle_na="dr
 
     # Cramer's V only for categorical columns
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
-    
-    cat_cols = dtypes_dic['cat']
+
+    cat_cols = dtypes_dic["cat"]
 
     if not isinstance(y, pd.Series):
         y = pd.Series(y)
@@ -1576,11 +1567,7 @@ def f_cat_regression_parallel(X, y, sample_weight=None, n_jobs=-1, handle_na="dr
     X = X.drop(target, axis=1)
 
     # define the number of cores
-    n_jobs = (
-        min(cpu_count(), X.shape[1])
-        if n_jobs == -1
-        else min(cpu_count(), n_jobs)
-    )
+    n_jobs = min(cpu_count(), X.shape[1]) if n_jobs == -1 else min(cpu_count(), n_jobs)
     # parallelize jobs
     _f_stat_cat = partial(_compute_series, func_xyw=f_cat_regression)
     return parallel_df(
@@ -1592,7 +1579,9 @@ def f_cat_regression_parallel(X, y, sample_weight=None, n_jobs=-1, handle_na="dr
     )
 
 
-def f_cont_regression_parallel(X, y, sample_weight=None, n_jobs=-1, force_finite=True, handle_na="drop"):
+def f_cont_regression_parallel(
+    X, y, sample_weight=None, n_jobs=-1, force_finite=True, handle_na="drop"
+):
     """Univariate linear regression tests returning F-statistic.
     Quick linear model for testing the effect of a single regressor,
     sequentially for many regressors.
@@ -1648,17 +1637,13 @@ def f_cont_regression_parallel(X, y, sample_weight=None, n_jobs=-1, force_finite
     # sanity checks
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
 
-    correlation_coefficient = wcorr_series(
-        X, target, sample_weight, n_jobs, handle_na
-    )
+    correlation_coefficient = wcorr_series(X, target, sample_weight, n_jobs, handle_na)
 
     deg_of_freedom = y.size - 2
     corr_coef_squared = correlation_coefficient**2
 
     with np.errstate(divide="ignore", invalid="ignore"):
-        f_statistic = (
-            corr_coef_squared / (1 - corr_coef_squared) * deg_of_freedom
-        )
+        f_statistic = corr_coef_squared / (1 - corr_coef_squared) * deg_of_freedom
 
     if force_finite and not np.isfinite(f_statistic).all():
         # case where there is a perfect (anti-)correlation
@@ -1673,7 +1658,9 @@ def f_cont_regression_parallel(X, y, sample_weight=None, n_jobs=-1, force_finite
     return f_statistic.drop(labels=[target]).sort_values(ascending=False)
 
 
-def f_stat_regression_parallel(X, y, sample_weight=None, n_jobs=-1, force_finite=True, handle_na="drop"):
+def f_stat_regression_parallel(
+    X, y, sample_weight=None, n_jobs=-1, force_finite=True, handle_na="drop"
+):
     """f_stat_regression_parallel computes the weighted explained variance for the provided categorical
     and numerical predictors using parallelization of the code.
 
@@ -1754,7 +1741,7 @@ def f_cont_classification(x, y, sample_weight=None, as_frame=False):
         The weight vector, by default None
     as_frame: bool
         return output as a dataframe or a float
-        
+
     Returns
     -------
     float :
@@ -1783,7 +1770,9 @@ def f_cont_classification(x, y, sample_weight=None, as_frame=False):
         return f_oneway_weighted(*args)[0]
 
 
-def f_cont_classification_parallel(X, y, sample_weight=None, n_jobs=-1, handle_na="drop"):
+def f_cont_classification_parallel(
+    X, y, sample_weight=None, n_jobs=-1, handle_na="drop"
+):
     """f_cont_classification_parallel computes the weighted ANOVA F-value
     for the provided categorical predictors using parallelization of the code.
     Categorical target, continuous predictor.
@@ -1807,8 +1796,8 @@ def f_cont_classification_parallel(X, y, sample_weight=None, n_jobs=-1, handle_n
         the value of the F-statistic for each predictor
     """
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
-    
-    num_cols = dtypes_dic['num']
+
+    num_cols = dtypes_dic["num"]
 
     if not isinstance(y, pd.Series):
         y = pd.Series(y)
@@ -1823,11 +1812,7 @@ def f_cont_classification_parallel(X, y, sample_weight=None, n_jobs=-1, handle_n
     X = X.drop(target, axis=1)
 
     # define the number of cores
-    n_jobs = (
-        min(cpu_count(), X.shape[1])
-        if n_jobs == -1
-        else min(cpu_count(), n_jobs)
-    )
+    n_jobs = min(cpu_count(), X.shape[1]) if n_jobs == -1 else min(cpu_count(), n_jobs)
     # parallelize jobs
     _f_stat_cont_clf = partial(_compute_series, func_xyw=f_cont_classification)
     return parallel_df(
@@ -1839,7 +1824,13 @@ def f_cont_classification_parallel(X, y, sample_weight=None, n_jobs=-1, handle_n
     )
 
 
-def f_cat_classification_parallel(X, y, sample_weight=None, n_jobs=-1, force_finite=True, handle_na="drop",
+def f_cat_classification_parallel(
+    X,
+    y,
+    sample_weight=None,
+    n_jobs=-1,
+    force_finite=True,
+    handle_na="drop",
 ):
     """Univariate information dependence
     It is converted to an F score ranks features in the same order if
@@ -1911,7 +1902,9 @@ def f_cat_classification_parallel(X, y, sample_weight=None, n_jobs=-1, force_fin
     return f_statistic.drop(labels=[target]).sort_values(ascending=False)
 
 
-def f_stat_classification_parallel(X, y, sample_weight=None, n_jobs=-1, force_finite=True, handle_na="drop"):
+def f_stat_classification_parallel(
+    X, y, sample_weight=None, n_jobs=-1, force_finite=True, handle_na="drop"
+):
     """f_stat_classification_parallel computes the weighted ANOVA F-value for the provided categorical
     and numerical predictors using parallelization of the code.
 
@@ -1983,7 +1976,7 @@ def f_stat_classification_parallel(X, y, sample_weight=None, n_jobs=-1, force_fi
 ############
 
 
-def _check_association_input(X,sample_weight=None,handle_na="drop"):
+def _check_association_input(X, sample_weight=None, handle_na="drop"):
     """_check_association_input private function. Check the inputs,
     convert X to a pd.DataFrame if needed, adds column names if non are provided.
     Check if the sample_weight is None or of the right dimensionality and handle NA
@@ -2058,8 +2051,7 @@ def is_list_of_str(str_list):
     """
     if str_list is not None:
         if not (
-            isinstance(str_list, list)
-            and all(isinstance(s, str) for s in str_list)
+            isinstance(str_list, list) and all(isinstance(s, str) for s in str_list)
         ):
             return False
         else:
@@ -2116,10 +2108,11 @@ def xy_to_matrix(xy):
 # visualization
 ###############
 
+
 def cluster_sq_matrix(sq_matrix, method="ward"):
     """cluster_sq_matrix applies agglomerative clustering in order to sort
     a correlation matrix.
-    
+
     Parameters
     ----------
     sq_matrix : pd.DataFrame
@@ -2131,7 +2124,7 @@ def cluster_sq_matrix(sq_matrix, method="ward"):
     -------
     pd.DataFrame
         a sorted square matrix
-        
+
     Example:
     --------
     >>> assoc = association_matrix(
@@ -2139,7 +2132,7 @@ def cluster_sq_matrix(sq_matrix, method="ward"):
     ...     plot=False
     ... )
     >>> assoc_clustered = cluster_sq_matrix(assoc, method="complete")
-    
+
     """
     d = sch.distance.pdist(sq_matrix.values)
     L = sch.linkage(d, method=method)
@@ -2170,9 +2163,13 @@ def cluster_sq_matrix(sq_matrix, method="ward"):
     **kwargs
         All other arguments are forwarded to `imshow`.
     """
-def heatmap(data, row_labels, col_labels, ax=None, cbar_kw=None, cbarlabel="", **kwargs):
+
+
+def heatmap(
+    data, row_labels, col_labels, ax=None, cbar_kw=None, cbarlabel="", **kwargs
+):
     """heatmap Create a heatmap from a numpy array and two lists of labels.
-    
+
     Parameters
     ----------
     data : array-like of shape (M, N)
@@ -2224,9 +2221,7 @@ def heatmap(data, row_labels, col_labels, ax=None, cbar_kw=None, cbarlabel="", *
     ax.tick_params(top=False, bottom=True, labeltop=False, labelbottom=True)
 
     # Rotate the tick labels and set their alignment.
-    plt.setp(
-        ax.get_xticklabels(), rotation=90, ha="right", rotation_mode="anchor"
-    )
+    plt.setp(ax.get_xticklabels(), rotation=90, ha="right", rotation_mode="anchor")
 
     # Turn spines off and create white grid.
     ax.spines[:].set_visible(False)
@@ -2237,6 +2232,7 @@ def heatmap(data, row_labels, col_labels, ax=None, cbar_kw=None, cbarlabel="", *
     ax.tick_params(which="minor", bottom=False, left=False)
 
     return im, cbar
+
 
 def annotate_heatmap(
     im,
@@ -2253,7 +2249,7 @@ def annotate_heatmap(
     im : matplotlib.axes.Axes
         The AxesImage to be labeled
     data : array-like of shape (M, N), optional
-        data to illustrate, if none is provided the function retrieves 
+        data to illustrate, if none is provided the function retrieves
         the array of the mlp obkect, by default None
     valfmt : str, optional
         annotation formating, by default "{x:.2f}"
@@ -2328,7 +2324,7 @@ def plot_association_matrix(
     assoc_mat : pd.DataFrame
         the square association frame
     suffix_dic : Dict[str, str], optional
-        dictionary of data type for adding suffixes to column names 
+        dictionary of data type for adding suffixes to column names
         in the plotting utility for association matrix, by default None
     ax : matplotlib.axes.Axes, optional
         _description_, by default None
@@ -2399,11 +2395,8 @@ def plot_association_matrix(
 
 
 def plot_association_matrix_int(
-    assoc_mat,
-    suffix_dic=None,
-    cmap="PuOr",
-    figsize=(800, 600),
-    cluster_matrix=True):
+    assoc_mat, suffix_dic=None, cmap="PuOr", figsize=(800, 600), cluster_matrix=True
+):
     """Plot the interactive sorted associations/correlation matrix.
     The sorting is done using hierarchical clustering,
     very like in seaborn or other packages.
@@ -2417,7 +2410,7 @@ def plot_association_matrix_int(
     assoc_mat : pd.DataFrame
         the square association frame
     suffix_dic : Dict[str, str], optional
-        dictionary of data type for adding suffixes to column names 
+        dictionary of data type for adding suffixes to column names
         in the plotting utility for association matrix, by default None
     cmap : str, optional
         the colormap. Please use a scientific colormap. See the ``scicomap`` package, by default "PuOr"
@@ -2425,7 +2418,7 @@ def plot_association_matrix_int(
         figure size in inches, by default None
     cluster_matrix : bool
         whether or not to cluster the square matrix, by default True
-        
+
     Returns
     -------
     panel.Column
@@ -2436,17 +2429,19 @@ def plot_association_matrix_int(
 
     # if features is None:
     #     features = list(assoc_mat.columns)
-    
+
     # rename the columns for keeping track of num vs cat columns
     if suffix_dic is not None:
         rename_dic = {c: f"{c}_{suffix_dic[c]}" for c in assoc_mat.columns}
         assoc_mat = assoc_mat.rename(columns=rename_dic)
         assoc_mat = assoc_mat.rename(index=rename_dic)
-    
+
     if cluster_matrix:
         assoc_mat = cluster_sq_matrix(assoc_mat)
 
-    heatmap = hv.HeatMap((assoc_mat.columns, assoc_mat.index, assoc_mat)).redim.range(z=(-1, 1))
+    heatmap = hv.HeatMap((assoc_mat.columns, assoc_mat.index, assoc_mat)).redim.range(
+        z=(-1, 1)
+    )
 
     heatmap.opts(
         tools=["tap", "hover"],
@@ -2473,7 +2468,9 @@ def plot_association_matrix_int(
     )
     panel_layout = pn.Column(
         pn.pane.Markdown(title_str, align="start", style={"color": "#575757"}),  # bold
-        pn.pane.Markdown(sub_title_str, align="start", style={"color": "#575757"}),  # italic
+        pn.pane.Markdown(
+            sub_title_str, align="start", style={"color": "#575757"}
+        ),  # italic
         heatmap,
         background="#ebebeb",
     )
