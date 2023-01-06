@@ -16,8 +16,9 @@ from sklearn.impute import SimpleImputer
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.datasets import fetch_openml
-from sklearn.datasets import load_boston, load_breast_cancer
+from sklearn.datasets import load_breast_cancer
 from sklearn.utils import Bunch
+import joblib
 
 qualitative_colors = ['#7F3C8D', 
                       '#11A579',
@@ -74,7 +75,6 @@ def set_my_plt_style(height=3, width=5, linewidth=2):
         "lines.linewidth": linewidth,
     }  # plt.cycler(color=my_colors_list)
     mpl.rcParams.update(params)
-
 
 
 def create_dtype_dict(df: pd.DataFrame, dic_keys: str = 'col_names'):
@@ -317,37 +317,6 @@ def is_list_of_int(int_list):
             return True
 
 
-def set_my_plt_style(height=3, width=5, linewidth=2):
-    """This set the style of matplotlib to fivethirtyeight with some modifications (colours, axes)
-
-    Parameters
-    ----------
-    height : int, optional
-        global line width, by default 3
-    width : int, optional
-        fig height in inches, by default 5
-    linewidth : int, optional
-        fig width in inches, by default 2
-    """
-
-    plt.style.use("fivethirtyeight")
-    my_colors_list = qualitative_colors
-    myorder = [2, 3, 4, 1, 0, 6, 5, 8, 9, 7]
-    my_colors_list = [my_colors_list[i] for i in myorder]
-    bckgnd_color = "#f5f5f5"
-    params = {
-        "figure.figsize": (width, height),
-        "axes.prop_cycle": plt.cycler(color=my_colors_list),
-        "axes.facecolor": bckgnd_color,
-        "patch.edgecolor": bckgnd_color,
-        "figure.facecolor": bckgnd_color,
-        "axes.edgecolor": bckgnd_color,
-        "savefig.edgecolor": bckgnd_color,
-        "savefig.facecolor": bckgnd_color,
-        "grid.color": "#d2d2d2",
-        "lines.linewidth": linewidth,
-    }  # plt.cycler(color=my_colors_list)
-    mpl.rcParams.update(params)
 
 
 
@@ -442,7 +411,7 @@ def _get_cancer_data():
     return Bunch(data=X, target=y, sample_weight=None, categorical=None)
 
 
-def _get_boston_data():
+def _load_boston_data():
     """Load Boston data and add dummies (random predictors, numeric and categorical) and
     a genuine one, for benchmarking purpose. Regression (positive domain).
 
@@ -452,61 +421,11 @@ def _get_boston_data():
         Bunch sklearn, extension of dictionary
     """
 
-    boston = load_boston()
-    rng = np.random.RandomState(seed=42)
-    X = pd.DataFrame(boston.data)
-    X.columns = boston.feature_names
-    X["random_num1"] = rng.randn(X.shape[0])
-    X["random_num2"] = np.random.poisson(1, X.shape[0])
-    # high cardinality
-    X["random_cat"] = rng.randint(10 * X.shape[0], size=X.shape[0])
-    X["random_cat"] = "cat_" + X["random_cat"].astype("str")
-    # low cardinality
-    nice_guys = [
-        "Rick",
-        "Bender",
-        "Cartman",
-        "Morty",
-        "Fry",
-        "Vador",
-        "Thanos",
-        "Bejita",
-        "Cell",
-        "Tinkywinky",
-        "Lecter",
-        "Alien",
-        "Terminator",
-        "Drago",
-        "Dracula",
-        "Krueger",
-        "Geoffrey",
-        "Goldfinder",
-        "Blackbeard",
-        "Excel",
-        "SAS",
-        "Bias",
-        "Variance",
-        "Scrum",
-        "Human",
-        "Garry",
-        "Coldplay",
-        "Imaginedragons",
-        "Platist",
-        "Creationist",
-        "Gruber",
-        "KeyserSoze",
-        "Luthor",
-        "Klaue",
-        "Bane",
-        "MarkZ",
-    ]
-    X["random_cat_2"] = np.random.choice(nice_guys, X.shape[0])
-    y = pd.Series(boston.target)
-    # non linear noisy but genuine predictor to test the ability to detect even genuine noisy non-linearities
-    X["genuine_num"] = np.sqrt(y) + np.random.gamma(2, 0.5, X.shape[0])
-    cat_f = ["CHAS", "RAD", "random_cat", "random_cat_2"]
-    X[cat_f] = X[cat_f].astype(str).astype("category")
-    return Bunch(data=X, target=y, sample_weight=None, categorical=cat_f)
+    data_file_name = resource_filename(__name__, "dataset/data/boston_bunch.zip")
+    return joblib.load(data_file_name)
+
+
+
 
 
 def _load_housing(as_frame: bool = False):
@@ -642,7 +561,7 @@ def load_data(name="Titanic"):
     if name == "Titanic":
         return _get_titanic_data()
     elif name == "Boston":
-        return _get_boston_data()
+        return _load_boston_data()
     elif name == "cancer":
         return _get_cancer_data()
     elif name == "housing":
