@@ -10,14 +10,14 @@
   
 ## 1.0.0
 
- - Parallelization of functions applied on pandas dataframe
+ - Parallelization of functions applied on pandas data frame
  - Faster and more modular association measures 
  - Removing dependencies (e.g. dython)
  - Better static and interactive visualization
  - Sklearn selectors rather than a big class
- - Discretization of continuous and categoricals predictors
- - Minimal redundancy maximal relevance feature selection added (subset of all relevant predictors)
- - Arichitecture closer to the scikit-learn one
+ - Discretization of continuous and categorical predictors
+ - Minimal redundancy maximal relevance feature selection added (a subset of all relevant predictors), based on Uber's MRmr flavor
+ - architecture closer to the scikit-learn one
   
 ## 0.3.8
 
