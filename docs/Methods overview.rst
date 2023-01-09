@@ -10,7 +10,7 @@ The Boruta algorithm tries to capture all the important features you might have 
  * Shuffle the values of added duplicate copies to remove their correlations with the target variable. It is called shadow features or permuted copies.
  * Combine the original ones with shuffled copies
  * Run a random forest classifier on the combined dataset and performs a variable importance measure (the default is Mean Decrease Accuracy) to evaluate the importance of each variable where higher means more important.
- * Then Z score is computed. It means mean of accuracy loss divided by the standard deviation of accuracy loss.
+ * Then Z score is computed. It means the mean of accuracy loss divided by the standard deviation of accuracy loss.
  * Find the maximum Z score among shadow attributes (MZSA)
  * Tag the variables as 'unimportant' when they have importance significantly lower than MZSA. Then we permanently remove them from the process.
  * Tag the variables as 'important' when they have importance significantly higher than MZSA.
@@ -28,10 +28,10 @@ BoostARoota follows closely the Boruta method but modifies a few things:
  * Double width of the data set, making a copy of all features in the original dataset
  * Randomly shuffle the new features created in (2). These duplicated and shuffled features are referred to as "shadow features"
  * Run XGBoost classifier on the entire data set ten times. Running it ten times allows for random noise to be smoothed, resulting in more robust estimates of importance. The number of repeats is a parameter than can be changed.
- * Obtain importance values for each feature. This is a simple importance metric that sums up how many times the particular feature was split on in the XGBoost algorithm.
- * Compute "cutoff": the average feature importance value for all shadow features and divide by four. Shadow importance values are divided by four (parameter can be changed) to make it more difficult for the variables to be removed. With values lower than this, features are removed at too high of a rate.
+ * Obtain importance values for each feature. This is a simple importance metric that sums up how many times the particular feature was split in the XGBoost algorithm.
+ * Compute "cutoff": the average feature importance value for all shadow features and divide by four. Shadow importance values are divided by four (parameters can be changed) to make it more difficult for the variables to be removed. With values lower than this, features are removed at too high of a rate.
  * Remove features with average importance across the ten iterations that is less than the cutoff specified in (6)
- * Go back to (2) until the number of features removed is less than ten per cent of the total.
+ * Go back to (2) until the number of features removed is less than ten percent of the total.
  * Method returns the features remaining once completed.
 
 In the spirit, the same heuristic than Boruta but using Boosting (originally Boruta was supporting only random forest). The validation of the importance is done by comparing to the maximum of the median var. imp of the shadow predictors (in Boruta, a statistical test is performed using the Z-score). Since the whole process is done on the same train-test split, the variance of the variable importance comes only from the different re-fit of the model over the different iterations.
@@ -174,12 +174,19 @@ GrootCV, a new method
    - Not based on a given percentage of cols needed to be deleted
    - Plot method for var. imp
  
-
+MRmr
+----
+Re-implementing the Uber MRmr scheme using associations for handling continuous and categorical predictors. 
+ - Theil's U statistics for the categorical-categorical association (correlation)
+ - Variance ratio for continuous-categorical association
+ - Pearson or Spearman correlation for continuous-continuous association
+ 
 References
 ----------
 
 **Theory**
  - [Consistent feature selection for pattern recognition in polynomial time](http://compmed.se/files/6914/2107/3475/pub_2007_5.pdf)
+ - [Maximum Relevance and Minimum Redundancy Feature Selection Methods for a Marketing Machine Learning Platform](https://www.uber.com/blog/research/maximum-relevance-and-minimum-redundancy-feature-selection-methods-for-a-marketing-machine-learning-platform)
 
 **Applications**
  - [The Boruta paper]([https://www.jstatsoft.org/article/view/v036i11/v36i11.pdf)
