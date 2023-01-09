@@ -1,8 +1,17 @@
 import pytest
 import numpy as np
 import pandas as pd
-from arfs.feature_selection import MissingValueThreshold, UniqueValuesThreshold, CardinalityThreshold, CollinearityThreshold
-from arfs.utils import _generated_corr_dataset_regr, _generated_corr_dataset_classification
+from arfs.feature_selection import (
+    MissingValueThreshold,
+    UniqueValuesThreshold,
+    CardinalityThreshold,
+    CollinearityThreshold,
+)
+from arfs.utils import (
+    _generated_corr_dataset_regr,
+    _generated_corr_dataset_classification,
+)
+
 
 class TestFeatSelectMissing:
     """
@@ -14,8 +23,10 @@ class TestFeatSelectMissing:
         X, y, w = _generated_corr_dataset_classification(size=10)
         fs = MissingValueThreshold(threshold=0.01)
         fs.fit(X)
-        message = "Expected: {0}, Actual: {1}".format('var12', fs.not_selected_features_)
-        assert fs.not_selected_features_ == ['var12'], message
+        message = "Expected: {0}, Actual: {1}".format(
+            "var12", fs.not_selected_features_
+        )
+        assert fs.not_selected_features_ == ["var12"], message
 
 
 class TestFeatSelectZeroVariance:
@@ -28,8 +39,10 @@ class TestFeatSelectZeroVariance:
         X, y, w = _generated_corr_dataset_classification(size=10)
         fs = UniqueValuesThreshold(threshold=1)
         fs.fit(X)
-        message = "Expected: {0}, Actual: {1}".format('var10', fs.not_selected_features_)
-        assert fs.not_selected_features_ == ['var10'], message
+        message = "Expected: {0}, Actual: {1}".format(
+            "var10", fs.not_selected_features_
+        )
+        assert fs.not_selected_features_ == ["var10"], message
 
 
 class TestFeatSelectHighCardinality:
@@ -42,8 +55,10 @@ class TestFeatSelectHighCardinality:
         X, y, w = _generated_corr_dataset_classification(size=100)
         fs = CardinalityThreshold(threshold=5)
         fs.fit(X)
-        message = "Expected: {0}, Actual: {1}".format('emb_dummy', fs.not_selected_features_)
-        assert fs.not_selected_features_ == ['emb_dummy'], message
+        message = "Expected: {0}, Actual: {1}".format(
+            "emb_dummy", fs.not_selected_features_
+        )
+        assert fs.not_selected_features_ == ["emb_dummy"], message
 
 
 # class TestFeatSelectCollinearity:

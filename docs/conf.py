@@ -15,15 +15,16 @@
 # sys.path.insert(0, os.path.abspath('.'))
 import sys
 import os
-sys.path.insert(0, os.path.abspath('../../arfs'))
+
+sys.path.insert(0, os.path.abspath("../../arfs"))
 # -- Project information -----------------------------------------------------
 
-project = 'arfs'
-copyright = '2022, Thomas Bury'
-author = 'Thomas Bury'
+project = "arfs"
+copyright = "2022, Thomas Bury"
+author = "Thomas Bury"
 
 # The full version, including alpha/beta/rc tags
-release = '1.0.0'
+release = "1.0.0"
 
 # If extensions (or modules to document with autodoc) are in another
 # directory, add these directories to sys.path here. If the directory is
@@ -31,10 +32,8 @@ release = '1.0.0'
 # absolute, like shown here.
 # sys.path.append(os.path.join(os.path.abspath(os.pardir)))
 
-sys.path.insert(0, os.path.abspath('..'))
-sys.path.append(os.path.abspath(
-    os.path.join(__file__, "../../src")
-))
+sys.path.insert(0, os.path.abspath(".."))
+sys.path.append(os.path.abspath(os.path.join(__file__, "../../src")))
 autodoc_mock_imports = ["_tkinter"]
 
 # Get the project root dir, which is the parent dir of this
@@ -48,25 +47,25 @@ project_root = os.path.dirname(cwd)
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.autosectionlabel',
-    'sphinx.ext.napoleon',
-    'sphinx.ext.viewcode',
-    'sphinx_autodoc_typehints',
-    'sphinx_copybutton',
-    'sphinx_rtd_theme',
-    'nbsphinx',
-    'sphinx_tabs.tabs',
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosectionlabel",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.viewcode",
+    "sphinx_autodoc_typehints",
+    "sphinx_copybutton",
+    "sphinx_rtd_theme",
+    "nbsphinx",
+    "sphinx_tabs.tabs",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 autosummary_generate = True
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -74,13 +73,13 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = "sphinx_rtd_theme"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
-html_title = 'ARFS Documentation'
+html_static_path = ["_static"]
+html_title = "ARFS Documentation"
 html_show_sourcelink = True
 html_logo = "logo.png"
 

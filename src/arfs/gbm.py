@@ -219,18 +219,18 @@ class GradientBoosting:
                 init_score = pd.Series(init_score)
 
         output = _fit_early_stopped_lgb(
-                X=X,
-                y=y,
-                sample_weight=sample_weight,
-                params=self.params,
-                init_score=init_score,
-                cat_feat=self.cat_feat,
-                stratified=self.stratified,
-                groups=groups,
-                learning_curve=self.show_learning_curve,
-                verbose_eval=self.verbose_eval,
-                return_valid_features=self.return_valid_features,
-            )
+            X=X,
+            y=y,
+            sample_weight=sample_weight,
+            params=self.params,
+            init_score=init_score,
+            cat_feat=self.cat_feat,
+            stratified=self.stratified,
+            groups=groups,
+            learning_curve=self.show_learning_curve,
+            verbose_eval=self.verbose_eval,
+            return_valid_features=self.return_valid_features,
+        )
 
         if self.show_learning_curve:
             if self.return_valid_features:
@@ -247,7 +247,7 @@ class GradientBoosting:
             else:
                 self.model = output
 
-        self.model_params = self.model.params 
+        self.model_params = self.model.params
 
     def predict(self, X, predict_proba=False):
         """Predict the new values using the fitted model.
@@ -280,7 +280,6 @@ class GradientBoosting:
             return np.array([np.argmax(line) for line in y_pred])
         else:
             return self.model.predict(X)
-
 
     def predict_raw(self, X, **kwargs):
         """The native predict method, if you need raw_score, etc.
@@ -351,6 +350,7 @@ class GradientBoosting:
             self.cat_feat = self.model.params
         else:
             raise ValueError("The model file does not exist, please check the path")
+
 
 def _fit_early_stopped_lgb(
     X,
