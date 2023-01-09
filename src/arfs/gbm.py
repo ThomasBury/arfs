@@ -15,7 +15,6 @@ from sklearn.model_selection import (
 )
 import lightgbm as lgb
 from lightgbm import early_stopping, log_evaluation, record_evaluation
-from catboost import CatBoost, Pool
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib as mpl
