@@ -80,14 +80,9 @@ class GradientBoosting:
 
     Init score of Booster to start from, if required (like for GLM residuals modelling using GBM).
 
-    For the catboost (method='cat') you can set 'allow_writing_files': False in the params dictionary.
-    It will disable the writing of analytical and snapshot files during training (text and json files).
-    However, the snapshot and data visualization tools are unavailable.
 
     Parameters
     ----------
-    method : str, default "lgb"
-        the boosting method, either "lgb" for lightGBM or "cat" for catboost
     cat_feat : List[str], 'auto' or None,
         The list of column names of the categorical predictors. For catboost, much more efficient if those columns
         are of dtype pd.Categorical. For lightGBM, most of the time better to integer encode and NOT consider
@@ -105,8 +100,6 @@ class GradientBoosting:
 
     Attributes
     ----------
-    method : str
-        the boosting method
     cat_feat : Union[str, List[str], None]
         The list of categorical predictors after pre-processing
     model_params : Dict
@@ -122,8 +115,7 @@ class GradientBoosting:
     -------
     >>> # set up the trainer
     >>> save_path = "C:/Users/mtpl_bi_pp/base/"
-    >>> gbm_model = GradientBoosting(method='lgb',
-    >>>                              cat_feat='auto',
+    >>> gbm_model = GradientBoosting(cat_feat='auto',
     >>>                              stratified=False,
     >>>                              params={
     >>>                                 'objective': 'tweedie',
@@ -143,7 +135,6 @@ class GradientBoosting:
 
     def __init__(
         self,
-        method="lgb",
         cat_feat="auto",
         params=None,
         stratified=False,
@@ -151,7 +142,6 @@ class GradientBoosting:
         verbose_eval=50,
         return_valid_features=False,
     ):
-        self.method = method
         self.model = None
         self.cat_feat = cat_feat
         self.model_params = None
@@ -166,10 +156,9 @@ class GradientBoosting:
 
     def __repr__(self):
         s = (
-            "GradientBoosting(method={method}, \n"
-            "                 cat_feat={cat_feat},\n"
+            "GradientBoosting(cat_feat={cat_feat},\n"
             "                 params={params})".format(
-                method=self.method, cat_feat=self.cat_feat, params=self.params
+                cat_feat=self.cat_feat, params=self.params
             )
         )
         return s
@@ -230,8 +219,7 @@ class GradientBoosting:
             if not isinstance(init_score, pd.Series):
                 init_score = pd.Series(init_score)
 
-        if self.method == "cat":
-            output = _fit_early_stopped_catboost(
+        output = _fit_early_stopped_lgb(
                 X=X,
                 y=y,
                 sample_weight=sample_weight,
@@ -244,22 +232,6 @@ class GradientBoosting:
                 verbose_eval=self.verbose_eval,
                 return_valid_features=self.return_valid_features,
             )
-        elif self.method == "lgb":
-            output = _fit_early_stopped_lgb(
-                X=X,
-                y=y,
-                sample_weight=sample_weight,
-                params=self.params,
-                init_score=init_score,
-                cat_feat=self.cat_feat,
-                stratified=self.stratified,
-                groups=groups,
-                learning_curve=self.show_learning_curve,
-                verbose_eval=self.verbose_eval,
-                return_valid_features=self.return_valid_features,
-            )
-        else:
-            raise Exception("method not found")
 
         if self.show_learning_curve:
             if self.return_valid_features:
@@ -276,9 +248,7 @@ class GradientBoosting:
             else:
                 self.model = output
 
-        self.model_params = (
-            self.model.params if self.method == "lgb" else self.model.get_all_params()
-        )
+        self.model_params = self.model.params 
 
     def predict(self, X, predict_proba=False):
         """Predict the new values using the fitted model.
@@ -289,57 +259,32 @@ class GradientBoosting:
             the predictors' matrix
         predict_proba : bool, default=False
             returns probabilities (only for classification) (default ``False``)
-
-        Raises
-        ------
-        Exception
-            "method not found" if the method specified in the init differs from "lgb" or "cat"
-
         """
         if self.is_init_score:
             raise AttributeError(
                 "The model is fitted from an initial score, use the `predict_raw` method instead\n"
                 "Please also check what is returned by the predicted method, for the raw version\n"
-                "you might have to apply `exp` (CatBoost returns rates if the loss is \n"
-                " Poisson or Tweedie)"
+                "you might have to apply `exp`"
             )
 
-        obj_fn = (
-            self.model_params["objective"]
-            if self.method == "lgb"
-            else self.model_params["loss_function"]
-        )
+        obj_fn = self.model_params["objective"]
         # self.params['objective']
         # LightGBM
-        if self.method == "lgb":
-            if not predict_proba and ("binary" in obj_fn):
-                # rounding the values and convert to integer
-                return self.model.predict(X).round(0).astype(int)
-            elif not predict_proba and ("multi" in obj_fn):
-                y_pred = self.model.predict(X)
-                # find the class using the argmax function
-                # one proba per class and pick the largest prob
-                return np.array([np.argmax(line) for line in y_pred])
-            else:
-                return self.model.predict(X)
 
-        # CatBoost
-        elif self.method == "cat":
-            test_pool = Pool(X, cat_features=self.cat_feat)
-            if predict_proba:
-                return self.model.predict(test_pool, prediction_type="Probability")[
-                    :, 1
-                ]
-            elif ("Tweedie" in obj_fn) or ("Poisson" in obj_fn):
-                return np.exp(self.model.predict(test_pool))
-            else:
-                return self.model.predict(test_pool)
-
+        if not predict_proba and ("binary" in obj_fn):
+            # rounding the values and convert to integer
+            return self.model.predict(X).round(0).astype(int)
+        elif not predict_proba and ("multi" in obj_fn):
+            y_pred = self.model.predict(X)
+            # find the class using the argmax function
+            # one proba per class and pick the largest prob
+            return np.array([np.argmax(line) for line in y_pred])
         else:
-            raise Exception("method not found")
+            return self.model.predict(X)
+
 
     def predict_raw(self, X, **kwargs):
-        """The native (either lightGBM or CatBoost) predict method, if you need raw_score, etc.
+        """The native predict method, if you need raw_score, etc.
 
 
         Parameters
@@ -357,13 +302,7 @@ class GradientBoosting:
             "method not found" if the method specified in the init differs from "lgb" or "cat"
 
         """
-        if self.method == "lgb":
-            return self.model.predict(X, **kwargs)
-        elif self.method == "cat":
-            test_pool = Pool(X, cat_features=self.cat_feat)
-            return self.model.predict(test_pool, **kwargs)
-        else:
-            raise Exception("method not found")
+        return self.model.predict(X, **kwargs)
 
     def save(self, save_path=None, name=None):
         """Save method, saves the model as pkl file in the specified folder as name.pkl
@@ -408,173 +347,11 @@ class GradientBoosting:
         if Path(model_path).is_file():
             # load model and update method
             self.model = joblib.load(model_path)
-            self.method = gbm_flavour(self.model)
-            self.model_params = (
-                self.model.params
-                if self.method == "lgb"
-                else self.model.get_all_params()
-            )
-            self.cat_feat = (
-                self.model.params
-                if self.method == "lgb"
-                else self.model.get_cat_feature_indices()
-            )
+            self.model_params = self.model.params
+
+            self.cat_feat = self.model.params
         else:
             raise ValueError("The model file does not exist, please check the path")
-
-
-def _fit_early_stopped_catboost(
-    X,
-    y,
-    sample_weight=None,
-    groups=None,
-    init_score=None,
-    params=None,
-    cat_feat=None,
-    stratified=False,
-    learning_curve=True,
-    verbose_eval=0,
-    return_valid_features=False,
-):
-
-    """CONVENIENCE FUNCTION, IT SHOULD NOT BE ACCESSED/IMPORTED BY THE USER
-
-    Early stopping for catboost, using Pool and setting categorical feature, sample weights
-    and baseline (init_score), if any. User defined params can be passed.
-    It works for classification and regression.
-
-    Parameters
-    ----------
-    X : pd.DataFrame or np.ndarray
-        the predictors' matrix
-    y : pd.Series or np.ndarray
-        the target series/array
-    sample_weight : pd.Series or np.ndarray, optional
-        the sample_weight series/array, if relevant. If not None, it should be of the same length as the
-        target (default ``None``)
-    groups : pd.Series or np.ndarray, optional
-        the groups (e.g. polID) for robust cross validation.
-        The same group will not appear in two different folds.
-    params : dict, optional
-        you can pass the parameters that you want to lightGBM/Catboost, as long as they are valid.
-        If None, default parameters are passed.
-    init_score : pd.Series or np.ndarray, optional
-        the initial score to boost from (series/array), if relevant. If not None,
-        it should be of the same length as the target (default ``None``)
-    cat_feat : str or list of strings, optional
-        The list of column names of the categorical predictors. For catboost, much more efficient if those columns
-        are of dtype pd.Categorical. For lightGBM, most of the time better to integer encode and NOT consider
-        them as categorical (set this parameter as None). (default ``None``)
-    stratified : bool, default=False
-        stratified shuffle split for the early stopping process. For classification problem, it guarantees
-        the same proportion
-    learning_curve : bool, default=True
-        if show or not the learning curve
-    verbose_eval : int, default=0
-        period for printing the train and validation results. If < 1, no output
-    return_valid_features : bool, default = False
-        Whether or not to return validation features
-
-    Raises
-    ------
-    TypeError
-        if params are not a dictionary of CatBoost params or None
-
-    Returns
-    -------
-    model : object
-        model object
-    fig : plt.figure
-        the learning curves
-
-    """
-
-    (
-        X_train,
-        y_train,
-        X_val,
-        y_val,
-        sample_weight_val,
-        sample_weight_train,
-        init_score_val,
-        init_score_train,
-    ) = _make_split(
-        X=X,
-        y=y,
-        sample_weight=sample_weight,
-        init_score=init_score,
-        groups=groups,
-        stratified=stratified,
-        test_size=0.2,
-    )
-    d_train = Pool(X_train, label=y_train, cat_features=cat_feat)
-    d_valid = Pool(X_val, label=y_val, cat_features=cat_feat)
-
-    if sample_weight is not None:
-        d_train = d_train.set_weight(sample_weight_train)
-        d_valid = d_valid.set_weight(sample_weight_val)
-
-    if init_score is not None:
-        d_train = d_train.set_baseline(init_score_train)
-        d_valid = d_valid.set_baseline(init_score_val)
-
-    if params is None:
-        warnings.warn("No params dictionary provided, using RMSE as default")
-        params = {
-            "loss_function": "RMSE",
-            "num_boost_round": 10000,
-            "silent": False,
-            "od_wait": 10,
-        }
-    elif not isinstance(params, dict):
-        raise TypeError(
-            "params should be either None or a dictionary of catboost params"
-        )
-
-    catmodel = CatBoost(params)
-    model = catmodel.fit(
-        d_train, eval_set=d_valid, early_stopping_rounds=10, verbose_eval=verbose_eval
-    )
-
-    # get the score values on training and validation set
-    scoring_dic = model.get_evals_result()
-    loss = list(scoring_dic["learn"].keys())[0]
-    if learning_curve:
-        set_my_plt_style()
-        fig, ax = plt.subplots()
-        ax.set_title(f"{loss} during training")
-        ax.set_ylabel(loss)
-        ax.set_xlabel("iterations")
-        ax.plot(scoring_dic["learn"][loss], label="train")
-        ax.plot(scoring_dic["validation"][loss], label="valid")
-        ax.axvline(
-            x=model.get_best_iteration(),
-            color="grey",
-            linestyle="--",
-            label="best_iter",
-        )
-        ax.legend(loc="best")
-        plt.tight_layout()
-
-        del d_train
-        del d_valid
-        gc.enable()
-        gc.collect()
-        if return_valid_features:
-            return model, X_val, fig
-        else:
-            return model, fig
-    else:
-        del d_train
-        del d_valid
-        gc.enable()
-        gc.collect()
-
-        if return_valid_features:
-            return model, X_val
-        else:
-            return model
-
 
 def _fit_early_stopped_lgb(
     X,
