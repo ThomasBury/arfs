@@ -1,5 +1,13 @@
 # Changes
 
+## 1.0.2
+
+ - distribute a toy dataset for regression by modifying the Boston dataset adding noise and made up columns
+
+## 1.0.1
+
+ - fix pkg data distribution
+  
 ## 1.0.0
 
  - Parallelization of functions applied on pandas dataframe
