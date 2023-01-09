@@ -11,9 +11,9 @@
 
 All relevant feature selection means trying to find all features carrying information usable for prediction, rather than finding a possibly compact subset of features on which some particular model has a minimal error. This might include redundant predictors. All relevant feature selection is model agnostic in the sense that it doesn't optimize a scoring function for a *specific* model but rather tries to select all the predictors which are related to the response. 
 
-This package implements 3 different methods (Leshy is an evolution of Boruta, BoostAGroota is an evolution of BoostARoota and GrootCV is a new one). They are sklearn compatible. See hereunder for details about those methods. You can use any sklearn compatible estimator with Leshy and BoostAGroota but I recommend lightGBM. It's fast, accurate and has SHAP values builtin.
+This package implements 3 different methods (Leshy is an evolution of Boruta, BoostAGroota is an evolution of BoostARoota and GrootCV is a new one). They are sklearn compatible. See hereunder for details about those methods. You can use any sklearn compatible estimator with Leshy and BoostAGroota but I recommend lightGBM. It's fast, accurate and has SHAP values builtin. It also provides a module for performing preprocessing and perform basic feature selection (autobinning, remove columns with too many missing values, zero variance, high-cardinality, highly correlated, etc.). Examples and detailled methods hereunder.
 
-Moreover, it provides a module for performing pre-filtering (columns with too many missing values, zero variance, high-cardinality, highly correlated, etc.). Examples and detailled methods hereunder.
+Moreover, as an alternative to the all relevant problem, the ARFS package provides a MRmr feature selection which, theoretically, returns a subset of the predictors selected by an arfs method.
 
 ## Installation
 
@@ -23,14 +23,16 @@ Moreover, it provides a module for performing pre-filtering (columns with too ma
 
 Working examples for:
 
- - [Regression](./docs/notebooks/Regression.ipynb)
- - [Classification](./docs/notebooks/Classification.ipynb)
- - [Categoricals](./docs/notebooks/Categoricals.ipynb)
- - [Collinearity](./docs/notebooks/Collinearity.ipynb)
- - [Pre-filters](./docs/notebooks/pre-filtering.ipynb)
- - [Reducing run time for large data](./docs/notebooks/large_data_sampling.ipynb)
- - [Comparison to Boruta](./docs/notebooks/Boruta_comparison.ipynb)
- - [Comparison to BorutaShap](./docs/notebooks/BorutaShap_comparison.ipynb)
+ - [Preprocessing](./docs/notebooks/preprocessingipynb)
+ - [Basic FS (best before ARFS)](./docs/notebooks/basic_feature_selection.ipynb)
+ - [Regression](./docs/notebooks/arfs_regression.ipynb)
+ - [Classification](./docs/notebooks/arfs_classification.ipynb)
+ - [Categoricals](./docs/notebooks/issue_categoricals.ipynb)
+ - [Collinearity](./docs/notebooks/issue_collinearity.ipynb)
+ - [Reducing run time for large data](./docs/notebooks/arfs_large_data_sampling.ipynb)
+ - [Comparison to Boruta and BorutaShap](./docs/notebooks/arfs_boruta_borutaShap_comparison.ipynb)
+ - [MRmr alternative](./docs/notebooks/mrmr_feature_selection.ipynb)
+ - [MRmr vs ARFS](./docs/notebooks/mrmr_fs_VS_arfs.ipynb)
 
 For imbalanced classification:
  - GrootCV will automatically detect imbalanced data and set the lightGBM `'is_unbalance' = True`
@@ -106,6 +108,7 @@ In the spirit, the same heuristic than Boruta but using Boosting (originally Bor
 **Theory**
 
  - [Consistent feature selection for pattern recognition in polynomial time](https://www.jmlr.org/papers/volume8/nilsson07a/nilsson07a.pdf)
+ - [Maximum Relevance and Minimum Redundancy Feature Selection Methods for a Marketing Machine Learning Platform](https://eng.uber.com/research/maximum-relevance-and-minimum-redundancy-feature-selection-methods-for-a-marketing-machine-learning-platform/)
 
 **Applications**
 
