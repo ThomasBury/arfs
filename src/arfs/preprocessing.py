@@ -415,8 +415,6 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         for splitting and grouping all, only numerical or only categorical columns.
     n_bins : int
         the number of bins that has to be created while binning the variables in "bin_features" list
-    method : str
-        either "lgb" (lightgbm) or "cat" (catboost), "lgb" is faster
     boost_params : dic
         the boosting parameters dictionary
     raw : bool
@@ -459,20 +457,16 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         self,
         bin_features="all",
         n_bins=10,
-        method="lgb",
         boost_params=None,
         raw=False,
         task="regression",
     ):
 
-        if method not in ["lgb", "cat"]:
-            raise ValueError("method should be either 'lgb' or 'cat'")
         if (boost_params is not None) & (not isinstance(boost_params, dict)):
             raise TypeError("boost_kwargs should be a dictionary")
 
         self.bin_features = bin_features
         self.n_bins = n_bins
-        self.method = method
         self.boost_params = {}
         self.raw = raw
         self.task = task
@@ -483,17 +477,10 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         if self.task == "regression":
             self.boost_params["objective"] = "RMSE"
         elif self.task == "classification":
-            self.boost_params["objective"] = (
-                "binary" if self.method == "lgb" else "Logloss"
-            )
+            self.boost_params["objective"] = "binary"
 
         self.boost_params["num_boost_round"] = 1
-
-        if self.method == "lgb":
-            self.boost_params["max_leaf"] = self.n_bins
-        else:
-            self.boost_params["max_leaves"] = self.n_bins
-
+        self.boost_params["max_leaf"] = self.n_bins
         self.tree_dic = {}
         self.bin_upper_bound_dic = {}
         self.cat_bin_dict = {}
@@ -559,7 +546,6 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
 
             gbm_param = self.boost_params.copy()
             tree = GradientBoosting(
-                method=self.method,
                 cat_feat=None,
                 params=gbm_param,
                 show_learning_curve=False,
