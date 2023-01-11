@@ -349,7 +349,6 @@ def _compute_varimp_lgb(
 
         # lgb_kwargs['verbose'] = -1
         gbm_model = GradientBoosting(
-            method="lgb",
             cat_feat="auto",
             stratified=False,
             params=lgb_kwargs,
