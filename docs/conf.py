@@ -24,7 +24,7 @@ copyright = "2022, Thomas Bury"
 author = "Thomas Bury"
 
 # The full version, including alpha/beta/rc tags
-release = "1.0.2"
+release = "1.0.3"
 
 # If extensions (or modules to document with autodoc) are in another
 # directory, add these directories to sys.path here. If the directory is
