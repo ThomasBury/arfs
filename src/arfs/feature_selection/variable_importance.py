@@ -267,7 +267,8 @@ class VariableImportance(SelectorMixin, BaseEstimator):
         if plot_n > df.shape[0]:
             plot_n = df.shape[0] - 1
 
-        figsize = (8, plot_n / n_feat_per_inch)
+        if figsize is None:
+            figsize = (8, plot_n / n_feat_per_inch)
         fig = plt.figure(tight_layout=True, figsize=figsize)
         gs = gridspec.GridSpec(3, 3)
         ax1 = fig.add_subplot(gs[:, 0])
