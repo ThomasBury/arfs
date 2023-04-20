@@ -263,6 +263,8 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
             [x in selected_features for x in self.feature_names_in_]
         )
         self.not_selected_features_ = not_selected_features
+        
+        return self
 
     def transform(self, X):
         """
@@ -282,7 +284,7 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
             raise TypeError("X is not a dataframe")
         return X[self.selected_features_]
 
-    def fit_transform(self, X, y=None, sample_weight=None):
+    def fit_transform(self, X, y, sample_weight=None):
         """
         Fit to data, then transform it.
         Fits transformer to `X` and `y` and optionally sample_weight
