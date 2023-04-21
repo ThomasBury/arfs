@@ -1,5 +1,8 @@
 # Changes
 
+## 1.0.7
+
+ - Patch preventing zero division in the conditional entropy calculation
 ## 1.0.6
 
  - Return self in mrmr, fixing error when in scikit-learn pipeline
