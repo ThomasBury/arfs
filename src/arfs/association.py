@@ -81,9 +81,10 @@ def weighted_conditional_entropy(x, y, sample_weight=None):
 
     if sample_weight is None:
         sample_weight = np.ones(len(x))
+    elif np.count_nonzero(sample_weight) == 0:
+        raise ValueError("All elements in sample_weight are zero. Cannot divide by zero.")
 
     df = pd.DataFrame({"x": x, "y": y, "sample_weight": sample_weight})
-    # df = df.fillna(0)
     tot_weight = df["sample_weight"].sum()
     y_counter = df[["y", "sample_weight"]].groupby("y").sum().to_dict()
     y_counter = y_counter["sample_weight"]
@@ -91,11 +92,11 @@ def weighted_conditional_entropy(x, y, sample_weight=None):
     xy_counter = xy_counter["sample_weight"]
     h_xy = 0.0
     for xy in xy_counter.keys():
-        p_xy = xy_counter[xy] / tot_weight
-        p_y = y_counter[xy[1]] / tot_weight
-        h_xy += p_xy * math.log(p_y / p_xy, math.e)
+        p_xy = xy_counter[xy] / tot_weight if tot_weight != 0 else 0
+        p_y = y_counter[xy[1]] / tot_weight if tot_weight != 0 else 0
+        if p_xy != 0:
+            h_xy += p_xy * math.log(p_y / p_xy, math.e)
     return h_xy
-
 
 def weighted_theils_u(x, y, sample_weight=None, as_frame=False):
     """weighted_theils_u computes the weighted Theil's U statistic between two
@@ -122,7 +123,6 @@ def weighted_theils_u(x, y, sample_weight=None, as_frame=False):
         sample_weight = np.ones(len(x))
 
     df = pd.DataFrame({"x": x, "y": y, "sample_weight": sample_weight})
-    # df = df.fillna(0)
     tot_weight = df["sample_weight"].sum()
     y_counter = df[["y", "sample_weight"]].groupby("y").sum().to_dict()
     y_counter = y_counter["sample_weight"]
@@ -134,26 +134,26 @@ def weighted_theils_u(x, y, sample_weight=None, as_frame=False):
     xy_counter = xy_counter["sample_weight"]
     h_xy = 0.0
     for xy in xy_counter.keys():
-        p_xy = xy_counter[xy] / tot_weight
-        p_y = y_counter[xy[1]] / tot_weight
-        h_xy += p_xy * math.log(p_y / p_xy, math.e)
+        p_xy = xy_counter[xy] / tot_weight if tot_weight != 0 else 0
+        p_y = y_counter[xy[1]] / tot_weight if tot_weight != 0 else 0
+        if p_xy != 0:
+            h_xy += p_xy * math.log(p_y / p_xy, math.e)
 
     if h_x == 0:
         return 1.0
     else:
         u = (h_x - h_xy) / h_x
-        if -_PRECISION <= u < 0.0 or 1.0 < u <= 1.0 + _PRECISION:
-            rounded_u = 0.0 if u < 0 else 1.0
+        if abs(u) < _PRECISION or abs(u-1.0) < _PRECISION:
+            rounded_u = round(u)
             warnings.warn(
                 f"Rounded U = {u} to {rounded_u}. This is probably due to floating point precision issues.",
                 RuntimeWarning,
             )
-            teil_u_val = rounded_u
-        else:
-            teil_u_val = u
+            u = rounded_u
+            
     if as_frame:
         return pd.DataFrame(
-            {"row": x.name, "col": y.name, "val": teil_u_val}, index=[0]
+            {"row": x.name, "col": y.name, "val": u}, index=[0]
         )
     else:
         return teil_u_val
