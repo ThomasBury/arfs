@@ -2405,9 +2405,6 @@ def plot_association_matrix_int(
 
     cmap = cmap if cmap is not None else "coolwarm"
 
-    # if features is None:
-    #     features = list(assoc_mat.columns)
-
     # rename the columns for keeping track of num vs cat columns
     if suffix_dic is not None:
         rename_dic = {c: f"{c}_{suffix_dic[c]}" for c in assoc_mat.columns}
@@ -2431,11 +2428,9 @@ def plot_association_matrix_int(
         fontsize={"title": 12, "ticks": 12, "minor_ticks": 12},
         xrotation=90,
         invert_xaxis=False,
-        invert_yaxis=True,  # title=title_str,
+        invert_yaxis=True,
         xlabel="",
         ylabel="",
-        # gridstyle={'grid_line_color': 'black', 'grid_line_width': 20},
-        # show_grid=True
     )
     title_str = "**Continuous (con) and Categorical (nom) Associations **"
     sub_title_str = (
