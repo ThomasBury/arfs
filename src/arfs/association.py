@@ -522,7 +522,7 @@ def correlation_ratio(x, y, sample_weight=None, as_frame=False):
             for k in np.unique(y)
         ]
     else:
-        TypeError(
+        raise TypeError(
             "one of the two series should be categorical/object and the other numerical"
         )
 
