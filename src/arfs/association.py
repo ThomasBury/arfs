@@ -82,7 +82,9 @@ def weighted_conditional_entropy(x, y, sample_weight=None):
     if sample_weight is None:
         sample_weight = np.ones(len(x))
     elif np.count_nonzero(sample_weight) == 0:
-        raise ValueError("All elements in sample_weight are zero. Cannot divide by zero.")
+        raise ValueError(
+            "All elements in sample_weight are zero. Cannot divide by zero."
+        )
 
     df = pd.DataFrame({"x": x, "y": y, "sample_weight": sample_weight})
     tot_weight = df["sample_weight"].sum()
@@ -97,6 +99,7 @@ def weighted_conditional_entropy(x, y, sample_weight=None):
         if p_xy != 0:
             h_xy += p_xy * math.log(p_y / p_xy, math.e)
     return h_xy
+
 
 def weighted_theils_u(x, y, sample_weight=None, as_frame=False):
     """weighted_theils_u computes the weighted Theil's U statistic between two
@@ -143,20 +146,18 @@ def weighted_theils_u(x, y, sample_weight=None, as_frame=False):
         return 1.0
     else:
         u = (h_x - h_xy) / h_x
-        if abs(u) < _PRECISION or abs(u-1.0) < _PRECISION:
+        if abs(u) < _PRECISION or abs(u - 1.0) < _PRECISION:
             rounded_u = round(u)
             warnings.warn(
                 f"Rounded U = {u} to {rounded_u}. This is probably due to floating point precision issues.",
                 RuntimeWarning,
             )
             u = rounded_u
-            
+
     if as_frame:
-        return pd.DataFrame(
-            {"row": x.name, "col": y.name, "val": u}, index=[0]
-        )
+        return pd.DataFrame({"row": x.name, "col": y.name, "val": u}, index=[0])
     else:
-        return teil_u_val
+        return u
 
 
 def theils_u_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop"):

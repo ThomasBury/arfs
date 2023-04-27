@@ -108,7 +108,6 @@ class OrdinalEncoderPandas(OrdinalEncoder):
         encoded_missing_value=np.nan,
         return_pandas_categorical=False,
     ):
-
         self.dtype_include = dtype_include
         self.dtype_exclude = dtype_exclude
         self.pattern = pattern
@@ -461,7 +460,6 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         raw=False,
         task="regression",
     ):
-
         if (boost_params is not None) & (not isinstance(boost_params, dict)):
             raise TypeError("boost_kwargs should be a dictionary")
 

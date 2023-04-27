@@ -222,18 +222,10 @@ def gower_matrix(
 
     weight_sum = weight.sum()
 
-    X_cat = Z_cat[
-        x_index,
-    ]
-    X_num = Z_num[
-        x_index,
-    ]
-    Y_cat = Z_cat[
-        y_index,
-    ]
-    Y_num = Z_num[
-        y_index,
-    ]
+    X_cat = Z_cat[x_index,]
+    X_num = Z_num[x_index,]
+    Y_cat = Z_cat[y_index,]
+    Y_num = Z_num[y_index,]
 
     # print(X_cat,X_num,Y_cat,Y_num)
 

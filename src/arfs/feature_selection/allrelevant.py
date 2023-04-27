@@ -1245,7 +1245,6 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         silent=True,
         importance="shap",
     ):
-
         self.est = est
         self.cutoff = cutoff
         self.iters = iters
@@ -1815,7 +1814,6 @@ class GrootCV(SelectorMixin, BaseEstimator):
     def __init__(
         self, objective=None, cutoff=1, n_folds=5, n_iter=5, silent=True, rf=False
     ):
-
         self.objective = objective
         self.cutoff = cutoff
         self.n_folds = n_folds
@@ -2144,7 +2142,6 @@ def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight
     for tridx, validx in tqdm(
         rkf.split(X, y), total=rkf.get_n_splits(), desc="Repeated k-fold"
     ):
-
         if weight is not None:
             X_train, y_train, weight_tr = (
                 X.iloc[tridx, :],

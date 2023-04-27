@@ -190,11 +190,9 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         )  # pd.DataFrame(columns=['var_name', 'mrmr', 'relevancy', 'redundancy'])
         self.redundancy_ = pd.Series(dtype="float64")
         for i in tqdm(range(self.n_features_to_select), disable=not self.show_progress):
-
             score_numerator = relevance.loc[not_selected_features]
 
             if i > 0:
-
                 last_selected_feature = selected_features[-1]
 
                 if self.only_same_domain:
@@ -263,7 +261,7 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
             [x in selected_features for x in self.feature_names_in_]
         )
         self.not_selected_features_ = not_selected_features
-        
+
         return self
 
     def transform(self, X):

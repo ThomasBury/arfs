@@ -322,7 +322,6 @@ def _compute_varimp_lgb(
     encoder_kwargs=None,
     lgb_kwargs={"objective": "rmse", "zero_as_missing": False},
 ):
-
     if task not in ["regression", "classification", "multiclass"]:
         raise ValueError('Task must be either "classification" or "regression"')
 
