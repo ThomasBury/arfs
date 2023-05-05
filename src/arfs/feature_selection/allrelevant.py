@@ -337,17 +337,11 @@ class Leshy(SelectorMixin, BaseEstimator):
         # because the columns are dynamically created/rejected
         X = X_raw
 
-        X = np.nan_to_num(X)
-        y = np.nan_to_num(y)
+        X = X.apply(np.nan_to_num)
+        y = y.apply(np.nan_to_num)
 
         # check input params
         self._check_params(X, y)
-
-        if not isinstance(X, np.ndarray):
-            X = self._validate_pandas_input(X)
-
-        if not isinstance(y, np.ndarray):
-            y = self._validate_pandas_input(y)
 
         if sample_weight is not None:
             if not isinstance(sample_weight, np.ndarray):
@@ -635,21 +629,6 @@ class Leshy(SelectorMixin, BaseEstimator):
         n_estimators = int(multi * f_repr)
         return n_estimators
 
-    def _get_shuffle(self, seq):
-        """private method, shuffle a sequence
-
-        Parameters
-        ----------
-        seq : np.array
-            the sequence to shuffle
-        Returns
-        -------
-        seq : np.array
-            the shufled sequence
-        """
-        self.random_state.shuffle(seq)
-        return seq
-
     def _add_shadows_get_imps(self, X, y, sample_weight, dec_reg):
         """Add a shuffled copy of the columns (shadows) and get the feature
         importance of the augmented data set
@@ -673,26 +652,27 @@ class Leshy(SelectorMixin, BaseEstimator):
         """
         # find features that are tentative still
         x_cur_ind = np.where(dec_reg >= 0)[0]
-        x_cur = np.copy(X[:, x_cur_ind])
+        x_cur = X.iloc[:, x_cur_ind].copy()
         x_cur_w = x_cur.shape[1]
         # deep copy the matrix for the shadow matrix
-        x_sha = np.copy(x_cur)
+        x_sha = x_cur.copy()
         # make sure there's at least 5 columns in the shadow matrix for
         while x_sha.shape[1] < 5:
-            x_sha = np.hstack((x_sha, x_sha))
+            x_sha = pd.concat([x_sha, x_sha], axis=1)
         # shuffle xSha
-        x_sha = np.apply_along_axis(self._get_shuffle, 0, x_sha)
+        x_sha = x_sha.apply(self.random_state.permutation, axis=0)
+        x_sha.columns = [f"Shadow_{i}" for i in range(x_sha.shape[1])]
         # get importance of the merged matrix
         if self.importance == "shap":
             imp = _get_shap_imp(
-                self.estimator, np.hstack((x_cur, x_sha)), y, sample_weight
+                self.estimator, pd.concat([x_cur, x_sha], axis=1), y, sample_weight
             )
         elif self.importance == "pimp":
             imp = _get_perm_imp(
-                self.estimator, np.hstack((x_cur, x_sha)), y, sample_weight
+                self.estimator, pd.concat([x_cur, x_sha], axis=1), y, sample_weight
             )
         else:
-            imp = _get_imp(self.estimator, np.hstack((x_cur, x_sha)), y, sample_weight)
+            imp = _get_imp(self.estimator, pd.concat([x_cur, x_sha], axis=1), y, sample_weight)
 
         # separate importances of real and shadow features
         imp_sha = imp[x_cur_w:]
@@ -943,7 +923,6 @@ def _split_fit_estimator(estimator, X, y, sample_weight=None, cat_feature=None):
     """
     if cat_feature is None:
         # detect, store and encode categorical predictors
-        X = pd.DataFrame(X)
         X, _, cat_idx = get_pandas_cat_codes(X)
     else:
         cat_idx = cat_feature
@@ -964,9 +943,6 @@ def _split_fit_estimator(estimator, X, y, sample_weight=None, cat_feature=None):
         else:
             X_tr, X_tt, y_tr, y_tt = train_test_split(X, y, stratify=y, random_state=42)
         w_tr, w_tt = None, None
-
-    X_tr = pd.DataFrame(X_tr)
-    X_tt = pd.DataFrame(X_tt)
 
     if check_if_tree_based(estimator):
         try:
@@ -1130,10 +1106,6 @@ def _get_imp(estimator, X, y, sample_weight=None, cat_feature=None):
     estimator = clone(estimator)
 
     try:
-        # handle categoricals
-        if not isinstance(X, pd.DataFrame):
-            X = pd.DataFrame(X)
-
         if cat_feature is None:
             X, _, cat_idx = get_pandas_cat_codes(X)
         else:

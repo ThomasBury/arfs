@@ -119,8 +119,11 @@ def get_pandas_cat_codes(X):
     obj_feat = dtypes_dic["cat"] + dtypes_dic["time"] + dtypes_dic["unk"]
 
     if obj_feat:
-        cat = X[obj_feat].stack().astype("str").astype("category").cat.codes.unstack()
-        X = pd.concat([X[X.columns.difference(obj_feat)], cat], axis=1)
+        for obj_column in obj_feat:
+            column = X[obj_column].astype("str").astype("category")
+            # performs label encoding
+            _, inverse = np.unique(column, return_inverse=True)
+            X[obj_column] = inverse
         cat_idx = [X.columns.get_loc(col) for col in obj_feat]
     else:
         obj_feat = None
