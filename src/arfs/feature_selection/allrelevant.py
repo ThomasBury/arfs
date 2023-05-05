@@ -338,7 +338,10 @@ class Leshy(SelectorMixin, BaseEstimator):
         X = X_raw
 
         X = X.apply(np.nan_to_num)
-        y = y.apply(np.nan_to_num)
+        if not isinstance(y, pd.Series):
+            y = pd.Series(np.nan_to_num(y))
+        else:
+            y = y.apply(np.nan_to_num)
 
         # check input params
         self._check_params(X, y)
@@ -434,9 +437,6 @@ class Leshy(SelectorMixin, BaseEstimator):
         # for plotting
         self.imp_real_hist = imp_history
         self.sha_max = imp_sha_max
-
-        if isinstance(X_raw, np.ndarray):
-            X_raw = pd.DataFrame(X_raw)
 
         # absolute ranking
         vimp_df = pd.DataFrame(self.imp_real_hist, columns=self.feature_names_in_)
