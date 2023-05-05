@@ -3,8 +3,8 @@ import numpy as np
 import lightgbm as lgb
 from arfs.feature_selection.allrelevant import Leshy, BoostAGroota, GrootCV
 from arfs.utils import (
-    generated_corr_dataset_regr,
-    generated_corr_dataset_classification,
+    _generated_corr_dataset_regr,
+    _generated_corr_dataset_classification,
 )
 from arfs.utils import LightForestClassifier, LightForestRegressor
 
@@ -26,13 +26,13 @@ class TestLeshy:
 
         # lightGBM random forest implementation
         baseline_list = ["var0", "var1", "var2", "var3", "var4"]
-        X, y, w = generated_corr_dataset_classification(size=100)
+        X, y, w = _generated_corr_dataset_classification(size=100)
         n_feat = X.shape[1]
         rfc = LightForestClassifier(n_feat)
         # RandomForestClassifier(max_features='sqrt', max_samples=0.632, n_estimators=100) # --> too slow
         arfs = Leshy(rfc, verbose=0, max_iter=10, random_state=42, importance="native")
         arfs.fit(X, y)
-        leshy_rfc_list = sorted(arfs.support_names_)
+        leshy_rfc_list = sorted(arfs.feature_names_in_[arfs.support_])
 
         # assert borutapy_rfc_list == leshy_rfc_list, "same selected features are expected"
         assert bool(
@@ -51,13 +51,13 @@ class TestLeshy:
 
         # lightGBM random forest implementation
         baseline_list = ["var0", "var1", "var2", "var3", "var4"]
-        X, y, w = generated_corr_dataset_regr(size=100)
+        X, y, w = _generated_corr_dataset_regr(size=100)
         n_feat = X.shape[1]
         rfr = LightForestRegressor(n_feat)
         # rfr = RandomForestRegressor(max_features=0.3, max_samples=0.632, n_estimators=10)
         arfs = Leshy(rfr, verbose=0, max_iter=10, random_state=42, importance="native")
         arfs.fit(X, y)
-        leshy_rfc_list = sorted(arfs.support_names_)
+        leshy_rfc_list = sorted(arfs.feature_names_in_[arfs.support_])
 
         # assert borutapy_rfc_list == leshy_rfc_list, "same selected features are expected"
         assert bool(
@@ -76,12 +76,12 @@ class TestLeshy:
 
         # lightGBM random forest implementation
         baseline_list = ["var0", "var1", "var2", "var3", "var4"]
-        X, y, w = generated_corr_dataset_classification(size=100)
+        X, y, w = _generated_corr_dataset_classification(size=100)
         n_feat = X.shape[1]
         model = LightForestClassifier(n_feat)
         arfs = Leshy(model, verbose=0, max_iter=10, random_state=42, importance="shap")
         arfs.fit(X, y)
-        leshy_rfc_list = sorted(arfs.support_names_)
+        leshy_rfc_list = sorted(arfs.feature_names_in_[arfs.support_])
 
         # assert borutapy_rfc_list == leshy_rfc_list, "same selected features are expected"
         assert bool(
@@ -100,12 +100,12 @@ class TestLeshy:
 
         # lightGBM random forest implementation
         baseline_list = ["var0", "var1", "var2", "var3", "var4"]
-        X, y, w = generated_corr_dataset_regr(size=500)
+        X, y, w = _generated_corr_dataset_regr(size=500)
         n_feat = X.shape[1]
         model = LightForestRegressor(n_feat)
         arfs = Leshy(model, verbose=0, max_iter=10, random_state=42, importance="shap")
         arfs.fit(X, y)
-        leshy_rfc_list = sorted(arfs.support_names_)
+        leshy_rfc_list = sorted(arfs.feature_names_in_[arfs.support_])
 
         # assert borutapy_rfc_list == leshy_rfc_list, "same selected features are expected"
         assert bool(
@@ -115,11 +115,11 @@ class TestLeshy:
     def test_leshy_clf_with_lgb_and_shap_feature_importance_and_sample_weight(self):
         baseline_list = ["var0", "var1", "var2", "var3", "var4"]
 
-        X, y, w = generated_corr_dataset_classification(size=500)
+        X, y, w = _generated_corr_dataset_classification(size=500)
         model = lgb.LGBMClassifier(verbose=-1, force_col_wise=True, n_estimators=10)
         arfs = Leshy(model, verbose=0, max_iter=10, random_state=42, importance="shap")
         arfs.fit(X, y, w)
-        leshy_list = sorted(arfs.support_names_)
+        leshy_list = sorted(arfs.feature_names_in_[arfs.support_])
 
         assert bool(
             set(baseline_list) & set(leshy_list)
@@ -128,11 +128,11 @@ class TestLeshy:
     def test_leshy_regr_with_lgb_and_shap_feature_importance_and_sample_weight(self):
         baseline_list = ["var0", "var1", "var2", "var3", "var4", "var5"]
 
-        X, y, w = generated_corr_dataset_classification(size=500)
+        X, y, w = _generated_corr_dataset_classification(size=500)
         model = lgb.LGBMRegressor(verbose=-1, force_col_wise=True, n_estimators=10)
         arfs = Leshy(model, verbose=0, max_iter=10, random_state=42, importance="shap")
         arfs.fit(X, y, w)
-        leshy_list = sorted(arfs.support_names_)
+        leshy_list = sorted(arfs.feature_names_in_[arfs.support_])
 
         assert bool(
             set(baseline_list) & set(leshy_list)
@@ -149,7 +149,7 @@ class TestBoostAGroota:
     ):
         baseline_list = ["var0", "var1", "var2", "var3", "var4"]
 
-        X, y, w = generated_corr_dataset_classification(size=500)
+        X, y, w = _generated_corr_dataset_classification(size=500)
         model = lgb.LGBMClassifier(verbose=-1, force_col_wise=True, n_estimators=10)
         arfs = BoostAGroota(
             est=model,
@@ -161,7 +161,7 @@ class TestBoostAGroota:
             importance="shap",
         )
         arfs.fit(X, y, w)
-        leshy_list = sorted(arfs.support_names_)
+        leshy_list = sorted(arfs.feature_names_in_[arfs.support_])
 
         assert bool(
             set(baseline_list) & set(leshy_list)
@@ -172,7 +172,7 @@ class TestBoostAGroota:
     ):
         baseline_list = ["var0", "var1", "var2", "var3", "var4"]
 
-        X, y, w = generated_corr_dataset_classification(size=500)
+        X, y, w = _generated_corr_dataset_classification(size=500)
         model = lgb.LGBMClassifier(verbose=-1, force_col_wise=True, n_estimators=10)
         arfs = BoostAGroota(
             est=model,
@@ -184,7 +184,7 @@ class TestBoostAGroota:
             importance="pimp",
         )
         arfs.fit(X, y, w)
-        leshy_list = sorted(arfs.support_names_)
+        leshy_list = sorted(arfs.feature_names_in_[arfs.support_])
 
         assert bool(
             set(baseline_list) & set(leshy_list)
@@ -195,7 +195,7 @@ class TestBoostAGroota:
     ):
         baseline_list = ["var0", "var1", "var2", "var3", "var4", "var5"]
 
-        X, y, w = generated_corr_dataset_regr(size=500)
+        X, y, w = _generated_corr_dataset_regr(size=500)
         model = lgb.LGBMRegressor(verbose=-1, force_col_wise=True, n_estimators=10)
         arfs = BoostAGroota(
             est=model,
@@ -207,7 +207,7 @@ class TestBoostAGroota:
             importance="shap",
         )
         arfs.fit(X, y, w)
-        leshy_list = sorted(arfs.support_names_)
+        leshy_list = sorted(arfs.feature_names_in_[arfs.support_])
 
         assert bool(
             set(baseline_list) & set(leshy_list)
@@ -218,7 +218,7 @@ class TestBoostAGroota:
     ):
         baseline_list = ["var0", "var1", "var2", "var3", "var4", "var5"]
 
-        X, y, w = generated_corr_dataset_regr(size=500)
+        X, y, w = _generated_corr_dataset_regr(size=500)
         model = lgb.LGBMRegressor(verbose=-1, force_col_wise=True, n_estimators=10)
         arfs = BoostAGroota(
             est=model,
@@ -230,7 +230,7 @@ class TestBoostAGroota:
             importance="pimp",
         )
         arfs.fit(X, y, w)
-        leshy_list = sorted(arfs.support_names_)
+        leshy_list = sorted(arfs.feature_names_in_[arfs.support_])
 
         assert bool(
             set(baseline_list) & set(leshy_list)
@@ -245,10 +245,10 @@ class TestGrootCV:
     def test_grootcv_classification_with_and_sample_weight(self):
         baseline_list = ["var0", "var1", "var2", "var3", "var4"]
 
-        X, y, w = generated_corr_dataset_classification(size=100)
+        X, y, w = _generated_corr_dataset_classification(size=100)
         arfs = GrootCV(objective="binary", cutoff=1, n_folds=3, n_iter=3, silent=False)
         arfs.fit(X, y, w)
-        grootcv_list = sorted(arfs.support_names_)
+        grootcv_list = sorted(arfs.feature_names_in_[arfs.support_])
 
         assert bool(
             set(baseline_list) & set(grootcv_list)
@@ -257,10 +257,10 @@ class TestGrootCV:
     def test_grootcv_regression_with_and_sample_weight(self):
         baseline_list = ["var0", "var1", "var2", "var3", "var4", "var5"]
 
-        X, y, w = generated_corr_dataset_regr(size=100)
+        X, y, w = _generated_corr_dataset_regr(size=100)
         arfs = GrootCV(objective="l2", cutoff=1, n_folds=3, n_iter=3, silent=False)
         arfs.fit(X, y, w)
-        grootcv_list = sorted(arfs.support_names_)
+        grootcv_list = sorted(arfs.feature_names_in_[arfs.support_])
 
         assert bool(
             set(baseline_list) & set(grootcv_list)

@@ -37,7 +37,7 @@ class TestFeatSelectZeroVariance:
     def test_identify_single_unique_classification(self):
         # not task dependent (same for clf and regr)
         X, y, w = _generated_corr_dataset_classification(size=10)
-        fs = UniqueValuesThreshold(threshold=1)
+        fs = UniqueValuesThreshold(threshold=2)
         fs.fit(X)
         message = "Expected: {0}, Actual: {1}".format(
             "var10", fs.not_selected_features_
@@ -55,10 +55,12 @@ class TestFeatSelectHighCardinality:
         X, y, w = _generated_corr_dataset_classification(size=100)
         fs = CardinalityThreshold(threshold=5)
         fs.fit(X)
+        expected = sorted(["dummy", "nice_guys"])
+        actual = sorted(list(fs.not_selected_features_))
         message = "Expected: {0}, Actual: {1}".format(
-            "emb_dummy", fs.not_selected_features_
+            expected, actual
         )
-        assert fs.not_selected_features_ == ["emb_dummy"], message
+        assert actual == expected, message
 
 
 # class TestFeatSelectCollinearity:
