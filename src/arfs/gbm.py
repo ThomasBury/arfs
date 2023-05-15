@@ -48,9 +48,7 @@ def set_my_plt_style(height=3, width=5, linewidth=2):
 
     """
     plt.style.use("fivethirtyeight")
-    my_colors_list = qual_colors_list  # Bold_10.hex_colors
-    # myorder = [2, 3, 4, 1, 0, 6, 5, 8, 9, 7]
-    # my_colors_list = [my_colors_list[i] for i in myorder]
+    my_colors_list = qual_colors_list
     bckgnd_color = "#f5f5f5"
     params = {
         "figure.figsize": (width, height),
@@ -432,7 +430,6 @@ def _fit_early_stopped_lgb(
     )
 
     col_list = list(X.columns)
-    # cat_idx = [col_list.index(c) for c in cat_feat if c in x]
     d_train = lgb.Dataset(
         X_train, label=y_train, categorical_feature=cat_feat, free_raw_data=False
     )
@@ -492,9 +489,6 @@ def _fit_early_stopped_lgb(
         params.pop("objective")
     else:
         fobj_call = None
-
-    # if 'categorical_feature' in params.keys():
-    #     params.pop('categorical_feature')
 
     watchlist = [d_train, d_valid]
     evals_result = {}
