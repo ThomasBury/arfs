@@ -1986,7 +1986,6 @@ class GrootCV(SelectorMixin, BaseEstimator):
                 bp.findobj(mpl.patches.Patch)[c].set_color(blue_color)
 
             plt.axvline(x=self.sha_cutoff, linestyle="--", color="gray")
-            # xrange = real_df.max(skipna=True).max(skipna=True)-real_df.min(skipna=True).min(skipna=True)
             bp.set_xlim(left=real_df.min(skipna=True).min(skipna=True) - 0.025)
             custom_lines = [
                 Line2D([0], [0], color=blue_color, lw=5),
@@ -1998,8 +1997,6 @@ class GrootCV(SelectorMixin, BaseEstimator):
             )
             plt.title("Groot CV importance and selected predictors")
             fig = bp.get_figure()
-            # plt.tight_layout()
-            # plt.show()
             return fig
 
 
@@ -2147,14 +2144,11 @@ def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight
             train_set=d_train,
             num_boost_round=10000,
             valid_sets=watchlist,
-            # early_stopping_rounds=20,
-            # verbose_eval=0,
             categorical_feature=category_cols,
             callbacks=[early_stopping(20, False, False)],
         )
         if i == 0:
             df = pd.DataFrame({"feature": new_x_tr.columns})
-            pass
 
         shap_matrix = bst.predict(new_x_tr, pred_contrib=True)
 
