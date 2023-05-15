@@ -283,86 +283,10 @@ class Leshy(SelectorMixin, BaseEstimator):
 
         return self
 
-    def _get_support_mask(self):
-        check_is_fitted(self)
-
-        return self.support_
-
     def transform(self, X):
         if not isinstance(X, pd.DataFrame):
             raise TypeError("X is not a dataframe")
         return X[self.selected_features_]
-
-    def _more_tags(self):
-        return {"allow_nan": True, "requires_y": True}
-
-
-    def _fit(self, X_raw, y, sample_weight=None):
-        """Private method. See the methods overview in the documentation
-        for explanation of the process
-
-        Parameters
-        ----------
-        X_raw : array-like, shape = [n_samples, n_features]
-            The training input samples.
-        y : array-like, shape = [n_samples]
-            The target values.
-        sample_weight : array-like, shape = [n_samples], default=None
-            Individual weights for each sample
-
-        Returns
-        -------
-        self : object
-            Nothing but attributes
-        """
-
-        start_time = time.time()
-        # the basic cat features encoding
-        # is performed when getting importances
-        # because the columns are dynamically created/rejected
-        X = X_raw
-
-        X = X.fillna(0)
-        y = pd.Series(y).fillna(0) if not isinstance(y, pd.Series) else y.fillna(0)
-
-        # check input params
-        self._check_params(X, y)      
-        sample_weight = validate_sample_weight(sample_weight)
-        self.random_state = check_random_state(self.random_state)
-
-        # setup variables for Boruta
-        n_sample, n_feat = X.shape
-        _iter = 1
-        # holds the decision about each feature:
-        # 0  - default state = tentative in original code
-        # 1  - accepted in original code
-        # -1 - rejected in original code
-        dec_reg = np.zeros(n_feat, dtype=int)
-        # counts how many times a given feature was more important than
-        # the best of the shadow features
-        hit_reg = np.zeros(n_feat, dtype=int)
-        # these record the history of the iterations
-        imp_history = np.zeros(n_feat, dtype=float)
-        sha_max_history = []
-
-        # set n_estimators
-        if self.n_estimators != "auto":
-            self.estimator.set_params(n_estimators=self.n_estimators)
-            
-        dec_reg, sha_max_history, imp_history, imp_sha_max = self.select_features(X=X, y=y, sample_weight=sample_weight)
-        confirmed, tentative = _get_confirmed_and_tentative(dec_reg)
-        tentative = _select_tentative(tentative, imp_history, sha_max_history)
-        self._calculate_support(self, confirmed, tentative, n_feat)
-
-        # for plotting
-        self.imp_real_hist = imp_history
-        self.sha_max = imp_sha_max
-
-        # absolute and relative ranking
-        self._calculate_absolute_ranking()
-        self._calculate_relative_ranking(n_feat=n_feat, tentative=tentative, confirmed=confirmed, imp_history=imp_history)
-        self._print_result(dec_reg, _iter, start_time)
-        return self
 
     def plot_importance(self, n_feat_per_inch=5):
         """Boxplot of the variable importance, ordered by magnitude
@@ -467,6 +391,82 @@ class Leshy(SelectorMixin, BaseEstimator):
             # plt.tight_layout()
             # plt.show()
             return fig
+        
+    def _get_support_mask(self):
+        check_is_fitted(self)
+
+        return self.support_
+
+    def _more_tags(self):
+        return {"allow_nan": True, "requires_y": True}
+
+
+    def _fit(self, X_raw, y, sample_weight=None):
+        """Private method. See the methods overview in the documentation
+        for explanation of the process
+
+        Parameters
+        ----------
+        X_raw : array-like, shape = [n_samples, n_features]
+            The training input samples.
+        y : array-like, shape = [n_samples]
+            The target values.
+        sample_weight : array-like, shape = [n_samples], default=None
+            Individual weights for each sample
+
+        Returns
+        -------
+        self : object
+            Nothing but attributes
+        """
+
+        start_time = time.time()
+        # the basic cat features encoding
+        # is performed when getting importances
+        # because the columns are dynamically created/rejected
+        X = X_raw
+
+        X = X.fillna(0)
+        y = pd.Series(y).fillna(0) if not isinstance(y, pd.Series) else y.fillna(0)
+
+        # check input params
+        self._check_params(X, y)      
+        sample_weight = validate_sample_weight(sample_weight)
+        self.random_state = check_random_state(self.random_state)
+
+        # setup variables for Boruta
+        n_sample, n_feat = X.shape
+        _iter = 1
+        # holds the decision about each feature:
+        # 0  - default state = tentative in original code
+        # 1  - accepted in original code
+        # -1 - rejected in original code
+        dec_reg = np.zeros(n_feat, dtype=int)
+        # counts how many times a given feature was more important than
+        # the best of the shadow features
+        hit_reg = np.zeros(n_feat, dtype=int)
+        # these record the history of the iterations
+        imp_history = np.zeros(n_feat, dtype=float)
+        sha_max_history = []
+
+        # set n_estimators
+        if self.n_estimators != "auto":
+            self.estimator.set_params(n_estimators=self.n_estimators)
+            
+        dec_reg, sha_max_history, imp_history, imp_sha_max = self.select_features(X=X, y=y, sample_weight=sample_weight)
+        confirmed, tentative = _get_confirmed_and_tentative(dec_reg)
+        tentative = _select_tentative(tentative, imp_history, sha_max_history)
+        self._calculate_support(self, confirmed, tentative, n_feat)
+
+        # for plotting
+        self.imp_real_hist = imp_history
+        self.sha_max = imp_sha_max
+
+        # absolute and relative ranking
+        self._calculate_absolute_ranking()
+        self._calculate_relative_ranking(n_feat=n_feat, tentative=tentative, confirmed=confirmed, imp_history=imp_history)
+        self._print_result(dec_reg, _iter, start_time)
+        return self
 
     def _get_tree_num(self, n_feat):
         """private method, get a good estimated for the number of trees
