@@ -87,6 +87,8 @@ from ..utils import (
 
 NO_FEATURE_SELECTED_WARNINGS = "No feature selected - No data to plot"
 ARFS_COLOR_LIST = ["#000000", "#7F3C8D", "#11A579", "#3969AC", "#F2B701", "#E73F74", "#80BA5A", "#E68310", "#008695", "#CF1C90", "#F97B72"]
+BLUE = "#2590fa"
+YELLOW = "#f0be00"
 BCKGRD_COLOR = "#f5f5f5"
 PLT_PARAMS = {
             "axes.prop_cycle": plt.cycler(color=ARFS_COLOR_LIST),
@@ -99,6 +101,26 @@ PLT_PARAMS = {
             "grid.color": "#d2d2d2",
             "lines.linewidth": 1.5,
         }
+BOXPLOT_COLOR = {
+            "boxes": "gray",
+            "whiskers": "gray",
+            "medians": "#000000",
+            "caps": "gray",
+        }
+PLOT_KWARGS = dict(kind="box",
+               color=BOXPLOT_COLOR,
+                boxprops=dict(linestyle="-", linewidth=1.5),
+                flierprops=dict(linestyle="-", linewidth=1.5),
+                medianprops=dict(linestyle="-", linewidth=1.5, color="#000000"),
+                whiskerprops=dict(linestyle="-", linewidth=1.5),
+                capprops=dict(linestyle="-", linewidth=1.5),
+                showfliers=False,
+                grid=True,
+                rot=0,
+                vert=False,
+                patch_artist=True,
+                fontsize=9
+)
 
 class Leshy(SelectorMixin, BaseEstimator):
     """This is an improved version of BorutaPy which itself is an
@@ -319,12 +341,7 @@ class Leshy(SelectorMixin, BaseEstimator):
         if self.imp_real_hist is None:
             raise ValueError("Use the fit method first to compute the var.imp")
 
-        color = {
-            "boxes": "gray",
-            "whiskers": "gray",
-            "medians": "#000000",
-            "caps": "gray",
-        }
+
         vimp_df = pd.DataFrame(self.imp_real_hist, columns=self.feature_names_in_)
         vimp_df = vimp_df.reindex(
             vimp_df.mean().sort_values(ascending=True).index, axis=1
@@ -334,30 +351,17 @@ class Leshy(SelectorMixin, BaseEstimator):
             warnings.warn(NO_FEATURE_SELECTED_WARNINGS)
             return None
         else:
-            bp = vimp_df.boxplot(
-                color=color,
-                boxprops=dict(linestyle="-", linewidth=1.5),
-                flierprops=dict(linestyle="-", linewidth=1.5),
-                medianprops=dict(linestyle="-", linewidth=1.5, color="#000000"),
-                whiskerprops=dict(linestyle="-", linewidth=1.5),
-                capprops=dict(linestyle="-", linewidth=1.5),
-                showfliers=False,
-                grid=True,
-                rot=0,
-                vert=False,
-                patch_artist=True,
+            bp = vimp_df.plot(
+                **PLOT_KWARGS,
                 figsize=(16, vimp_df.shape[1] / n_feat_per_inch),
-                fontsize=9,
             )
-            blue_color = "#2590fa"
-            yellow_color = "#f0be00"
 
             n_strong = sum(self.support_)
             n_weak = np.sum(self.support_weak_)
             n_discarded = np.sum(~(self.support_ | self.support_weak_))
             box_face_col = (
-                [blue_color] * n_strong
-                + [yellow_color] * n_weak
+                [BLUE] * n_strong
+                + [YELLOW] * n_weak
                 + ["gray"] * n_discarded
             )
             for c in range(len(box_face_col)):
@@ -374,8 +378,8 @@ class Leshy(SelectorMixin, BaseEstimator):
             bp.set_xlim(left=vimp_df.min(skipna=True).min(skipna=True) - 0.10 * xrange)
 
             custom_lines = [
-                Line2D([0], [0], color=blue_color, lw=5),
-                Line2D([0], [0], color=yellow_color, lw=5),
+                Line2D([0], [0], color=BLUE, lw=5),
+                Line2D([0], [0], color=YELLOW, lw=5),
                 Line2D([0], [0], color="gray", lw=5),
                 Line2D([0], [0], linestyle="--", color="gray", lw=2),
             ]
@@ -1338,13 +1342,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         # b_df = b_df.drop(b_df.index[-1])
         b_df = self.sha_cutoff_df
         real_df = b_df.iloc[:, : int(b_df.shape[1] / 2)].copy()
-        blue_color = "#2590fa"
-        color = {
-            "boxes": "gray",
-            "whiskers": "gray",
-            "medians": "#000000",
-            "caps": "gray",
-        }
+
         real_df = real_df.reindex(
             real_df.mean().sort_values(ascending=True).index, axis=1
         )
@@ -1353,36 +1351,24 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
             warnings.warn(NO_FEATURE_SELECTED_WARNINGS)
             return None
         else:
-            bp = real_df.plot.box(  # kind='box',
-                color=color,
-                boxprops=dict(
-                    linestyle="-", linewidth=1.5, color="gray", facecolor="gray"
-                ),
-                flierprops=dict(linestyle="-", linewidth=1.5),
-                medianprops=dict(linestyle="-", linewidth=1.5, color="#000000"),
-                whiskerprops=dict(linestyle="-", linewidth=1.5),
-                capprops=dict(linestyle="-", linewidth=1.5),
-                showfliers=False,
-                grid=True,
-                rot=0,
-                vert=False,
-                patch_artist=True,
+            bp = real_df.plot(
+                **PLOT_KWARGS,
                 figsize=(16, real_df.shape[1] / n_feat_per_inch),
-                fontsize=9,
             )
+
             # xrange = real_df.max(skipna=True).max(skipna=True)-real_df.min(skipna=True).min(skipna=True)
             bp.set_xlim(left=real_df.min(skipna=True).min(skipna=True) - 0.025)
 
             for c in range(len(self.selected_features_)):
                 bp.findobj(mpl.patches.Patch)[real_df.shape[1] - c - 1].set_facecolor(
-                    blue_color
+                    BLUE
                 )
                 bp.findobj(mpl.patches.Patch)[real_df.shape[1] - c - 1].set_color(
-                    blue_color
+                    BLUE
                 )
 
             custom_lines = [
-                Line2D([0], [0], color=blue_color, lw=5),
+                Line2D([0], [0], color=BLUE, lw=5),
                 Line2D([0], [0], color="gray", lw=5),
                 Line2D([0], [0], linestyle="--", color="gray", lw=2),
             ]
@@ -1879,36 +1865,24 @@ class GrootCV(SelectorMixin, BaseEstimator):
             return None
         else:
             bp = real_df.plot(
-                kind="box",
-                color=color,
-                boxprops=dict(linestyle="-", linewidth=1.5),
-                flierprops=dict(linestyle="-", linewidth=1.5),
-                medianprops=dict(linestyle="-", linewidth=1.5, color="#000000"),
-                whiskerprops=dict(linestyle="-", linewidth=1.5),
-                capprops=dict(linestyle="-", linewidth=1.5),
-                showfliers=False,
-                grid=True,
-                rot=0,
-                vert=False,
-                patch_artist=True,
+                **PLOT_KWARGS,
                 figsize=(16, real_df.shape[1] / n_feat_per_inch),
-                fontsize=9,
             )
             col_idx = np.argwhere(real_df.columns.isin(self.selected_features_)).ravel()
-            blue_color = "#2590fa"
+            BLUE = "#2590fa"
 
             for c in range(real_df.shape[1]):
                 bp.findobj(mpl.patches.Patch)[c].set_facecolor("gray")
                 bp.findobj(mpl.patches.Patch)[c].set_color("gray")
 
             for c in col_idx:
-                bp.findobj(mpl.patches.Patch)[c].set_facecolor(blue_color)
-                bp.findobj(mpl.patches.Patch)[c].set_color(blue_color)
+                bp.findobj(mpl.patches.Patch)[c].set_facecolor(BLUE)
+                bp.findobj(mpl.patches.Patch)[c].set_color(BLUE)
 
             plt.axvline(x=self.sha_cutoff, linestyle="--", color="gray")
             bp.set_xlim(left=real_df.min(skipna=True).min(skipna=True) - 0.025)
             custom_lines = [
-                Line2D([0], [0], color=blue_color, lw=5),
+                Line2D([0], [0], color=BLUE, lw=5),
                 Line2D([0], [0], color="gray", lw=5),
                 Line2D([0], [0], linestyle="--", color="gray", lw=2),
             ]
