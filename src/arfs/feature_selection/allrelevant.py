@@ -84,7 +84,7 @@ from ..utils import (
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-NO_FEATURE_SELECTED_WARNINGS = "No feature selected - No data to plot
+NO_FEATURE_SELECTED_WARNINGS = "No feature selected - No data to plot"
 
 class Leshy(SelectorMixin, BaseEstimator):
     """This is an improved version of BorutaPy which itself is an
