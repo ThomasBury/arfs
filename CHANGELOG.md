@@ -1,8 +1,13 @@
 # Changes
 
+## 1.1
+
+ - Corrected an issue in Leshy that occurred when using categorical variables. The use of NumPy functions and methods instead of Pandas ones resulted in the modification of original data types.
+
 ## 1.0.7
 
  - Patch preventing zero division in the conditional entropy calculation
+  
 ## 1.0.6
 
  - Return self in mrmr, fixing error when in scikit-learn pipeline
