@@ -84,6 +84,7 @@ from ..utils import (
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+NO_FEATURE_SELECTED_WARNINGS = "No feature selected - No data to plot
 
 class Leshy(SelectorMixin, BaseEstimator):
     """This is an improved version of BorutaPy which itself is an
@@ -329,7 +330,6 @@ class Leshy(SelectorMixin, BaseEstimator):
         self : object
             Nothing but attributes
         """
-        # self.is_cat = is_catboost(self.estimator)
 
         start_time = time.time()
         # the basic cat features encoding
@@ -448,7 +448,6 @@ class Leshy(SelectorMixin, BaseEstimator):
         self.ranking_ = np.ones(n_feat, dtype=int)
         # tentative variables are rank 2
         self.ranking_[tentative] = 2
-        # selected = confirmed and tentative
         selected = np.hstack((confirmed, tentative))
         # all rejected features are sorted by importance history
         not_selected = np.setdiff1d(np.arange(n_feat), selected)
@@ -544,7 +543,7 @@ class Leshy(SelectorMixin, BaseEstimator):
         )
 
         if vimp_df.dropna().empty:
-            warnings.warn("No feature selected - No data to plot")
+            warnings.warn(NO_FEATURE_SELECTED_WARNINGS)
             return None
         else:
             bp = vimp_df.boxplot(
@@ -1403,7 +1402,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         )
 
         if real_df.dropna().empty:
-            warnings.warn("No feature selected - No data to plot")
+            warnings.warn(NO_FEATURE_SELECTED_WARNINGS)
             return None
         else:
             bp = real_df.plot.box(  # kind='box',
@@ -1956,7 +1955,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
         )
 
         if real_df.dropna().empty:
-            warnings.warn("No feature selected - No data to plot")
+            warnings.warn(NO_FEATURE_SELECTED_WARNINGS)
             return None
         else:
             bp = real_df.plot(
