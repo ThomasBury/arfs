@@ -338,10 +338,7 @@ class Leshy(SelectorMixin, BaseEstimator):
         X = X_raw
 
         X = X.fillna(0)
-        if not isinstance(y, pd.Series):
-            y = pd.Series(y).fillna(0)
-        else:
-            y = y.fillna(0)
+        y = pd.Series(y).fillna(0) if not isinstance(y, pd.Series) else y.fillna(0)
 
         # check input params
         self._check_params(X, y)
