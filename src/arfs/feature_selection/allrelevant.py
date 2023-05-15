@@ -88,6 +88,17 @@ from ..utils import (
 NO_FEATURE_SELECTED_WARNINGS = "No feature selected - No data to plot"
 ARFS_COLOR_LIST = ["#000000", "#7F3C8D", "#11A579", "#3969AC", "#F2B701", "#E73F74", "#80BA5A", "#E68310", "#008695", "#CF1C90", "#F97B72"]
 BCKGRD_COLOR = "#f5f5f5"
+PLT_PARAMS = {
+            "axes.prop_cycle": plt.cycler(color=ARFS_COLOR_LIST),
+            "axes.facecolor": BCKGRD_COLOR,
+            "patch.edgecolor": BCKGRD_COLOR,
+            "figure.facecolor": BCKGRD_COLOR,
+            "axes.edgecolor": BCKGRD_COLOR,
+            "savefig.edgecolor": BCKGRD_COLOR,
+            "savefig.facecolor": BCKGRD_COLOR,
+            "grid.color": "#d2d2d2",
+            "lines.linewidth": 1.5,
+        }
 
 class Leshy(SelectorMixin, BaseEstimator):
     """This is an improved version of BorutaPy which itself is an
@@ -287,7 +298,8 @@ class Leshy(SelectorMixin, BaseEstimator):
         if not isinstance(X, pd.DataFrame):
             raise TypeError("X is not a dataframe")
         return X[self.selected_features_]
-
+    
+    @mpl.rc_context(PLT_PARAMS)
     def plot_importance(self, n_feat_per_inch=5):
         """Boxplot of the variable importance, ordered by magnitude
         The max shadow variable importance illustrated by the dashed line.
@@ -303,18 +315,6 @@ class Leshy(SelectorMixin, BaseEstimator):
         fig : plt.figure
             the matplotlib figure object containing the boxplot
         """
-        params = {
-            "axes.prop_cycle": plt.cycler(color=ARFS_COLOR_LIST),
-            "axes.facecolor": BCKGRD_COLOR,
-            "patch.edgecolor": BCKGRD_COLOR,
-            "figure.facecolor": BCKGRD_COLOR,
-            "axes.edgecolor": BCKGRD_COLOR,
-            "savefig.edgecolor": BCKGRD_COLOR,
-            "savefig.facecolor": BCKGRD_COLOR,
-            "grid.color": "#d2d2d2",
-            "lines.linewidth": 1.5,
-        }  # plt.cycler(color=my_colors_list)
-        mpl.rcParams.update(params)
 
         if self.imp_real_hist is None:
             raise ValueError("Use the fit method first to compute the var.imp")
@@ -1313,7 +1313,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
 
     def _more_tags(self):
         return {"allow_nan": True, "requires_y": True}
-
+    @mpl.rc_context(PLT_PARAMS)
     def plot_importance(self, n_feat_per_inch=5):
         """Boxplot of the variable importance, ordered by magnitude
         The max shadow variable importance illustrated by the dashed line.
@@ -1329,19 +1329,6 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         fig : plt.figure
             the matplotlib figure object containing the boxplot
         """
-        params = {
-            "axes.prop_cycle": plt.cycler(color=ARFS_COLOR_LIST),
-            "axes.facecolor": BCKGRD_COLOR,
-            "patch.edgecolor": BCKGRD_COLOR,
-            "figure.facecolor": BCKGRD_COLOR,
-            "axes.edgecolor": BCKGRD_COLOR,
-            "savefig.edgecolor": BCKGRD_COLOR,
-            "savefig.facecolor": BCKGRD_COLOR,
-            "grid.color": "#d2d2d2",
-            "lines.linewidth": 1.5,
-        }  # plt.cycler(color=my_colors_list)
-        mpl.rcParams.update(params)
-
         if self.mean_shadow is None:
             raise ValueError("Apply fit method first")
 
@@ -1845,7 +1832,8 @@ class GrootCV(SelectorMixin, BaseEstimator):
 
     def _more_tags(self):
         return {"allow_nan": True, "requires_y": True}
-
+    
+    @mpl.rc_context(PLT_PARAMS)
     def plot_importance(self, n_feat_per_inch=5):
         """Boxplot of the variable importance, ordered by magnitude
         The max shadow variable importance illustrated by the dashed line.
@@ -1861,19 +1849,6 @@ class GrootCV(SelectorMixin, BaseEstimator):
         fig : plt.figure
             the matplotlib figure object containing the boxplot
         """
-        params = {
-            "axes.prop_cycle": plt.cycler(color=ARFS_COLOR_LIST),
-            "axes.facecolor": BCKGRD_COLOR,
-            "patch.edgecolor": BCKGRD_COLOR,
-            "figure.facecolor": BCKGRD_COLOR,
-            "axes.edgecolor": BCKGRD_COLOR,
-            "savefig.edgecolor": BCKGRD_COLOR,
-            "savefig.facecolor": BCKGRD_COLOR,
-            "grid.color": "#d2d2d2",
-            "lines.linewidth": 1.5,
-        }  # plt.cycler(color=my_colors_list)
-        mpl.rcParams.update(params)
-
         if self.sha_cutoff is None:
             raise ValueError("Apply fit method first")
 
