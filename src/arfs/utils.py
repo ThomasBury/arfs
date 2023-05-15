@@ -131,6 +131,34 @@ def get_pandas_cat_codes(X):
 
     return X, obj_feat, cat_idx
 
+def validate_sample_weight(sample_weight):
+    """Ensures sample_weight parameter is a numpy array."""
+    if isinstance(sample_weight, pd.Series):
+        return sample_weight.values
+    elif isinstance(sample_weight, np.ndarray):
+        return sample_weight
+    elif sample_weight is None:
+        return None
+    else:
+        raise ValueError(
+            "sample_weight must be an array-like object or None."
+        )
+
+def validate_pandas_input(arg):
+    """Validate if pandas or numpy arrays are provided
+    Parameters
+    ----------
+    arg : pd.DataFrame or np.array
+        the object to validate
+    Raises
+    ------
+    TypeError
+        error if pandas or numpy arrays are not provided
+    """
+    try:
+        return arg.values
+    except AttributeError:
+        raise TypeError("input needs to be a numpy array or pandas data frame.")
 
 def check_if_tree_based(model):
     """check if estimator is tree based
