@@ -337,11 +337,11 @@ class Leshy(SelectorMixin, BaseEstimator):
         # because the columns are dynamically created/rejected
         X = X_raw
 
-        X = X.apply(np.nan_to_num)
+        X = X.fillna(0)
         if not isinstance(y, pd.Series):
-            y = pd.Series(np.nan_to_num(y))
+            y = pd.Series(y).fillna(0)
         else:
-            y = y.apply(np.nan_to_num)
+            y = y.fillna(0)
 
         # check input params
         self._check_params(X, y)
