@@ -1613,7 +1613,7 @@ def _create_shadow(X_train):
 def _reduce_vars_sklearn(
     X,
     y,
-    est,
+    estimator,
     this_round,
     cutoff,
     n_iterations,
@@ -1631,7 +1631,7 @@ def _reduce_vars_sklearn(
         the dataframe to create shadow features on
     y : pd.Series
         the target
-    est : sklear estimator
+    estimator : sklear estimator
         the model to train, lightGBM recommended
     this_round : int
         The number of times the core BoostARoota algorithm will run.
@@ -1666,9 +1666,10 @@ def _reduce_vars_sklearn(
         the feature importance threshold, to reject or not the predictors
 
     Raises
-    ------_reduce_vars_sklearn
+    ------
     ValueError
-        error if the feature importance type is not"""
+        error if the feature importance type is not
+    """
     # Set up the parameters for running the model in XGBoost - split is on multi log loss
 
     for i in range(1, n_iterations + 1):
@@ -1676,14 +1677,14 @@ def _reduce_vars_sklearn(
         new_x, shadow_names = _create_shadow(X)
         if imp_kind == "shap":
             imp = _get_shap_imp(
-                est, new_x, y, sample_weight=weight, cat_feature=cat_feature
+                estimator, new_x, y, sample_weight=weight, cat_feature=cat_feature
             )
         elif imp_kind == "pimp":
             imp = _get_perm_imp(
-                est, new_x, y, sample_weight=weight, cat_feature=cat_feature
+                estimator, new_x, y, sample_weight=weight, cat_feature=cat_feature
             )
         elif imp_kind == "native":
-            imp = _get_imp(est, new_x, y, sample_weight=weight, cat_feature=cat_feature)
+            imp = _get_imp(estimator, new_x, y, sample_weight=weight, cat_feature=cat_feature)
         else:
             raise ValueError(
                 "'imp' should be either 'native', 'shap' or 'pimp', "
