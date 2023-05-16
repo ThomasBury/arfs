@@ -55,6 +55,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import scipy as sp
 
+from typing import Tuple
 from tqdm import tqdm
 from sklearn.utils import check_random_state, check_X_y
 from sklearn.base import BaseEstimator, is_regressor, is_classifier, clone
@@ -1488,7 +1489,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
             sample_weight = _check_sample_weight(sample_weight, X)
 
         # Call _BoostARoota to perform feature selection
-        _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _BoostARoota(
+        _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _boostaroota(
             X,
             y,
             est=self.est,
@@ -1715,60 +1716,75 @@ def _reduce_vars_sklearn(
     return criteria, real_vars["feature"], df, mean_shadow
 
 # Main function exposed to run the algorithm
-def _BoostARoota(X, y, est, cutoff, iters, max_rounds, delta, silent, weight, imp):
-    """Private function, reduce the number of predictors using a sklearn estimator
+def _boostaroota_boostaroota(
+    X: pd.DataFrame, 
+    y: pd.Series, 
+    estimator: object, 
+    cutoff: float, 
+    iters: int, 
+    max_rounds: int, 
+    delta: float, 
+    silent: bool, 
+    weight: str, 
+    imp: str
+) -> Tuple[bool, list, pd.DataFrame, np.ndarray]:
+    """
+    Feature selection using the BoostARoota algorithm.
 
     Parameters
-
-    x : pd.DataFrame
-        the dataframe to create shadow features on
-    y : pd.Series
-        the target
-    est : sklear estimator
-        the model to train, lightGBM recommended, see the reduce lightgbm method
-    cutoff : float
-        the value by which the max of shadow imp is divided, to compare to real importance
-    iters : int (>0)
-        The number of iterations to average for the feature importances (on the same split),
-        to reduce the variance
-    max_rounds : int (>0)
-        The number of times the core BoostARoota algorithm will run.
-        Each round eliminates more and more features
-    delta : float (0 < delta <= 1)
-        Stopping criteria for whether another round is started
-    silent : bool
-        Set to True if don't want to see the BoostARoota output printed.
-        Will still show any errors or warnings that may occur
-    weight : pd.series
-        sample_weight, if any
+    ----------
+    X : array-like of shape (n_samples, n_features)
+        The input samples.
+    y : array-like of shape (n_samples,)
+        The target values.
+    est : object
+        The estimator object that implements the 'fit' and 'predict' methods.
+    cutoff : float, optional, default=0.99
+        The cutoff value to determine whether a feature is good enough to keep.
+    iters : int, optional, default=3
+        The number of iterations used to compute the stability of each feature.
+    max_rounds : int, optional, default=50
+        The maximum number of rounds to run the algorithm.
+    delta : float, optional, default=0.1
+        The minimum delta value for feature removal.
+    silent : bool, optional, default=False
+        If True, the progress bar will be disabled.
+    weight : str, optional, default="inverse"
+        The type of weight used to combine importance scores.
+    imp : str, optional, default="permutation"
+        The type of importance measure used.
 
     Returns
     -------
     crit : bool
-        if the criteria has been reached or not
-    keep_vars : pd.dataframe
-        feature importance of the real predictors over iter
-    df_vimp : pd.DataFrame
-        feature importance of the real+shadow predictors over iter
+        Whether the BoostARoota algorithm has converged.
+    keep_vars : list
+        The final list of selected features.
+    df_vimp : pandas.DataFrame
+        The variable importance scores for each feature.
     mean_shadow : float
-        the feature importance threshold, to reject or not the predictors
+        The mean shadow feature importance score.
+
+    Notes
+    -----
+    BoostARoota is a feature selection algorithm that selects the best subset of features based on their stability
+    and importance. This function applies the BoostARoota algorithm to the input data, using the given estimator
+    object to fit and predict the data. The algorithm reduces the dataset on each iteration and exits with keep_vars.
+    The encoding is done only for every predictor update and not every iteration, making the code faster.
     """
-    t_boostaroota = time.time()
+    start_time = time.time()
     new_x = X.copy()
 
-    # extract the categorical names for the first time, store it for next iterations
-    # In the below while loop this list will be update only once some of the predictors
-    # are removed. This way the encoding is done only every predictors update and not
+    # Extract the categorical names for the first time, store it for next iterations.
+    # In the below while loop this list will be updated only once some of the predictors
+    # are removed. This way the encoding is done only for every predictors update and not
     # every iteration. The code will then be much faster since the encoding is done only once.
     new_x, obj_feat, cat_idx = get_pandas_cat_codes(X)
 
-    # Run through loop until "crit" changes
-    i = 0
-    pbar = tqdm(total=max_rounds, desc="BoostaGRoota round")
+    # Run through loop until "crit" changes.
     imp_dic = {}
-    while True:
-        # Inside this loop we reduce the dataset on each iteration exiting with keep_vars
-        i += 1
+    for i in tqdm(range(1, max_rounds + 1), desc="BoostaGRoota round", disable=silent):
+        # Inside this loop we reduce the dataset on each iteration exiting with keep_vars.
         crit, keep_vars, df_vimp, mean_shadow = _reduce_vars_sklearn(
             new_x,
             y,
@@ -1777,42 +1793,38 @@ def _BoostARoota(X, y, est, cutoff, iters, max_rounds, delta, silent, weight, im
             cutoff=cutoff,
             n_iterations=iters,
             delta=delta,
-            silent=silent,
+            silent=True,
             weight=weight,
             imp_kind=imp,
             cat_feature=cat_idx,
         )
 
-        b_df = df_vimp.T.copy()
+        # Update importance dictionary.
+        b_df = df_vimp.T.iloc[1:-1].convert_dtypes()
         b_df.columns = b_df.iloc[0]
         b_df = b_df.drop(b_df.index[0])
-        b_df = b_df.drop(b_df.index[-1])
-        b_df = b_df.convert_dtypes()
         for c in b_df.columns:
             imp_dic[c] = b_df[c].values
 
-        if crit | (i >= max_rounds) | (len(keep_vars) == 0):
-            break  # exit and use keep_vars as final variables
+        # Exit and use keep_vars as final variables if crit changes or maximum rounds or
+        # length of keep_vars is zero.
+        if crit or i >= max_rounds or not keep_vars:
+            break
         else:
             new_x = new_x[keep_vars].copy()
             _, _, cat_idx = get_pandas_cat_codes(new_x)
 
-            pbar.update(1)
-    pbar.close()
-    elapsed = time.time() - t_boostaroota
-    elapsed = elapsed / 60
-    if not silent:
-        print("BoostARoota ran successfully! Algorithm went through ", i, " rounds.")
-        print(
-            "\nThe feature selection BoostARoota running time is {0:8.2f} min".format(
-                elapsed
-            )
-        )
+    # Compute elapsed time.
+    elapsed = (time.time() - start_time) / 60
 
+    if not silent:
+        print(f"BoostARoota ran successfully! Algorithm went through {i} rounds.")
+        print(f"The feature selection BoostARoota running time is {elapsed:8.2f} min")
+
+    # Create dataframe from importance dictionary.
     df_vimp = pd.DataFrame(imp_dic)
 
     return crit, keep_vars, df_vimp, mean_shadow
-
 
 ###################################
 #
