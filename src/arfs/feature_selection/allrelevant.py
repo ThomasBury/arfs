@@ -1671,6 +1671,8 @@ def _reduce_vars_sklearn(
         error if the feature importance type is not
     """
     # Set up the parameters for running the model in XGBoost - split is on multi log loss
+    df = pd.DataFrame({"feature": X.columns})
+    shadow_vars = pd.DataFrame()
     for i in range(1, n_iterations + 1):
         # Create the shadow variables and run the model to obtain importances
         new_x, shadow_names = _create_shadow(X)
@@ -1682,52 +1684,33 @@ def _reduce_vars_sklearn(
             imp = _get_imp(estimator, new_x, y, sample_weight=weight, cat_feature=cat_feature)
         else:
             raise ValueError("'imp' should be either 'native', 'shap' or 'pimp', 'native' is not recommended")
+        
+        importance = imp  # est.feature_importances_
+        df[f"fscore{str(i)}"] = importance / importance.sum()
 
-        if i == 1:
-            df = pd.DataFrame({"feature": new_x.columns})
-            df2 = df.copy()
-            pass
-        try:
-            importance = imp  # est.feature_importances_
-            df2["fscore" + str(i)] = importance
-        except ValueError:
-            print(
-                "this clf doesn't have the feature_importances_ method.  "
-                "Only Sklearn tree based methods allowed"
-            )
+        # Check if the estimator has the feature_importances_ method, and if not, print a warning message
+        if f"fscore{str(i)}" not in df.columns:
+            print("This clf doesn't have the feature_importances_ method. Only Sklearn tree-based methods allowed")
 
-        # importance = sorted(importance.items(), key=operator.itemgetter(1))
-
-        # df2 = pd.DataFrame(importance, columns=['feature', 'fscore'+str(i)])
-        df2["fscore" + str(i)] = df2["fscore" + str(i)] / df2["fscore" + str(i)].sum()
-        df = pd.merge(
-            df, df2, on="feature", how="outer", suffixes=("_x" + str(i), "_y" + str(i))
-        )
         if not silent:
             print("Round: ", this_round, " iteration: ", i)
+        
+    # Calculate the mean importance across all iterations
+    df["Mean"] = df.iloc[:, 1:n_iterations + 1].mean(axis=1)
 
-    df["Mean"] = df.select_dtypes(include=[np.number]).mean(axis=1, skipna=True)
-    # Split them back out
+    # Split the variables back out into real and shadow variables
     real_vars = df.loc[~df["feature"].isin(shadow_names)]
     shadow_vars = df.loc[df["feature"].isin(shadow_names)]
 
     # Get mean value from the shadows (max, like in Boruta, median to mitigate variance)
-    mean_shadow = (
-        shadow_vars.select_dtypes(include=[np.number])
-        .max(skipna=True)
-        .mean(skipna=True)
-        / cutoff
-    )
+    mean_shadow = shadow_vars.iloc[:, 1:n_iterations + 1].max(skipna=True).mean(skipna=True) / cutoff
+
+    # Select the real variables based on the mean importance value and the cutoff value
     real_vars = real_vars[(real_vars.Mean >= mean_shadow)]
 
     # Check for the stopping criteria
     # Basically looking to make sure we are removing at least 10% of the variables, or we should stop
-    if len(X.columns) == 0 | len(real_vars["feature"]) == 0:
-        criteria = True
-    elif (len(real_vars["feature"]) / len(X.columns)) > (1 - delta):
-        criteria = True
-    else:
-        criteria = False
+    criteria = (len(X.columns) == 0) or (len(real_vars["feature"]) == 0) or ((len(real_vars["feature"]) / len(X.columns)) > (1 - delta))
 
     return criteria, real_vars["feature"], df, mean_shadow
 
