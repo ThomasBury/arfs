@@ -1326,7 +1326,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
 
     Parameters
     ----------
-    est : object
+    estimator : object
         A scikit-learn estimator, lightGBM recommended, see the reduce lightgbm method
     cutoff : float
         the value by which the max of shadow imp is divided, to compare to real importance
@@ -1394,7 +1394,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
 
     def __init__(
         self,
-        est=None,
+        estimator=None,
         cutoff=4,
         iters=10,
         max_rounds=500,
@@ -1402,7 +1402,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         silent=True,
         importance="shap",
     ):
-        self.est = est
+        self.estimator = estimator
         self.cutoff = cutoff
         self.iters = iters
         self.max_rounds = max_rounds
@@ -1448,7 +1448,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
             "                delta={delta},\n"
             "                silent={silent}, \n"
             '                importance="{importance}")'.format(
-                est=self.est,
+                estimator=self.estimator,
                 cutoff=self.cutoff,
                 iters=self.iters,
                 mr=self.max_rounds,
@@ -1489,7 +1489,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _boostaroota(
             X,
             y,
-            est=self.est,
+            estimator=self.estimator,
             cutoff=self.cutoff,
             iters=self.iters,
             max_rounds=max(1, self.max_rounds),
@@ -1684,10 +1684,10 @@ def _reduce_vars_sklearn(
             raise ValueError("'imp' should be either 'native', 'shap' or 'pimp', 'native' is not recommended")
         
         importance = imp  # est.feature_importances_
-        df[f"fscore{str(i)}"] = importance / importance.sum()
+        df["fscore" + str(i)] = importance / importance.sum()
 
         # Check if the estimator has the feature_importances_ method, and if not, print a warning message
-        if f"fscore{str(i)}" not in df.columns:
+        if "fscore" + str(i) not in df.columns:
             print("This clf doesn't have the feature_importances_ method. Only Sklearn tree-based methods allowed")
 
         if not silent:
@@ -1713,7 +1713,7 @@ def _reduce_vars_sklearn(
     return criteria, real_vars["feature"], df, mean_shadow
 
 # Main function exposed to run the algorithm
-def _boostaroota_boostaroota(
+def _boostaroota(
     X: pd.DataFrame, 
     y: pd.Series, 
     estimator: object, 
@@ -1734,7 +1734,7 @@ def _boostaroota_boostaroota(
         The input samples.
     y : array-like of shape (n_samples,)
         The target values.
-    est : object
+    estimator : object
         The estimator object that implements the 'fit' and 'predict' methods.
     cutoff : float, optional, default=0.99
         The cutoff value to determine whether a feature is good enough to keep.
@@ -1785,7 +1785,7 @@ def _boostaroota_boostaroota(
         crit, keep_vars, df_vimp, mean_shadow = _reduce_vars_sklearn(
             new_x,
             y,
-            est=est,
+            estimator=estimator,
             this_round=i,
             cutoff=cutoff,
             n_iterations=iters,
@@ -2142,7 +2142,7 @@ def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight
     # Set up the parameters for running the model in LGBM - split is on multi log loss
 
     n_feat = X.shape[1]
-    param = _set_lgbm_parameters(objective=objective, n_feat=n_feat, rf=rf, silent=silent)
+    param = _set_lgbm_parameters(objective=objective, y=y, n_feat=n_feat, rf=rf, silent=silent)
     category_cols = _get_category_cols(X, dic_keys="dtypes")
     category_idx = _get_category_cols_index(X, category_cols)
     
@@ -2177,11 +2177,8 @@ def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight
 
     return real_vars["feature"], df, cutoff_shadow
     
-    
-    
-    
 
-def _set_lgbm_parameters(objective, n_feat, rf, silent):
+def _set_lgbm_parameters(objective, y, n_feat, rf, silent):
     if objective == "softmax":
         param = {"objective": objective, "num_class": len(np.unique(y))}
     else:
@@ -2292,8 +2289,8 @@ def _train_lightgbm(X_train, y_train, weight_tr, X_val, y_val, weight_val, categ
 
 
 def _get_importance_from_lgb(importance, silent, n_folds, iter):
-    df2 = pd.DataFrame(importance, columns=["feature", "fscore" + str(i)])
-    df2["fscore" + str(iter)] = df2["fscore" + str(iter)] / df2["fscore" + str(i)].sum()
+    df2 = pd.DataFrame(importance, columns=["feature", "fscore" + str(iter)])
+    df2["fscore" + str(iter)] = df2["fscore" + str(iter)] / df2["fscore" + str(iter)].sum()
     df = pd.merge(df, df2, on="feature", how="outer")
     nit = divmod(iter, n_folds)[0]
     nf = divmod(iter, n_folds)[1]
