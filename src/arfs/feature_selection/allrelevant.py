@@ -2074,6 +2074,27 @@ def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight
     return real_vars["feature"], df, cutoff_shadow
 
 def _set_lgb_parameters(X, y, objective, rf=False, silent=True):
+    """Set parameters for a LightGBM model based on the input features and the objective.
+
+    Parameters
+    ----------
+    X : numpy array or pandas DataFrame
+        The feature matrix of the training data.
+    y : numpy array or pandas Series
+        The target variable of the training data.
+    objective : str
+        The objective function to optimize during training.
+    rf : bool, default False
+        Whether to use random forest boosting.
+    silent : bool, default True
+        Whether to print messages during parameter setting.
+
+    Returns
+    -------
+    dict
+        The dictionary of LightGBM parameters.
+
+    """
     n_feat = X.shape[1]
     param = {"objective": objective}
     param.update({"verbosity": -1})
@@ -2101,6 +2122,27 @@ def _set_lgb_parameters(X, y, objective, rf=False, silent=True):
     return param
 
 def _split_data(X, y, tridx, validx, weight=None):
+    """
+    Split data into train and validation sets based on provided indices.
+
+    Parameters
+    ----------
+    X : pandas.DataFrame
+        Features.
+    y : pandas.Series
+        Target variable.
+    tridx : list
+        Indices to be used for training.
+    validx : list
+        Indices to be used for validation.
+    weight : pandas.Series, optional
+        Weights for each sample, by default None.
+
+    Returns
+    -------
+    tuple of pandas.DataFrame and pandas.Series
+        X_train, X_val, y_train, y_val, weight_tr, weight_val
+    """
     if weight is not None:
         X_train, y_train, weight_tr = (
             X.iloc[tridx, :],
@@ -2120,6 +2162,36 @@ def _split_data(X, y, tridx, validx, weight=None):
     return X_train, X_val, y_train, y_val, weight_tr, weight_val
 
 def _train_lgb_model(X_train, y_train, weight_train, X_val, y_val, weight_val, category_cols=None, early_stopping_rounds=20, **params):
+    """
+    Train a LightGBM model with the given training data and hyperparameters and return the trained model and its SHAP values.
+
+    Parameters
+    ----------
+    X_train : array-like of shape (n_samples, n_features)
+        The input training data.
+    y_train : array-like of shape (n_samples,)
+        The target training data.
+    weight_train : array-like of shape (n_samples,)
+        The sample weights for training data.
+    X_val : array-like of shape (n_val_samples, n_features)
+        The input validation data.
+    y_val : array-like of shape (n_val_samples,)
+        The target validation data.
+    weight_val : array-like of shape (n_val_samples,)
+        The sample weights for validation data.
+    category_cols : array-like or None, optional (default=None)
+        The indices of categorical columns. If None, no categorical columns will be considered.
+    early_stopping_rounds : int, optional (default=20)
+        Activates early stopping. Validation metric needs to improve at least once in every early_stopping_rounds
+        round(s) to continue training.
+    **params : dict
+        Other parameters passed to the LightGBM model.
+
+    Returns
+    -------
+    tuple of (Booster, numpy.ndarray, int)
+        The trained LightGBM model, its SHAP values for X_train, and the best iteration reached during training.
+    """
         
     d_train = lgb.Dataset(X_train, label=y_train, weight=weight_train, categorical_feature=category_cols)
     d_valid = lgb.Dataset(X_val, label=y_val, weight=weight_val, categorical_feature=category_cols)
@@ -2137,6 +2209,25 @@ def _train_lgb_model(X_train, y_train, weight_train, X_val, y_val, weight_val, c
     return bst, shap_matrix, bst.best_iteration
 
 def _compute_importance(new_x_tr, shap_matrix, param, objective):
+    """
+    Compute feature importance scores using SHAP values.
+
+    Parameters:
+    -----------
+    new_x_tr : numpy.ndarray
+        The training dataset after being processed.
+    shap_matrix : numpy.ndarray
+        The matrix containing SHAP values computed by a LightGBM model.
+    param : dict
+        A dictionary containing the parameters for a LightGBM model.
+    objective : str
+        The objective function of the LightGBM model.
+
+    Returns:
+    --------
+    list
+        A list of tuples containing feature names and their corresponding importance scores.
+    """
     if objective == "softmax":
         n_feat = new_x_tr.shape[1]
         shap_matrix = np.delete(
