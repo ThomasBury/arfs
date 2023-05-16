@@ -1319,21 +1319,17 @@ def _get_imp(estimator, X, y, sample_weight=None, cat_feature=None):
 #
 ###################################
 class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
-    """BoostARoota becomes BoostAGroota, I'm Groot. BoostAGroota is an all relevant
-    feature selection method, while most other are minimal optimal;
-    this means it tries to find all features carrying
-    information usable for prediction, rather than finding a possibly compact
-    subset of features on which some estimator has a minimal error.
-    Why bother with all relevant feature selection?
-    When you try to understand the phenomenon that made your data, you should
-    care about all factors that contribute to it, not just the bluntest signs
-    of it in context of your methodology (minimal optimal set of features
-    by definition depends on your estimator choice).
+    """BoostAGroota, based on BoostARoota is a feature selection method that aims to find all relevant features for prediction, 
+    rather than a minimal optimal subset of features with minimal error for a specific estimator. 
+    This is in contrast to most other methods that focus on finding a compact subset of features. 
+    By considering all relevant features, BoostAGroota helps in understanding the phenomenon that 
+    drives the data and identifies all factors that contribute to it, 
+    rather than just the most obvious ones that depend on the chosen estimator.
 
     Parameters
     ----------
-    est : sklear estimator
-        the model to train, lightGBM recommended, see the reduce lightgbm method
+    est : object
+        A scikit-learn estimator, lightGBM recommended, see the reduce lightgbm method
     cutoff : float
         the value by which the max of shadow imp is divided, to compare to real importance
     iters : int (>0)
@@ -1368,6 +1364,19 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         feature importance of the real+shadow predictors over iterations
     mean_shadow : float
         the threshold below which the predictors are rejected
+        
+    Raises
+    ------
+    ValueError
+        If cutoff or iters are less than or equal to 0, or if delta is not between 0 and 1.
+    UserWarning
+        If delta is less than 0.02 or max_rounds is less than 1.
+    Warning
+        If importance is set to 'native', as this may break the feature selection algorithm.
+
+    Notes
+    -----
+    This function performs feature selection using Boosted Additive Groves. The selected features can be accessed using the `ranking_` attribute.
 
 
     Examples
