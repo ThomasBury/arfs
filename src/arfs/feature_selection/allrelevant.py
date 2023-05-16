@@ -1671,25 +1671,17 @@ def _reduce_vars_sklearn(
         error if the feature importance type is not
     """
     # Set up the parameters for running the model in XGBoost - split is on multi log loss
-
     for i in range(1, n_iterations + 1):
         # Create the shadow variables and run the model to obtain importances
         new_x, shadow_names = _create_shadow(X)
         if imp_kind == "shap":
-            imp = _get_shap_imp(
-                estimator, new_x, y, sample_weight=weight, cat_feature=cat_feature
-            )
+            imp = _get_shap_imp(estimator, new_x, y, sample_weight=weight, cat_feature=cat_feature)
         elif imp_kind == "pimp":
-            imp = _get_perm_imp(
-                estimator, new_x, y, sample_weight=weight, cat_feature=cat_feature
-            )
+            imp = _get_perm_imp(estimator, new_x, y, sample_weight=weight, cat_feature=cat_feature)
         elif imp_kind == "native":
             imp = _get_imp(estimator, new_x, y, sample_weight=weight, cat_feature=cat_feature)
         else:
-            raise ValueError(
-                "'imp' should be either 'native', 'shap' or 'pimp', "
-                "'native' is not recommended"
-            )
+            raise ValueError("'imp' should be either 'native', 'shap' or 'pimp', 'native' is not recommended")
 
         if i == 1:
             df = pd.DataFrame({"feature": new_x.columns})
@@ -1738,7 +1730,6 @@ def _reduce_vars_sklearn(
         criteria = False
 
     return criteria, real_vars["feature"], df, mean_shadow
-
 
 # Main function exposed to run the algorithm
 def _BoostARoota(X, y, est, cutoff, iters, max_rounds, delta, silent, weight, imp):
