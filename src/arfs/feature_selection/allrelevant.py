@@ -1545,10 +1545,6 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         if self.mean_shadow is None:
             raise ValueError("Apply fit method first")
 
-        # b_df = self.sha_cutoff_df.T.copy()
-        # b_df.columns = b_df.iloc[0]
-        # b_df = b_df.drop(b_df.index[0])
-        # b_df = b_df.drop(b_df.index[-1])
         b_df = self.sha_cutoff_df
         real_df = b_df.iloc[:, : int(b_df.shape[1] / 2)].copy()
 
@@ -1565,7 +1561,6 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
                 figsize=(16, real_df.shape[1] / n_feat_per_inch),
             )
 
-            # xrange = real_df.max(skipna=True).max(skipna=True)-real_df.min(skipna=True).min(skipna=True)
             bp.set_xlim(left=real_df.min(skipna=True).min(skipna=True) - 0.025)
 
             for c in range(len(self.selected_features_)):
@@ -1588,8 +1583,6 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
 
             fig = bp.get_figure()
             plt.title("BoostAGroota importance of selected predictors")
-            # plt.tight_layout()
-            # plt.show()
             return fig
 
 
