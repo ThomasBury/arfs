@@ -1429,16 +1429,16 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         # Issue warnings for parameters to still let it run
         if delta < 0.02:
             warnings.warn(
-                "WARNING: Setting a delta below 0.02 may not converge on a solution."
+                "WARNING: Setting delta below 0.02 may not converge on a solution and produce inaccurate results."
             )
         if max_rounds < 1:
             warnings.warn(
-                "WARNING: Setting max_rounds below 1 will automatically be set to 1."
+                "WARNING: Setting max_rounds below 1 will automatically be set to 1, which may result in suboptimal feature selection."
             )
-
+        
         if importance == "native":
             warnings.warn(
-                "[BoostAGroota]: using native variable importance might break the FS"
+                "[BoostAGroota]: using native variable importance may break the feature selection process and produce inaccurate results."
             )
 
     def __repr__(self):
