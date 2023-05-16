@@ -89,6 +89,7 @@ NO_FEATURE_SELECTED_WARNINGS = "No feature selected - No data to plot"
 ARFS_COLOR_LIST = ["#000000", "#7F3C8D", "#11A579", "#3969AC", "#F2B701", "#E73F74", "#80BA5A", "#E68310", "#008695", "#CF1C90", "#F97B72"]
 BLUE = "#2590fa"
 YELLOW = "#f0be00"
+RED = "#b51204"
 BCKGRD_COLOR = "#f5f5f5"
 PLT_PARAMS = {
             "axes.prop_cycle": plt.cycler(color=ARFS_COLOR_LIST),
@@ -101,19 +102,12 @@ PLT_PARAMS = {
             "grid.color": "#d2d2d2",
             "lines.linewidth": 1.5,
         }
-BOXPLOT_COLOR = {
-            "boxes": "gray",
-            "whiskers": "gray",
-            "medians": "#000000",
-            "caps": "gray",
-        }
 PLOT_KWARGS = dict(kind="box",
-               color=BOXPLOT_COLOR,
-                boxprops=dict(linestyle="-", linewidth=1.5),
-                flierprops=dict(linestyle="-", linewidth=1.5),
+                boxprops=dict(linestyle="-", linewidth=1.5, color="gray", facecolor="gray"),
+                flierprops=dict(linestyle="-", linewidth=1.5, color="gray"),
                 medianprops=dict(linestyle="-", linewidth=1.5, color="#000000"),
-                whiskerprops=dict(linestyle="-", linewidth=1.5),
-                capprops=dict(linestyle="-", linewidth=1.5),
+                whiskerprops=dict(linestyle="-", linewidth=1.5, color="gray"),
+                capprops=dict(linestyle="-", linewidth=1.5, color="gray"),
                 showfliers=False,
                 grid=True,
                 rot=0,
@@ -381,14 +375,14 @@ class Leshy(SelectorMixin, BaseEstimator):
                 Line2D([0], [0], color=BLUE, lw=5),
                 Line2D([0], [0], color=YELLOW, lw=5),
                 Line2D([0], [0], color="gray", lw=5),
-                Line2D([0], [0], linestyle="--", color="gray", lw=2),
+                Line2D([0], [0], linestyle="--", color=RED, lw=2),
             ]
             bp.legend(
                 custom_lines,
                 ["confirmed", "tentative", "rejected", "sha. max"],
                 loc="lower right",
             )
-            plt.axvline(x=self.sha_max, linestyle="--", color="gray")
+            plt.axvline(x=self.sha_max, linestyle="--", color=RED)
             fig = bp.get_figure()
             plt.title("Leshy importance and selected predictors")
             # fig.set_size_inches((10, 1.5 * np.rint(max(vimp_df.shape) / 10)))
@@ -1317,6 +1311,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
 
     def _more_tags(self):
         return {"allow_nan": True, "requires_y": True}
+    
     @mpl.rc_context(PLT_PARAMS)
     def plot_importance(self, n_feat_per_inch=5):
         """Boxplot of the variable importance, ordered by magnitude
@@ -1370,12 +1365,12 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
             custom_lines = [
                 Line2D([0], [0], color=BLUE, lw=5),
                 Line2D([0], [0], color="gray", lw=5),
-                Line2D([0], [0], linestyle="--", color="gray", lw=2),
+                Line2D([0], [0], linestyle="--", color=RED, lw=2),
             ]
             bp.legend(
                 custom_lines, ["confirmed", "rejected", "sha. max"], loc="lower right"
             )
-            plt.axvline(x=self.mean_shadow, linestyle="--", color="gray")
+            plt.axvline(x=self.mean_shadow, linestyle="--", color=RED)
 
             fig = bp.get_figure()
             plt.title("BoostAGroota importance of selected predictors")
@@ -1869,7 +1864,6 @@ class GrootCV(SelectorMixin, BaseEstimator):
                 figsize=(16, real_df.shape[1] / n_feat_per_inch),
             )
             col_idx = np.argwhere(real_df.columns.isin(self.selected_features_)).ravel()
-            BLUE = "#2590fa"
 
             for c in range(real_df.shape[1]):
                 bp.findobj(mpl.patches.Patch)[c].set_facecolor("gray")
@@ -1879,12 +1873,12 @@ class GrootCV(SelectorMixin, BaseEstimator):
                 bp.findobj(mpl.patches.Patch)[c].set_facecolor(BLUE)
                 bp.findobj(mpl.patches.Patch)[c].set_color(BLUE)
 
-            plt.axvline(x=self.sha_cutoff, linestyle="--", color="gray")
+            plt.axvline(x=self.sha_cutoff, linestyle="--", color=RED)
             bp.set_xlim(left=real_df.min(skipna=True).min(skipna=True) - 0.025)
             custom_lines = [
                 Line2D([0], [0], color=BLUE, lw=5),
                 Line2D([0], [0], color="gray", lw=5),
-                Line2D([0], [0], linestyle="--", color="gray", lw=2),
+                Line2D([0], [0], linestyle="--", color=RED, lw=2),
             ]
             bp.legend(
                 custom_lines, ["confirmed", "rejected", "threshold"], loc="lower right"
