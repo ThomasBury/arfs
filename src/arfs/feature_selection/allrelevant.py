@@ -1921,9 +1921,9 @@ class GrootCV(SelectorMixin, BaseEstimator):
             raise ValueError(
                 "n_folds should be greater than 0. You entered" + str(n_folds)
             )
-
     def fit(self, X, y, sample_weight=None):
-        """Fit the GrootCV transformer with the provided estimator.
+        """
+        Fit the GrootCV transformer with the provided estimator.
 
         Parameters
         ----------
@@ -1931,22 +1931,18 @@ class GrootCV(SelectorMixin, BaseEstimator):
             the predictors matrix
         y : pd.Series
             the target
-        sample_weight : pd.series
+        sample_weight : pd.Series
             sample_weight, if any
-
         """
 
-        if isinstance(X, pd.DataFrame):
-            self.feature_names_in_ = X.columns.to_numpy()
-        else:
+        if not isinstance(X, pd.DataFrame):
             raise TypeError("X is not a dataframe")
 
-        if isinstance(y, pd.Series) is not True:
-            y = pd.Series(y)
+        self.feature_names_in_ = X.columns.to_numpy()
+        y = pd.Series(y)
 
         if sample_weight is not None:
-            sample_weight = _check_sample_weight(sample_weight, X)
-            sample_weight = pd.Series(sample_weight)
+            sample_weight = pd.Series(_check_sample_weight(sample_weight, X))
 
         # internal encoding (ordinal encoding)
         X, obj_feat, cat_idx = get_pandas_cat_codes(X)
@@ -1962,24 +1958,13 @@ class GrootCV(SelectorMixin, BaseEstimator):
             weight=sample_weight,
             rf=self.rf,
         )
+
         self.selected_features_ = self.selected_features_.values
-        self.support_ = np.asarray(
-            [
-                True if c in self.selected_features_ else False
-                for c in self.feature_names_in_
-            ]
-        )
+        self.support_ = np.isin(self.feature_names_in_, self.selected_features_)
 
-        b_df = self.cv_df.T.copy()
-        b_df.columns = b_df.iloc[0]
-        b_df = b_df.drop(b_df.index[0])
-        b_df = b_df.drop(b_df.index[-1])
-        b_df = b_df.convert_dtypes()
+        b_df = self.cv_df.iloc[1:-1, :].T.convert_dtypes()
         real_df = b_df.iloc[:, : int(b_df.shape[1] / 2)].copy()
-        self.ranking_absolutes_ = list(
-            real_df.mean().sort_values(ascending=False).index
-        )
-
+        self.ranking_absolutes_ = real_df.mean().sort_values(ascending=False).index.to_list()
         self.ranking_ = np.where(self.support_, 2, 1)
 
         return self
