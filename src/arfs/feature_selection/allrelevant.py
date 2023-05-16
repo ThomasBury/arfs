@@ -1528,63 +1528,52 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
     
     @mpl.rc_context(PLT_PARAMS)
     def plot_importance(self, n_feat_per_inch=5):
-        """Boxplot of the variable importance, ordered by magnitude
+        """
+        Boxplot of the variable importance, ordered by magnitude.
         The max shadow variable importance illustrated by the dashed line.
         Requires to apply the fit method first.
 
         Parameters
         ----------
         n_feat_per_inch : int, default=5
-            number of features to plot per inch (for scaling the figure)
+            Number of features to plot per inch (for scaling the figure).
 
         Returns
         -------
-        fig : plt.figure
-            the matplotlib figure object containing the boxplot
+        fig : plt.figure or None
+            The matplotlib figure object containing the boxplot, or None if there are no selected features.
         """
         if self.mean_shadow is None:
-            raise ValueError("Apply fit method first")
+            raise ValueError("Please apply fit method first.")
 
         b_df = self.sha_cutoff_df
-        real_df = b_df.iloc[:, : int(b_df.shape[1] / 2)].copy()
+        real_df = b_df.iloc[:, :int(b_df.shape[1]/2)].copy()
+        real_df = real_df.reindex(real_df.mean().sort_values(ascending=True).index, axis=1)
 
-        real_df = real_df.reindex(
-            real_df.mean().sort_values(ascending=True).index, axis=1
-        )
-
-        if real_df.dropna().empty:
+        if real_df.isna().all().all():
             warnings.warn(NO_FEATURE_SELECTED_WARNINGS)
             return None
-        else:
-            bp = real_df.plot(
-                **PLOT_KWARGS,
-                figsize=(16, real_df.shape[1] / n_feat_per_inch),
-            )
 
-            bp.set_xlim(left=real_df.min(skipna=True).min(skipna=True) - 0.025)
+        fig, ax = plt.subplots(figsize=(16, real_df.shape[1]/n_feat_per_inch))
+        bp = real_df.boxplot(ax=ax, **PLOT_KWARGS)
 
-            for c in range(len(self.selected_features_)):
-                bp.findobj(mpl.patches.Patch)[real_df.shape[1] - c - 1].set_facecolor(
-                    BLUE
-                )
-                bp.findobj(mpl.patches.Patch)[real_df.shape[1] - c - 1].set_color(
-                    BLUE
-                )
+        bp.set_xlim(left=real_df.min(skipna=True).min(skipna=True) - 0.025)
 
-            custom_lines = [
-                Line2D([0], [0], color=BLUE, lw=5),
-                Line2D([0], [0], color="gray", lw=5),
-                Line2D([0], [0], linestyle="--", color=RED, lw=2),
-            ]
-            bp.legend(
-                custom_lines, ["confirmed", "rejected", "sha. max"], loc="lower right"
-            )
-            plt.axvline(x=self.mean_shadow, linestyle="--", color=RED)
+        for c in range(len(self.selected_features_)):
+            bp.findobj(mpl.patches.Patch)[real_df.shape[1] - c - 1].set_facecolor(BLUE)
+            bp.findobj(mpl.patches.Patch)[real_df.shape[1] - c - 1].set_color(BLUE)
 
-            fig = bp.get_figure()
-            plt.title("BoostAGroota importance of selected predictors")
-            return fig
+        custom_lines = [
+            Line2D([0], [0], color=BLUE, lw=5),
+            Line2D([0], [0], color="gray", lw=5),
+            Line2D([0], [0], linestyle="--", color=RED, lw=2),
+        ]
+        bp.legend(custom_lines, ["confirmed", "rejected", "sha. max"], loc="lower right")
 
+        ax.axvline(x=self.mean_shadow, linestyle="--", color=RED)
+        ax.set_title("BoostAGroota importance of selected predictors")
+
+        return fig
 
 ############################################
 # Helper Functions to do the Heavy Lifting
