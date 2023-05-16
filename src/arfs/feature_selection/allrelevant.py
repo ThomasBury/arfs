@@ -2106,7 +2106,6 @@ def plot_importance(self, n_feat_per_inch=5):
 #
 ########################################################################################
 
-
 def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight, rf):
     """Private function, reduce the number of predictors using a lightgbm (python API)
 
@@ -2143,145 +2142,28 @@ def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight
     # Set up the parameters for running the model in LGBM - split is on multi log loss
 
     n_feat = X.shape[1]
-
-    if objective == "softmax":
-        param = {
-            "objective": objective,
-            "num_class": len(np.unique(y)),
-        }
-    else:
-        param = {"objective": objective}
-
-    param.update({"verbosity": -1})
-
-    # best feature fraction according to "Elements of statistical learning"
-    if objective in ["softmax", "binary"]:
-        feat_frac = np.sqrt(n_feat) / n_feat
-    else:
-        feat_frac = n_feat / (3 * n_feat)
-
-    if rf:
-        param.update(
-            {
-                "boosting_type": "rf",
-                "bagging_fraction": "0.7",
-                "feature_fraction": feat_frac,
-                "bagging_freq": "1",
-            }
-        )
-
-    clf_losses = [
-        "binary",
-        "softmax",
-        "multi_logloss",
-        "multiclassova",
-        "multiclass",
-        "multiclass_ova",
-        "ova",
-        "ovr",
-        "binary_logloss",
-    ]
-    if objective in clf_losses:
-        y = y.astype(int)
-        y_freq_table = pd.Series(y.fillna(0)).value_counts(normalize=True)
-        n_classes = y_freq_table.size
-        if n_classes > 2 and objective != "softmax":
-            param["objective"] = "softmax"
-            param["num_class"] = (len(np.unique(y)),)
-            if not silent:
-                print("Multi-class task, setting objective to softmax")
-
-        main_class = y_freq_table[0]
-        if not silent:
-            print("GrootCV: classification with unbalance classes")
-
-        if main_class > 0.8:
-            param.update({"is_unbalance": True})
-
-    param.update({"num_threads": 0})
-
-    dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
-    category_cols = dtypes_dic["cat"] + dtypes_dic["time"] + dtypes_dic["unk"]
-    cat_idx = [X.columns.get_loc(col) for col in category_cols]
-
+    param = _set_lgbm_parameters(objective=objective, n_feat=n_feat, rf=rf, silent=silent)
+    category_cols = _get_category_cols(X, dic_keys="dtypes")
+    category_idx = _get_category_cols_index(X, category_cols)
+    
     rkf = RepeatedKFold(n_splits=n_folds, n_repeats=n_iter, random_state=2652124)
     i = 0
-    for tridx, validx in tqdm(
-        rkf.split(X, y), total=rkf.get_n_splits(), desc="Repeated k-fold"
-    ):
-        if weight is not None:
-            X_train, y_train, weight_tr = (
-                X.iloc[tridx, :],
-                y.iloc[tridx],
-                weight.iloc[tridx],
-            )
-            X_val, y_val, weight_val = (
-                X.iloc[validx, :],
-                y.iloc[validx],
-                weight.iloc[validx],
-            )
-        else:
-            X_train, y_train = X.iloc[tridx, :], y.iloc[tridx]
-            X_val, y_val = X.iloc[validx, :], y.iloc[validx]
-            weight_tr = None
-            weight_val = None
-
-        # Create the shadow variables and run the model to obtain importances
+    for tridx, validx in tqdm(rkf.split(X, y), total=rkf.get_n_splits(), desc="Repeated k-fold"):
+        X_train, y_train, X_val, y_val, weight_tr, weight_val = _split_data(X, y, weight=weight, tridx=tridx, validx=validx)
         new_x_tr, shadow_names = _create_shadow(X_train)
         new_x_val, _ = _create_shadow(X_val)
-
-        d_train = lgb.Dataset(
-            new_x_tr, label=y_train, weight=weight_tr, categorical_feature=category_cols
-        )
-        d_valid = lgb.Dataset(
-            new_x_val, label=y_val, weight=weight_val, categorical_feature=category_cols
-        )
-        watchlist = [d_train, d_valid]
-
-        bst = lgb.train(
-            param,
-            train_set=d_train,
-            num_boost_round=10000,
-            valid_sets=watchlist,
-            categorical_feature=category_cols,
-            callbacks=[early_stopping(20, False, False)],
-        )
-        if i == 0:
-            df = pd.DataFrame({"feature": new_x_tr.columns})
-
-        shap_matrix = bst.predict(new_x_tr, pred_contrib=True)
-
-        # the dim changed in lightGBM >= 3.0.0
-        if objective == "softmax":
-            # X_SHAP_values (array-like of shape = [n_samples, n_features + 1]
-            # or shape = [n_samples, (n_features + 1) * n_classes])
-            # index starts from 0
-            n_feat = new_x_tr.shape[1]
-            shap_matrix = np.delete(
-                shap_matrix,
-                list(range(n_feat, (n_feat + 1) * n_classes, n_feat + 1)),
-                axis=1,
-            )
-            shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
-        else:
-            # for binary, only one class is returned, for regression a single column added as well
-            shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
-
-        importance = dict(
-            zip(new_x_tr.columns, shap_imp)
-        )  # bst.feature_importance() ))
-        importance = sorted(importance.items(), key=operator.itemgetter(1))
-        df2 = pd.DataFrame(importance, columns=["feature", "fscore" + str(i)])
-        df2["fscore" + str(i)] = df2["fscore" + str(i)] / df2["fscore" + str(i)].sum()
-        df = pd.merge(df, df2, on="feature", how="outer")
-        nit = divmod(i, n_folds)[0]
-        nf = divmod(i, n_folds)[1]
-        if not silent:
-            if nf == 0:
-                print("Groot iteration: ", nit, " with " + str(n_folds) + " folds")
-
+        importance = _train_lightgbm(X_train=new_x_tr, 
+                                         y_train=y_train, 
+                                         weight_tr=weight_tr, 
+                                         X_val=new_x_val,
+                                         y_val=y_val,
+                                         weight_val=weight_val,
+                                         category_cols=category_cols,
+                                         param=param,
+                                         objective=objective)
+        df = _get_importance_from_lgb(importance=importance, silent=silent, n_folds=n_folds, iter=i)
         i += 1
-
+        
     df["Med"] = df.select_dtypes(include=[np.number]).mean(axis=1)
     # Split them back out
     real_vars = df[~df["feature"].isin(shadow_names)]
@@ -2294,3 +2176,129 @@ def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight
     real_vars = real_vars[(real_vars.Med.values >= cutoff_shadow)]
 
     return real_vars["feature"], df, cutoff_shadow
+    
+    
+    
+    
+
+def _set_lgbm_parameters(objective, n_feat, rf, silent):
+    if objective == "softmax":
+        param = {"objective": objective, "num_class": len(np.unique(y))}
+    else:
+        param = {"objective": objective}
+    param.update({"verbosity": -1})
+    if objective in ["softmax", "binary"]:
+        feat_frac = np.sqrt(n_feat) / n_feat
+    else:
+        feat_frac = n_feat / (3 * n_feat)
+    if rf:
+        param.update(
+            {
+                "boosting_type": "rf",
+                "bagging_fraction": "0.7",
+                "feature_fraction": feat_frac,
+                "bagging_freq": "1",
+            }
+        )
+    clf_losses = [
+        "binary",
+        "softmax",
+        "multi_logloss",
+        "multiclassova",
+        "multiclass",
+        "multiclass_ova",
+        "ova",
+        "ovr",
+        "binary_logloss",
+    ]
+    if objective in clf_losses:
+        if not silent:
+            print("GrootCV: classification with unbalance classes")
+        if objective != "softmax":
+            y = y.astype(int)
+            param["objective"] = "softmax"
+            param["num_class"] = (len(np.unique(y)),)
+            if not silent:
+                print("Multi-class task, setting objective to softmax")
+        y_freq_table = pd.Series(y.fillna(0)).value_counts(normalize=True)
+        if y_freq_table.size > 2:
+            main_class = y_freq_table[0]
+            if main_class > 0.8:
+                param.update({"is_unbalance": True})
+    param.update({"num_threads": 0})
+    return param
+
+def _get_category_cols(X, dic_keys="dtypes"):
+    dtypes_dic = create_dtype_dict(X, dic_keys=dic_keys)
+    return dtypes_dic["cat"] + dtypes_dic["time"] + dtypes_dic["unk"]
+
+def _get_category_cols_index(X, category_cols):
+    return [X.columns.get_loc(col) for col in category_cols]
+
+def _split_data(X, y, weight=None, tridx=None, validx=None):
+    if weight is not None:
+        X_train, y_train, weight_tr = (
+            X.iloc[tridx, :],
+            y.iloc[tridx],
+            weight.iloc[tridx],
+        )
+        X_val, y_val, weight_val = (
+            X.iloc[validx, :],
+            y.iloc[validx],
+            weight.iloc[validx],
+        )
+    else:
+        X_train, y_train = X.iloc[tridx, :], y.iloc[tridx]
+        X_val, y_val = X.iloc[validx, :], y.iloc[validx]
+        weight_tr = None
+        weight_val = None
+    return X_train, y_train, X_val, y_val, weight_tr, weight_val
+
+def _create_shadow(X):
+    n_cols = X.shape[1]
+    shadow_names = []
+    for i in range(n_cols):
+        name = "shadow_" + str(i)
+        X[name] = np.random.permutation(X.iloc[:, i].values)
+        shadow_names.append(name)
+    return X, shadow_names
+
+def _train_lightgbm(X_train, y_train, weight_tr, X_val, y_val, weight_val, category_cols, param, objective):
+    d_train = lgb.Dataset(X_train, label=y_train, weight=weight_tr, categorical_feature=category_cols)
+    d_valid = lgb.Dataset(X_val, label=y_val, weight=weight_val, categorical_feature=category_cols)
+    watchlist = [d_train, d_valid]
+    bst = lgb.train(
+        param,
+        train_set=d_train,
+        num_boost_round=10000,
+        valid_sets=watchlist,
+        categorical_feature=category_cols,
+        callbacks=[early_stopping(20, False, False)],
+    )
+    shap_matrix = bst.predict(X_train, pred_contrib=True)
+    if objective == "softmax":
+        n_feat = X_train.shape[1]
+        shap_matrix = np.delete(
+            shap_matrix,
+            list(range(n_feat, (n_feat + 1) * param["num_class"], n_feat + 1)),
+            axis=1,
+        )
+        shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
+    else:
+        shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
+    importance = dict(zip(X_train.columns, shap_imp))
+    importance = sorted(importance.items(), key=operator.itemgetter(1))
+    return importance
+
+
+def _get_importance_from_lgb(importance, silent, n_folds, iter):
+    df2 = pd.DataFrame(importance, columns=["feature", "fscore" + str(i)])
+    df2["fscore" + str(iter)] = df2["fscore" + str(iter)] / df2["fscore" + str(i)].sum()
+    df = pd.merge(df, df2, on="feature", how="outer")
+    nit = divmod(iter, n_folds)[0]
+    nf = divmod(iter, n_folds)[1]
+    if not silent:
+        if nf == 0:
+            print("Groot iteration: ", nit, " with " + str(n_folds) + " folds")
+
+    return df
