@@ -386,11 +386,8 @@ class Leshy(SelectorMixin, BaseEstimator):
             plt.axvline(x=self.sha_max, linestyle="--", color=RED)
             fig = bp.get_figure()
             plt.title("Leshy importance and selected predictors")
-            # fig.set_size_inches((10, 1.5 * np.rint(max(vimp_df.shape) / 10)))
-            # plt.tight_layout()
-            # plt.show()
             return fig
-        
+                
     def _get_support_mask(self):
         check_is_fitted(self)
 
@@ -2009,12 +2006,6 @@ class GrootCV(SelectorMixin, BaseEstimator):
         real_df = b_df.iloc[:, : int(b_df.shape[1] / 2)].copy()
         sha_df = b_df.iloc[:, int(b_df.shape[1] / 2) :].copy()
 
-        color = {
-            "boxes": "gray",
-            "whiskers": "gray",
-            "medians": "#000000",
-            "caps": "gray",
-        }
         real_df = real_df.reindex(
             real_df.select_dtypes(include=[np.number])
             .mean()
@@ -2054,7 +2045,59 @@ class GrootCV(SelectorMixin, BaseEstimator):
             plt.title("Groot CV importance and selected predictors")
             fig = bp.get_figure()
             return fig
+@mpl.rc_context(PLT_PARAMS)
+def plot_importance(self, n_feat_per_inch=5):
+    """Boxplot of the variable importance, ordered by magnitude
+    The max shadow variable importance illustrated by the dashed line.
+    Requires to apply the fit method first.
 
+    Parameters
+    ----------
+    n_feat_per_inch : int, default=5
+        number of features to plot per inch (for scaling the figure)
+
+    Returns
+    -------
+    fig : plt.figure
+        the matplotlib figure object containing the boxplot
+    """
+    if self.sha_cutoff is None:
+        raise ValueError("Apply fit method first")
+
+    b_df = self.cv_df.T.iloc[1:-1, :].astype(float)
+    real_df, sha_df = b_df.iloc[:, : len(self.selected_features_)], b_df.iloc[:, len(self.selected_features_):]
+
+    real_df = real_df.reindex(
+        real_df.select_dtypes(include=[np.number])
+        .mean()
+        .sort_values(ascending=True)
+        .index,
+        axis=1,
+    )
+
+    if real_df.dropna().empty:
+        warnings.warn(NO_FEATURE_SELECTED_WARNINGS)
+        return None
+
+    fig, ax = plt.subplots(figsize=(16, real_df.shape[1] / n_feat_per_inch))
+    bp = real_df.plot(ax=ax, **PLOT_KWARGS)
+    col_idx = real_df.columns.isin(self.selected_features_)
+
+    bp.findobj(mpl.patches.Patch).set_facecolor("gray")
+    bp.findobj(mpl.patches.Patch).set_color("gray")
+    bp.findobj(mpl.patches.Patch)[col_idx].set_facecolor(BLUE)
+    bp.findobj(mpl.patches.Patch)[col_idx].set_color(BLUE)
+
+    ax.axvline(x=self.sha_cutoff, linestyle="--", color=RED)
+    bp.set_xlim(left=real_df.min(skipna=True).min(skipna=True) - 0.025)
+    custom_lines = [
+        Line2D([0], [0], color=BLUE, lw=5),
+        Line2D([0], [0], color="gray", lw=5),
+        Line2D([0], [0], linestyle="--", color=RED, lw=2),
+    ]
+    bp.legend(custom_lines, ["confirmed", "rejected", "threshold"], loc="lower right")
+    ax.set_title("Groot CV importance and selected predictors")
+    return fig
 
 ########################################################################################
 #
