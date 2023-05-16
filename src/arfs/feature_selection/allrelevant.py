@@ -460,7 +460,7 @@ class Leshy(SelectorMixin, BaseEstimator):
         dec_reg, sha_max_history, imp_history, imp_sha_max = self.select_features(X=X, y=y, sample_weight=sample_weight)
         confirmed, tentative = _get_confirmed_and_tentative(dec_reg)
         tentative = _select_tentative(tentative, imp_history, sha_max_history)
-        self._calculate_support(self, confirmed, tentative, n_feat)
+        self._calculate_support(confirmed, tentative, n_feat)
 
         # for plotting
         self.imp_real_hist = imp_history
@@ -794,7 +794,7 @@ class Leshy(SelectorMixin, BaseEstimator):
         sha_max_history = []
         imp_history = np.empty((0, X.shape[1]))
     
-        for _iter in range(self.max_iter):
+        for _iter in range(1, self.max_iter):
             if not np.any(dec_reg == 0):
                 break
             self._update_tree_num(dec_reg)
