@@ -1435,7 +1435,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
             warnings.warn(
                 "WARNING: Setting max_rounds below 1 will automatically be set to 1, which may result in suboptimal feature selection."
             )
-        
+
         if importance == "native":
             warnings.warn(
                 "[BoostAGroota]: using native variable importance may break the feature selection process and produce inaccurate results."
@@ -1460,57 +1460,57 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
             )
         )
         return s
-
+    
     def fit(self, X, y, sample_weight=None):
-        """Fit the BoostAGroota transformer with the provided estimator.
+        """
+        Fit the BoostAGroota transformer with the provided estimator.
 
         Parameters
         ----------
         X : pd.DataFrame
-            the predictors matrix
+            The predictors matrix.
         y : pd.Series
-            the target
-        sample_weight : pd.series
-            sample_weight, if any
+            The target.
+        sample_weight : pd.Series, default=None
+            Sample weight, if any.
 
+        Returns
+        -------
+        self : object
+            Returns self.
         """
-        if isinstance(X, pd.DataFrame):
-            self.feature_names_in_ = X.columns.to_numpy()
-        else:
-            raise TypeError("X is not a dataframe")
+        if not isinstance(X, pd.DataFrame):
+            raise TypeError("X should be a pandas DataFrame")
+
+        self.feature_names_in_ = X.columns.to_numpy()
 
         if sample_weight is not None:
             sample_weight = _check_sample_weight(sample_weight, X)
 
-        # crit, keep_vars, df_vimp, mean_shadow
+        # Call _BoostARoota to perform feature selection
         _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _BoostARoota(
             X,
             y,
-            # metric=self.metric,
             est=self.est,
             cutoff=self.cutoff,
             iters=self.iters,
-            max_rounds=self.max_rounds,
+            max_rounds=max(1, self.max_rounds),
             delta=self.delta,
             silent=self.silent,
             weight=sample_weight,
             imp=self.importance,
         )
-        self.selected_features_ = self.selected_features_.values
-        self.support_ = np.asarray(
-            [
-                True if c in self.selected_features_ else False
-                for c in self.feature_names_in_
-            ]
-        )
 
+        # Convert selected features to a boolean mask
+        self.support_ = np.isin(self.feature_names_in_, self.selected_features_)
+
+        # Compute feature rankings
         b_df = self.sha_cutoff_df
-        real_df = b_df.iloc[:, : int(b_df.shape[1] / 2)].copy()
-        self.ranking_absolutes_ = list(
-            real_df.mean().sort_values(ascending=False).index
-        )
+        real_df = b_df.iloc[:, : b_df.shape[1] // 2].copy()
+        self.ranking_absolutes_ = list(real_df.mean().sort_values(ascending=False).index)
 
         self.ranking_ = np.where(self.support_, 2, 1)
+
         return self
 
     def _get_support_mask(self):
