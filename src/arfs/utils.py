@@ -13,8 +13,8 @@ import pandas as pd
 from pkg_resources import resource_filename
 from matplotlib import pyplot as plt
 from sklearn.impute import SimpleImputer
-from sklearn.compose import ColumnTransformer, make_column_transformer
-from sklearn.pipeline import Pipeline, make_pipeline
+from sklearn.compose import make_column_transformer
+from sklearn.pipeline import make_pipeline
 from sklearn.datasets import fetch_openml
 from sklearn.datasets import load_breast_cancer
 from sklearn.utils import Bunch
@@ -633,7 +633,7 @@ def load_data(name="Titanic"):
             "`name should be in ['Titanic', 'Boston', 'cancer', 'housing']`"
         )
 
-def _generated_corr_dataset_regr(size=1000):
+def _make_corr_dataset_regression(size=1000):
     """Generate an artificial dataset for regression tasks with columns that
     are correlated, have no variance, large cardinality, numerical and categorical.
 
@@ -696,7 +696,7 @@ def _generated_corr_dataset_regr(size=1000):
     
     return X, y, w
 
-def generate_corr_dataset_classification(size=1000):
+def _make_corr_dataset_classification(size=1000):
     """
     Generate an artificial dataset for classification tasks. Some columns are correlated, 
     have no variance, large cardinality, numerical and categorical.
