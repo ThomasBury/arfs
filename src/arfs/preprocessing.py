@@ -175,7 +175,6 @@ class OrdinalEncoderPandas(OrdinalEncoder):
         X_trans[self.categorical_features_] = super(
             OrdinalEncoderPandas, self
         ).transform(X_trans[self.categorical_features_])
-        # X_trans.loc[:, self.feature_names_in_] = X_trans.loc[:, self.feature_names_in_].apply(pd.to_numeric, errors="ignore", axis=1)
 
         if self.return_pandas_categorical:
             X_trans[self.categorical_features_] = X_trans[
@@ -524,14 +523,12 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         ):
             self.bin_features = list(X.select_dtypes(["category", "object"]).columns)
             self.cat_features = self.bin_features
-
+            
         for col in self.bin_features:
-            if (self.cat_features is not None) and (col in self.cat_features):
-                encoder = OrdinalEncoder(
-                    handle_unknown="use_encoded_value", unknown_value=np.nan
-                )
+            is_categorical = (self.cat_features is not None) and (col in self.cat_features)
+            if is_categorical:
+                encoder = OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=np.nan)
                 # create a category for missing
-                # X[col] = X[col].astype("category").cat.add_categories("missing").fillna("missing")
                 X[col] = (
                     X[col]
                     .astype("category")
@@ -541,14 +538,11 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
                 # encode
                 self.ordinal_encoder_dic[col] = encoder.fit(X[[col]])
                 X[col] = encoder.transform(X[[col]]).ravel()
+            else:
+                encoder = None
 
             gbm_param = self.boost_params.copy()
-            tree = GradientBoosting(
-                cat_feat=None,
-                params=gbm_param,
-                show_learning_curve=False,
-            )
-
+            tree = GradientBoosting(cat_feat=None, params=gbm_param, show_learning_curve=False)
             tree.fit(X[[col]], y, sample_weight=sample_weight)
 
             # store each fitted tree in a dictionary
@@ -559,23 +553,15 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
             # create monotonicly increasing bin for pd.cut
             X[f"{col}_g"] = tree.predict(X[[col]])
 
-            if (self.cat_features is not None) and (col in self.cat_features):
+            if is_categorical:
+                # retrieve original values
+                X[col] = encoder.inverse_transform(X[[col]]).ravel()
                 self.cat_bin_dict[col] = (
                     X[[f"{col}_g", col]]
                     .groupby(f"{col}_g")
-                    .aggregate(
-                        lambda x: " / ".join(
-                            map(
-                                str,
-                                encoder.inverse_transform(
-                                    np.expand_dims(X.loc[x.index, col].unique(), axis=1)
-                                ).ravel(),
-                            )
-                        )
-                    )
-                    .to_dict()[col]
+                    .apply(lambda x: " / ".join(map(str, x[col].unique())))
+                    .to_dict()
                 )
-
             else:
                 bin_array = (
                     X[[f"{col}_g", col]]
@@ -602,6 +588,7 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
                 ]
 
             del tree
+        
         return self
 
     def transform(self, X):
