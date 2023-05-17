@@ -172,96 +172,37 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         self.relevance_args = {"X": X, "y": target, "sample_weight": sample_weight}
         self.redundancy_args = {"X": X, "sample_weight": sample_weight}
 
-        relevance = self.relevance_func(**self.relevance_args)
-        features = relevance[~relevance.isna()].index.to_list()
-        relevance = relevance.loc[features]
-        redundancy = pd.DataFrame(FLOOR, index=features, columns=features)
-        self.n_features_to_select = min(self.n_features_to_select, len(features))
+        self.relevance = self.relevance_func(**self.relevance_args)
+        self.features = self.relevance[~self.relevance.isna()].index.to_list()
+        self.relevance = self.relevance.loc[self.features]
+        self.redundancy = pd.DataFrame(FLOOR, index=self.features, columns=self.features)
+        self.n_features_to_select = min(self.n_features_to_select, len(self.features))
 
         if isinstance(X, pd.DataFrame):
             self.feature_names_in_ = X.columns.to_numpy()
 
-        self.n_features_in_ = len(features)
+        self.n_features_in_ = len(self.features)
 
-        selected_features = []
-        not_selected_features = features.copy()
+        self.selected_features = []
+        self.not_selected_features = self.features.copy()
         self.ranking_ = pd.Series(
             dtype="float64"
         )  # pd.DataFrame(columns=['var_name', 'mrmr', 'relevancy', 'redundancy'])
         self.redundancy_ = pd.Series(dtype="float64")
-        for i in tqdm(range(self.n_features_to_select), disable=not self.show_progress):
-            score_numerator = relevance.loc[not_selected_features]
+        self.run_feature_selection()
 
-            if i > 0:
-                last_selected_feature = selected_features[-1]
-
-                if self.only_same_domain:
-                    not_selected_features_sub = [
-                        c
-                        for c in not_selected_features
-                        if c.split("_")[0] == last_selected_feature.split("_")[0]
-                    ]
-                else:
-                    not_selected_features_sub = not_selected_features
-
-                if not_selected_features_sub:
-                    redundancy.loc[not_selected_features_sub, last_selected_feature] = (
-                        self.redundancy_func(
-                            target=last_selected_feature,
-                            features=not_selected_features_sub,
-                            **self.redundancy_args,
-                        )
-                        .fillna(FLOOR)
-                        .abs()
-                        .clip(FLOOR)
-                    )
-                    score_denominator = (
-                        redundancy.loc[not_selected_features, selected_features]
-                        .apply(self.denominator_func, axis=1)
-                        .replace(1.0, float("Inf"))
-                    )
-
-            else:
-                score_denominator = pd.Series(1, index=features)
-
-            score = score_numerator / score_denominator
-            score = score.sort_values(ascending=False)
-            best_feature = score.index[score.argmax()]
-            self.ranking_ = pd.concat(
-                [
-                    self.ranking_,
-                    pd.Series({best_feature: score.loc[best_feature]}, dtype="float64"),
-                ]
-            )
-            self.redundancy_ = pd.concat(
-                [
-                    self.redundancy_,
-                    pd.Series(
-                        {best_feature: score_denominator.loc[best_feature]},
-                        dtype="float64",
-                    ),
-                ]
-            )
-            # the first selected feature has a default denominator (redundancy) = 1 to avoid dividing by zero
-            # I set it back to zero
-            self.redundancy_ = self.redundancy_.replace(1.0, 0.0)
-            selected_features.append(best_feature)
-            not_selected_features.remove(best_feature)
-        self.relevance_ = relevance
-        self.ranking_ = pd.concat(
-            [self.ranking_, self.relevance_, self.redundancy_], axis=1
-        )
+        # store the output in the sklearn flavour
+        self.relevance_ = self.relevance
+        self.ranking_ = pd.concat([self.ranking_, self.relevance_, self.redundancy_], axis=1)
         self.ranking_.columns = ["mrmr", "relevance", "redundancy"]
-        self.ranking_ = self.ranking_.iloc[: self.n_features_to_select, :]
-        # set back the mrmr score to inf for the first selected feature
-        # (redundancy with NULL is 0 and dividing by zero is INF)
-        self.ranking_.iloc[0, 0] = float("Inf")
-        self.selected_features_ = selected_features
-        self.support_ = np.asarray(
-            [x in selected_features for x in self.feature_names_in_]
-        )
-        self.not_selected_features_ = not_selected_features
+        self.ranking_ = self.ranking_.iloc[:self.n_features_to_select, :]
 
+        # Set back the mrmr score to Inf for the first selected feature to avoid dividing by zero
+        self.ranking_.iloc[0, 0] = float("Inf")
+
+        self.selected_features_ = self.selected_features
+        self.support_ = np.asarray([x in self.selected_features for x in self.feature_names_in_])
+        self.not_selected_features_ = self.not_selected_features
         return self
 
     def transform(self, X):
@@ -316,3 +257,79 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
 
     def _more_tags(self):
         return {"allow_nan": True}
+    
+
+    def select_next_feature(self, not_selected_features, selected_features, relevance, redundancy):
+        score_numerator = relevance.loc[not_selected_features]
+
+        if len(selected_features) > 0:
+            last_selected_feature = selected_features[-1]
+
+            if self.only_same_domain:
+                not_selected_features_sub = [
+                    c
+                    for c in not_selected_features
+                    if c.split("_")[0] == last_selected_feature.split("_")[0]
+                ]
+            else:
+                not_selected_features_sub = not_selected_features
+
+            if not_selected_features_sub:
+                redundancy.loc[not_selected_features_sub, last_selected_feature] = (
+                    self.redundancy_func(
+                        target=last_selected_feature,
+                        features=not_selected_features_sub,
+                        **self.redundancy_args,
+                    )
+                    .fillna(FLOOR)
+                    .abs()
+                    .clip(FLOOR)
+                )
+                score_denominator = (
+                    redundancy.loc[not_selected_features, selected_features]
+                    .apply(self.denominator_func, axis=1)
+                    .replace(1.0, float("Inf"))
+                )
+
+            else:
+                score_denominator = pd.Series(1, index=self.features)
+
+        else:
+            score_denominator = pd.Series(1, index=self.features)
+
+        score = score_numerator / score_denominator
+        score = score.sort_values(ascending=False)
+        best_feature = score.index[score.argmax()]
+
+        return best_feature, score, score_denominator
+
+    def update_ranks(self, best_feature, score, score_denominator):
+        self.ranking_ = pd.concat(
+            [
+                self.ranking_,
+                pd.Series({best_feature: score.loc[best_feature]}, dtype="float64"),
+            ]
+        )
+        self.redundancy_ = pd.concat(
+            [
+                self.redundancy_,
+                pd.Series(
+                    {best_feature: score_denominator.loc[best_feature]},
+                    dtype="float64",
+                ),
+            ]
+        )
+        # the first selected feature has a default denominator (redundancy) = 1 to avoid dividing by zero
+        # I set it back to zero
+        self.redundancy_ = self.redundancy_.replace(1.0, 0.0)
+        self.selected_features.append(best_feature)
+        self.not_selected_features.remove(best_feature)
+
+    def run_feature_selection(self):
+        for i in tqdm(range(self.n_features_to_select), disable=not self.show_progress):
+            best_feature, score, score_denominator = self.select_next_feature(self.not_selected_features, 
+                                                                               self.selected_features, 
+                                                                               self.relevance, 
+                                                                               self.redundancy)
+            self.update_ranks(best_feature, score, score_denominator)
+
