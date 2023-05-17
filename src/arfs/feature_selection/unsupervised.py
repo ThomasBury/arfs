@@ -168,6 +168,7 @@ def _pandas_count_unique_values_cat_features(X):
         count_series[c] = X[c].nunique()
     return count_series
 
+
 class CardinalityThreshold(BaseThresholdSelector):
     """Feature selector that removes all categorical features with more unique values than threshold
     This feature selection algorithm looks only at the features (X),

@@ -74,7 +74,7 @@ from ..utils import (
     is_catboost,
     create_dtype_dict,
     get_pandas_cat_codes,
-    validate_sample_weight
+    validate_sample_weight,
 )
 
 ########################################################################################
@@ -87,35 +87,49 @@ from ..utils import (
 # -*- coding: utf-8 -*-
 
 NO_FEATURE_SELECTED_WARNINGS = "No feature selected - No data to plot"
-ARFS_COLOR_LIST = ["#000000", "#7F3C8D", "#11A579", "#3969AC", "#F2B701", "#E73F74", "#80BA5A", "#E68310", "#008695", "#CF1C90", "#F97B72"]
+ARFS_COLOR_LIST = [
+    "#000000",
+    "#7F3C8D",
+    "#11A579",
+    "#3969AC",
+    "#F2B701",
+    "#E73F74",
+    "#80BA5A",
+    "#E68310",
+    "#008695",
+    "#CF1C90",
+    "#F97B72",
+]
 BLUE = "#2590fa"
 YELLOW = "#f0be00"
 RED = "#b51204"
 BCKGRD_COLOR = "#f5f5f5"
 PLT_PARAMS = {
-            "axes.prop_cycle": plt.cycler(color=ARFS_COLOR_LIST),
-            "axes.facecolor": BCKGRD_COLOR,
-            "patch.edgecolor": BCKGRD_COLOR,
-            "figure.facecolor": BCKGRD_COLOR,
-            "axes.edgecolor": BCKGRD_COLOR,
-            "savefig.edgecolor": BCKGRD_COLOR,
-            "savefig.facecolor": BCKGRD_COLOR,
-            "grid.color": "#d2d2d2",
-            "lines.linewidth": 1.5,
-        }
-PLOT_KWARGS = dict(kind="box",
-                boxprops=dict(linestyle="-", linewidth=1.5, color="gray", facecolor="gray"),
-                flierprops=dict(linestyle="-", linewidth=1.5, color="gray"),
-                medianprops=dict(linestyle="-", linewidth=1.5, color="#000000"),
-                whiskerprops=dict(linestyle="-", linewidth=1.5, color="gray"),
-                capprops=dict(linestyle="-", linewidth=1.5, color="gray"),
-                showfliers=False,
-                grid=True,
-                rot=0,
-                vert=False,
-                patch_artist=True,
-                fontsize=9
+    "axes.prop_cycle": plt.cycler(color=ARFS_COLOR_LIST),
+    "axes.facecolor": BCKGRD_COLOR,
+    "patch.edgecolor": BCKGRD_COLOR,
+    "figure.facecolor": BCKGRD_COLOR,
+    "axes.edgecolor": BCKGRD_COLOR,
+    "savefig.edgecolor": BCKGRD_COLOR,
+    "savefig.facecolor": BCKGRD_COLOR,
+    "grid.color": "#d2d2d2",
+    "lines.linewidth": 1.5,
+}
+PLOT_KWARGS = dict(
+    kind="box",
+    boxprops=dict(linestyle="-", linewidth=1.5, color="gray", facecolor="gray"),
+    flierprops=dict(linestyle="-", linewidth=1.5, color="gray"),
+    medianprops=dict(linestyle="-", linewidth=1.5, color="#000000"),
+    whiskerprops=dict(linestyle="-", linewidth=1.5, color="gray"),
+    capprops=dict(linestyle="-", linewidth=1.5, color="gray"),
+    showfliers=False,
+    grid=True,
+    rot=0,
+    vert=False,
+    patch_artist=True,
+    fontsize=9,
 )
+
 
 class Leshy(SelectorMixin, BaseEstimator):
     """This is an improved version of BorutaPy which itself is an
@@ -315,7 +329,7 @@ class Leshy(SelectorMixin, BaseEstimator):
         if not isinstance(X, pd.DataFrame):
             raise TypeError("X is not a dataframe")
         return X[self.selected_features_]
-    
+
     @mpl.rc_context(PLT_PARAMS)
     def plot_importance(self, n_feat_per_inch=5):
         """Boxplot of the variable importance, ordered by magnitude
@@ -336,9 +350,10 @@ class Leshy(SelectorMixin, BaseEstimator):
         if self.imp_real_hist is None:
             raise ValueError("Use the fit method first to compute the var.imp")
 
-
         vimp_df = pd.DataFrame(self.imp_real_hist, columns=self.feature_names_in_)
-        vimp_df = vimp_df.reindex(vimp_df.mean().sort_values(ascending=True).index, axis=1)
+        vimp_df = vimp_df.reindex(
+            vimp_df.mean().sort_values(ascending=True).index, axis=1
+        )
 
         if vimp_df.dropna().empty:
             warnings.warn(NO_FEATURE_SELECTED_WARNINGS)
@@ -351,9 +366,7 @@ class Leshy(SelectorMixin, BaseEstimator):
             n_weak = np.sum(self.support_weak_)
             n_discarded = np.sum(~(self.support_ | self.support_weak_))
             box_face_col = (
-                [BLUE] * n_strong
-                + [YELLOW] * n_weak
-                + ["gray"] * n_discarded
+                [BLUE] * n_strong + [YELLOW] * n_weak + ["gray"] * n_discarded
             )
             for c in range(len(box_face_col)):
                 bp.findobj(mpl.patches.Patch)[len(self.support_) - c - 1].set_facecolor(
@@ -382,7 +395,7 @@ class Leshy(SelectorMixin, BaseEstimator):
             ax.axvline(x=self.sha_max, linestyle="--", color=RED)
             ax.set_title("Leshy importance and selected predictors")
             return fig
-                
+
     def _get_support_mask(self):
         check_is_fitted(self)
 
@@ -390,7 +403,6 @@ class Leshy(SelectorMixin, BaseEstimator):
 
     def _more_tags(self):
         return {"allow_nan": True, "requires_y": True}
-
 
     def _fit(self, X_raw, y, sample_weight=None):
         """Private method. See the methods overview in the documentation
@@ -421,7 +433,7 @@ class Leshy(SelectorMixin, BaseEstimator):
         y = pd.Series(y).fillna(0) if not isinstance(y, pd.Series) else y.fillna(0)
 
         # check input params
-        self._check_params(X, y)      
+        self._check_params(X, y)
         sample_weight = validate_sample_weight(sample_weight)
         self.random_state = check_random_state(self.random_state)
 
@@ -443,8 +455,10 @@ class Leshy(SelectorMixin, BaseEstimator):
         # set n_estimators
         if self.n_estimators != "auto":
             self.estimator.set_params(n_estimators=self.n_estimators)
-            
-        dec_reg, sha_max_history, imp_history, imp_sha_max = self.select_features(X=X, y=y, sample_weight=sample_weight)
+
+        dec_reg, sha_max_history, imp_history, imp_sha_max = self.select_features(
+            X=X, y=y, sample_weight=sample_weight
+        )
         confirmed, tentative = _get_confirmed_and_tentative(dec_reg)
         tentative = _select_tentative(tentative, imp_history, sha_max_history)
         self._calculate_support(confirmed, tentative, n_feat)
@@ -455,7 +469,12 @@ class Leshy(SelectorMixin, BaseEstimator):
 
         # absolute and relative ranking
         self._calculate_absolute_ranking()
-        self._calculate_relative_ranking(n_feat=n_feat, tentative=tentative, confirmed=confirmed, imp_history=imp_history)
+        self._calculate_relative_ranking(
+            n_feat=n_feat,
+            tentative=tentative,
+            confirmed=confirmed,
+            imp_history=imp_history,
+        )
         self._print_result(dec_reg, _iter, start_time)
         return self
 
@@ -526,7 +545,9 @@ class Leshy(SelectorMixin, BaseEstimator):
                 self.estimator, pd.concat([x_cur, x_sha], axis=1), y, sample_weight
             )
         else:
-            imp = _get_imp(self.estimator, pd.concat([x_cur, x_sha], axis=1), y, sample_weight)
+            imp = _get_imp(
+                self.estimator, pd.concat([x_cur, x_sha], axis=1), y, sample_weight
+            )
 
         # separate importances of real and shadow features
         imp_sha = imp[x_cur_w:]
@@ -748,7 +769,7 @@ class Leshy(SelectorMixin, BaseEstimator):
                 "\n\nLeshy finished running using " + vimp + " var. imp.\n\n" + result
             )
         print(output)
-        
+
     def _update_estimator(self):
         """
         Update the estimator with a new random state, if applicable.
@@ -772,7 +793,7 @@ class Leshy(SelectorMixin, BaseEstimator):
                 )
             else:
                 self.estimator.set_params(random_state=self.random_state)
-    
+
     def _update_tree_num(self, dec_reg):
         """Update the number of trees in the estimator based on the number of selected features.
 
@@ -799,51 +820,53 @@ class Leshy(SelectorMixin, BaseEstimator):
             not_rejected = np.where(dec_reg >= 0)[0].shape[0]
             n_tree = self._get_tree_num(not_rejected)
             self.estimator.set_params(n_estimators=n_tree)
-    
-    def _run_iteration(self, X, y, sample_weight, dec_reg, sha_max_history, imp_history, hit_reg, _iter):
+
+    def _run_iteration(
+        self, X, y, sample_weight, dec_reg, sha_max_history, imp_history, hit_reg, _iter
+    ):
         """
         Run an iteration of the Gradient Boosting algorithm.
-    
+
         Parameters
         ----------
         X : array-like of shape (n_samples, n_features)
             The input samples.
-    
+
         y : array-like of shape (n_samples,)
             The target values.
-    
+
         sample_weight : array-like of shape (n_samples,), default=None
             Sample weights. If None, then samples are equally weighted.
-    
+
         dec_reg : array-like of shape (n_samples,)
             Decision function of the estimator.
-    
+
         sha_max_history : list of floats
             List of the maximum shadow importance value at each iteration.
-    
+
         imp_history : array-like of shape (n_iterations, n_features)
             Matrix of feature importances at each iteration.
-    
+
         hit_reg : array-like of shape (n_samples,)
             Array of hit counts for each sample.
-    
+
         _iter : int
             The current iteration number.
-    
+
         Returns
         -------
         dec_reg : array-like of shape (n_samples,)
             Updated decision function of the estimator.
-    
+
         sha_max_history : list of floats
             List of the maximum shadow importance value at each iteration.
-    
+
         imp_history : array-like of shape (n_iterations, n_features)
             Matrix of feature importances at each iteration.
-    
+
         hit_reg : array-like of shape (n_samples,)
             Array of hit counts for each sample.
-    
+
         imp_sha_max : float
             The maximum shadow importance value for this iteration.
         """
@@ -854,7 +877,7 @@ class Leshy(SelectorMixin, BaseEstimator):
         hit_reg = self._assign_hits(hit_reg, cur_imp, imp_sha_max)
         dec_reg = self._do_tests(dec_reg, hit_reg, _iter)
         return dec_reg, sha_max_history, imp_history, hit_reg, imp_sha_max
-    
+
     def select_features(self, X, y, sample_weight=None):
         """
         Select features using the Leshy algorithm.
@@ -884,19 +907,34 @@ class Leshy(SelectorMixin, BaseEstimator):
         hit_reg = np.zeros(X.shape[1])
         sha_max_history = []
         imp_history = np.empty((0, X.shape[1]))
-    
+
         for _iter in range(1, self.max_iter):
             if not np.any(dec_reg == 0):
                 break
             self._update_tree_num(dec_reg)
             self._update_estimator()
-            dec_reg, sha_max_history, imp_history, hit_reg, imp_sha_max = self._run_iteration(X, y, sample_weight, dec_reg, sha_max_history, imp_history, hit_reg, _iter)
+            (
+                dec_reg,
+                sha_max_history,
+                imp_history,
+                hit_reg,
+                imp_sha_max,
+            ) = self._run_iteration(
+                X,
+                y,
+                sample_weight,
+                dec_reg,
+                sha_max_history,
+                imp_history,
+                hit_reg,
+                _iter,
+            )
             _iter += 1
             pbar.update(1)
-    
+
         pbar.close()
         return dec_reg, sha_max_history, imp_history, imp_sha_max
-    
+
     def _calculate_support(self, confirmed, tentative, n_feat):
         """Calculates the feature support arrays for the BorutaPy feature selection algorithm.
 
@@ -942,7 +980,7 @@ class Leshy(SelectorMixin, BaseEstimator):
         self.support_weak_[tentative] = 1
         if self.keep_weak:
             self.support_[tentative] = 1
-            
+
     def _calculate_absolute_ranking(self):
         """
         Calculates the absolute ranking of the features based on their mean importance.
@@ -953,7 +991,9 @@ class Leshy(SelectorMixin, BaseEstimator):
             The function updates the `ranking_absolutes_` attribute of the instance with the absolute ranking.
         """
         vimp_df = pd.DataFrame(self.imp_real_hist, columns=self.feature_names_in_)
-        self.ranking_absolutes_ = list(vimp_df.mean().sort_values(ascending=False).index)
+        self.ranking_absolutes_ = list(
+            vimp_df.mean().sort_values(ascending=False).index
+        )
 
     def _calculate_relative_ranking(self, n_feat, tentative, confirmed, imp_history):
         """
@@ -1002,7 +1042,7 @@ class Leshy(SelectorMixin, BaseEstimator):
         else:
             # all are selected, thus we set feature supports to True
             self.support_ = np.ones(n_feat, dtype=bool)
-            
+
     def _print_result(self, dec_reg, _iter, start_time):
         """
         Calculate the feature support arrays.
@@ -1037,17 +1077,19 @@ class Leshy(SelectorMixin, BaseEstimator):
                 int(hours), int(minutes), seconds
             )
         )
-    
+
+
 def _get_confirmed_and_tentative(dec_reg):
     """Extracts the confirmed and tentative features from dec_reg."""
     confirmed = np.where(dec_reg == 1)[0]
     tentative = np.where(dec_reg == 0)[0]
     return confirmed, tentative
 
+
 def _select_tentative(tentative, imp_history, sha_max_history):
     """
     Select tentative features based on median importance values.
-    
+
     Parameters
     ----------
     tentative: array-like of shape (n_tentative,)
@@ -1056,7 +1098,7 @@ def _select_tentative(tentative, imp_history, sha_max_history):
         Importance values for each feature in each iteration.
     sha_max_history: array-like of shape (n_iterations + 1,)
         The history of the highest stability scores.
-        
+
     Returns
     -------
     tentative: array-like of shape (n_tentative_confirmed,)
@@ -1068,6 +1110,7 @@ def _select_tentative(tentative, imp_history, sha_max_history):
     tentative_confirmed = np.where(tentative_median > np.median(sha_max_history))[0]
     tentative = tentative[tentative_confirmed]
     return tentative
+
 
 def _split_fit_estimator(estimator, X, y, sample_weight=None, cat_feature=None):
     """Private function, split the train, test and fit the model
@@ -1189,7 +1232,9 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
             shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
     else:
         # For other tree-based models, use the shap.TreeExplainer method to compute SHAP values
-        explainer = shap.TreeExplainer(model, feature_perturbation="tree_path_dependent")
+        explainer = shap.TreeExplainer(
+            model, feature_perturbation="tree_path_dependent"
+        )
         shap_values = explainer.shap_values(X_tt)
 
         # For multi-class classifiers, reshape the shap_values
@@ -1304,6 +1349,7 @@ def _get_imp(estimator, X, y, sample_weight=None, cat_feature=None):
             "are currently supported in BorutaPy."
         )
     return imp
+
 
 ###################################
 #
@@ -1472,8 +1518,15 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
             imp=self.importance,
         )
         self.selected_features_ = self.selected_features_.values
-        self.support_ = np.asarray([c in self.selected_features_ for c in self.feature_names_in_])
-        self.ranking_absolutes_ = list(self.sha_cutoff_df.iloc[:, :int(self.sha_cutoff_df.shape[1]/2)].mean().sort_values(ascending=False).index)
+        self.support_ = np.asarray(
+            [c in self.selected_features_ for c in self.feature_names_in_]
+        )
+        self.ranking_absolutes_ = list(
+            self.sha_cutoff_df.iloc[:, : int(self.sha_cutoff_df.shape[1] / 2)]
+            .mean()
+            .sort_values(ascending=False)
+            .index
+        )
         self.ranking_ = np.where(self.support_, 2, 1)
         return self
 
@@ -1489,7 +1542,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
 
     def _more_tags(self):
         return {"allow_nan": True, "requires_y": True}
-    
+
     @mpl.rc_context(PLT_PARAMS)
     def plot_importance(self, n_feat_per_inch=5):
         """
@@ -1509,42 +1562,46 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         """
         if self.mean_shadow is None:
             raise ValueError("Apply fit method first")
-    
+
         b_df = self.sha_cutoff_df
         real_df = b_df.iloc[:, : int(b_df.shape[1] / 2)].copy()
-    
-        real_df = real_df.reindex(real_df.mean().sort_values(ascending=True).index, axis=1)
-    
+
+        real_df = real_df.reindex(
+            real_df.mean().sort_values(ascending=True).index, axis=1
+        )
+
         if real_df.dropna().empty:
             warnings.warn(NO_FEATURE_SELECTED_WARNINGS)
             return None
-    
+
         fig, ax = plt.subplots(figsize=(16, real_df.shape[1] / n_feat_per_inch))
         bp = real_df.plot(**PLOT_KWARGS, ax=ax)
         bp.set_xlim(left=real_df.min(skipna=True).min(skipna=True) - 0.025)
-    
+
         for c in range(len(self.selected_features_)):
             patch = bp.findobj(mpl.patches.Patch)[real_df.shape[1] - c - 1]
             patch.set_facecolor(BLUE)
             patch.set_color(BLUE)
-    
+
         custom_lines = [
             Line2D([0], [0], color=BLUE, lw=5),
             Line2D([0], [0], color="gray", lw=5),
             Line2D([0], [0], linestyle="--", color=RED, lw=2),
         ]
-        bp.legend(custom_lines, ["confirmed", "rejected", "sha. max"], loc="lower right")
-    
+        bp.legend(
+            custom_lines, ["confirmed", "rejected", "sha. max"], loc="lower right"
+        )
+
         ax.axvline(x=self.mean_shadow, linestyle="--", color=RED)
         ax.set_title("BoostAGroota importance of selected predictors")
-    
-        return fig
 
+        return fig
 
 
 ############################################
 # Helper Functions to do the Heavy Lifting
 ############################################
+
 
 def _create_shadow(X_train):
     """Create shadow features by making copies of all X variables and randomly shuffling them.
@@ -1569,6 +1626,7 @@ def _create_shadow(X_train):
     new_x = pd.concat([X_train, X_shadow], axis=1)
     return new_x, shadow_names
 
+
 ########################################################################################
 # BoostARoota. In principle, you cannot/don't need to access those methods (reason of
 # the _ in front of the function name, they're internal functions)
@@ -1589,7 +1647,7 @@ def _reduce_vars_sklearn(
     cat_feature,
 ):
     """Private function, reduce the number of predictors using a sklearn estimator
-    
+
     Parameters
     ----------
     x : pd.DataFrame
@@ -1618,7 +1676,7 @@ def _reduce_vars_sklearn(
     cat_feature : list of int or None
         the list of integers, cols loc, of the categorical predictors. Avoids to detect and encode
         each iteration if the exact same columns are passed to the selection methods.
-        
+
     Returns
     -------
     criteria : bool
@@ -1629,18 +1687,20 @@ def _reduce_vars_sklearn(
         feature importance of the real+shadow predictors over iter
     mean_shadow : float
         the feature importance threshold, to reject or not the predictors
-        
+
     Raises
     ------
     ValueError
         error if the feature importance type is not
     """
-    # Set up the parameters for running the model in XGBoost - split is on multi log loss   
+    # Set up the parameters for running the model in XGBoost - split is on multi log loss
     for i in range(1, n_iterations + 1):
         # Create the shadow variables and run the model to obtain importances
         new_x, shadow_names = _create_shadow(X)
         imp_func = {"shap": _get_shap_imp, "pimp": _get_perm_imp, "native": _get_imp}
-        importance = imp_func[imp_kind](estimator, new_x, y, sample_weight=weight, cat_feature=cat_feature)
+        importance = imp_func[imp_kind](
+            estimator, new_x, y, sample_weight=weight, cat_feature=cat_feature
+        )
 
         # Create a dataframe to store the feature importances
         if i == 1:
@@ -1655,7 +1715,9 @@ def _reduce_vars_sklearn(
             print("Only Sklearn tree based methods allowed")
 
         # Merge the current feature importances with the existing ones in df
-        df = pd.merge(df, df2, on="feature", how="outer", suffixes=("_x" + str(i), "_y" + str(i)))
+        df = pd.merge(
+            df, df2, on="feature", how="outer", suffixes=("_x" + str(i), "_y" + str(i))
+        )
 
         # Print the iteration number if not silent
         if not silent:
@@ -1685,7 +1747,10 @@ def _reduce_vars_sklearn(
 
     return criteria, real_vars["feature"], df, mean_shadow
 
-def _boostaroota(X, y, estimator, cutoff, iters, max_rounds, delta, silent, weight, imp):
+
+def _boostaroota(
+    X, y, estimator, cutoff, iters, max_rounds, delta, silent, weight, imp
+):
     """Private function, reduce the number of predictors using a sklearn estimator
     Parameters
     x : pd.DataFrame
@@ -1772,7 +1837,6 @@ def _boostaroota(X, y, estimator, cutoff, iters, max_rounds, delta, silent, weig
     return crit, keep_vars, df_vimp, mean_shadow
 
 
-
 ###################################
 #
 # GrootCV
@@ -1853,7 +1917,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
         # Ensure parameters meet necessary criteria
         if cutoff <= 0 or n_iter <= 0 or n_folds <= 0:
             raise ValueError("cutoff, n_iter, and n_folds should be greater than 0.")
-        
+
     def fit(self, X, y, sample_weight=None):
         """Fit the GrootCV transformer with the provided estimator.
 
@@ -1898,16 +1962,20 @@ class GrootCV(SelectorMixin, BaseEstimator):
         )
 
         self.selected_features_ = self.selected_features_.values
-        self.support_ = np.asarray([c in self.selected_features_ for c in self.feature_names_in_])
+        self.support_ = np.asarray(
+            [c in self.selected_features_ for c in self.feature_names_in_]
+        )
         self.ranking_ = np.where(self.support_, 2, 1)
-        
+
         b_df = self.cv_df.T.copy()
         b_df.columns = b_df.iloc[0]
         b_df = b_df.drop(b_df.index[0])
         b_df = b_df.drop(b_df.index[-1])
         b_df = b_df.convert_dtypes()
         real_df = b_df.iloc[:, : int(b_df.shape[1] / 2)].copy()
-        self.ranking_absolutes_ = list(real_df.mean().sort_values(ascending=False).index)
+        self.ranking_absolutes_ = list(
+            real_df.mean().sort_values(ascending=False).index
+        )
         return self
 
     def _get_support_mask(self):
@@ -2038,26 +2106,37 @@ def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight
     for tridx, validx in tqdm(
         rkf.split(X, y), total=rkf.get_n_splits(), desc="Repeated k-fold"
     ):
-        X_train, X_val, y_train, y_val, weight_tr, weight_val = _split_data(X, y, tridx, validx, weight)
+        X_train, X_val, y_train, y_val, weight_tr, weight_val = _split_data(
+            X, y, tridx, validx, weight
+        )
 
         # Create the shadow variables and run the model to obtain importances
         new_x_tr, shadow_names = _create_shadow(X_train)
         new_x_val, _ = _create_shadow(X_val)
-        
-        bst, shap_matrix, bst.best_iteration = _train_lgb_model(new_x_tr, 
-                                                               y_train, 
-                                                               weight_tr, 
-                                                               new_x_val, 
-                                                               y_val, 
-                                                               weight_val, 
-                                                               category_cols=category_cols, 
-                                                               early_stopping_rounds=20, 
-                                                               **param)
-        
+
+        bst, shap_matrix, bst.best_iteration = _train_lgb_model(
+            new_x_tr,
+            y_train,
+            weight_tr,
+            new_x_val,
+            y_val,
+            weight_val,
+            category_cols=category_cols,
+            early_stopping_rounds=20,
+            **param,
+        )
+
         importance = _compute_importance(new_x_tr, shap_matrix, param, objective)
         if iter == 0:
             df = pd.DataFrame({"feature": new_x_tr.columns})
-        df = _merge_importance_df(df=df, importance=importance, iter=iter, n_folds=n_folds, column_names=new_x_tr.columns, silent=silent)
+        df = _merge_importance_df(
+            df=df,
+            importance=importance,
+            iter=iter,
+            n_folds=n_folds,
+            column_names=new_x_tr.columns,
+            silent=silent,
+        )
         iter += 1
 
     df["Med"] = df.select_dtypes(include=[np.number]).mean(axis=1)
@@ -2072,6 +2151,7 @@ def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight
     real_vars = real_vars[(real_vars.Med.values >= cutoff_shadow)]
 
     return real_vars["feature"], df, cutoff_shadow
+
 
 def _set_lgb_parameters(X, y, objective, rf=False, silent=True):
     """Set parameters for a LightGBM model based on the input features and the objective.
@@ -2101,9 +2181,30 @@ def _set_lgb_parameters(X, y, objective, rf=False, silent=True):
     if objective == "softmax":
         param["num_class"] = len(np.unique(y))
     if rf:
-        feat_frac = np.sqrt(n_feat) / n_feat if objective in ["softmax", "binary"] else n_feat / (3 * n_feat)
-        param.update({"boosting_type": "rf", "bagging_fraction": "0.7", "feature_fraction": feat_frac, "bagging_freq": "1"})
-    clf_losses = ["binary", "softmax", "multi_logloss", "multiclassova", "multiclass", "multiclass_ova", "ova", "ovr", "binary_logloss"]
+        feat_frac = (
+            np.sqrt(n_feat) / n_feat
+            if objective in ["softmax", "binary"]
+            else n_feat / (3 * n_feat)
+        )
+        param.update(
+            {
+                "boosting_type": "rf",
+                "bagging_fraction": "0.7",
+                "feature_fraction": feat_frac,
+                "bagging_freq": "1",
+            }
+        )
+    clf_losses = [
+        "binary",
+        "softmax",
+        "multi_logloss",
+        "multiclassova",
+        "multiclass",
+        "multiclass_ova",
+        "ova",
+        "ovr",
+        "binary_logloss",
+    ]
     if objective in clf_losses:
         y = y.astype(int)
         y_freq_table = pd.Series(y.fillna(0)).value_counts(normalize=True)
@@ -2120,6 +2221,7 @@ def _set_lgb_parameters(X, y, objective, rf=False, silent=True):
             param.update({"is_unbalance": True})
     param.update({"num_threads": 0})
     return param
+
 
 def _split_data(X, y, tridx, validx, weight=None):
     """
@@ -2161,7 +2263,18 @@ def _split_data(X, y, tridx, validx, weight=None):
         weight_val = None
     return X_train, X_val, y_train, y_val, weight_tr, weight_val
 
-def _train_lgb_model(X_train, y_train, weight_train, X_val, y_val, weight_val, category_cols=None, early_stopping_rounds=20, **params):
+
+def _train_lgb_model(
+    X_train,
+    y_train,
+    weight_train,
+    X_val,
+    y_val,
+    weight_val,
+    category_cols=None,
+    early_stopping_rounds=20,
+    **params,
+):
     """
     Train a LightGBM model with the given training data and hyperparameters and return the trained model and its SHAP values.
 
@@ -2192,21 +2305,27 @@ def _train_lgb_model(X_train, y_train, weight_train, X_val, y_val, weight_val, c
     tuple of (Booster, numpy.ndarray, int)
         The trained LightGBM model, its SHAP values for X_train, and the best iteration reached during training.
     """
-        
-    d_train = lgb.Dataset(X_train, label=y_train, weight=weight_train, categorical_feature=category_cols)
-    d_valid = lgb.Dataset(X_val, label=y_val, weight=weight_val, categorical_feature=category_cols)
+
+    d_train = lgb.Dataset(
+        X_train, label=y_train, weight=weight_train, categorical_feature=category_cols
+    )
+    d_valid = lgb.Dataset(
+        X_val, label=y_val, weight=weight_val, categorical_feature=category_cols
+    )
     watchlist = [d_train, d_valid]
 
-    bst = lgb.train(params,
-                    train_set=d_train,
-                    num_boost_round=10000,
-                    valid_sets=watchlist,
-                    categorical_feature=category_cols,
-                    callbacks=[early_stopping(early_stopping_rounds, False, False)],
-                   )
-    
-    shap_matrix = bst.predict(X_train, pred_contrib=True) 
+    bst = lgb.train(
+        params,
+        train_set=d_train,
+        num_boost_round=10000,
+        valid_sets=watchlist,
+        categorical_feature=category_cols,
+        callbacks=[early_stopping(early_stopping_rounds, False, False)],
+    )
+
+    shap_matrix = bst.predict(X_train, pred_contrib=True)
     return bst, shap_matrix, bst.best_iteration
+
 
 def _compute_importance(new_x_tr, shap_matrix, param, objective):
     """
@@ -2241,6 +2360,7 @@ def _compute_importance(new_x_tr, shap_matrix, param, objective):
     importance = dict(zip(new_x_tr.columns, shap_imp))
     return sorted(importance.items(), key=operator.itemgetter(1))
 
+
 def _merge_importance_df(df, importance, iter, n_folds, column_names, silent=True):
     """
     Merge the feature importance dataframe `df` with the importance
@@ -2267,7 +2387,9 @@ def _merge_importance_df(df, importance, iter, n_folds, column_names, silent=Tru
     """
 
     df2 = pd.DataFrame(importance, columns=["feature", "fscore" + str(iter)])
-    df2["fscore" + str(iter)] = df2["fscore" + str(iter)] / df2["fscore" + str(iter)].sum()
+    df2["fscore" + str(iter)] = (
+        df2["fscore" + str(iter)] / df2["fscore" + str(iter)].sum()
+    )
     df = pd.merge(df, df2, on="feature", how="outer")
     nit = divmod(iter, n_folds)[0]
     nf = divmod(iter, n_folds)[1]

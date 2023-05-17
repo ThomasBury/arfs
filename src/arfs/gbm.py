@@ -35,18 +35,19 @@ QUAL_COLORS = [
 BCKGRND_COLOR = "#f5f5f5"
 
 MPL_PARAMS = {
-        "figure.figsize": (5, 3),
-        "axes.prop_cycle": plt.cycler(color=QUAL_COLORS),
-        "axes.facecolor": BCKGRND_COLOR,
-        "patch.edgecolor": BCKGRND_COLOR,
-        "figure.facecolor": BCKGRND_COLOR,
-        "axes.edgecolor": BCKGRND_COLOR,
-        "savefig.edgecolor": BCKGRND_COLOR,
-        "savefig.facecolor": BCKGRND_COLOR,
-        "grid.color": "#d2d2d2",
-        "lines.linewidth": 2,
-        "grid.alpha": 0.5,
-    }
+    "figure.figsize": (5, 3),
+    "axes.prop_cycle": plt.cycler(color=QUAL_COLORS),
+    "axes.facecolor": BCKGRND_COLOR,
+    "patch.edgecolor": BCKGRND_COLOR,
+    "figure.facecolor": BCKGRND_COLOR,
+    "axes.edgecolor": BCKGRND_COLOR,
+    "savefig.edgecolor": BCKGRND_COLOR,
+    "savefig.facecolor": BCKGRND_COLOR,
+    "grid.color": "#d2d2d2",
+    "lines.linewidth": 2,
+    "grid.alpha": 0.5,
+}
+
 
 class GradientBoosting:
     """Performs the training of a base lightGBM/CatBoost using early stopping. It works for any of the

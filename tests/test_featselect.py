@@ -57,9 +57,7 @@ class TestFeatSelectHighCardinality:
         fs.fit(X)
         expected = sorted(["dummy", "nice_guys"])
         actual = sorted(list(fs.not_selected_features_))
-        message = "Expected: {0}, Actual: {1}".format(
-            expected, actual
-        )
+        message = "Expected: {0}, Actual: {1}".format(expected, actual)
         assert actual == expected, message
 
 

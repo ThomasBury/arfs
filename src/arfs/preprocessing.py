@@ -523,11 +523,15 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         ):
             self.bin_features = list(X.select_dtypes(["category", "object"]).columns)
             self.cat_features = self.bin_features
-            
+
         for col in self.bin_features:
-            is_categorical = (self.cat_features is not None) and (col in self.cat_features)
+            is_categorical = (self.cat_features is not None) and (
+                col in self.cat_features
+            )
             if is_categorical:
-                encoder = OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=np.nan)
+                encoder = OrdinalEncoder(
+                    handle_unknown="use_encoded_value", unknown_value=np.nan
+                )
                 # create a category for missing
                 X[col] = (
                     X[col]
@@ -542,7 +546,9 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
                 encoder = None
 
             gbm_param = self.boost_params.copy()
-            tree = GradientBoosting(cat_feat=None, params=gbm_param, show_learning_curve=False)
+            tree = GradientBoosting(
+                cat_feat=None, params=gbm_param, show_learning_curve=False
+            )
             tree.fit(X[[col]], y, sample_weight=sample_weight)
 
             # store each fitted tree in a dictionary
@@ -588,7 +594,7 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
                 ]
 
             del tree
-        
+
         return self
 
     def transform(self, X):

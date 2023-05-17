@@ -175,7 +175,9 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         self.relevance = self.relevance_func(**self.relevance_args)
         self.features = self.relevance[~self.relevance.isna()].index.to_list()
         self.relevance = self.relevance.loc[self.features]
-        self.redundancy = pd.DataFrame(FLOOR, index=self.features, columns=self.features)
+        self.redundancy = pd.DataFrame(
+            FLOOR, index=self.features, columns=self.features
+        )
         self.n_features_to_select = min(self.n_features_to_select, len(self.features))
 
         if isinstance(X, pd.DataFrame):
@@ -193,15 +195,19 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
 
         # store the output in the sklearn flavour
         self.relevance_ = self.relevance
-        self.ranking_ = pd.concat([self.ranking_, self.relevance_, self.redundancy_], axis=1)
+        self.ranking_ = pd.concat(
+            [self.ranking_, self.relevance_, self.redundancy_], axis=1
+        )
         self.ranking_.columns = ["mrmr", "relevance", "redundancy"]
-        self.ranking_ = self.ranking_.iloc[:self.n_features_to_select, :]
+        self.ranking_ = self.ranking_.iloc[: self.n_features_to_select, :]
 
         # Set back the mrmr score to Inf for the first selected feature to avoid dividing by zero
         self.ranking_.iloc[0, 0] = float("Inf")
 
         self.selected_features_ = self.selected_features
-        self.support_ = np.asarray([x in self.selected_features for x in self.feature_names_in_])
+        self.support_ = np.asarray(
+            [x in self.selected_features for x in self.feature_names_in_]
+        )
         self.not_selected_features_ = self.not_selected_features
         return self
 
@@ -257,9 +263,10 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
 
     def _more_tags(self):
         return {"allow_nan": True}
-    
 
-    def select_next_feature(self, not_selected_features, selected_features, relevance, redundancy):
+    def select_next_feature(
+        self, not_selected_features, selected_features, relevance, redundancy
+    ):
         score_numerator = relevance.loc[not_selected_features]
 
         if len(selected_features) > 0:
@@ -327,9 +334,10 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
 
     def run_feature_selection(self):
         for i in tqdm(range(self.n_features_to_select), disable=not self.show_progress):
-            best_feature, score, score_denominator = self.select_next_feature(self.not_selected_features, 
-                                                                               self.selected_features, 
-                                                                               self.relevance, 
-                                                                               self.redundancy)
+            best_feature, score, score_denominator = self.select_next_feature(
+                self.not_selected_features,
+                self.selected_features,
+                self.relevance,
+                self.redundancy,
+            )
             self.update_ranks(best_feature, score, score_denominator)
-

@@ -105,9 +105,13 @@ def create_dtype_dict(df: pd.DataFrame, dic_keys: str = "col_names") -> dict:
         raise TypeError("df should be a pandas DataFrame")
 
     cat_cols = df.select_dtypes(include=["object", "category", "bool"]).columns
-    time_cols = df.select_dtypes(include=["datetime", "timedelta", "datetimetz"]).columns
+    time_cols = df.select_dtypes(
+        include=["datetime", "timedelta", "datetimetz"]
+    ).columns
     num_cols = df.select_dtypes(include=np.number).columns
-    remaining_cols = df.columns.difference(cat_cols).difference(num_cols).difference(time_cols)
+    remaining_cols = (
+        df.columns.difference(cat_cols).difference(num_cols).difference(time_cols)
+    )
 
     if dic_keys == "col_names":
         cat_dict = dict.fromkeys(cat_cols, "cat")
@@ -126,15 +130,16 @@ def create_dtype_dict(df: pd.DataFrame, dic_keys: str = "col_names") -> dict:
 
     raise ValueError("dic_keys should be either 'col_names' or 'dtypes'")
 
+
 def get_pandas_cat_codes(X):
     """
     Converts categorical and time features in a pandas DataFrame into numerical codes.
-    
+
     Parameters
     ----------
     X : pandas DataFrame
         The input DataFrame containing categorical and/or time features.
-    
+
     Returns
     -------
     X : pandas DataFrame
@@ -160,6 +165,7 @@ def get_pandas_cat_codes(X):
 
     return X, obj_feat, cat_idx
 
+
 def validate_sample_weight(sample_weight):
     """Ensures sample_weight parameter is a numpy array."""
     if isinstance(sample_weight, pd.Series):
@@ -169,10 +175,9 @@ def validate_sample_weight(sample_weight):
     elif sample_weight is None:
         return None
     else:
-        raise ValueError(
-            "sample_weight must be an array-like object or None."
-        )
-        
+        raise ValueError("sample_weight must be an array-like object or None.")
+
+
 def validate_sample_weight(sample_weight):
     """
     Validate the sample_weight parameter.
@@ -220,6 +225,7 @@ def validate_pandas_input(arg):
     except AttributeError:
         raise TypeError("input needs to be a numpy array or pandas data frame.")
 
+
 def check_if_tree_based(model):
     """check if estimator is tree based
 
@@ -233,7 +239,16 @@ def check_if_tree_based(model):
     condition : boolean
         if tree based or not
     """
-    tree_based_models = ["lightgbm", "lgbm", "xgboost", "xgb", "catboost", "forest", "boosting", "tree"]
+    tree_based_models = [
+        "lightgbm",
+        "lgbm",
+        "xgboost",
+        "xgb",
+        "catboost",
+        "forest",
+        "boosting",
+        "tree",
+    ]
     return any(m in model.__class__.__name__.lower() for m in tree_based_models)
 
 
@@ -344,7 +359,7 @@ def LightForestClassifier(n_feat, n_estimators=10):
         subsample_freq=1,
     )
 
-        
+
 def is_list_of_str(str_list):
     """Check if ``str_list`` is a list of strings.
 
@@ -358,7 +373,11 @@ def is_list_of_str(str_list):
     bool
         True if the list is a list of strings, False otherwise.
     """
-    if str_list is not None and isinstance(str_list, list) and all(isinstance(s, str) for s in str_list):
+    if (
+        str_list is not None
+        and isinstance(str_list, list)
+        and all(isinstance(s, str) for s in str_list)
+    ):
         return True
     else:
         return False
@@ -377,7 +396,11 @@ def is_list_of_bool(bool_list):
     bool
         True if list of Booleans, else False
     """
-    if bool_list is not None and isinstance(bool_list, list) and all(isinstance(s, bool) for s in bool_list):
+    if (
+        bool_list is not None
+        and isinstance(bool_list, list)
+        and all(isinstance(s, bool) for s in bool_list)
+    ):
         return True
     else:
         return False
@@ -396,10 +419,15 @@ def is_list_of_int(int_list):
     bool
         True if list of integers, else False
     """
-    if int_list is not None and isinstance(int_list, list) and all(isinstance(s, int) for s in int_list):
+    if (
+        int_list is not None
+        and isinstance(int_list, list)
+        and all(isinstance(s, int) for s in int_list)
+    ):
         return True
     else:
         return False
+
 
 def _get_titanic_data():
     """Load Titanic data and add dummies (random predictors, numeric and categorical) and
@@ -440,7 +468,9 @@ def _get_titanic_data():
     X = X[categorical_columns + numerical_columns]
 
     # Preprocessing
-    categorical_pipe = make_pipeline(SimpleImputer(strategy="constant", fill_value="missing"))
+    categorical_pipe = make_pipeline(
+        SimpleImputer(strategy="constant", fill_value="missing")
+    )
     numerical_pipe = make_pipeline(SimpleImputer(strategy="mean"))
     preprocessor = make_column_transformer(
         (categorical_pipe, categorical_columns),
@@ -457,12 +487,11 @@ def _get_titanic_data():
     sample_weight = np.random.uniform(0, 1, len(y))
 
     return Bunch(
-        data=X, 
-        target=y, 
-        sample_weight=sample_weight, 
+        data=X,
+        target=y,
+        sample_weight=sample_weight,
         categorical=categorical_columns,
     )
-
 
 
 def _get_cancer_data():
@@ -548,6 +577,7 @@ def _load_housing(as_frame: bool = False):
             filename=data_file_name,
         )
 
+
 def plot_y_vs_X(X, y, ncols=2, figsize=(10, 10)):
     """Plot target vs relevant and non-relevant predictors
 
@@ -591,7 +621,6 @@ def plot_y_vs_X(X, y, ncols=2, figsize=(10, 10)):
     return f
 
 
-
 def load_data(name="Titanic"):
     """Load some toy data set to test the All Relevant Feature Selection methods.
     Dummies (random) predictors are added and ARFS should be able to filter them out.
@@ -633,6 +662,7 @@ def load_data(name="Titanic"):
             "`name should be in ['Titanic', 'Boston', 'cancer', 'housing']`"
         )
 
+
 def _make_corr_dataset_regression(size=1000):
     """Generate an artificial dataset for regression tasks with columns that
     are correlated, have no variance, large cardinality, numerical and categorical.
@@ -649,56 +679,95 @@ def _make_corr_dataset_regression(size=1000):
     """
     # generate weights
     w = np.random.beta(a=1, b=0.5, size=size)
-    
+
     # set seed for reproducibility
     np.random.seed(42)
-    
+
     # generate target variable
     sigma = 0.2
     y = np.random.normal(1, sigma, size)
-    
+
     # generate correlated features
     z = y - np.random.normal(1, sigma / 5, size) + np.random.normal(1, sigma / 5, size)
-    X = pd.DataFrame({
-        'var0': z,
-        'var1': y * np.abs(np.random.normal(0, sigma * 2, size)) + np.random.normal(0, sigma / 10, size),
-        'var2': -y + np.random.normal(0, sigma, size),
-        'var3': y**2 + np.random.normal(0, sigma, size),
-        'var4': np.sqrt(y) + np.random.gamma(1, 0.2, size),
-        'var5': np.random.normal(0, 1, size),
-        'var6': np.random.poisson(1, size),
-        'var7': np.random.binomial(1, 0.3, size),
-        'var8': np.random.normal(0, 1, size),
-        'var9': np.random.poisson(1, size),
-        'var10': np.ones(size),
-        'var11': np.concatenate([
-            np.arange(start=0, stop=int(size / 2), step=1),
-            np.arange(start=0, stop=int(size / 2), step=1)
-        ]),
-        'var12': y**3 + np.abs(np.random.normal(0, 1, size))
-    })
-    
+    X = pd.DataFrame(
+        {
+            "var0": z,
+            "var1": y * np.abs(np.random.normal(0, sigma * 2, size))
+            + np.random.normal(0, sigma / 10, size),
+            "var2": -y + np.random.normal(0, sigma, size),
+            "var3": y**2 + np.random.normal(0, sigma, size),
+            "var4": np.sqrt(y) + np.random.gamma(1, 0.2, size),
+            "var5": np.random.normal(0, 1, size),
+            "var6": np.random.poisson(1, size),
+            "var7": np.random.binomial(1, 0.3, size),
+            "var8": np.random.normal(0, 1, size),
+            "var9": np.random.poisson(1, size),
+            "var10": np.ones(size),
+            "var11": np.concatenate(
+                [
+                    np.arange(start=0, stop=int(size / 2), step=1),
+                    np.arange(start=0, stop=int(size / 2), step=1),
+                ]
+            ),
+            "var12": y**3 + np.abs(np.random.normal(0, 1, size)),
+        }
+    )
+
     # introduce missing values
     idx_nan = np.random.choice(size, int(round(size / 2)), replace=False)
-    X.loc[idx_nan, 'var12'] = np.nan
-    
+    X.loc[idx_nan, "var12"] = np.nan
+
     # set column names and types
-    X.columns = ['var' + str(i) for i in range(13)]
-    X['var11'] = X['var11'].astype('category')
-    X['nice_guys'] = np.random.choice([
-        "Rick", "Bender", "Cartman", "Morty", "Fry", "Vador", "Thanos", "Bejita",
-        "Cell", "Tinkywinky", "Lecter", "Alien", "Terminator", "Drago", "Dracula",
-        "Krueger", "Geoffrey", "Goldfinder", "Blackbeard", "Excel", "SAS", "Bias",
-        "Variance", "Scrum", "Human", "Garry", "Coldplay", "Imaginedragons",
-        "Platist", "Creationist", "Gruber", "KeyserSoze", "Luthor", "Klaue", "Bane",
-        "MarkZ"
-    ], size)
-    
+    X.columns = ["var" + str(i) for i in range(13)]
+    X["var11"] = X["var11"].astype("category")
+    X["nice_guys"] = np.random.choice(
+        [
+            "Rick",
+            "Bender",
+            "Cartman",
+            "Morty",
+            "Fry",
+            "Vador",
+            "Thanos",
+            "Bejita",
+            "Cell",
+            "Tinkywinky",
+            "Lecter",
+            "Alien",
+            "Terminator",
+            "Drago",
+            "Dracula",
+            "Krueger",
+            "Geoffrey",
+            "Goldfinder",
+            "Blackbeard",
+            "Excel",
+            "SAS",
+            "Bias",
+            "Variance",
+            "Scrum",
+            "Human",
+            "Garry",
+            "Coldplay",
+            "Imaginedragons",
+            "Platist",
+            "Creationist",
+            "Gruber",
+            "KeyserSoze",
+            "Luthor",
+            "Klaue",
+            "Bane",
+            "MarkZ",
+        ],
+        size,
+    )
+
     return X, y, w
+
 
 def _make_corr_dataset_classification(size=1000):
     """
-    Generate an artificial dataset for classification tasks. Some columns are correlated, 
+    Generate an artificial dataset for classification tasks. Some columns are correlated,
     have no variance, large cardinality, numerical and categorical.
 
     Parameters:
@@ -725,7 +794,7 @@ def _make_corr_dataset_classification(size=1000):
     X[:, 0] = z
     X[:, 1] = y * np.abs(np.random.normal(0, 1, size)) + np.random.normal(0, 0.1, size)
     X[:, 2] = -y + np.random.normal(0, 1, size)
-    X[:, 3] = y ** 2 + np.random.normal(0, 1, size)
+    X[:, 3] = y**2 + np.random.normal(0, 1, size)
     X[:, 4] = np.sqrt(y) + np.random.binomial(2, 0.1, size)
 
     # Generate 5 irrelevant features
@@ -739,7 +808,7 @@ def _make_corr_dataset_classification(size=1000):
 
     # Generate a column with a lot of missing values
     idx_nan = np.random.choice(size, int(round(size / 2)), replace=False)
-    X[:, 12] = y ** 3 + np.abs(np.random.normal(0, 1, size))
+    X[:, 12] = y**3 + np.abs(np.random.normal(0, 1, size))
     X[idx_nan, 12] = np.nan
 
     # Make the predictors matrix a pandas DataFrame
@@ -750,10 +819,40 @@ def _make_corr_dataset_classification(size=1000):
 
     # Add a column of random values from a list
     nice_guys = [
-        "Rick", "Bender", "Cartman", "Morty", "Fry", "Vador", "Thanos", "Bejita",
-        "Cell", "Tinkywinky", "Lecter", "Alien", "Terminator", "Drago", "Dracula",
-        "Krueger", "Geoffrey", "Goldfinder", "Blackbeard", "Excel", "SAS", "Bias",
-        "Variance", "Scrum", "Human", "Garry", "Coldplay", "Imaginedragons", "Platist",
-        "Creationist", "Gruber", "KeyserSoze", "Luthor", "Klaue", "Bane", "MarkZ",
+        "Rick",
+        "Bender",
+        "Cartman",
+        "Morty",
+        "Fry",
+        "Vador",
+        "Thanos",
+        "Bejita",
+        "Cell",
+        "Tinkywinky",
+        "Lecter",
+        "Alien",
+        "Terminator",
+        "Drago",
+        "Dracula",
+        "Krueger",
+        "Geoffrey",
+        "Goldfinder",
+        "Blackbeard",
+        "Excel",
+        "SAS",
+        "Bias",
+        "Variance",
+        "Scrum",
+        "Human",
+        "Garry",
+        "Coldplay",
+        "Imaginedragons",
+        "Platist",
+        "Creationist",
+        "Gruber",
+        "KeyserSoze",
+        "Luthor",
+        "Klaue",
+        "Bane",
+        "MarkZ",
     ]
-

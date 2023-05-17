@@ -58,11 +58,16 @@ def make_fs_summary(selector_pipe):
         if hasattr(selector, "support_"):
             feature_in = selector.feature_names_in_
             to_drop = list(set(feature_in) - set(selector.get_feature_names_out()))
-            tag_df[selector_name] = np.where(tag_df["predictor"].isin(to_drop), 0, 1) * np.where(tag_df["predictor"].isin(feature_in), 1, np.nan)
+            tag_df[selector_name] = np.where(
+                tag_df["predictor"].isin(to_drop), 0, 1
+            ) * np.where(tag_df["predictor"].isin(feature_in), 1, np.nan)
         else:
             tag_df[selector_name] = np.nan
 
-    style = tag_df.style.apply(highlight_discarded, subset=tag_df.columns[1:]).\
-        applymap(lambda x: "" if x == x else "background-color: #f57505").format(precision=0)
+    style = (
+        tag_df.style.apply(highlight_discarded, subset=tag_df.columns[1:])
+        .applymap(lambda x: "" if x == x else "background-color: #f57505")
+        .format(precision=0)
+    )
 
     return style
