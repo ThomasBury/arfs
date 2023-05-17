@@ -429,7 +429,9 @@ class Leshy(SelectorMixin, BaseEstimator):
         # because the columns are dynamically created/rejected
         X = X_raw
 
-        X = X.fillna(0)
+        # only sklearn requires to fillna data
+        # modern GBM implementations can handle this
+        #X = X.fillna(0)
         y = pd.Series(y).fillna(0) if not isinstance(y, pd.Series) else y.fillna(0)
 
         # check input params
@@ -1326,6 +1328,7 @@ def _get_imp(estimator, X, y, sample_weight=None, cat_feature=None):
             X, _, cat_idx = get_pandas_cat_codes(X)
         else:
             cat_idx = cat_feature
+        
 
         # handle catboost and cat features
         if is_catboost(estimator) or (
