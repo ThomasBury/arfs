@@ -26,44 +26,27 @@ import gc
 import os
 from pathlib import Path
 
-qual_colors_list = [
+QUAL_COLORS = [
     (0.188235, 0.635294, 0.854902),
     (0.898039, 0.682353, 0.219608),
     (0.988235, 0.309804, 0.188235),
     (0.427451, 0.564706, 0.309804),
 ]
+BCKGRND_COLOR = "#f5f5f5"
 
-
-def set_my_plt_style(height=3, width=5, linewidth=2):
-    """This set the style of matplotlib to fivethirtyeight with some modifications (colours, axes)
-
-    Parameters
-    ----------
-    height : float, default = 3
-        fig height in inches (yeah they're still struggling with the metric system) (default ``3``)
-    width : float, default = 5
-        fig width in inches (yeah they're still struggling with the metric system) (default ``5``)
-    linewidth : float
-         (default ``2``)
-
-    """
-    plt.style.use("fivethirtyeight")
-    my_colors_list = qual_colors_list
-    bckgnd_color = "#f5f5f5"
-    params = {
-        "figure.figsize": (width, height),
-        "axes.prop_cycle": plt.cycler(color=my_colors_list),
-        "axes.facecolor": bckgnd_color,
-        "patch.edgecolor": bckgnd_color,
-        "figure.facecolor": bckgnd_color,
-        "axes.edgecolor": bckgnd_color,
-        "savefig.edgecolor": bckgnd_color,
-        "savefig.facecolor": bckgnd_color,
-        "grid.color": "#d2d2d2",
-        "lines.linewidth": linewidth,
-        "grid.alpha": 0.5,
-    }  # plt.cycler(color=my_colors_list)
-    mpl.rcParams.update(params)
+MPL_PARAMS = {
+    "figure.figsize": (5, 3),
+    "axes.prop_cycle": plt.cycler(color=QUAL_COLORS),
+    "axes.facecolor": BCKGRND_COLOR,
+    "patch.edgecolor": BCKGRND_COLOR,
+    "figure.facecolor": BCKGRND_COLOR,
+    "axes.edgecolor": BCKGRND_COLOR,
+    "savefig.edgecolor": BCKGRND_COLOR,
+    "savefig.facecolor": BCKGRND_COLOR,
+    "grid.color": "#d2d2d2",
+    "lines.linewidth": 2,
+    "grid.alpha": 0.5,
+}
 
 
 class GradientBoosting:
@@ -513,14 +496,14 @@ def _fit_early_stopped_lgb(
     )
 
     if learning_curve:
-        set_my_plt_style()
-        fig, ax = plt.subplots()
-        ax = lgb.plot_metric(evals_result, ax=ax)
-        up_lim = model.best_iteration + 50
-        ax.axvline(
-            x=model.best_iteration, color="grey", linestyle="--", label="best_iter"
-        )
-        ax.set_xlim([0, up_lim])
+        with mpl.rc_context(MPL_PARAMS):
+            fig, ax = plt.subplots()
+            ax = lgb.plot_metric(evals_result, ax=ax)
+            up_lim = model.best_iteration + 50
+            ax.axvline(
+                x=model.best_iteration, color="grey", linestyle="--", label="best_iter"
+            )
+            ax.set_xlim([0, up_lim])
 
         del d_train
         del d_valid

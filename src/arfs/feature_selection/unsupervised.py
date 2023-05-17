@@ -142,6 +142,24 @@ class UniqueValuesThreshold(BaseThresholdSelector):
 
 
 def _pandas_count_unique_values_cat_features(X):
+    """
+    Counts the number of unique values in categorical features of a pandas DataFrame.
+
+    Parameters
+    ----------
+    X : pandas DataFrame
+        The input data.
+
+    Returns
+    -------
+    pandas Series
+        The number of unique values in each categorical feature.
+
+    Raises
+    ------
+    TypeError
+        If the input data is not a pandas DataFrame.
+    """
     if not isinstance(X, pd.DataFrame):
         raise TypeError("X should be a pandas DataFrame")
     count_series = pd.Series(data=0, index=X.columns)
