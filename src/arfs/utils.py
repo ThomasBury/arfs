@@ -13,8 +13,8 @@ import pandas as pd
 from pkg_resources import resource_filename
 from matplotlib import pyplot as plt
 from sklearn.impute import SimpleImputer
-from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer, make_column_transformer
+from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.datasets import fetch_openml
 from sklearn.datasets import load_breast_cancer
 from sklearn.utils import Bunch
@@ -172,6 +172,37 @@ def validate_sample_weight(sample_weight):
         raise ValueError(
             "sample_weight must be an array-like object or None."
         )
+        
+def validate_sample_weight(sample_weight):
+    """
+    Validate the sample_weight parameter.
+
+    Parameters
+    ----------
+    sample_weight : array-like or None
+        Input sample weights.
+
+    Returns
+    -------
+    np.ndarray or None
+        If sample_weight is a Pandas Series, its values are returned as a
+        numpy array. If sample_weight is already a numpy array, it is
+        returned unmodified. If sample_weight is None, None is returned.
+
+    Raises
+    ------
+    ValueError
+        If sample_weight is not an array-like object or None.
+    """
+    if isinstance(sample_weight, pd.Series):
+        return sample_weight.values
+    elif isinstance(sample_weight, np.ndarray):
+        return sample_weight
+    elif sample_weight is None:
+        return None
+    else:
+        raise ValueError("sample_weight must be an array-like object or None.")
+
 
 def validate_pandas_input(arg):
     """Validate if pandas or numpy arrays are provided
@@ -202,9 +233,8 @@ def check_if_tree_based(model):
     condition : boolean
         if tree based or not
     """
-    tree_based_models = ["lightgbm", "xgboost", "catboost", "_forest", "boosting"]
-    condition = any(i in str(type(model)).lower() for i in tree_based_models)
-    return condition
+    tree_based_models = ["lightgbm", "lgbm", "xgboost", "xgb", "catboost", "forest", "boosting", "tree"]
+    return any(m in model.__class__.__name__.lower() for m in tree_based_models)
 
 
 def is_lightgbm(estimator):
@@ -220,7 +250,7 @@ def is_lightgbm(estimator):
     condition : boolean
         if lgbm based or not
     """
-    is_lgb = "lightgbm" in str(type(estimator))
+    is_lgb = "lgbm" in estimator.__class__.__name__.lower()
     return is_lgb
 
 
@@ -237,7 +267,7 @@ def is_catboost(estimator):
     condition : boolean
         if catboost based or not
     """
-    is_cat = "catboost" in str(type(estimator))
+    is_cat = "catboost" in estimator.__class__.__name__.lower()
     return is_cat
 
 
@@ -254,7 +284,7 @@ def is_xgboost(estimator):
     condition : boolean
         if xgboost based or not
     """
-    is_xgb = "xgboost" in str(type(estimator))
+    is_xgb = "xgb" in estimator.__class__.__name__.lower()
     return is_xgb
 
 
@@ -314,27 +344,24 @@ def LightForestClassifier(n_feat, n_estimators=10):
         subsample_freq=1,
     )
 
-
+        
 def is_list_of_str(str_list):
-    """Check if ``str_list`` is not a list of strings
+    """Check if ``str_list`` is a list of strings.
 
     Parameters
     ----------
-    str_list : list of str
-        the list we want to check for
+    str_list : list or None
+        The list to check.
 
     Returns
     -------
     bool
-        True if list of strings, else False
+        True if the list is a list of strings, False otherwise.
     """
-    if str_list is not None:
-        if not (
-            isinstance(str_list, list) and all(isinstance(s, str) for s in str_list)
-        ):
-            return False
-        else:
-            return True
+    if str_list is not None and isinstance(str_list, list) and all(isinstance(s, str) for s in str_list):
+        return True
+    else:
+        return False
 
 
 def is_list_of_bool(bool_list):
@@ -350,13 +377,10 @@ def is_list_of_bool(bool_list):
     bool
         True if list of Booleans, else False
     """
-    if bool_list is not None:
-        if not (
-            isinstance(bool_list, list) and all(isinstance(s, bool) for s in bool_list)
-        ):
-            return False
-        else:
-            return True
+    if bool_list is not None and isinstance(bool_list, list) and all(isinstance(s, bool) for s in bool_list):
+        return True
+    else:
+        return False
 
 
 def is_list_of_int(int_list):
@@ -372,14 +396,10 @@ def is_list_of_int(int_list):
     bool
         True if list of integers, else False
     """
-    if int_list is not None:
-        if not (
-            isinstance(int_list, list) and all(isinstance(s, int) for s in int_list)
-        ):
-            return False
-        else:
-            return True
-
+    if int_list is not None and isinstance(int_list, list) and all(isinstance(s, int) for s in int_list):
+        return True
+    else:
+        return False
 
 def _get_titanic_data():
     """Load Titanic data and add dummies (random predictors, numeric and categorical) and
@@ -400,17 +420,14 @@ def _get_titanic_data():
     X["random_num"] = rng.randn(X.shape[0])
     X["family_size"] = X["parch"] + X["sibsp"]
     X.drop(["parch", "sibsp"], axis=1, inplace=True)
-    X["is_alone"] = 1
-    X.loc[X["family_size"] > 1, "is_alone"] = 0
+    X["is_alone"] = np.where(X["family_size"] > 1, 0, 1)
     X["title"] = (
         X["name"].str.split(", ", expand=True)[1].str.split(".", expand=True)[0]
     )
-    X.loc[X.title == "Miss", "title"] = "Mrs"
+    X.loc[X["title"] == "Miss", "title"] = "Mrs"
     title_counts = X["title"].value_counts()
     rare_titles = title_counts[title_counts < 10].index
     X.loc[X["title"].isin(rare_titles), "title"] = "rare"
-    # X['title'] = X.title.apply(lambda x: 'rare' if rare_titles[x] else x)
-
     categorical_columns = [
         "pclass",
         "sex",
@@ -421,28 +438,31 @@ def _get_titanic_data():
     ]
     numerical_columns = ["age", "family_size", "fare", "random_num"]
     X = X[categorical_columns + numerical_columns]
-    # Impute
-    categorical_pipe = Pipeline(
-        [("imputer", SimpleImputer(strategy="constant", fill_value="missing"))]
+
+    # Preprocessing
+    categorical_pipe = make_pipeline(SimpleImputer(strategy="constant", fill_value="missing"))
+    numerical_pipe = make_pipeline(SimpleImputer(strategy="mean"))
+    preprocessor = make_column_transformer(
+        (categorical_pipe, categorical_columns),
+        (numerical_pipe, numerical_columns),
     )
-    numerical_pipe = Pipeline([("imputer", SimpleImputer(strategy="mean"))])
-    preprocessing = ColumnTransformer(
-        [
-            ("cat", categorical_pipe, categorical_columns),
-            ("num", numerical_pipe, numerical_columns),
-        ]
-    )
-    X_trans = preprocessing.fit_transform(X)
-    X = pd.DataFrame(X_trans, columns=X.columns)
-    # encode
-    # X, cat_var_df, inv_mapper = cat_var(X)
+    X = preprocessor.fit_transform(X)
+
+    # Encode categorical variables
+    X = pd.DataFrame(X, columns=categorical_columns + numerical_columns)
     X[categorical_columns] = X[categorical_columns].astype(str)
     X[numerical_columns] = X[numerical_columns].astype(float)
-    # sample weight is just a dummy random vector for testing purpose
+
+    # Create sample weights
     sample_weight = np.random.uniform(0, 1, len(y))
+
     return Bunch(
-        data=X, target=y, sample_weight=sample_weight, categorical=categorical_columns
+        data=X, 
+        target=y, 
+        sample_weight=sample_weight, 
+        categorical=categorical_columns,
     )
+
 
 
 def _get_cancer_data():
@@ -528,61 +548,48 @@ def _load_housing(as_frame: bool = False):
             filename=data_file_name,
         )
 
-
 def plot_y_vs_X(X, y, ncols=2, figsize=(10, 10)):
     """Plot target vs relevant and non-relevant predictors
 
     Parameters
     ----------
     X : pd.DataFrame
-        the pd DF of the predictors
+        The DataFrame of the predictors.
     y : np.array
-        the target
+        The target.
     ncols : int, optional
-        the number of columns in the facet plot, by default 2
+        The number of columns in the facet plot. Default is 2.
     figsize : tuple, optional
-        the figure size, by default (10, 10)
+        The figure size. Default is (10, 10).
 
     Returns
     -------
     plt.figure
-        the univariate plots y vs pred_i
+        The univariate plots y vs pred_i.
     """
+    n_cols_to_plot = X.shape[1]
+    n_rows = int(np.ceil(n_cols_to_plot / ncols))
 
-    X = pd.DataFrame(X)
-    ncols_to_plot = X.shape[1]
-    n_rows = int(np.ceil(ncols_to_plot / ncols))
-
-    # Create figure and axes (this time it's 9, arranged 3 by 3)
+    # Create figure and axes
     f, axs = plt.subplots(nrows=n_rows, ncols=ncols, figsize=figsize)
 
-    # delete non-used axes
-    n_charts = ncols_to_plot
-    n_subplots = n_rows * ncols
-    cols_to_enum = X.columns
+    for i, col in enumerate(X.columns):
+        row = i // ncols
+        col = i % ncols
+        axs[row, col].scatter(X[col], y, alpha=0.1)
+        axs[row, col].set_title(col)
 
-    # Make the axes accessible with single indexing
-    if n_charts > 1:
-        axs = axs.flatten()
+    # Hide unused subplots
+    for i in range(n_cols_to_plot, n_rows * ncols):
+        row = i // ncols
+        col = i % ncols
+        axs[row, col].set_axis_off()
 
-    for i, col in enumerate(cols_to_enum):
-        # select the axis where the map will go
-        if n_charts > 1:
-            ax = axs[i]
-        else:
-            ax = axs
-
-        ax.scatter(X[col], y, alpha=0.1)
-        ax.set_title(col)
-
-    if n_subplots > n_charts > 1:
-        for i in range(n_charts, n_subplots):
-            ax = axs[i]
-            ax.set_axis_off()
-
-    # Display the figure
+    # Adjust spacing between subplots
     plt.tight_layout()
+
     return f
+
 
 
 def load_data(name="Titanic"):
@@ -626,10 +633,9 @@ def load_data(name="Titanic"):
             "`name should be in ['Titanic', 'Boston', 'cancer', 'housing']`"
         )
 
-
 def _generated_corr_dataset_regr(size=1000):
-    """Generate artificial dataset for regression tasks. Some columns are
-    correlated, have no variance, large cardinality, numerical and categorical.
+    """Generate an artificial dataset for regression tasks with columns that
+    are correlated, have no variance, large cardinality, numerical and categorical.
 
     Parameters
     ----------
@@ -641,187 +647,113 @@ def _generated_corr_dataset_regr(size=1000):
     pd.DataFrame, pd.Series, pd.Series
         the predictors matrix, the target and the weights
     """
-    # weights
+    # generate weights
     w = np.random.beta(a=1, b=0.5, size=size)
-    # fixing the seed and the target
+    
+    # set seed for reproducibility
     np.random.seed(42)
+    
+    # generate target variable
     sigma = 0.2
     y = np.random.normal(1, sigma, size)
+    
+    # generate correlated features
     z = y - np.random.normal(1, sigma / 5, size) + np.random.normal(1, sigma / 5, size)
-    X = np.zeros((size, 13))
-
-    # 5 relevant features, with positive and negative correlation to the target
-    X[:, 0] = z
-    X[:, 1] = y * np.abs(np.random.normal(0, sigma * 2, size)) + np.random.normal(
-        0, sigma / 10, size
-    )
-    X[:, 2] = -y + np.random.normal(0, sigma, size)
-    X[:, 3] = y**2 + np.random.normal(0, sigma, size)
-    X[:, 4] = np.sqrt(y) + np.random.gamma(1, 0.2, size)
-
-    # 5 irrelevant features
-    X[:, 5] = np.random.normal(0, 1, size)
-    X[:, 6] = np.random.poisson(1, size)
-    X[:, 7] = np.random.binomial(1, 0.3, size)
-    X[:, 8] = np.random.normal(0, 1, size)
-    X[:, 9] = np.random.poisson(1, size)
-    # zero variance
-    X[:, 10] = np.ones(size)
-    # high cardinality
-    half_size = int(size / 2)
-    X[:, 11] = np.concatenate(
-        [
-            np.arange(start=0, stop=half_size, step=1),
-            np.arange(start=0, stop=size - half_size, step=1),
-        ]
-    )
-    # a lot of missing values
+    X = pd.DataFrame({
+        'var0': z,
+        'var1': y * np.abs(np.random.normal(0, sigma * 2, size)) + np.random.normal(0, sigma / 10, size),
+        'var2': -y + np.random.normal(0, sigma, size),
+        'var3': y**2 + np.random.normal(0, sigma, size),
+        'var4': np.sqrt(y) + np.random.gamma(1, 0.2, size),
+        'var5': np.random.normal(0, 1, size),
+        'var6': np.random.poisson(1, size),
+        'var7': np.random.binomial(1, 0.3, size),
+        'var8': np.random.normal(0, 1, size),
+        'var9': np.random.poisson(1, size),
+        'var10': np.ones(size),
+        'var11': np.concatenate([
+            np.arange(start=0, stop=int(size / 2), step=1),
+            np.arange(start=0, stop=int(size / 2), step=1)
+        ]),
+        'var12': y**3 + np.abs(np.random.normal(0, 1, size))
+    })
+    
+    # introduce missing values
     idx_nan = np.random.choice(size, int(round(size / 2)), replace=False)
-    X[:, 12] = y**3 + np.abs(np.random.normal(0, 1, size))
-    X[idx_nan, 12] = np.nan
-
-    # make  it a pandas DF
-    column_names = ["var" + str(i) for i in range(13)]
-    column_names[11] = "dummy_cat"
-    X = pd.DataFrame(X)
-    X.columns = column_names
-    X["dummy_cat"] = X["dummy_cat"].astype("category")
-    # low cardinality
-    nice_guys = [
-        "Rick",
-        "Bender",
-        "Cartman",
-        "Morty",
-        "Fry",
-        "Vador",
-        "Thanos",
-        "Bejita",
-        "Cell",
-        "Tinkywinky",
-        "Lecter",
-        "Alien",
-        "Terminator",
-        "Drago",
-        "Dracula",
-        "Krueger",
-        "Geoffrey",
-        "Goldfinder",
-        "Blackbeard",
-        "Excel",
-        "SAS",
-        "Bias",
-        "Variance",
-        "Scrum",
-        "Human",
-        "Garry",
-        "Coldplay",
-        "Imaginedragons",
-        "Platist",
-        "Creationist",
-        "Gruber",
-        "KeyserSoze",
-        "Luthor",
-        "Klaue",
-        "Bane",
-        "MarkZ",
-    ]
-    X["nice_guys"] = np.random.choice(nice_guys, X.shape[0])
-
+    X.loc[idx_nan, 'var12'] = np.nan
+    
+    # set column names and types
+    X.columns = ['var' + str(i) for i in range(13)]
+    X['var11'] = X['var11'].astype('category')
+    X['nice_guys'] = np.random.choice([
+        "Rick", "Bender", "Cartman", "Morty", "Fry", "Vador", "Thanos", "Bejita",
+        "Cell", "Tinkywinky", "Lecter", "Alien", "Terminator", "Drago", "Dracula",
+        "Krueger", "Geoffrey", "Goldfinder", "Blackbeard", "Excel", "SAS", "Bias",
+        "Variance", "Scrum", "Human", "Garry", "Coldplay", "Imaginedragons",
+        "Platist", "Creationist", "Gruber", "KeyserSoze", "Luthor", "Klaue", "Bane",
+        "MarkZ"
+    ], size)
+    
     return X, y, w
 
-
-def _generated_corr_dataset_classification(size=1000):
-    """Generate artificial dataset for classification tasks. Some columns are
-    correlated, have no variance, large cardinality, numerical and categorical.
-
-    Parameters
-    ----------
-    size : int, optional
-        number of rows to generate, by default 1000
-
-    Returns
-    -------
-    pd.DataFrame, pd.Series, pd.Series
-        the predictors matrix, the target and the weights
+def generate_corr_dataset_classification(size=1000):
     """
-    # weights
+    Generate an artificial dataset for classification tasks. Some columns are correlated, 
+    have no variance, large cardinality, numerical and categorical.
+
+    Parameters:
+        size (int): The number of rows to generate. Default is 1000.
+
+    Returns:
+        tuple: A tuple containing the predictors matrix, the target, and the weights.
+    """
+    # Generate weights
     w = np.random.beta(a=1, b=0.5, size=size)
-    # fixing the seed and the target
+
+    # Fix the seed and generate the target
     np.random.seed(42)
     y = np.random.binomial(1, 0.5, size)
+
+    # Generate the predictors matrix
     X = np.zeros((size, 13))
 
     z = y - np.random.binomial(1, 0.1, size) + np.random.binomial(1, 0.1, size)
     z[z == -1] = 0
     z[z == 2] = 1
 
-    # 5 relevant features, with positive and negative correlation to the target
+    # Generate 5 relevant features, with positive and negative correlation to the target
     X[:, 0] = z
     X[:, 1] = y * np.abs(np.random.normal(0, 1, size)) + np.random.normal(0, 0.1, size)
     X[:, 2] = -y + np.random.normal(0, 1, size)
-    X[:, 3] = y**2 + np.random.normal(0, 1, size)
+    X[:, 3] = y ** 2 + np.random.normal(0, 1, size)
     X[:, 4] = np.sqrt(y) + np.random.binomial(2, 0.1, size)
 
-    # 5 irrelevant features
-    X[:, 5] = np.random.normal(0, 1, size)
-    X[:, 6] = np.random.poisson(1, size)
-    X[:, 7] = np.random.binomial(1, 0.3, size)
-    X[:, 8] = np.random.normal(0, 1, size)
-    X[:, 9] = np.random.poisson(1, size)
-    # zero variance
+    # Generate 5 irrelevant features
+    X[:, 5:10] = np.random.normal(0, 1, size=(size, 5))
+
+    # Generate a column with zero variance
     X[:, 10] = np.ones(size)
-    # high cardinality
+
+    # Generate a column with high cardinality
     X[:, 11] = np.arange(start=0, stop=size, step=1)
-    # a lot of missing values
+
+    # Generate a column with a lot of missing values
     idx_nan = np.random.choice(size, int(round(size / 2)), replace=False)
-    X[:, 12] = y**3 + np.abs(np.random.normal(0, 1, size))
+    X[:, 12] = y ** 3 + np.abs(np.random.normal(0, 1, size))
     X[idx_nan, 12] = np.nan
 
-    # make  it a pandas DF
+    # Make the predictors matrix a pandas DataFrame
     column_names = ["var" + str(i) for i in range(13)]
     column_names[11] = "dummy"
-    X = pd.DataFrame(X)
-    X.columns = column_names
+    X = pd.DataFrame(X, columns=column_names)
     X["dummy"] = X["dummy"].astype("category")
 
+    # Add a column of random values from a list
     nice_guys = [
-        "Rick",
-        "Bender",
-        "Cartman",
-        "Morty",
-        "Fry",
-        "Vador",
-        "Thanos",
-        "Bejita",
-        "Cell",
-        "Tinkywinky",
-        "Lecter",
-        "Alien",
-        "Terminator",
-        "Drago",
-        "Dracula",
-        "Krueger",
-        "Geoffrey",
-        "Goldfinder",
-        "Blackbeard",
-        "Excel",
-        "SAS",
-        "Bias",
-        "Variance",
-        "Scrum",
-        "Human",
-        "Garry",
-        "Coldplay",
-        "Imaginedragons",
-        "Platist",
-        "Creationist",
-        "Gruber",
-        "KeyserSoze",
-        "Luthor",
-        "Klaue",
-        "Bane",
-        "MarkZ",
+        "Rick", "Bender", "Cartman", "Morty", "Fry", "Vador", "Thanos", "Bejita",
+        "Cell", "Tinkywinky", "Lecter", "Alien", "Terminator", "Drago", "Dracula",
+        "Krueger", "Geoffrey", "Goldfinder", "Blackbeard", "Excel", "SAS", "Bias",
+        "Variance", "Scrum", "Human", "Garry", "Coldplay", "Imaginedragons", "Platist",
+        "Creationist", "Gruber", "KeyserSoze", "Luthor", "Klaue", "Bane", "MarkZ",
     ]
-    X["nice_guys"] = np.random.choice(nice_guys, X.shape[0])
 
-    return X, y, w
