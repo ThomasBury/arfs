@@ -127,6 +127,23 @@ def create_dtype_dict(df: pd.DataFrame, dic_keys: str = "col_names") -> dict:
     raise ValueError("dic_keys should be either 'col_names' or 'dtypes'")
 
 def get_pandas_cat_codes(X):
+    """
+    Converts categorical and time features in a pandas DataFrame into numerical codes.
+    
+    Parameters
+    ----------
+    X : pandas DataFrame
+        The input DataFrame containing categorical and/or time features.
+    
+    Returns
+    -------
+    X : pandas DataFrame
+        The modified input DataFrame with categorical and time features replaced by numerical codes.
+    obj_feat : list or None
+        List of column names that were converted to numerical codes. Returns None if no categorical or time features found.
+    cat_idx : list or None
+        List of column indices for the columns in obj_feat. Returns None if no categorical or time features found.
+    """
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
     obj_feat = dtypes_dic["cat"] + dtypes_dic["time"] + dtypes_dic["unk"]
 
