@@ -79,40 +79,52 @@ def set_my_plt_style(height=3, width=5, linewidth=2):
     mpl.rcParams.update(params)
 
 
-def create_dtype_dict(df: pd.DataFrame, dic_keys: str = "col_names"):
-    """create a custom dictionary of data type for adding suffixes
-    to column names in the plotting utility for association matrix
+def create_dtype_dict(df: pd.DataFrame, dic_keys: str = "col_names") -> dict:
+    """Create a custom dictionary of data type for adding suffixes
+    to column names in the plotting utility for association matrix.
 
     Parameters
     ----------
-    df :
-        the dataframe used for computing the association matrix
-    dic_keys :
+    df : pandas.DataFrame
+        The dataframe used for computing the association matrix.
+    dic_keys : str
         Either "col_names" or "dtypes" for returning either a dictionary
         with column names or dtypes as keys.
+
+    Returns
+    -------
+    dict
+        A dictionary with either column names or dtypes as keys.
+
+    Raises
+    ------
+    ValueError
+        If `dic_keys` is not either "col_names" or "dtypes".
     """
-    cat_cols = list(df.select_dtypes(include=["object", "category", "bool"]))
-    time_cols = list(df.select_dtypes(include=["datetime", "timedelta", "datetimetz"]))
-    num_cols = list(df.select_dtypes(include=[np.number]))
-    remaining_cols = list(
-        set(df.columns) - set(cat_cols).union(set(num_cols)).union(time_cols)
-    )
+    if not isinstance(df, pd.DataFrame):
+        raise TypeError("df should be a pandas DataFrame")
+
+    cat_cols = df.select_dtypes(include=["object", "category", "bool"]).columns
+    time_cols = df.select_dtypes(include=["datetime", "timedelta", "datetimetz"]).columns
+    num_cols = df.select_dtypes(include=np.number).columns
+    remaining_cols = df.columns.difference(cat_cols).difference(num_cols).difference(time_cols)
 
     if dic_keys == "col_names":
-        cat_dic = {c: "cat" for c in cat_cols}
-        num_dic = {c: "num" for c in num_cols}
-        time_dic = {c: "time" for c in time_cols}
-        remainder_dic = {c: "unk" for c in remaining_cols}
-        return {**cat_dic, **num_dic, **time_dic, **remainder_dic}
-    elif dic_keys == "dtypes":
-        cat_dic = {"cat": cat_cols}
-        num_dic = {"num": num_cols}
-        time_dic = {"time": time_cols}
-        remainder_dic = {"unk": remaining_cols}
-        return {**cat_dic, **num_dic, **time_dic, **remainder_dic}
-    else:
-        raise ValueError("'dic_keys' should be either 'col_names' or 'dtypes'")
+        cat_dict = dict.fromkeys(cat_cols, "cat")
+        num_dict = dict.fromkeys(num_cols, "num")
+        time_dict = dict.fromkeys(time_cols, "time")
+        remaining_dict = dict.fromkeys(remaining_cols, "unk")
+        return {**cat_dict, **num_dict, **time_dict, **remaining_dict}
 
+    if dic_keys == "dtypes":
+        return {
+            "cat": cat_cols.tolist(),
+            "num": num_cols.tolist(),
+            "time": time_cols.tolist(),
+            "unk": remaining_cols.tolist(),
+        }
+
+    raise ValueError("dic_keys should be either 'col_names' or 'dtypes'")
 
 def get_pandas_cat_codes(X):
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
