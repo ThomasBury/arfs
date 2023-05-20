@@ -11,7 +11,7 @@ This module provides preprocessing classes
 
 # Settings and libraries
 from __future__ import print_function
-from tqdm import tqdm
+from tqdm.auto import tqdm
 
 # pandas
 import pandas as pd

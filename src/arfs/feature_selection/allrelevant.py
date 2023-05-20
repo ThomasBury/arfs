@@ -56,7 +56,7 @@ import matplotlib.pyplot as plt
 import scipy as sp
 
 from typing import Tuple
-from tqdm import tqdm
+from tqdm.auto import tqdm
 from sklearn.utils import check_random_state, check_X_y
 from sklearn.base import BaseEstimator, is_regressor, is_classifier, clone
 
