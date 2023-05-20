@@ -494,7 +494,7 @@ class Leshy(SelectorMixin, BaseEstimator):
         n_estimators : int
             the number of trees
         """
-        depth = self.estimator.get_params()["max_depth"]
+        depth = self.estimator.get_params()["max_depth"] if not self.is_cat else self.estimator.get_param("max_depth")
         if depth is None:
             depth = 10
         # how many times a feature should be considered on average
