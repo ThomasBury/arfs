@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator
 from sklearn.utils.validation import check_is_fitted
-from tqdm import tqdm
+from tqdm.auto import tqdm
 from sklearn.feature_selection._base import SelectorMixin
 from ..association import (
     f_stat_classification_parallel,
