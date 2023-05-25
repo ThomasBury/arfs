@@ -67,6 +67,7 @@ from sklearn.inspection import permutation_importance
 from sklearn.utils.validation import _check_sample_weight
 from matplotlib.lines import Line2D
 from lightgbm import early_stopping
+from sklearn.model_selection import TimeSeriesSplit
 
 from ..utils import (
     check_if_tree_based,
@@ -2067,7 +2068,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
 ########################################################################################
 
 
-def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight, rf):
+def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight, rf, tscv:bool = True):
     """Private function, reduce the number of predictors using a lightgbm (python API)
     Parameters
     ----------
@@ -2103,8 +2104,10 @@ def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
     category_cols = dtypes_dic["cat"] + dtypes_dic["time"] + dtypes_dic["unk"]
     cat_idx = [X.columns.get_loc(col) for col in category_cols]
-
-    rkf = RepeatedKFold(n_splits=n_folds, n_repeats=n_iter, random_state=2652124)
+    if tscv:
+        rkf = TimeSeriesSplit(n_splits=n_folds)
+    else: 
+        rkf = RepeatedKFold(n_splits=n_folds, n_repeats=n_iter, random_state=2652124)
     iter = 0
     for tridx, validx in tqdm(
         rkf.split(X, y), total=rkf.get_n_splits(), desc="Repeated k-fold"
