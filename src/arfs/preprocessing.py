@@ -417,6 +417,8 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         for splitting and grouping all, only numerical or only categorical columns.
     n_bins : int
         the number of bins that has to be created while binning the variables in "bin_features" list
+    n_bins_max : int, optional
+        the maximum number of levels that a categorical column can have in order to avoid being binned
     boost_params : dic
         the boosting parameters dictionary
     raw : bool
@@ -459,6 +461,7 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         self,
         bin_features="all",
         n_bins=10,
+        n_bins_max=None,
         boost_params=None,
         raw=False,
         task="regression",
@@ -468,6 +471,7 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
 
         self.bin_features = bin_features
         self.n_bins = n_bins
+        self.n_bins_max = n_bins_max
         self.boost_params = {}
         self.raw = raw
         self.task = task
@@ -616,7 +620,12 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
             pd.DataFrame with the binned and grouped columns
         """
         X = X.copy()
-        for col in self.bin_features:
+        n_unique_table = X[self.bin_features].nunique()
+        
+        # transform only the columns with more than n_bins_max
+        columns_to_transform = (n_unique_table > self.n_bins_max).index.to_list() if self.n_bins_max else self.bin_features
+        
+        for col in columns_to_transform:
             if self.raw:
                 # predict each univariate tree
                 X[col] = self.tree_dic[col].predict(X[[col]])
