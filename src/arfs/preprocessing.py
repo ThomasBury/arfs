@@ -559,7 +559,7 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
                 )
                 # encode
                 self.ordinal_encoder_dic[col] = encoder.fit(X[[col]])
-                dum = encoder.transform(X[[col]]).values.ravel()
+                dum = encoder.transform(X[[col]])
                 if isinstance(dum, pd.DataFrame):
                     X[col] = dum.values.ravel()
                 else:
@@ -585,7 +585,12 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
 
             if is_categorical:
                 # retrieve original values
-                X[col] = encoder.inverse_transform(X[[col]]).ravel()
+                dum = encoder.inverse_transform(X[[col]])
+                if isinstance(dum, pd.DataFrame):
+                    X[col] = dum.values.ravel()
+                else:
+                    X[col] = dum.ravel()
+                
                 self.cat_bin_dict[col] = (
                     X[[f"{col}_g", col]]
                     .groupby(f"{col}_g")
