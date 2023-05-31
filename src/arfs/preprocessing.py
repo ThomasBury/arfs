@@ -559,7 +559,13 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
                 )
                 # encode
                 self.ordinal_encoder_dic[col] = encoder.fit(X[[col]])
-                X[col] = encoder.transform(X[[col]]).values.ravel()
+                dum = encoder.transform(X[[col]]).values.ravel()
+                if isinstance(dum, pd.DataFrame):
+                    X[col] = dum.values.ravel()
+                else:
+                    X[col] = dum.ravel()
+                
+                
             else:
                 encoder = None
 
