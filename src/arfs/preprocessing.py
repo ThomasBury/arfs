@@ -517,10 +517,6 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         """
         X = X.copy()
         
-        self.n_unique_table_ = X[self.bin_features].nunique()
-        # transform only the columns with more than n_bins_max
-        self.bin_features = self.n_unique_table_[self.n_unique_table_ > self.n_bins_max].index.to_list() if self.n_bins_max else self.bin_features
-        
         if self.bin_features is None:
             self.bin_features = list(X.select_dtypes("number").columns)
             self.cat_features = []
@@ -541,6 +537,10 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         ):
             self.bin_features = list(X.select_dtypes(["category", "object"]).columns)
             self.cat_features = self.bin_features
+            
+        self.n_unique_table_ = X[self.bin_features].nunique()
+        # transform only the columns with more than n_bins_max
+        self.bin_features = self.n_unique_table_[self.n_unique_table_ > self.n_bins_max].index.to_list() if self.n_bins_max else self.bin_features
 
         for col in self.bin_features:
             is_categorical = (self.cat_features is not None) and (
@@ -579,7 +579,7 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
 
             if is_categorical:
                 # retrieve original values
-                X[col] = encoder.inverse_transform(X[[col]]).values.ravel()
+                X[col] = encoder.inverse_transform(X[[col]]).ravel()
                 self.cat_bin_dict[col] = (
                     X[[f"{col}_g", col]]
                     .groupby(f"{col}_g")
