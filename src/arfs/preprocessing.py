@@ -15,6 +15,7 @@ from tqdm.auto import tqdm
 
 # pandas
 import pandas as pd
+from pandas.api.types import IntervalDtype
 
 # numpy
 import numpy as np
@@ -419,6 +420,8 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         the number of bins that has to be created while binning the variables in "bin_features" list
     n_bins_max : int, optional
         the maximum number of levels that a categorical column can have in order to avoid being binned
+    num_bins_as_category: bool, default=False
+        save the numeric bins as pandas category or as pandas interval
     boost_params : dic
         the boosting parameters dictionary
     raw : bool
@@ -462,6 +465,7 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         bin_features="all",
         n_bins=10,
         n_bins_max=None,
+        num_bins_as_category=False,
         boost_params=None,
         raw=False,
         task="regression",
@@ -472,6 +476,7 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         self.bin_features = bin_features
         self.n_bins = n_bins
         self.n_bins_max = n_bins_max
+        self.num_bins_as_category = num_bins_as_category
         self.boost_params = {}
         self.raw = raw
         self.task = task
@@ -655,6 +660,9 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
                         include_lowest=True,
                         precision=1,
                     )
+                    
+                    if not self.num_bins_as_category:
+                        X[col] = X[col].astype(IntervalDtype())
         return X
 
 
