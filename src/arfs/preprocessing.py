@@ -669,7 +669,7 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
                         X[col],
                         bins=self.bin_upper_bound_dic[col],
                         include_lowest=True,
-                        precision=1,
+                        precision=2,
                     )
                     
                     if not self.num_bins_as_category:
