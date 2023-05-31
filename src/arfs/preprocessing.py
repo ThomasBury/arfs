@@ -511,6 +511,11 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
             pd.DataFrame with the binned and grouped columns
         """
         X = X.copy()
+        
+        self.n_unique_table_ = X[self.bin_features].nunique()
+        # transform only the columns with more than n_bins_max
+        self.bin_features = (self.n_unique_table_ > self.n_bins_max).index.to_list() if self.n_bins_max else self.bin_features
+        
         if self.bin_features is None:
             self.bin_features = list(X.select_dtypes("number").columns)
             self.cat_features = []
@@ -606,7 +611,8 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X):
-        """Apply the discretizer on `X`.
+        """Apply the discretizer on `X`. Only the columns with more than n_bins_max unique values will be transformed.
+        
         Parameters
         ----------
         X :
@@ -620,12 +626,8 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
             pd.DataFrame with the binned and grouped columns
         """
         X = X.copy()
-        n_unique_table = X[self.bin_features].nunique()
-        
-        # transform only the columns with more than n_bins_max
-        columns_to_transform = (n_unique_table > self.n_bins_max).index.to_list() if self.n_bins_max else self.bin_features
-        
-        for col in columns_to_transform:
+
+        for col in self.bin_features:
             if self.raw:
                 # predict each univariate tree
                 X[col] = self.tree_dic[col].predict(X[[col]])
