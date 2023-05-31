@@ -386,25 +386,29 @@ def cat_var(data, col_excl=None, return_cat=True):
 
 
 class TreeDiscretizer(BaseEstimator, TransformerMixin):
-    """Bin continuous data into intervals and return a pandas DF. It supports regression and binary classification.
-    Discretization (otherwise known as quantization or binning) provides a way to partition continuous features into discrete values.
-    Certain datasets with continuous features may benefit from discretization, because discretization can transform the dataset
-    of continuous attributes to one with only nominal attributes.
-    One-hot encoded discretized features can make a model more expressive, while maintaining interpretability.
-    For instance, pre-processing with a discretizer can introduce nonlinearity to linear models.
-    For more advanced possibilities, in particular smooth ones, see Generating polynomial features further below.
+    """The purpose of the function is to discretize continuous and/or categorical data, returning a pandas DataFrame. 
+    It is designed to support regression and binary classification tasks. Discretization, also known as quantization or binning, 
+    allows for the partitioning of continuous features into discrete values. In certain datasets with continuous attributes, 
+    discretization can be beneficial as it transforms the dataset into one with only nominal attributes. 
+    Additionally, for categorical predictors, grouping levels can help reduce overfitting and create meaningful clusters.
 
-    TreeDiscretizer uses univariate regularized trees (one per column to bin), find the optimal partition and returns
-    pandas numerical interval for numerical continuous columns and pd.Categorical for categorical columns.
-    Similar levels are therefore grouped together. This reduces the dimensionality and regularizes the model.
-    This is a substitution to proper regularization scheme such as
+    By encoding discretized features, a model can become more expressive while maintaining interpretability. 
+    For example, preprocessing with a discretizer can introduce nonlinearity to linear models. 
+    For more advanced possibilities, particularly smooth ones, you can refer to the section on generating polynomial features.
+    The TreeDiscretizer function utilizes univariate regularized trees, with one tree per column to be binned. 
+    It finds the optimal partition and returns numerical intervals for numerical continuous columns and pd.Categorical for categorical columns. 
+    This approach groups similar levels together, reducing dimensionality and regularizing the model.
+    
+    TreeDiscretizer handles missing values for both numerical and categorical predictors, 
+    eliminating the need for encoding categorical predictors separately.
+
+    Notes
+    -----
+     This is a substitution to proper regularization scheme such as
      - GroupLasso (categorical predictors, which are usually encoded as multiple dummy variables: one for each category.
                    It makes sense in many analyses to consider these dummy variables (representing one categorical predictor)
                    together rather than separately)
      - FusedLasso (One drawback of the Lasso is it ignores ordering of the features, FusedLasso takes into account the ordering)
-
-    TreeDiscretizer handles missing values, both for numerical and categorical predictors. No need for encoding the categorical predictors.
-
 
     Parameters
     ----------
