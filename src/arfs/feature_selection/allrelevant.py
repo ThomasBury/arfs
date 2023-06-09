@@ -1504,7 +1504,8 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
             raise TypeError("X is not a dataframe")
 
         if sample_weight is not None:
-            sample_weight = _check_sample_weight(sample_weight, X)
+            sample_weight = pd.Series(_check_sample_weight(sample_weight, X))
+            
 
         # crit, keep_vars, df_vimp, mean_shadow
         _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _boostaroota(
@@ -1946,8 +1947,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
         y = pd.Series(y) if not isinstance(y, pd.Series) else y
 
         if sample_weight is not None:
-            sample_weight = pd.Series(sample_weight)
-            sample_weight = _check_sample_weight(sample_weight, X)
+            sample_weight = pd.Series(_check_sample_weight(sample_weight, X))
 
         # internal encoding (ordinal encoding)
         X, obj_feat, cat_idx = get_pandas_cat_codes(X)
@@ -2299,7 +2299,7 @@ def _train_lgb_model(
         The indices of categorical columns. If None, no categorical columns will be considered.
     early_stopping_rounds : int, optional (default=20)
         Activates early stopping. Validation metric needs to improve at least once in every early_stopping_rounds
-        round(s) to continue training.
+        round(s) to continue training._train_lgb_model
     **params : dict
         Other parameters passed to the LightGBM model.
 
