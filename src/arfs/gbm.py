@@ -25,6 +25,7 @@ import warnings
 import gc
 import os
 from pathlib import Path
+from arfs.utils import create_dtype_dict
 
 QUAL_COLORS = [
     (0.188235, 0.635294, 0.854902),
@@ -180,9 +181,9 @@ class GradientBoosting:
             raise KeyError("Provide the objective in the params dict")
 
         if self.cat_feat == "auto":
-            self.cat_feat = list(
-                set(list(X.columns)) - set(list(X.select_dtypes(include=[np.number])))
-            )
+            dtypes_dic = create_dtype_dict(df=X, dic_keys="dtypes")
+            category_cols = dtypes_dic["cat"] + dtypes_dic["time"] + dtypes_dic["unk"]
+            self.cat_feat = category_cols if category_cols else None
 
         if not isinstance(X, (pd.Series, pd.DataFrame)):
             X = pd.DataFrame(X)
