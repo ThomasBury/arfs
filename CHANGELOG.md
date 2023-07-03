@@ -1,5 +1,8 @@
 # Changes
 
+## 1.1.3
+ - Change tqdm to auto for better rendering in NB for variable importance selector
+ - User defined n_jobs for association matrix computation
 ## 1.1
 
  - Corrected an issue in Leshy that occurred when using categorical variables. The use of NumPy functions and methods instead of Pandas ones resulted in the modification of original data types.
