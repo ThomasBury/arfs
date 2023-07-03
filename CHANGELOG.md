@@ -1,5 +1,7 @@
 # Changes
 
+## 1.1.4
+ - update the required python version >= 3.9
 ## 1.1.3
  - Change tqdm to auto for better rendering in NB for variable importance selector
  - User defined n_jobs for association matrix computation
