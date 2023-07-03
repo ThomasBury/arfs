@@ -10,7 +10,7 @@ This module provides selectors using unsupervised statistics and a threshold
 """
 
 from __future__ import print_function
-from tqdm import trange
+from tqdm.auto import trange
 
 # pandas
 import pandas as pd
