@@ -20,12 +20,22 @@ from pandas.api.types import IntervalDtype
 # numpy
 import numpy as np
 
+# regular expression
+import re
+
 # sklearn
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.base import BaseEstimator, TransformerMixin
 
+# patsy
+from patsy import dmatrix, EvalEnvironment, ModelDesc, INTERCEPT
+
+# typing
+from typing import Any, Callable, Union, List, Tuple, Optional, Dict
+
 # ARFS
 from .gbm import GradientBoosting
+from .utils import create_dtype_dict
 
 
 # fix random seed for reproducibility
@@ -740,3 +750,287 @@ def make_fs_summary(selector_pipe):
         .format(precision=0)
     )
     return tag_df
+
+class IntervalToMidpoint(BaseEstimator, TransformerMixin):
+    """
+    IntervalToMidpoint is a transformer that converts numerical intervals in a pandas DataFrame to their midpoints.
+
+    Parameters
+    ----------
+    cols : list of str or str, default "all"
+        The column(s) to transform. If "all", all columns with numerical intervals will be transformed.
+
+    Attributes
+    ----------
+    cols : list of str or str
+        The column(s) to transform.
+    float_interval_cols_ : list of str
+        The columns with numerical interval data types in the input DataFrame.
+    columns_to_transform_ : list of str
+        The columns to be transformed based on the specified `cols` attribute.
+
+    Methods
+    -------
+    fit(X, y=None)
+        Fit the transformer on the input data.
+    transform(X)
+        Transform the input data by converting numerical intervals to midpoints.
+    inverse_transform(X)
+        Inverse transform is not implemented for this transformer.
+    """
+
+    def __init__(self, cols: Union[List[str], str]="all"):
+
+        self.cols = cols
+
+    def fit(self, X: pd.DataFrame = None, y: pd.Series = None):
+        """
+        Fit the transformer on the input data.
+
+        Parameters
+        ----------
+        X : 
+            The input data to fit the transformer on.
+        y : 
+            Ignored parameter.
+
+        Returns
+        -------
+        self : IntervalToMidpoint
+            The fitted transformer object.
+        """
+        data = X.copy()
+        
+        if self.cols == "all":
+            self.cols = data.columns
+        
+        self.float_interval_cols_ = create_dtype_dict(X, dic_keys="dtypes")["num_interval"]
+        self.columns_to_transform_ = list(set(self.cols).intersection(set(self.float_interval_cols_)))
+        return self
+
+    def transform(self, X: pd.DataFrame):
+        """
+        Transform the input data by converting numerical intervals to midpoints.
+
+        Parameters
+        ----------
+        X : pd.DataFrame
+            The input data to transform.
+
+        Returns
+        -------
+        X : pd.DataFrame
+            The transformed data with numerical intervals replaced by their midpoints.
+        """
+        X = X.copy()
+        for c in self.columns_to_transform_:
+            X.loc[:, c] = find_interval_midpoint(X[c])
+            X.loc[:, c] = X[c].astype(float)
+        return X
+
+    def inverse_transform(self, X: pd.DataFrame):
+        """
+        Inverse transform is not implemented for this transformer.
+
+        Parameters
+        ----------
+        X : pd.DataFrame
+            The input data to perform inverse transform on.
+
+        Raises
+        ------
+        NotImplementedError
+            Raised since inverse transform is not implemented for this transformer.
+        """
+        raise NotImplementedError(
+            "inverse_transform is not implemented for this transformer."
+        )
+        
+def transform_interval_to_midpoint(X: pd.DataFrame, cols: Union[List[str], str] = "all") -> pd.DataFrame:
+    """
+    Transforms interval columns in a pandas DataFrame to their midpoint values.
+    
+    Notes
+    -----
+    Equivalent function to ``IntervalToMidpoint`` without the estimator API
+
+    Parameters
+    ----------
+    X : pd.DataFrame
+        The input DataFrame containing the data to be transformed.
+    cols : list of str or str
+        The columns to be transformed. Defaults to "all" which transforms all columns.
+
+    Returns
+    -------
+    pd.DataFrame : 
+        The transformed DataFrame with interval columns replaced by their midpoint values.
+
+    Raises
+    ------
+    TypeError : 
+        If the input data is not a pandas DataFrame.
+    """
+    if cols == "all":
+        cols = X.columns
+    
+    X = X.copy()
+    float_interval_cols_ = create_dtype_dict(X, dic_keys="dtypes")["num_interval"]
+    columns_to_transform_ = list(set(cols).intersection(set(float_interval_cols_)))
+    for c in columns_to_transform_:
+        X.loc[:, c] = find_interval_midpoint(X[c])
+    return X
+
+
+def find_interval_midpoint(interval_series: pd.Series) -> np.ndarray:
+    """Find the midpoint (or left/right bound if the interval contains Inf).
+
+    Parameters
+    ----------
+    interval_series : pd.Series
+        series of pandas intervals.
+
+    Returns
+    -------
+    np.ndarray
+        Array of midpoints or bounds of the intervals.
+    """
+    left = interval_series.array.left
+    right = interval_series.array.right
+    mid = interval_series.array.mid
+    left_inf = np.isinf(left)
+    right_inf = np.isinf(right)
+
+    return np.where(left_inf & right_inf, np.inf,
+                        np.where(left_inf, right,
+                                 np.where(right_inf, left, mid)))
+    
+class PatsyTransformer(BaseEstimator, TransformerMixin):
+    """Transformer using patsy-formulas.
+
+    PatsyTransformer transforms a pandas DataFrame (or dict-like)
+    according to the formula and produces a numpy array.
+
+    Parameters
+    ----------
+    formula : string or formula-like
+        Pasty formula used to transform the data.
+
+    add_intercept : boolean, default=False
+        Wether to add an intersept. By default scikit-learn has built-in
+        intercepts for all models, so we don't add an intercept to the data,
+        even if one is specified in the formula.
+
+    eval_env : environment or int, default=0
+        Envirionment in which to evalute the formula.
+        Defaults to the scope in which PatsyModel was instantiated.
+
+    NA_action : string or NAAction, default="drop"
+        What to do with rows that contain missing values. You can ``"drop"``
+        them, ``"raise"`` an error, or for customization, pass an `NAAction`
+        object.  See ``patsy.NAAction`` for details on what values count as
+        'missing' (and how to alter this).
+
+    Attributes
+    ----------
+    feature_names_ : list of string
+        Column names / keys of training data.
+
+    return_type : string, default="dataframe"
+        data type that transform method will return. Default is ``"dataframe"``
+        for numpy array, but if you would like to get Pandas dataframe (for
+        example for using it in scikit transformers with dataframe as input
+        use ``"dataframe"`` and if numpy array use ``"ndarray"``
+
+    Note
+    ----
+    PastyTransformer does by default not add an intercept, even if you
+    specified it in the formula. You need to set add_intercept=True.
+
+    As scikit-learn transformers can not ouput y, the formula
+    should not contain a left hand side.  If you need to transform both
+    features and targets, use PatsyModel.
+    """
+    def __init__(self, formula=None, add_intercept=True, eval_env=0, NA_action="drop",
+                 return_type='dataframe'):
+        self.formula = formula
+        self.eval_env = eval_env
+        self.add_intercept = add_intercept
+        self.NA_action = NA_action
+        self.return_type = return_type
+
+    def fit(self, data, y=None):
+        """Fit the scikit-learn model using the formula.
+
+        Parameters
+        ----------
+        data : dict-like (pandas dataframe)
+            Input data. Column names need to match variables in formula.
+        """
+        self._fit_transform(data, y)
+        return self
+
+    def fit_transform(self, data, y=None):
+        """Fit the scikit-learn model using the formula and transform it.
+
+        Parameters
+        ----------
+        data : dict-like (pandas dataframe)
+            Input data. Column names need to match variables in formula.
+
+        Returns
+        -------
+        X_transform : ndarray
+            Transformed data
+        """
+        return self._fit_transform(data, y)
+
+    def _fit_transform(self, data, y=None):
+        
+        if not isinstance(data, pd.DataFrame):
+            data = pd.DataFrame(data)
+            data.columns = [f"pred_{i}" for i in range(data.shape[1])]
+        
+        if not isinstance(y, pd.Series):
+            y = pd.Series(y)
+            y.name = "target"
+            
+        target_name = y.name if y is not None else "y"
+        self.formula = self.formula or " + ".join(data.columns.difference([target_name]))
+        eval_env = EvalEnvironment.capture(self.eval_env, reference=2)
+        # self.formula = _drop_intercept(self.formula, self.add_intercept)
+
+        design = dmatrix(self.formula, data, NA_action=self.NA_action, return_type='dataframe', eval_env=eval_env)
+        self.design_ = design.design_info
+
+        if self.return_type == 'dataframe':
+            return design
+        else:
+            return np.array(design)
+
+    def transform(self, data):
+        """Transform with estimator using formula.
+
+        Transform the data using formula, then transform it
+        using the estimator.
+
+        Parameters
+        ----------
+        data : dict-like (pandas dataframe)
+            Input data. Column names need to match variables in formula.
+        """
+        if self.return_type == 'dataframe':
+            return dmatrix(self.design_, data, return_type='dataframe')
+        else:
+            return np.array(dmatrix(self.design_, data))
+
+
+def _drop_intercept(formula, add_intercept):
+    """Drop the intercept from formula if not add_intercept"""
+    if not add_intercept:
+        if not isinstance(formula, ModelDesc):
+            formula = ModelDesc.from_formula(formula)
+        if INTERCEPT in formula.rhs_termlist:
+            formula.rhs_termlist.remove(INTERCEPT)
+        return formula
+    return formula

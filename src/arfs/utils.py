@@ -85,7 +85,7 @@ def create_dtype_dict(df: pd.DataFrame, dic_keys: str = "col_names") -> dict:
 
     Parameters
     ----------
-    df : pandas.DataFrame
+    df : pd.DataFrame
         The dataframe used for computing the association matrix.
     dic_keys : str
         Either "col_names" or "dtypes" for returning either a dictionary
@@ -104,26 +104,29 @@ def create_dtype_dict(df: pd.DataFrame, dic_keys: str = "col_names") -> dict:
     if not isinstance(df, pd.DataFrame):
         raise TypeError("df should be a pandas DataFrame")
 
-    cat_cols = df.select_dtypes(include=["object", "category", "bool"]).columns
+    categorical_cols = df.select_dtypes(include=["object", "category", "bool"]).columns
     time_cols = df.select_dtypes(
         include=["datetime", "timedelta", "datetimetz"]
     ).columns
-    num_cols = df.select_dtypes(include=np.number).columns
+    numerical_interval_cols = df.select_dtypes(["Interval[float]", "Interval[int]"]).columns
+    numerical_cols = df.select_dtypes(include=np.number).columns
     remaining_cols = (
-        df.columns.difference(cat_cols).difference(num_cols).difference(time_cols)
+        df.columns.difference(categorical_cols).difference(numerical_cols).difference(time_cols).difference(numerical_interval_cols)
     )
 
     if dic_keys == "col_names":
-        cat_dict = dict.fromkeys(cat_cols, "cat")
-        num_dict = dict.fromkeys(num_cols, "num")
+        cat_dict = dict.fromkeys(categorical_cols, "cat")
+        num_dict = dict.fromkeys(numerical_cols, "num")
+        num_interval_dict = dict.fromkeys(numerical_interval_cols, "num_interval")
         time_dict = dict.fromkeys(time_cols, "time")
         remaining_dict = dict.fromkeys(remaining_cols, "unk")
-        return {**cat_dict, **num_dict, **time_dict, **remaining_dict}
+        return {**cat_dict, **num_dict, **num_interval_dict, **time_dict, **remaining_dict}
 
     if dic_keys == "dtypes":
         return {
-            "cat": cat_cols.tolist(),
-            "num": num_cols.tolist(),
+            "cat": categorical_cols.tolist(),
+            "num": numerical_cols.tolist(),
+            "num_interval": numerical_interval_cols.tolist(),
             "time": time_cols.tolist(),
             "unk": remaining_cols.tolist(),
         }
@@ -856,3 +859,5 @@ def _make_corr_dataset_classification(size=1000):
         "Bane",
         "MarkZ",
     ]
+    
+    return X, y, w
