@@ -24,6 +24,7 @@ import matplotlib.gridspec as gridspec
 from sklearn.utils.validation import check_is_fitted
 from sklearn.base import BaseEstimator
 from sklearn.feature_selection._base import SelectorMixin
+from fasttreeshap import TreeExplainer as FastTreeExplainer
 
 # ARFS
 from ..utils import reset_plot
@@ -79,6 +80,8 @@ class VariableImportance(SelectorMixin, BaseEstimator):
         the list of names of selected features
     not_selected_features_ : list of str
         the list of names of rejected features
+    fastshap : boolean
+        enable or not the fasttreeshap implementation
     verbose : int, default = -1
         controls the progress bar, > 1 print out progress
 
@@ -102,6 +105,7 @@ class VariableImportance(SelectorMixin, BaseEstimator):
         threshold=0.99,
         lgb_kwargs={"objective": "rmse", "zero_as_missing": False},
         encoder_kwargs=None,
+        fastshap=True,
         verbose=-1,
     ):
         self.task = task
@@ -111,6 +115,7 @@ class VariableImportance(SelectorMixin, BaseEstimator):
         self.lgb_kwargs = lgb_kwargs
         self.encoder_kwargs = encoder_kwargs
         self.verbose = verbose
+        self.fastshap = fastshap
 
         if (self.threshold > 1.0) or (self.threshold < 0.0):
             raise ValueError("``threshold`` should be larger than 0 and smaller than 1")
@@ -150,6 +155,7 @@ class VariableImportance(SelectorMixin, BaseEstimator):
             verbose=self.verbose,
             encoder_kwargs=self.encoder_kwargs,
             lgb_kwargs=self.lgb_kwargs,
+            fastshap=self.fastshap
         )
 
         self.feature_importances_summary_ = feature_importances
@@ -319,6 +325,7 @@ def _compute_varimp_lgb(
     task="regression",
     n_iterations=10,
     verbose=-1,
+    fastshap=True,
     encoder_kwargs=None,
     lgb_kwargs={"objective": "rmse", "zero_as_missing": False},
 ):
@@ -364,26 +371,34 @@ def _compute_varimp_lgb(
         # model, valid_features, valid_labels, n_repeats=10, random_state=42, n_jobs=-1
         # )
         # perm_imp = perm_imp.importances_mean
-        shap_matrix = gbm_model.model.predict(
-            gbm_model.valid_features, pred_contrib=True
-        )
-        # the dim changed in lightGBM >= 3.0.0
-        if task == "multiclass":
-            # X_SHAP_values (array-like of shape = [n_samples, n_features + 1]
-            # or shape = [n_samples, (n_features + 1) * n_classes])
-            # index starts from 0
-            n_feat = gbm_model.valid_features.shape[1]
-            y_freq_table = pd.Series(y.fillna(0)).value_counts(normalize=True)
-            n_classes = y_freq_table.size
-            shap_matrix = np.delete(
-                shap_matrix,
-                list(range(n_feat, (n_feat + 1) * n_classes, n_feat + 1)),
-                axis=1,
-            )
-            shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
+        if fastshap:
+            explainer = FastTreeExplainer(gbm_model.model, algorithm="auto", shortcut=False, feature_perturbation="tree_path_dependent")
+            shap_matrix = explainer.shap_values(gbm_model.valid_features)
+            if isinstance(shap_matrix, list):
+                # For LightGBM classifier, RF, in sklearn API, SHAP returns a list of arrays
+                # https://github.com/slundberg/shap/issues/526
+                shap_imp = np.mean([np.abs(sv).mean(0) for sv in shap_matrix], axis=0)
+            else:
+                shap_imp = np.abs(shap_matrix).mean(0)
         else:
-            # for binary, only one class is returned, for regression a single column added as well
-            shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
+            shap_matrix = gbm_model.model.predict(gbm_model.valid_features, pred_contrib=True)
+            # the dim changed in lightGBM >= 3.0.0
+            if task == "multiclass":
+                # X_SHAP_values (array-like of shape = [n_samples, n_features + 1]
+                # or shape = [n_samples, (n_features + 1) * n_classes])
+                # index starts from 0
+                n_feat = gbm_model.valid_features.shape[1]
+                y_freq_table = pd.Series(y.fillna(0)).value_counts(normalize=True)
+                n_classes = y_freq_table.size
+                shap_matrix = np.delete(
+                    shap_matrix,
+                    list(range(n_feat, (n_feat + 1) * n_classes, n_feat + 1)),
+                    axis=1,
+                )
+                shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
+            else:
+                # for binary, only one class is returned, for regression a single column added as well
+                shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
 
         # Record the feature importances
         feature_importance_values += (

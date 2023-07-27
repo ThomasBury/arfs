@@ -67,6 +67,7 @@ from sklearn.inspection import permutation_importance
 from sklearn.utils.validation import _check_sample_weight
 from matplotlib.lines import Line2D
 from lightgbm import early_stopping
+from fasttreeshap import TreeExplainer as FastTreeExplainer
 
 from ..utils import (
     check_if_tree_based,
@@ -170,7 +171,7 @@ class Leshy(SelectorMixin, BaseEstimator):
         vs shadow predictors. Note that the builtin tree importance (gini/impurity based
         importance) is biased towards numerical and large cardinality predictors, even
         if they are random. Shapley values and permutation imp. are robust w.r.t those predictors.
-        Possible values: 'shap' (Shapley values),
+        Possible values: 'shap' (Shapley values), 'fastshap' (FastTreeShap implementation),
         'pimp' (permutation importance) and 'native' (Gini/impurity)
     two_step : Boolean, default = True
         If you want to use the original implementation of Boruta with Bonferroni
@@ -540,6 +541,10 @@ class Leshy(SelectorMixin, BaseEstimator):
         # get importance of the merged matrix
         if self.importance == "shap":
             imp = _get_shap_imp(
+                self.estimator, pd.concat([x_cur, x_sha], axis=1), y, sample_weight
+            )
+        elif self.importance == "fastshap":
+            imp = _get_shap_imp_fast(
                 self.estimator, pd.concat([x_cur, x_sha], axis=1), y, sample_weight
             )
         elif self.importance == "pimp":
@@ -1214,7 +1219,6 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
     model, X_tt, y_tt, w_tt = _split_fit_estimator(
         estimator, X, y, sample_weight=sample_weight, cat_feature=cat_feature
     )
-
     # Compute the SHAP values
     if is_lightgbm(estimator):
         # For LightGBM models use the built-in SHAP method
@@ -1238,22 +1242,60 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
             model, feature_perturbation="tree_path_dependent"
         )
         shap_values = explainer.shap_values(X_tt)
-
         # For multi-class classifiers, reshape the shap_values
         if is_classifier(estimator):
             if isinstance(shap_values, list):
                 # For LightGBM classifier in sklearn API, SHAP returns a list of arrays
                 # https://github.com/slundberg/shap/issues/526
-                class_inds = range(len(shap_values))
-                shap_imp = np.zeros(shap_values[0].shape[1])
-                for i, ind in enumerate(class_inds):
-                    shap_imp += np.abs(shap_values[ind]).mean(0)
-                shap_imp /= len(shap_values)
+                shap_imp = np.mean([np.abs(sv).mean(0) for sv in shap_values], axis=0)
             else:
                 shap_imp = np.abs(shap_values).mean(0)
         else:
             shap_imp = np.abs(shap_values).mean(0)
+    return shap_imp
+        
+def _get_shap_imp_fast(estimator, X, y, sample_weight=None, cat_feature=None):
+    """Get the SHAP feature importance using the fasttreeshap implementation
 
+    Parameters
+    ----------
+    estimator : estimator object
+        An estimator object implementing `fit` and `predict` methods.
+    X : pd.DataFrame of shape [n_samples, n_features]
+        Predictor matrix.
+    y : pd.Series of shape [n_samples]
+        Target variable.
+    sample_weight : array-like, shape = [n_samples], default=None
+        Individual weights for each sample.
+    cat_feature : list of int or None, default=None
+        The list of integers, columns loc, of the categorical predictors. Avoids detecting and encoding
+        each iteration if the exact same columns are passed to the selection methods.
+
+    Returns
+    -------
+    shap_imp : array
+        The SHAP importance array.
+    """
+    # Clone the estimator to avoid modifying the original one
+    estimator = clone(estimator)
+
+    # Split the data into train and test sets and fit the model
+    model, X_tt, y_tt, w_tt = _split_fit_estimator(
+        estimator, X, y, sample_weight=sample_weight, cat_feature=cat_feature
+    )
+    explainer = FastTreeExplainer(model, algorithm="auto", shortcut=False, feature_perturbation="tree_path_dependent")
+    shap_matrix = explainer.shap_values(X_tt)
+    # multiclass returns a list
+    # for binary and for some models, shap is still returning a list
+    if is_classifier(estimator):
+        if isinstance(shap_matrix, list):
+            # For LightGBM classifier, RF, in sklearn API, SHAP returns a list of arrays
+            # https://github.com/slundberg/shap/issues/526
+            shap_imp = np.mean([np.abs(sv).mean(0) for sv in shap_matrix], axis=0)
+        else:
+            shap_imp = np.abs(shap_matrix).mean(0)
+    else:
+        shap_imp = np.abs(shap_matrix).mean(0)
     return shap_imp
 
 
@@ -1676,7 +1718,7 @@ def _reduce_vars_sklearn(
     weight : pd.series
         sample_weight, if any
     imp_kind : str
-        whether if native, shap or permutation importance should be used
+        whether if native, shap, fastshap or permutation importance should be used
     cat_feature : list of int or None
         the list of integers, cols loc, of the categorical predictors. Avoids to detect and encode
         each iteration if the exact same columns are passed to the selection methods.
@@ -1701,7 +1743,7 @@ def _reduce_vars_sklearn(
     for i in range(1, n_iterations + 1):
         # Create the shadow variables and run the model to obtain importances
         new_x, shadow_names = _create_shadow(X)
-        imp_func = {"shap": _get_shap_imp, "pimp": _get_perm_imp, "native": _get_imp}
+        imp_func = {"shap": _get_shap_imp, "fastshap": _get_shap_imp, "pimp": _get_perm_imp, "native": _get_imp}
         importance = imp_func[imp_kind](
             estimator, new_x, y, sample_weight=weight, cat_feature=cat_feature
         )
@@ -1875,6 +1917,9 @@ class GrootCV(SelectorMixin, BaseEstimator):
         print out details or not
     rf: bool, default=False
         the lightGBM implementation of the random forest
+    fastshap: boon, default=True
+        enable or not the fasttreeshap (LinkedIn) implementation of the shap values
+    
     Attributes
     ----------
     selected_features_: list of str
@@ -1904,7 +1949,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
     """
 
     def __init__(
-        self, objective=None, cutoff=1, n_folds=5, n_iter=5, silent=True, rf=False
+        self, objective=None, cutoff=1, n_folds=5, n_iter=5, silent=True, rf=False, fastshap=True
     ):
         self.objective = objective
         self.cutoff = cutoff
@@ -1912,6 +1957,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
         self.n_iter = n_iter
         self.silent = silent
         self.rf = rf
+        self.fastshap = fastshap 
         self.cv_df = None
         self.sha_cutoff = None
         self.ranking_absolutes_ = None
@@ -1962,6 +2008,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
             silent=self.silent,
             weight=sample_weight,
             rf=self.rf,
+            fastshap=self.fastshap
         )
 
         self.selected_features_ = self.selected_features_.values
@@ -2067,7 +2114,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
 ########################################################################################
 
 
-def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight, rf):
+def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight, rf, fastshap):
     """Private function, reduce the number of predictors using a lightgbm (python API)
     Parameters
     ----------
@@ -2088,6 +2135,9 @@ def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight
         sample_weight, if any
     rf : bool, default=False
         the lightGBM implementation of the random forest
+    fastshap : bool
+        enable or not the fasttreeshap implementation
+        
     returns
     -------
      real_vars['feature'] : pd.dataframe
@@ -2126,10 +2176,11 @@ def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight
             weight_val,
             category_cols=category_cols,
             early_stopping_rounds=20,
+            fastshap=fastshap,
             **param,
         )
 
-        importance = _compute_importance(new_x_tr, shap_matrix, param, objective)
+        importance = _compute_importance(new_x_tr, shap_matrix, param, objective, fastshap)
         if iter == 0:
             df = pd.DataFrame({"feature": new_x_tr.columns})
         df = _merge_importance_df(
@@ -2276,6 +2327,7 @@ def _train_lgb_model(
     weight_val,
     category_cols=None,
     early_stopping_rounds=20,
+    fastshap=True,
     **params,
 ):
     """
@@ -2300,6 +2352,8 @@ def _train_lgb_model(
     early_stopping_rounds : int, optional (default=20)
         Activates early stopping. Validation metric needs to improve at least once in every early_stopping_rounds
         round(s) to continue training._train_lgb_model
+    fastshap : bool
+        enable or not fasttreeshap implementation
     **params : dict
         Other parameters passed to the LightGBM model.
 
@@ -2326,11 +2380,16 @@ def _train_lgb_model(
         callbacks=[early_stopping(early_stopping_rounds, False, False)],
     )
 
-    shap_matrix = bst.predict(X_train, pred_contrib=True)
+    if fastshap:
+        explainer = FastTreeExplainer(bst, algorithm="auto", shortcut=False, feature_perturbation="tree_path_dependent")
+        shap_matrix = explainer.shap_values(X_train)
+    else:
+        shap_matrix = bst.predict(X_train, pred_contrib=True)
+    
     return bst, shap_matrix, bst.best_iteration
 
 
-def _compute_importance(new_x_tr, shap_matrix, param, objective):
+def _compute_importance(new_x_tr, shap_matrix, param, objective, fastshap):
     """
     Compute feature importance scores using SHAP values.
 
@@ -2350,16 +2409,21 @@ def _compute_importance(new_x_tr, shap_matrix, param, objective):
     list
         A list of tuples containing feature names and their corresponding importance scores.
     """
-    if objective == "softmax":
-        n_feat = new_x_tr.shape[1]
-        shap_matrix = np.delete(
-            shap_matrix,
-            list(range(n_feat, (n_feat + 1) * param["num_class"], n_feat + 1)),
-            axis=1,
-        )
-        shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
+    if fastshap:
+        if objective == "softmax":
+            shap_matrix = np.abs(np.concatenate(shap_matrix, axis=1))
+        shap_imp = np.mean(np.abs(shap_matrix), axis=0)
     else:
-        shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
+        if objective == "softmax":
+            n_feat = new_x_tr.shape[1]
+            shap_matrix = np.delete(
+                shap_matrix,
+                list(range(n_feat, (n_feat + 1) * param["num_class"], n_feat + 1)),
+                axis=1,
+            )
+            shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
+        else:
+            shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
     importance = dict(zip(new_x_tr.columns, shap_imp))
     return sorted(importance.items(), key=operator.itemgetter(1))
 

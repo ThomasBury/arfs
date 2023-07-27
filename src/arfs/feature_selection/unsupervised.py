@@ -34,10 +34,19 @@ from ..preprocessing import OrdinalEncoderPandas
 np.random.seed(7)
 
 
-def _missing_ratio(X):
-    if not isinstance(X, pd.DataFrame):
-        raise TypeError("X should be a pandas DataFrame")
-    return X.isnull().sum() / X.shape[0]
+def _missing_ratio(df):
+    if not isinstance(df, pd.DataFrame):
+        raise TypeError("df should be a pandas DataFrame")
+    numeric_columns = df.select_dtypes(np.number).columns
+    n_samples = len(df)
+    
+    missing_counts = {}
+    for column in df.columns:
+        if column in numeric_columns:
+            missing_counts[column] = (df[column].isnull().sum() + np.isinf(df[column]).sum())/n_samples
+        else:
+            missing_counts[column] = df[column].isnull().sum()/n_samples
+    return pd.Series(missing_counts)
 
 
 class MissingValueThreshold(BaseThresholdSelector):

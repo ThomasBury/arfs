@@ -120,7 +120,7 @@ def compare_varimp(feat_selector, models, X, y, sample_weight=None):
         sample weights if any, by default None
     """
 
-    varimp_list = ["shap", "pimp", "native"]
+    varimp_list = ["shap", "fastshap", "pimp", "native"]
     for model, varimp in itertools.product(models, varimp_list):
         print(
             "=" * 20
