@@ -160,10 +160,10 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         else:
             raise TypeError("X is not a pd.DataFrame")
 
-        if isinstance(y, pd.Series):
-            y.name = "target"
-        else:
-            raise TypeError("yis not a pd.Series")
+        if not isinstance(y, pd.Series):
+            y = pd.Series(y)
+            
+        y.name = "target"
 
         target = y.copy()
         if self.task == "classification":
