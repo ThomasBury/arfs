@@ -266,7 +266,7 @@ class Leshy(SelectorMixin, BaseEstimator):
         n_estimators=1000,
         perc=90,
         alpha=0.05,
-        importance="shap",
+        importance="fastshap",
         two_step=True,
         max_iter=100,
         random_state=None,
@@ -1470,7 +1470,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         max_rounds=500,
         delta=0.1,
         silent=True,
-        importance="shap",
+        importance="fastshap",
     ):
         self.estimator = estimator
         self.cutoff = cutoff
