@@ -1560,7 +1560,7 @@ def f_cat_regression_parallel(X, y, sample_weight=None, n_jobs=-1, handle_na="dr
         y.name = "target"
 
     target = y.name
-    X = pd.concat([X, y], axis=1, ignore_index=False)
+    X[target] = y.values
     # sanity checks
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
 
@@ -1634,7 +1634,7 @@ def f_cont_regression_parallel(
         y.name = "target"
 
     target = y.name
-    X = pd.concat([X, y], axis=1, ignore_index=False)
+    X[target] = y.values
     # sanity checks
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
 
@@ -1805,7 +1805,7 @@ def f_cont_classification_parallel(
         y.name = "target"
 
     target = y.name
-    X = pd.concat([X, y], axis=1, ignore_index=False)
+    X[target] = y.values
     # sanity checks
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
 
@@ -1876,7 +1876,7 @@ def f_cat_classification_parallel(
         y.name = "target"
 
     target = y.name
-    X = pd.concat([X, y], axis=1, ignore_index=False)
+    X[target] = y.values
     # sanity checks
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
 
