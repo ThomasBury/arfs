@@ -1903,6 +1903,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
       it improves the convergence (needs less evaluation to find a threshold)
     - Not based on a given percentage of cols needed to be deleted
     - Plot method for var. imp
+    
     Parameters
     ----------
     objective: str
@@ -1917,8 +1918,16 @@ class GrootCV(SelectorMixin, BaseEstimator):
         print out details or not
     rf: bool, default=False
         the lightGBM implementation of the random forest
-    fastshap: boon, default=True
+    fastshap: bool, default=True
         enable or not the fasttreeshap (LinkedIn) implementation of the shap values
+    lgbm_params: dict, Optional
+        the parameters to pass to the lightGBM algorithm (python API). Note that some of
+        those parameters will be overridden by the algorithm. Namely:
+        objective, verbose, is_balanced
+    n_jobs: int, default 0
+        0 means default number of threads in OpenMP
+        for the best speed, set this to the number of real CPU cores, not the number of threads
+    
     
     Attributes
     ----------
@@ -1949,7 +1958,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
     """
 
     def __init__(
-        self, objective=None, cutoff=1, n_folds=5, n_iter=5, silent=True, rf=False, fastshap=True
+        self, objective=None, cutoff=1, n_folds=5, n_iter=5, silent=True, rf=False, fastshap=True, n_jobs=0, lgbm_params=None
     ):
         self.objective = objective
         self.cutoff = cutoff
@@ -1962,6 +1971,8 @@ class GrootCV(SelectorMixin, BaseEstimator):
         self.sha_cutoff = None
         self.ranking_absolutes_ = None
         self.ranking_ = None
+        self.lgbm_params = lgbm_params
+        self.n_jobs=n_jobs
 
         # Throw errors if the inputted parameters don't meet the necessary criteria
         # Ensure parameters meet necessary criteria
@@ -2008,7 +2019,9 @@ class GrootCV(SelectorMixin, BaseEstimator):
             silent=self.silent,
             weight=sample_weight,
             rf=self.rf,
-            fastshap=self.fastshap
+            fastshap=self.fastshap,
+            lgbm_params=self.lgbm_params,
+            n_jobs=self.n_jobs
         )
 
         self.selected_features_ = self.selected_features_.values
@@ -2114,41 +2127,48 @@ class GrootCV(SelectorMixin, BaseEstimator):
 ########################################################################################
 
 
-def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight, rf, fastshap):
-    """Private function, reduce the number of predictors using a lightgbm (python API)
+def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight, rf, fastshap, lgbm_params=None, n_jobs=0):
+    """
+    Reduce the number of predictors using a lightgbm (python API)
+
     Parameters
     ----------
-    x : pd.DataFrame
-        the dataframe to create shadow features on
+    X : pd.DataFrame
+            the dataframe to create shadow features on
     y : pd.Series
-        the target
+            the target
     objective : str
-        the lightGBM objective
+            the lightGBM objective
     cutoff : float
-        the value by which the max of shadow imp is divided, to compare to real importance
+            the value by which the max of shadow imp is divided, to compare to real importance
     n_iter : int
-        The number of repetition of the cross-validation, smooth out the feature importance noise
+            The number of repetition of the cross-validation, smooth out the feature importance noise
     silent : bool
-        Set to True if don't want to see the BoostARoota output printed.
-        Will still show any errors or warnings that may occur
+            Set to True if don't want to see the BoostARoota output printed.
+            Will still show any errors or warnings that may occur
     weight : pd.series
-        sample_weight, if any
+            sample_weight, if any
     rf : bool, default=False
-        the lightGBM implementation of the random forest
+            the lightGBM implementation of the random forest
     fastshap : bool
-        enable or not the fasttreeshap implementation
-        
-    returns
+            enable or not the fasttreeshap implementation
+    lgbm_params : dict, optional
+            dictionary of lightgbm parameters
+    n_jobs: int, default 0
+        0 means default number of threads in OpenMP
+        for the best speed, set this to the number of real CPU cores, not the number of threads
+
+    Returns
     -------
-     real_vars['feature'] : pd.dataframe
-        feature importance of the real predictors over iter
-     df : pd.DataFrame
-        feature importance of the real+shadow predictors over iter
-     cutoff_shadow : float
-        the feature importance threshold, to reject or not the predictors
+    real_vars['feature'] : pd.dataframe
+            feature importance of the real predictors over iter
+    df : pd.DataFrame
+            feature importance of the real+shadow predictors over iter
+    cutoff_shadow : float
+            the feature importance threshold, to reject or not the predictors
     """
 
-    param = _set_lgb_parameters(X=X, y=y, objective=objective, rf=rf, silent=silent)
+    params = _set_lgb_parameters(X=X, y=y, objective=objective, rf=rf, silent=silent, n_jobs=n_jobs, lgbm_params=lgbm_params)
 
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
     category_cols = dtypes_dic["cat"] + dtypes_dic["time"] + dtypes_dic["unk"]
@@ -2156,6 +2176,7 @@ def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight
 
     rkf = RepeatedKFold(n_splits=n_folds, n_repeats=n_iter, random_state=2652124)
     iter = 0
+    df = pd.DataFrame({"feature": X.columns})
     for tridx, validx in tqdm(
         rkf.split(X, y), total=rkf.get_n_splits(), desc="Repeated k-fold"
     ):
@@ -2177,12 +2198,10 @@ def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight
             category_cols=category_cols,
             early_stopping_rounds=20,
             fastshap=fastshap,
-            **param,
+            **params,
         )
 
-        importance = _compute_importance(new_x_tr, shap_matrix, param, objective, fastshap)
-        if iter == 0:
-            df = pd.DataFrame({"feature": new_x_tr.columns})
+        importance = _compute_importance(new_x_tr, shap_matrix, params, objective, fastshap)
         df = _merge_importance_df(
             df=df,
             importance=importance,
@@ -2207,7 +2226,9 @@ def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight
     return real_vars["feature"], df, cutoff_shadow
 
 
-def _set_lgb_parameters(X, y, objective, rf=False, silent=True):
+def _set_lgb_parameters(
+    X: np.ndarray, y: np.ndarray, objective: str, rf: bool, silent: bool, n_jobs: int = 0, lgbm_params: dict = None
+) -> dict:
     """Set parameters for a LightGBM model based on the input features and the objective.
 
     Parameters
@@ -2222,6 +2243,9 @@ def _set_lgb_parameters(X, y, objective, rf=False, silent=True):
         Whether to use random forest boosting.
     silent : bool, default True
         Whether to print messages during parameter setting.
+    n_jobs: int, default 0
+        0 means default number of threads in OpenMP
+        for the best speed, set this to the number of real CPU cores, not the number of threads
 
     Returns
     -------
@@ -2229,52 +2253,59 @@ def _set_lgb_parameters(X, y, objective, rf=False, silent=True):
         The dictionary of LightGBM parameters.
 
     """
+
     n_feat = X.shape[1]
-    param = {"objective": objective}
-    param.update({"verbosity": -1})
+
+    params = lgbm_params if lgbm_params is not None else {}
+
+    params["objective"] = objective
+    params["verbosity"] = -1
     if objective == "softmax":
-        param["num_class"] = len(np.unique(y))
+        params["num_class"] = len(np.unique(y))
+
     if rf:
         feat_frac = (
             np.sqrt(n_feat) / n_feat
             if objective in ["softmax", "binary"]
             else n_feat / (3 * n_feat)
         )
-        param.update(
+        params.update(
             {
                 "boosting_type": "rf",
-                "bagging_fraction": "0.7",
+                "bagging_fraction": 0.7,
                 "feature_fraction": feat_frac,
-                "bagging_freq": "1",
+                "bagging_freq": 1,
             }
         )
-    clf_losses = [
-        "binary",
-        "softmax",
-        "multi_logloss",
-        "multiclassova",
-        "multiclass",
-        "multiclass_ova",
-        "ova",
-        "ovr",
-        "binary_logloss",
-    ]
+
+    clf_losses = [ "binary", "softmax", "multi_logloss", "multiclassova", "multiclass", "multiclass_ova", "ova", "ovr", "binary_logloss"]
     if objective in clf_losses:
         y = y.astype(int)
         y_freq_table = pd.Series(y.fillna(0)).value_counts(normalize=True)
         n_classes = y_freq_table.size
         if n_classes > 2 and objective != "softmax":
-            param["objective"] = "softmax"
-            param["num_class"] = len(np.unique(y))
+            params["objective"] = "softmax"
+            params["num_class"] = len(np.unique(y))
             if not silent:
                 print("Multi-class task, setting objective to softmax")
         main_class = y_freq_table[0]
         if not silent:
             print("GrootCV: classification with unbalance classes")
         if main_class > 0.8:
-            param.update({"is_unbalance": True})
-    param.update({"num_threads": 0})
-    return param
+            params.update({"is_unbalance": True})
+
+    params.update({"num_threads": n_jobs})
+    
+    # we are using early_stopping
+    # we prevent the overridding of it by popping the n_iterations
+    keys_to_pop = ['num_iterations', 'num_iteration', 'n_iter', 'num_tree', 'num_trees',
+                   'num_round', 'num_rounds', 'nrounds', 'num_boost_round', 'n_estimators', 'max_iter']
+    for key in keys_to_pop:
+        params.pop(key, None)
+    
+    return params
+
+
 
 
 def _split_data(X, y, tridx, validx, weight=None):
