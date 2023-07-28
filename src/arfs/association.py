@@ -15,8 +15,7 @@ import scipy.stats as ss
 import matplotlib.pyplot as plt
 import scipy.cluster.hierarchy as sch
 import scipy.stats as ss
-import holoviews as hv
-import panel as pn
+
 
 
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -2403,6 +2402,15 @@ def plot_association_matrix_int(
     panel.Column
         the panel object
     """
+    try:
+        import holoviews as hv
+    except ImportError:
+        raise ImportError("Holoviews is not installed. Please install it using 'pip install holoviews'.")
+    
+    try:
+        import panel as pn
+    except ImportError:
+        raise ImportError("Panel is not installed. Please install it using 'pip install panel'.")
 
     cmap = cmap if cmap is not None else "coolwarm"
 
