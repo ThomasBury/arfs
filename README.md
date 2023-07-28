@@ -13,7 +13,9 @@ All relevant feature selection means trying to find all features carrying inform
 
 This package implements 3 different methods (Leshy is an evolution of Boruta, BoostAGroota is an evolution of BoostARoota and GrootCV is a new one). They are sklearn compatible. See hereunder for details about those methods. You can use any sklearn compatible estimator with Leshy and BoostAGroota but I recommend lightGBM. It's fast, accurate and has SHAP values builtin. It also provides a module for performing preprocessing and perform basic feature selection (autobinning, remove columns with too many missing values, zero variance, high-cardinality, highly correlated, etc.). Examples and detailled methods hereunder.
 
-Moreover, as an alternative to the all relevant problem, the ARFS package provides a MRmr feature selection which, theoretically, returns a subset of the predictors selected by an arfs method.
+Moreover, as an alternative to the all relevant problem, the ARFS package provides a MRmr feature selection which, theoretically, returns a subset of the predictors selected by an arfs method. ARFS also provides a `LASSO` feature selection which works especially well for (G)LMs and GAMs. You can combine Lasso with the `TreeDiscretizer` for intrucing non-linearities into linear models and perform feature selection.
+
+Please note that one limitation of the lasso is that it treats the levels of a categorical predictor individually. However, this issue can be addressed by utilizing the `TreeDiscretizer`, which automatically bins numerical variables and groups the levels of categorical variables.
 
 ## Installation
 
@@ -27,6 +29,11 @@ Working examples for:
  - [Basic FS (best before ARFS)](./docs/notebooks/basic_feature_selection.ipynb)
  - [Regression](./docs/notebooks/arfs_regression.ipynb)
  - [Classification](./docs/notebooks/arfs_classification.ipynb)
+ - [LASSO and (G)LM feature selection](./docs/notebooks/lasso_feature_selection.ipynb)
+ - [Passing custom params](./docs/notebooks/arfs_grootcv_custom_params.ipynb)
+ - [Non-normal loss and sample weights](./docs/notebooks/arfs_non_normal_loss_and_sample_weight.ipynb)
+ - [ARFS on GPU](./docs/notebooks/arfs_on_GPU.ipynb)
+ - [Fast Shap](./docs/notebooks/arfs_shap_vs_fastshap.ipynb)
  - [Categoricals](./docs/notebooks/issue_categoricals.ipynb)
  - [Collinearity](./docs/notebooks/issue_collinearity.ipynb)
  - [Reducing run time for large data](./docs/notebooks/arfs_large_data_sampling.ipynb)
