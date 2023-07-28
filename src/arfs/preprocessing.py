@@ -527,6 +527,12 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         """
         X = X.copy()
         
+        if not isinstance(X, pd.DataFrame):
+            X = pd.DataFrame(X)
+            X.columns = [f"pred_{i}" for i in range(X.shape[1])]
+        
+        self.feature_names_in_ = X.columns.to_numpy()
+        
         if self.bin_features is None:
             self.bin_features = list(X.select_dtypes("number").columns)
             self.cat_features = []
