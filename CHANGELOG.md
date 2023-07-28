@@ -1,5 +1,11 @@
 # Changes
 
+## 2.0.0
+ - Add fasttreeshap implementation as an option to compute shap importance (fasttreeshap does not work with XGBoost though)
+ - New feature: lasso feature selection, especially useful for models without interactions (LM, GLM, GAM)
+ - New feature: pass lightgbm parameters to GrootCV
+ - Bug: fix sample weight shape in mrMR
+ - Documentation: update and upgrade tuto NB
 ## 1.1.4
  - update the required python version >= 3.9
 ## 1.1.3
