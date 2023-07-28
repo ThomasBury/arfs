@@ -1,5 +1,7 @@
 # Changes
 
+## 2.0.1
+ - Build: remove explicit dependencies on holoviews and panel
 ## 2.0.0
  - Add fasttreeshap implementation as an option to compute shap importance (fasttreeshap does not work with XGBoost though)
  - New feature: lasso feature selection, especially useful for models without interactions (LM, GLM, GAM)
