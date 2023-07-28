@@ -67,7 +67,7 @@ from sklearn.inspection import permutation_importance
 from sklearn.utils.validation import _check_sample_weight
 from matplotlib.lines import Line2D
 from lightgbm import early_stopping
-from fasttreeshap import TreeExplainer as FastTreeExplainer
+
 
 from ..utils import (
     check_if_tree_based,
@@ -266,7 +266,7 @@ class Leshy(SelectorMixin, BaseEstimator):
         n_estimators=1000,
         perc=90,
         alpha=0.05,
-        importance="fastshap",
+        importance="shap",
         two_step=True,
         max_iter=100,
         random_state=None,
@@ -314,6 +314,12 @@ class Leshy(SelectorMixin, BaseEstimator):
             Nothing but attributes
 
         """
+        try:
+            from fasttreeshap import TreeExplainer as FastTreeExplainer
+        except ImportError:
+            warnings.warn("fasttreeshap is not installed. Fallback to shap.")
+            self.importance = "shap"
+        
         if isinstance(X, pd.DataFrame):
             self.feature_names_in_ = X.columns.to_numpy()
         else:
@@ -1470,7 +1476,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         max_rounds=500,
         delta=0.1,
         silent=True,
-        importance="fastshap",
+        importance="shap",
     ):
         self.estimator = estimator
         self.cutoff = cutoff
@@ -1540,6 +1546,12 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         sample_weight : pd.series
             sample_weight, if any
         """
+        try:
+            from fasttreeshap import TreeExplainer as FastTreeExplainer
+        except ImportError:
+            warnings.warn("fasttreeshap is not installed. Fallback to shap.")
+            self.importance = "shap"
+            
         if isinstance(X, pd.DataFrame):
             self.feature_names_in_ = X.columns.to_numpy()
         else:
@@ -1958,7 +1970,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
     """
 
     def __init__(
-        self, objective=None, cutoff=1, n_folds=5, n_iter=5, silent=True, rf=False, fastshap=True, n_jobs=0, lgbm_params=None
+        self, objective=None, cutoff=1, n_folds=5, n_iter=5, silent=True, rf=False, fastshap=False, n_jobs=0, lgbm_params=None
     ):
         self.objective = objective
         self.cutoff = cutoff
@@ -2412,6 +2424,11 @@ def _train_lgb_model(
     )
 
     if fastshap:
+        try:
+            from fasttreeshap import TreeExplainer as FastTreeExplainer
+        except ImportError:
+            raise ImportError("fasttreeshap is not installed. Please install it using 'pip/conda install fasttreeshap'.")
+        
         explainer = FastTreeExplainer(bst, algorithm="auto", shortcut=False, feature_perturbation="tree_path_dependent")
         shap_matrix = explainer.shap_values(X_train)
     else:
