@@ -20,11 +20,11 @@ sys.path.insert(0, os.path.abspath("../../arfs"))
 # -- Project information -----------------------------------------------------
 
 project = "arfs"
-copyright = "2022, Thomas Bury"
+copyright = "2023, Thomas Bury"
 author = "Thomas Bury"
 
 # The full version, including alpha/beta/rc tags
-release = "1.0.5"
+release = "2.0.1"
 
 # If extensions (or modules to document with autodoc) are in another
 # directory, add these directories to sys.path here. If the directory is
