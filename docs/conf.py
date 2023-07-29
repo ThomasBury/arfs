@@ -32,9 +32,11 @@ release = "2.0.1"
 # absolute, like shown here.
 # sys.path.append(os.path.join(os.path.abspath(os.pardir)))
 
-sys.path.insert(0, os.path.abspath(".."))
+# Don't add the same path again, remove the following line:
+# sys.path.insert(0, os.path.abspath(".."))
+
 sys.path.append(os.path.abspath(os.path.join(__file__, "../../src")))
-autodoc_mock_imports = ["_tkinter"]
+autodoc_mock_imports = ["_tkinter", "sphinx_tabs.tabs"]
 
 # Get the project root dir, which is the parent dir of this
 cwd = os.getcwd()
@@ -53,7 +55,8 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx_autodoc_typehints",
     "sphinx_copybutton",
-    "sphinx_rtd_theme",
+    # "sphinxawesome-theme",
+    # "sphinx_rtd_theme",
     "nbsphinx",
     "sphinx_tabs.tabs",
 ]
@@ -73,7 +76,9 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "sphinx_rtd_theme"
+# html_theme = "sphinx_rtd_theme"
+html_permalinks_icon = '<span>#</span>'
+html_theme = 'sphinxawesome_theme'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
