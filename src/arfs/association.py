@@ -1436,19 +1436,27 @@ def _callable_association_matrix_fn(
 
 
 def f_oneway_weighted(*args):
-    """f_oneway_weighted calculates the weighted F-statistic
-    (continuous target, categorical predictor)
+    """Calculate the weighted F-statistic for one-way ANOVA (continuous target, categorical predictor).
+
+    Parameters
+    ----------
+    X : array-like of shape (n_samples,)
+        The predictor dataframe.
+    y : array-like of shape (n_samples,)
+        The target vector.
+    sample_weight : array-like of shape (n_samples,), optional
+        The weight vector, by default None.
 
     Returns
     -------
     float
-        value of the F-statistic
+        The value of the F-statistic.
 
-    Notes:
-    ------
-    F-statistic is calculated as:
+    Notes
+    -----
+    The F-statistic is calculated as:
     .. math::
-        F(rf)=\frac{\sum_i (\bar{Y}_{i \bullet}-\bar{Y})^2 \mathbin{/} (K-1)}{\sum_i \sum_k (\bar{Y}_{ij}-\bar{Y}_{i\bullet})^2 \mathbin{/} (N - K)}
+        F(rf) = \\frac{\\sum_i (\\bar{Y}_{i \\bullet} - \\bar{Y})^2 / (K-1)}{\\sum_i \\sum_k (\\bar{Y}_{ij} - \\bar{Y}_{i\\bullet})^2 / (N - K)}
     """
     # how many levels (predictor)
     n_classes = len(args)
@@ -1583,32 +1591,31 @@ def f_cont_regression_parallel(
     X, y, sample_weight=None, n_jobs=-1, force_finite=True, handle_na="drop"
 ):
     """Univariate linear regression tests returning F-statistic.
+
     Quick linear model for testing the effect of a single regressor,
     sequentially for many regressors.
     This is done in 2 steps:
-    1. The cross correlation between each regressor and the target is computed
-       using
+    1. The cross-correlation between each regressor and the target is computed using:
            E[(X[:, i] - mean(X[:, i])) * (y - mean(y))] / (std(X[:, i]) * std(y))
-    2. It is converted to an F score ranks
-    features in the same order if all the features are positively correlated
-    with the target.
-    Note it is therefore recommended as a feature selection criterion to identify
-    potentially predictive feature for a downstream classifier, irrespective of
+    2. It is converted to an F score ranks features in the same order if all the features
+       are positively correlated with the target.
+    Note that it is therefore recommended as a feature selection criterion to identify
+    potentially predictive features for a downstream classifier, irrespective of
     the sign of the association with the target variable.
 
     Parameters
     ----------
     X : array-like of shape (n_samples, n_features)
-        predictor dataframe
+        The predictor dataframe.
     y : array-like of shape (n_samples,)
-        The target vector
+        The target vector.
     sample_weight : array-like of shape (n_samples,), optional
-        The weight vector, by default None
+        The weight vector, by default None.
     n_jobs : int, optional
-        the number of cores to use for the computation, by default -1
+        The number of cores to use for the computation, by default -1.
     handle_na : str, optional
-        either drop rows with na, fill na with 0 or do nothing, by default "drop"
-    force_finite :
+        Either drop rows with NaN, fill NaN with 0, or do nothing, by default "drop".
+    force_finite : bool, optional
         Whether or not to force the F-statistics and associated p-values to
         be finite. There are two cases where the F-statistic is expected to not
         be finite:
@@ -1617,16 +1624,15 @@ def f_cont_regression_parallel(
           `np.nan` values in the F-statistic and p-value. When
           `force_finite=True`, the F-statistic is set to `0.0` and the
           associated p-value is set to `1.0`.
-        - when the a feature in `X` is perfectly correlated (or
+        - when a feature in `X` is perfectly correlated (or
           anti-correlated) with the target `y`. In this case, the F-statistic
           is expected to be `np.inf`. When `force_finite=True`, the F-statistic
           is set to `np.finfo(dtype).max`.
 
-
     Returns
     -------
-    float :
-        F-statistic for each feature of shape (n_features,)
+    f_statistic : array-like of shape (n_features,)
+        F-statistic for each feature.
     """
     if not isinstance(y, pd.Series):
         y = pd.Series(y)
@@ -1667,33 +1673,30 @@ def f_stat_regression_parallel(
     Parameters
     ----------
     X : array-like of shape (n_samples, n_features)
-        predictor dataframe
+        Predictor dataframe.
     y : array-like of shape (n_samples,)
-        The target vector
+        The target vector.
     sample_weight : array-like of shape (n_samples,), optional
-        The weight vector, by default None
+        The weight vector, by default None.
     n_jobs : int, optional
-        the number of cores to use for the computation, by default -1
+        The number of cores to use for the computation, by default -1.
     handle_na : str, optional
-        either drop rows with na, fill na with 0 or do nothing, by default "drop"
-    force_finite :
-        Whether or not to force the F-statistics and associated p-values to
-        be finite. There are two cases where the F-statistic is expected to not
-        be finite:
-        - when the target `y` or some features in `X` are constant. In this
-          case, the Pearson's R correlation is not defined leading to obtain
-          `np.nan` values in the F-statistic and p-value. When
-          `force_finite=True`, the F-statistic is set to `0.0` and the
-          associated p-value is set to `1.0`.
-        - when the a feature in `X` is perfectly correlated (or
-          anti-correlated) with the target `y`. In this case, the F-statistic
-          is expected to be `np.inf`. When `force_finite=True`, the F-statistic
-          is set to `np.finfo(dtype).max`.
+        Either drop rows with NA, fill NA with 0, or do nothing, by default "drop".
+    force_finite : bool, optional
+        Whether or not to force the F-statistics and associated p-values to be finite. 
+        There are two cases where the F-statistic is expected to not be finite:
+        - When the target `y` or some features in `X` are constant. In this case, 
+          the Pearson's R correlation is not defined leading to obtain `np.nan` 
+          values in the F-statistic and p-value. When `force_finite=True`, the 
+          F-statistic is set to `0.0` and the associated p-value is set to `1.0`.
+        - When a feature in `X` is perfectly correlated (or anti-correlated) 
+          with the target `y`. In this case, the F-statistic is expected to be `np.inf`. 
+          When `force_finite=True`, the F-statistic is set to `np.finfo(dtype).max`.
 
     Returns
     -------
     pd.Series
-        the value of the F-statistic for each predictor
+        The value of the F-statistic for each predictor.
     """
     f_stat_cont_series = f_cont_regression_parallel(
         X,
@@ -1832,26 +1835,26 @@ def f_cat_classification_parallel(
     force_finite=True,
     handle_na="drop",
 ):
-    """Univariate information dependence
-    It is converted to an F score ranks features in the same order if
-    all the features are positively correlated with the target.
-    Note it is therefore recommended as a feature selection criterion to identify
-    potentially predictive feature for a downstream classifier, irrespective of
+    """Univariate information dependence.
+
+    It ranks features in the same order if all the features are positively correlated with the target.
+    Note that it is therefore recommended as a feature selection criterion to identify
+    potentially predictive features for a downstream classifier, irrespective of
     the sign of the association with the target variable.
 
     Parameters
     ----------
     X : array-like of shape (n_samples, n_features)
-        predictor dataframe
+        The predictor dataframe.
     y : array-like of shape (n_samples,)
-        The target vector
+        The target vector.
     sample_weight : array-like of shape (n_samples,), optional
-        The weight vector, by default None
+        The weight vector, by default None.
     n_jobs : int, optional
-        the number of cores to use for the computation, by default -1
+        The number of cores to use for the computation, by default -1.
     handle_na : str, optional
-        either drop rows with na, fill na with 0 or do nothing, by default "drop"
-    force_finite :
+        Either drop rows with NaN, fill NaN with 0, or do nothing, by default "drop".
+    force_finite : bool, optional
         Whether or not to force the F-statistics and associated p-values to
         be finite. There are two cases where the F-statistic is expected to not
         be finite:
@@ -1860,15 +1863,15 @@ def f_cat_classification_parallel(
           `np.nan` values in the F-statistic and p-value. When
           `force_finite=True`, the F-statistic is set to `0.0` and the
           associated p-value is set to `1.0`.
-        - when the a feature in `X` is perfectly correlated (or
+        - when a feature in `X` is perfectly correlated (or
           anti-correlated) with the target `y`. In this case, the F-statistic
           is expected to be `np.inf`. When `force_finite=True`, the F-statistic
           is set to `np.finfo(dtype).max`.
 
     Returns
     -------
-    f_statistic :
-        F-statistic for each feature of shape (n_features,)
+    f_statistic : array-like of shape (n_features,)
+        F-statistic for each feature.
     """
     if not isinstance(y, pd.Series):
         y = pd.Series(y)
@@ -1911,33 +1914,30 @@ def f_stat_classification_parallel(
     Parameters
     ----------
     X : array-like of shape (n_samples, n_features)
-        predictor dataframe
+        Predictor dataframe.
     y : array-like of shape (n_samples,)
-        The target vector
+        The target vector.
     sample_weight : array-like of shape (n_samples,), optional
-        The weight vector, by default None
+        The weight vector, by default None.
     n_jobs : int, optional
-        the number of cores to use for the computation, by default -1
+        The number of cores to use for the computation, by default -1.
     handle_na : str, optional
-        either drop rows with na, fill na with 0 or do nothing, by default "drop"
-    force_finite :
-        Whether or not to force the F-statistics and associated p-values to
-        be finite. There are two cases where the F-statistic is expected to not
-        be finite:
-        - when the target `y` or some features in `X` are constant. In this
-          case, the Pearson's R correlation is not defined leading to obtain
-          `np.nan` values in the F-statistic and p-value. When
-          `force_finite=True`, the F-statistic is set to `0.0` and the
-          associated p-value is set to `1.0`.
-        - when the a feature in `X` is perfectly correlated (or
-          anti-correlated) with the target `y`. In this case, the F-statistic
-          is expected to be `np.inf`. When `force_finite=True`, the F-statistic
-          is set to `np.finfo(dtype).max`.
+        Either drop rows with NA, fill NA with 0, or do nothing, by default "drop".
+    force_finite : bool, optional
+        Whether or not to force the F-statistics and associated p-values to be finite. 
+        There are two cases where the F-statistic is expected to not be finite:
+        - When the target `y` or some features in `X` are constant. In this case, 
+          the Pearson's R correlation is not defined leading to obtain `np.nan` 
+          values in the F-statistic and p-value. When `force_finite=True`, the 
+          F-statistic is set to `0.0` and the associated p-value is set to `1.0`.
+        - When a feature in `X` is perfectly correlated (or anti-correlated) 
+          with the target `y`. In this case, the F-statistic is expected to be `np.inf`. 
+          When `force_finite=True`, the F-statistic is set to `np.finfo(dtype).max`.
 
     Returns
     -------
     pd.Series
-        the value of the F-statistic for each predictor
+        The value of the F-statistic for each predictor.
     """
     f_stat_cont_series = f_cont_classification_parallel(
         X, y, sample_weight, n_jobs, handle_na=handle_na
@@ -2127,10 +2127,7 @@ def cluster_sq_matrix(sq_matrix, method="ward"):
 
     Example:
     --------
-    >>> assoc = association_matrix(
-    ...     iris_df,
-    ...     plot=False
-    ... )
+    >>> assoc = association_matrix(iris_df, plot=False)
     >>> assoc_clustered = cluster_sq_matrix(assoc, method="complete")
 
     """

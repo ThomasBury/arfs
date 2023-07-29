@@ -415,53 +415,52 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
 
     Notes
     -----
-     This is a substitution to proper regularization scheme such as
-     - GroupLasso (categorical predictors, which are usually encoded as multiple dummy variables: one for each category.
-                   It makes sense in many analyses to consider these dummy variables (representing one categorical predictor)
-                   together rather than separately)
-     - FusedLasso (One drawback of the Lasso is it ignores ordering of the features, FusedLasso takes into account the ordering)
+    This is a substitution to proper regularization schemes such as:
+    - GroupLasso: Categorical predictors, which are usually encoded as multiple dummy variables, 
+                  are considered together rather than separately.
+    - FusedLasso: Takes into account the ordering of the features.
 
     Parameters
     ----------
-    bin_features : List of string, str or None
-        the list of names of the variable that has to be binned, or "all", "numerical" or "categorical"
+    bin_features : List of string or None
+        The list of names of the variable that has to be binned, or "all", "numerical" or "categorical" 
         for splitting and grouping all, only numerical or only categorical columns.
     n_bins : int
-        the number of bins that has to be created while binning the variables in "bin_features" list
+        The number of bins that has to be created while binning the variables in the "bin_features" list.
     n_bins_max : int, optional
-        the maximum number of levels that a categorical column can have in order to avoid being binned
+        The maximum number of levels that a categorical column can have to avoid being binned.
     num_bins_as_category: bool, default=False
-        save the numeric bins as pandas category or as pandas interval
-    boost_params : dic
-        the boosting parameters dictionary
+        Save the numeric bins as pandas category or as pandas interval.
+    boost_params : dict
+        The boosting parameters dictionary.
     raw : bool
-        returns raw levels (non human-interpretable) or levels matching the orginal ones
+        Returns raw levels (non-human-interpretable) or levels matching the original ones.
     task : str
-        either regression or classification (binary)
+        Either regression or classification (binary).
 
     Attributes
     ----------
-    tree_dic : dic
-        the dictionary keys are binned column names and items are the univariate trees
-    bin_upper_bound_dic : dic
-        the upper bound of the numerical intervals
-    cat_bin_dict : dic
-        the mapping dictionary for the categorical columns
-    tree_imputer : dic
-        the missing values are split by the tree and lead to similar splits and are mapped to this value
-    ordinal_encoder_dic : dic
-        dictionary with the fitted encoder, if any
+    tree_dic : dict
+        The dictionary keys are binned column names and items are the univariate trees.
+    bin_upper_bound_dic : dict
+        The upper bound of the numerical intervals.
+    cat_bin_dict : dict
+        The mapping dictionary for the categorical columns.
+    tree_imputer : dict
+        The missing values are split by the tree and lead to similar splits and are mapped to this value.
+    ordinal_encoder_dic : dict
+        Dictionary with the fitted encoder, if any.
     cat_features : list
-        names of the found categorical columns
+        Names of the found categorical columns.
 
     Methods
     -------
     fit(X, y, sample_weight=None)
-        fit the transformer object on data
-    transform(x)
-        apply the fitted transformer object on new data
-    fit_transform(x)
-        fit and apply the transformer object on data
+        Fit the transformer object on data.
+    transform(X)
+        Apply the fitted transformer object on new data.
+    fit_transform(X)
+        Fit and apply the transformer object on data.
 
     Example
     -------
@@ -510,20 +509,21 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
 
     def fit(self, X, y, sample_weight=None):
         """Fit the discretizer on `X`.
+
         Parameters
         ----------
-        X :
-            Input data shape (n_samples, n_features), where `n_samples` is the number of samples and
+        X : array-like of shape (n_samples, n_features)
+            Input data with shape (n_samples, n_features), where `n_samples` is the number of samples and
             `n_features` is the number of features.
-        y :
-            target for internally fitting the tree(s)
-        sample_weight :
-            sample weight (e.g. exposure) if any
+        y : array-like of shape (n_samples,)
+            Target for internally fitting the tree(s).
+        sample_weight : array-like of shape (n_samples,), optional
+            Sample weight (e.g., exposure) if any.
 
         Returns
         -------
-        X :
-            pd.DataFrame with the binned and grouped columns
+        X : pd.DataFrame
+            DataFrame with the binned and grouped columns.
         """
         X = X.copy()
         
@@ -647,15 +647,14 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         
         Parameters
         ----------
-        X :
-            Input data shape (n_samples, n_features), where `n_samples` is the number of samples and
+        X : array-like of shape (n_samples, n_features)
+            Input data with shape (n_samples, n_features), where `n_samples` is the number of samples and
             `n_features` is the number of features.
-
 
         Returns
         -------
-        X :
-            pd.DataFrame with the binned and grouped columns
+        X : pd.DataFrame
+            DataFrame with the binned and grouped columns.
         """
         X = X.copy()
 
