@@ -155,7 +155,7 @@ class VariableImportance(SelectorMixin, BaseEstimator):
             verbose=self.verbose,
             encoder_kwargs=self.encoder_kwargs,
             lgb_kwargs=self.lgb_kwargs,
-            fastshap=self.fastshap
+            fastshap=self.fastshap,
         )
 
         self.feature_importances_summary_ = feature_importances
@@ -372,7 +372,12 @@ def _compute_varimp_lgb(
         # )
         # perm_imp = perm_imp.importances_mean
         if fastshap:
-            explainer = FastTreeExplainer(gbm_model.model, algorithm="auto", shortcut=False, feature_perturbation="tree_path_dependent")
+            explainer = FastTreeExplainer(
+                gbm_model.model,
+                algorithm="auto",
+                shortcut=False,
+                feature_perturbation="tree_path_dependent",
+            )
             shap_matrix = explainer.shap_values(gbm_model.valid_features)
             if isinstance(shap_matrix, list):
                 # For LightGBM classifier, RF, in sklearn API, SHAP returns a list of arrays
@@ -381,7 +386,9 @@ def _compute_varimp_lgb(
             else:
                 shap_imp = np.abs(shap_matrix).mean(0)
         else:
-            shap_matrix = gbm_model.model.predict(gbm_model.valid_features, pred_contrib=True)
+            shap_matrix = gbm_model.model.predict(
+                gbm_model.valid_features, pred_contrib=True
+            )
             # the dim changed in lightGBM >= 3.0.0
             if task == "multiclass":
                 # X_SHAP_values (array-like of shape = [n_samples, n_features + 1]

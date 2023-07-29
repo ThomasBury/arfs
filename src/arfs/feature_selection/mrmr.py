@@ -162,7 +162,7 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
 
         if not isinstance(y, pd.Series):
             y = pd.Series(y)
-            
+
         y.name = "target"
 
         target = y.copy()

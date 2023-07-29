@@ -108,10 +108,15 @@ def create_dtype_dict(df: pd.DataFrame, dic_keys: str = "col_names") -> dict:
     time_cols = df.select_dtypes(
         include=["datetime", "timedelta", "datetimetz"]
     ).columns
-    numerical_interval_cols = df.select_dtypes(["Interval[float]", "Interval[int]"]).columns
+    numerical_interval_cols = df.select_dtypes(
+        ["Interval[float]", "Interval[int]"]
+    ).columns
     numerical_cols = df.select_dtypes(include=np.number).columns
     remaining_cols = (
-        df.columns.difference(categorical_cols).difference(numerical_cols).difference(time_cols).difference(numerical_interval_cols)
+        df.columns.difference(categorical_cols)
+        .difference(numerical_cols)
+        .difference(time_cols)
+        .difference(numerical_interval_cols)
     )
 
     if dic_keys == "col_names":
@@ -120,7 +125,13 @@ def create_dtype_dict(df: pd.DataFrame, dic_keys: str = "col_names") -> dict:
         num_interval_dict = dict.fromkeys(numerical_interval_cols, "num_interval")
         time_dict = dict.fromkeys(time_cols, "time")
         remaining_dict = dict.fromkeys(remaining_cols, "unk")
-        return {**cat_dict, **num_dict, **num_interval_dict, **time_dict, **remaining_dict}
+        return {
+            **cat_dict,
+            **num_dict,
+            **num_interval_dict,
+            **time_dict,
+            **remaining_dict,
+        }
 
     if dic_keys == "dtypes":
         return {
@@ -859,5 +870,5 @@ def _make_corr_dataset_classification(size=1000):
         "Bane",
         "MarkZ",
     ]
-    
+
     return X, y, w

@@ -397,33 +397,33 @@ def cat_var(data, col_excl=None, return_cat=True):
 
 
 class TreeDiscretizer(BaseEstimator, TransformerMixin):
-    """The purpose of the function is to discretize continuous and/or categorical data, returning a pandas DataFrame. 
-    It is designed to support regression and binary classification tasks. Discretization, also known as quantization or binning, 
-    allows for the partitioning of continuous features into discrete values. In certain datasets with continuous attributes, 
-    discretization can be beneficial as it transforms the dataset into one with only nominal attributes. 
+    """The purpose of the function is to discretize continuous and/or categorical data, returning a pandas DataFrame.
+    It is designed to support regression and binary classification tasks. Discretization, also known as quantization or binning,
+    allows for the partitioning of continuous features into discrete values. In certain datasets with continuous attributes,
+    discretization can be beneficial as it transforms the dataset into one with only nominal attributes.
     Additionally, for categorical predictors, grouping levels can help reduce overfitting and create meaningful clusters.
 
-    By encoding discretized features, a model can become more expressive while maintaining interpretability. 
-    For example, preprocessing with a discretizer can introduce nonlinearity to linear models. 
+    By encoding discretized features, a model can become more expressive while maintaining interpretability.
+    For example, preprocessing with a discretizer can introduce nonlinearity to linear models.
     For more advanced possibilities, particularly smooth ones, you can refer to the section on generating polynomial features.
-    The TreeDiscretizer function utilizes univariate regularized trees, with one tree per column to be binned. 
-    It finds the optimal partition and returns numerical intervals for numerical continuous columns and pd.Categorical for categorical columns. 
+    The TreeDiscretizer function utilizes univariate regularized trees, with one tree per column to be binned.
+    It finds the optimal partition and returns numerical intervals for numerical continuous columns and pd.Categorical for categorical columns.
     This approach groups similar levels together, reducing dimensionality and regularizing the model.
-    
-    TreeDiscretizer handles missing values for both numerical and categorical predictors, 
+
+    TreeDiscretizer handles missing values for both numerical and categorical predictors,
     eliminating the need for encoding categorical predictors separately.
 
     Notes
     -----
     This is a substitution to proper regularization schemes such as:
-    - GroupLasso: Categorical predictors, which are usually encoded as multiple dummy variables, 
+    - GroupLasso: Categorical predictors, which are usually encoded as multiple dummy variables,
                   are considered together rather than separately.
     - FusedLasso: Takes into account the ordering of the features.
 
     Parameters
     ----------
     bin_features : List of string or None
-        The list of names of the variable that has to be binned, or "all", "numerical" or "categorical" 
+        The list of names of the variable that has to be binned, or "all", "numerical" or "categorical"
         for splitting and grouping all, only numerical or only categorical columns.
     n_bins : int
         The number of bins that has to be created while binning the variables in the "bin_features" list.
@@ -526,13 +526,13 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
             DataFrame with the binned and grouped columns.
         """
         X = X.copy()
-        
+
         if not isinstance(X, pd.DataFrame):
             X = pd.DataFrame(X)
             X.columns = [f"pred_{i}" for i in range(X.shape[1])]
-        
+
         self.feature_names_in_ = X.columns.to_numpy()
-        
+
         if self.bin_features is None:
             self.bin_features = list(X.select_dtypes("number").columns)
             self.cat_features = []
@@ -553,10 +553,14 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         ):
             self.bin_features = list(X.select_dtypes(["category", "object"]).columns)
             self.cat_features = self.bin_features
-            
+
         self.n_unique_table_ = X[self.bin_features].nunique()
         # transform only the columns with more than n_bins_max
-        self.bin_features = self.n_unique_table_[self.n_unique_table_ > self.n_bins_max].index.to_list() if self.n_bins_max else self.bin_features
+        self.bin_features = (
+            self.n_unique_table_[self.n_unique_table_ > self.n_bins_max].index.to_list()
+            if self.n_bins_max
+            else self.bin_features
+        )
 
         for col in self.bin_features:
             is_categorical = (self.cat_features is not None) and (
@@ -580,8 +584,7 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
                     X[col] = dum.values.ravel()
                 else:
                     X[col] = dum.ravel()
-                
-                
+
             else:
                 encoder = None
 
@@ -606,7 +609,7 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
                     X[col] = dum.values.ravel()
                 else:
                     X[col] = dum.ravel()
-                
+
                 self.cat_bin_dict[col] = (
                     X[[f"{col}_g", col]]
                     .groupby(f"{col}_g")
@@ -644,7 +647,7 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
 
     def transform(self, X):
         """Apply the discretizer on `X`. Only the columns with more than n_bins_max unique values will be transformed.
-        
+
         Parameters
         ----------
         X : array-like of shape (n_samples, n_features)
@@ -686,7 +689,7 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
                         include_lowest=True,
                         precision=2,
                     )
-                    
+
                     if not self.num_bins_as_category:
                         X[col] = X[col].astype(IntervalDtype())
         return X
@@ -756,6 +759,7 @@ def make_fs_summary(selector_pipe):
     )
     return tag_df
 
+
 class IntervalToMidpoint(BaseEstimator, TransformerMixin):
     """
     IntervalToMidpoint is a transformer that converts numerical intervals in a pandas DataFrame to their midpoints.
@@ -784,8 +788,7 @@ class IntervalToMidpoint(BaseEstimator, TransformerMixin):
         Inverse transform is not implemented for this transformer.
     """
 
-    def __init__(self, cols: Union[List[str], str]="all"):
-
+    def __init__(self, cols: Union[List[str], str] = "all"):
         self.cols = cols
 
     def fit(self, X: pd.DataFrame = None, y: pd.Series = None):
@@ -794,9 +797,9 @@ class IntervalToMidpoint(BaseEstimator, TransformerMixin):
 
         Parameters
         ----------
-        X : 
+        X :
             The input data to fit the transformer on.
-        y : 
+        y :
             Ignored parameter.
 
         Returns
@@ -805,12 +808,16 @@ class IntervalToMidpoint(BaseEstimator, TransformerMixin):
             The fitted transformer object.
         """
         data = X.copy()
-        
+
         if self.cols == "all":
             self.cols = data.columns
-        
-        self.float_interval_cols_ = create_dtype_dict(X, dic_keys="dtypes")["num_interval"]
-        self.columns_to_transform_ = list(set(self.cols).intersection(set(self.float_interval_cols_)))
+
+        self.float_interval_cols_ = create_dtype_dict(X, dic_keys="dtypes")[
+            "num_interval"
+        ]
+        self.columns_to_transform_ = list(
+            set(self.cols).intersection(set(self.float_interval_cols_))
+        )
         return self
 
     def transform(self, X: pd.DataFrame):
@@ -850,11 +857,14 @@ class IntervalToMidpoint(BaseEstimator, TransformerMixin):
         raise NotImplementedError(
             "inverse_transform is not implemented for this transformer."
         )
-        
-def transform_interval_to_midpoint(X: pd.DataFrame, cols: Union[List[str], str] = "all") -> pd.DataFrame:
+
+
+def transform_interval_to_midpoint(
+    X: pd.DataFrame, cols: Union[List[str], str] = "all"
+) -> pd.DataFrame:
     """
     Transforms interval columns in a pandas DataFrame to their midpoint values.
-    
+
     Notes
     -----
     Equivalent function to ``IntervalToMidpoint`` without the estimator API
@@ -868,17 +878,17 @@ def transform_interval_to_midpoint(X: pd.DataFrame, cols: Union[List[str], str] 
 
     Returns
     -------
-    pd.DataFrame : 
+    pd.DataFrame :
         The transformed DataFrame with interval columns replaced by their midpoint values.
 
     Raises
     ------
-    TypeError : 
+    TypeError :
         If the input data is not a pandas DataFrame.
     """
     if cols == "all":
         cols = X.columns
-    
+
     X = X.copy()
     float_interval_cols_ = create_dtype_dict(X, dic_keys="dtypes")["num_interval"]
     columns_to_transform_ = list(set(cols).intersection(set(float_interval_cols_)))
@@ -906,10 +916,13 @@ def find_interval_midpoint(interval_series: pd.Series) -> np.ndarray:
     left_inf = np.isinf(left)
     right_inf = np.isinf(right)
 
-    return np.where(left_inf & right_inf, np.inf,
-                        np.where(left_inf, right,
-                                 np.where(right_inf, left, mid)))
-    
+    return np.where(
+        left_inf & right_inf,
+        np.inf,
+        np.where(left_inf, right, np.where(right_inf, left, mid)),
+    )
+
+
 class PatsyTransformer(BaseEstimator, TransformerMixin):
     """Transformer using patsy-formulas.
 
@@ -956,8 +969,15 @@ class PatsyTransformer(BaseEstimator, TransformerMixin):
     should not contain a left hand side.  If you need to transform both
     features and targets, use PatsyModel.
     """
-    def __init__(self, formula=None, add_intercept=True, eval_env=0, NA_action="drop",
-                 return_type='dataframe'):
+
+    def __init__(
+        self,
+        formula=None,
+        add_intercept=True,
+        eval_env=0,
+        NA_action="drop",
+        return_type="dataframe",
+    ):
         self.formula = formula
         self.eval_env = eval_env
         self.add_intercept = add_intercept
@@ -991,24 +1011,31 @@ class PatsyTransformer(BaseEstimator, TransformerMixin):
         return self._fit_transform(data, y)
 
     def _fit_transform(self, data, y=None):
-        
         if not isinstance(data, pd.DataFrame):
             data = pd.DataFrame(data)
             data.columns = [f"pred_{i}" for i in range(data.shape[1])]
-        
+
         if not isinstance(y, pd.Series):
             y = pd.Series(y)
             y.name = "target"
-            
+
         target_name = y.name if y is not None else "y"
-        self.formula = self.formula or " + ".join(data.columns.difference([target_name]))
+        self.formula = self.formula or " + ".join(
+            data.columns.difference([target_name])
+        )
         eval_env = EvalEnvironment.capture(self.eval_env, reference=2)
         # self.formula = _drop_intercept(self.formula, self.add_intercept)
 
-        design = dmatrix(self.formula, data, NA_action=self.NA_action, return_type='dataframe', eval_env=eval_env)
+        design = dmatrix(
+            self.formula,
+            data,
+            NA_action=self.NA_action,
+            return_type="dataframe",
+            eval_env=eval_env,
+        )
         self.design_ = design.design_info
 
-        if self.return_type == 'dataframe':
+        if self.return_type == "dataframe":
             return design
         else:
             return np.array(design)
@@ -1024,8 +1051,8 @@ class PatsyTransformer(BaseEstimator, TransformerMixin):
         data : dict-like (pandas dataframe)
             Input data. Column names need to match variables in formula.
         """
-        if self.return_type == 'dataframe':
-            return dmatrix(self.design_, data, return_type='dataframe')
+        if self.return_type == "dataframe":
+            return dmatrix(self.design_, data, return_type="dataframe")
         else:
             return np.array(dmatrix(self.design_, data))
 

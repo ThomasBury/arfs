@@ -17,7 +17,6 @@ import scipy.cluster.hierarchy as sch
 import scipy.stats as ss
 
 
-
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from sklearn.utils import as_float_array, safe_sqr, safe_mask
 from multiprocessing import cpu_count
@@ -1683,14 +1682,14 @@ def f_stat_regression_parallel(
     handle_na : str, optional
         Either drop rows with NA, fill NA with 0, or do nothing, by default "drop".
     force_finite : bool, optional
-        Whether or not to force the F-statistics and associated p-values to be finite. 
+        Whether or not to force the F-statistics and associated p-values to be finite.
         There are two cases where the F-statistic is expected to not be finite:
-        - When the target `y` or some features in `X` are constant. In this case, 
-          the Pearson's R correlation is not defined leading to obtain `np.nan` 
-          values in the F-statistic and p-value. When `force_finite=True`, the 
+        - When the target `y` or some features in `X` are constant. In this case,
+          the Pearson's R correlation is not defined leading to obtain `np.nan`
+          values in the F-statistic and p-value. When `force_finite=True`, the
           F-statistic is set to `0.0` and the associated p-value is set to `1.0`.
-        - When a feature in `X` is perfectly correlated (or anti-correlated) 
-          with the target `y`. In this case, the F-statistic is expected to be `np.inf`. 
+        - When a feature in `X` is perfectly correlated (or anti-correlated)
+          with the target `y`. In this case, the F-statistic is expected to be `np.inf`.
           When `force_finite=True`, the F-statistic is set to `np.finfo(dtype).max`.
 
     Returns
@@ -1924,14 +1923,14 @@ def f_stat_classification_parallel(
     handle_na : str, optional
         Either drop rows with NA, fill NA with 0, or do nothing, by default "drop".
     force_finite : bool, optional
-        Whether or not to force the F-statistics and associated p-values to be finite. 
+        Whether or not to force the F-statistics and associated p-values to be finite.
         There are two cases where the F-statistic is expected to not be finite:
-        - When the target `y` or some features in `X` are constant. In this case, 
-          the Pearson's R correlation is not defined leading to obtain `np.nan` 
-          values in the F-statistic and p-value. When `force_finite=True`, the 
+        - When the target `y` or some features in `X` are constant. In this case,
+          the Pearson's R correlation is not defined leading to obtain `np.nan`
+          values in the F-statistic and p-value. When `force_finite=True`, the
           F-statistic is set to `0.0` and the associated p-value is set to `1.0`.
-        - When a feature in `X` is perfectly correlated (or anti-correlated) 
-          with the target `y`. In this case, the F-statistic is expected to be `np.inf`. 
+        - When a feature in `X` is perfectly correlated (or anti-correlated)
+          with the target `y`. In this case, the F-statistic is expected to be `np.inf`.
           When `force_finite=True`, the F-statistic is set to `np.finfo(dtype).max`.
 
     Returns
@@ -2402,12 +2401,16 @@ def plot_association_matrix_int(
     try:
         import holoviews as hv
     except ImportError:
-        raise ImportError("Holoviews is not installed. Please install it using 'pip install holoviews'.")
-    
+        raise ImportError(
+            "Holoviews is not installed. Please install it using 'pip install holoviews'."
+        )
+
     try:
         import panel as pn
     except ImportError:
-        raise ImportError("Panel is not installed. Please install it using 'pip install panel'.")
+        raise ImportError(
+            "Panel is not installed. Please install it using 'pip install panel'."
+        )
 
     cmap = cmap if cmap is not None else "coolwarm"
 

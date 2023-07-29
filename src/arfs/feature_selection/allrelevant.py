@@ -319,7 +319,7 @@ class Leshy(SelectorMixin, BaseEstimator):
         except ImportError:
             warnings.warn("fasttreeshap is not installed. Fallback to shap.")
             self.importance = "shap"
-        
+
         if isinstance(X, pd.DataFrame):
             self.feature_names_in_ = X.columns.to_numpy()
         else:
@@ -438,7 +438,7 @@ class Leshy(SelectorMixin, BaseEstimator):
 
         # only sklearn requires to fillna data
         # modern GBM implementations can handle this
-        #X = X.fillna(0)
+        # X = X.fillna(0)
         y = pd.Series(y).fillna(0) if not isinstance(y, pd.Series) else y.fillna(0)
 
         # check input params
@@ -501,7 +501,11 @@ class Leshy(SelectorMixin, BaseEstimator):
         n_estimators : int
             the number of trees
         """
-        depth = self.estimator.get_params()["max_depth"] if not self.is_cat else self.estimator.get_param("max_depth")
+        depth = (
+            self.estimator.get_params()["max_depth"]
+            if not self.is_cat
+            else self.estimator.get_param("max_depth")
+        )
         if depth is None:
             depth = 10
         # how many times a feature should be considered on average
@@ -1259,7 +1263,8 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
         else:
             shap_imp = np.abs(shap_values).mean(0)
     return shap_imp
-        
+
+
 def _get_shap_imp_fast(estimator, X, y, sample_weight=None, cat_feature=None):
     """Get the SHAP feature importance using the fasttreeshap implementation
 
@@ -1289,7 +1294,12 @@ def _get_shap_imp_fast(estimator, X, y, sample_weight=None, cat_feature=None):
     model, X_tt, y_tt, w_tt = _split_fit_estimator(
         estimator, X, y, sample_weight=sample_weight, cat_feature=cat_feature
     )
-    explainer = FastTreeExplainer(model, algorithm="auto", shortcut=False, feature_perturbation="tree_path_dependent")
+    explainer = FastTreeExplainer(
+        model,
+        algorithm="auto",
+        shortcut=False,
+        feature_perturbation="tree_path_dependent",
+    )
     shap_matrix = explainer.shap_values(X_tt)
     # multiclass returns a list
     # for binary and for some models, shap is still returning a list
@@ -1376,7 +1386,6 @@ def _get_imp(estimator, X, y, sample_weight=None, cat_feature=None):
             X, _, cat_idx = get_pandas_cat_codes(X)
         else:
             cat_idx = cat_feature
-        
 
         # handle catboost and cat features
         if is_catboost(estimator) or (
@@ -1551,7 +1560,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         except ImportError:
             warnings.warn("fasttreeshap is not installed. Fallback to shap.")
             self.importance = "shap"
-            
+
         if isinstance(X, pd.DataFrame):
             self.feature_names_in_ = X.columns.to_numpy()
         else:
@@ -1559,7 +1568,6 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
 
         if sample_weight is not None:
             sample_weight = pd.Series(_check_sample_weight(sample_weight, X))
-            
 
         # crit, keep_vars, df_vimp, mean_shadow
         _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _boostaroota(
@@ -1755,7 +1763,12 @@ def _reduce_vars_sklearn(
     for i in range(1, n_iterations + 1):
         # Create the shadow variables and run the model to obtain importances
         new_x, shadow_names = _create_shadow(X)
-        imp_func = {"shap": _get_shap_imp, "fastshap": _get_shap_imp, "pimp": _get_perm_imp, "native": _get_imp}
+        imp_func = {
+            "shap": _get_shap_imp,
+            "fastshap": _get_shap_imp,
+            "pimp": _get_perm_imp,
+            "native": _get_imp,
+        }
         importance = imp_func[imp_kind](
             estimator, new_x, y, sample_weight=weight, cat_feature=cat_feature
         )
@@ -1915,7 +1928,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
       it improves the convergence (needs less evaluation to find a threshold)
     - Not based on a given percentage of cols needed to be deleted
     - Plot method for var. imp
-    
+
     Parameters
     ----------
     objective: str
@@ -1939,8 +1952,8 @@ class GrootCV(SelectorMixin, BaseEstimator):
     n_jobs: int, default 0
         0 means default number of threads in OpenMP
         for the best speed, set this to the number of real CPU cores, not the number of threads
-    
-    
+
+
     Attributes
     ----------
     selected_features_: list of str
@@ -1970,7 +1983,16 @@ class GrootCV(SelectorMixin, BaseEstimator):
     """
 
     def __init__(
-        self, objective=None, cutoff=1, n_folds=5, n_iter=5, silent=True, rf=False, fastshap=False, n_jobs=0, lgbm_params=None
+        self,
+        objective=None,
+        cutoff=1,
+        n_folds=5,
+        n_iter=5,
+        silent=True,
+        rf=False,
+        fastshap=False,
+        n_jobs=0,
+        lgbm_params=None,
     ):
         self.objective = objective
         self.cutoff = cutoff
@@ -1978,13 +2000,13 @@ class GrootCV(SelectorMixin, BaseEstimator):
         self.n_iter = n_iter
         self.silent = silent
         self.rf = rf
-        self.fastshap = fastshap 
+        self.fastshap = fastshap
         self.cv_df = None
         self.sha_cutoff = None
         self.ranking_absolutes_ = None
         self.ranking_ = None
         self.lgbm_params = lgbm_params
-        self.n_jobs=n_jobs
+        self.n_jobs = n_jobs
 
         # Throw errors if the inputted parameters don't meet the necessary criteria
         # Ensure parameters meet necessary criteria
@@ -2033,7 +2055,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
             rf=self.rf,
             fastshap=self.fastshap,
             lgbm_params=self.lgbm_params,
-            n_jobs=self.n_jobs
+            n_jobs=self.n_jobs,
         )
 
         self.selected_features_ = self.selected_features_.values
@@ -2139,7 +2161,20 @@ class GrootCV(SelectorMixin, BaseEstimator):
 ########################################################################################
 
 
-def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight, rf, fastshap, lgbm_params=None, n_jobs=0):
+def _reduce_vars_lgb_cv(
+    X,
+    y,
+    objective,
+    n_folds,
+    cutoff,
+    n_iter,
+    silent,
+    weight,
+    rf,
+    fastshap,
+    lgbm_params=None,
+    n_jobs=0,
+):
     """
     Reduce the number of predictors using a lightgbm (python API)
 
@@ -2180,7 +2215,15 @@ def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight
             the feature importance threshold, to reject or not the predictors
     """
 
-    params = _set_lgb_parameters(X=X, y=y, objective=objective, rf=rf, silent=silent, n_jobs=n_jobs, lgbm_params=lgbm_params)
+    params = _set_lgb_parameters(
+        X=X,
+        y=y,
+        objective=objective,
+        rf=rf,
+        silent=silent,
+        n_jobs=n_jobs,
+        lgbm_params=lgbm_params,
+    )
 
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
     category_cols = dtypes_dic["cat"] + dtypes_dic["time"] + dtypes_dic["unk"]
@@ -2213,7 +2256,9 @@ def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight
             **params,
         )
 
-        importance = _compute_importance(new_x_tr, shap_matrix, params, objective, fastshap)
+        importance = _compute_importance(
+            new_x_tr, shap_matrix, params, objective, fastshap
+        )
         df = _merge_importance_df(
             df=df,
             importance=importance,
@@ -2239,7 +2284,13 @@ def _reduce_vars_lgb_cv(X, y, objective, n_folds, cutoff, n_iter, silent, weight
 
 
 def _set_lgb_parameters(
-    X: np.ndarray, y: np.ndarray, objective: str, rf: bool, silent: bool, n_jobs: int = 0, lgbm_params: dict = None
+    X: np.ndarray,
+    y: np.ndarray,
+    objective: str,
+    rf: bool,
+    silent: bool,
+    n_jobs: int = 0,
+    lgbm_params: dict = None,
 ) -> dict:
     """Set parameters for a LightGBM model based on the input features and the objective.
 
@@ -2290,7 +2341,17 @@ def _set_lgb_parameters(
             }
         )
 
-    clf_losses = [ "binary", "softmax", "multi_logloss", "multiclassova", "multiclass", "multiclass_ova", "ova", "ovr", "binary_logloss"]
+    clf_losses = [
+        "binary",
+        "softmax",
+        "multi_logloss",
+        "multiclassova",
+        "multiclass",
+        "multiclass_ova",
+        "ova",
+        "ovr",
+        "binary_logloss",
+    ]
     if objective in clf_losses:
         y = y.astype(int)
         y_freq_table = pd.Series(y.fillna(0)).value_counts(normalize=True)
@@ -2307,17 +2368,26 @@ def _set_lgb_parameters(
             params.update({"is_unbalance": True})
 
     params.update({"num_threads": n_jobs})
-    
+
     # we are using early_stopping
     # we prevent the overridding of it by popping the n_iterations
-    keys_to_pop = ['num_iterations', 'num_iteration', 'n_iter', 'num_tree', 'num_trees',
-                   'num_round', 'num_rounds', 'nrounds', 'num_boost_round', 'n_estimators', 'max_iter']
+    keys_to_pop = [
+        "num_iterations",
+        "num_iteration",
+        "n_iter",
+        "num_tree",
+        "num_trees",
+        "num_round",
+        "num_rounds",
+        "nrounds",
+        "num_boost_round",
+        "n_estimators",
+        "max_iter",
+    ]
     for key in keys_to_pop:
         params.pop(key, None)
-    
+
     return params
-
-
 
 
 def _split_data(X, y, tridx, validx, weight=None):
@@ -2427,13 +2497,20 @@ def _train_lgb_model(
         try:
             from fasttreeshap import TreeExplainer as FastTreeExplainer
         except ImportError:
-            raise ImportError("fasttreeshap is not installed. Please install it using 'pip/conda install fasttreeshap'.")
-        
-        explainer = FastTreeExplainer(bst, algorithm="auto", shortcut=False, feature_perturbation="tree_path_dependent")
+            raise ImportError(
+                "fasttreeshap is not installed. Please install it using 'pip/conda install fasttreeshap'."
+            )
+
+        explainer = FastTreeExplainer(
+            bst,
+            algorithm="auto",
+            shortcut=False,
+            feature_perturbation="tree_path_dependent",
+        )
         shap_matrix = explainer.shap_values(X_train)
     else:
         shap_matrix = bst.predict(X_train, pred_contrib=True)
-    
+
     return bst, shap_matrix, bst.best_iteration
 
 
