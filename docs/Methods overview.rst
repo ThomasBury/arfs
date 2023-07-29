@@ -180,6 +180,18 @@ Re-implementing the Uber MRmr scheme using associations for handling continuous 
  - Theil's U statistics for the categorical-categorical association (correlation)
  - Variance ratio for continuous-categorical association
  - Pearson or Spearman correlation for continuous-continuous association
+
+ Lasso
+ -----
+
+Performing a simple grid search with enforced lasso regularization. 
+The best model is chosen based on the minimum `BIC` or `deviance` score, and all non-zero coefficients are selected. 
+The loss function can belong to the exponential family, as seen in the `statsmodels` GLM documentation. 
+Using the `bic` metric is faster since it is evaluated on the training data, making it unsuitable for the test data, whereas the `deviance` is cross-validated.
+
+This approach can be combined with the `TreeDiscretizer` transformer to introduce univariate non-linearities (tree-GAM) before feature selection. 
+This serves as a workaround to compensate for the absence of fused and grouped lasso regularization.
+
  
 References
 ----------
