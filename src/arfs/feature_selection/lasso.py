@@ -141,8 +141,8 @@ class EnetGLM(BaseEstimator, RegressorMixin):
         # see the if kwargs.get("L1_wt", 1) == 0 condition in
         # https://www.statsmodels.org/dev/_modules/statsmodels/genmod/generalized_linear_model.html#GLM.fit_regularized
         # workaround to get the statistics
-        if self.aplha == 0.0:
-            self.aplha = 1e-9
+        if self.alpha == 0.0:
+            self.alpha = 1e-9
         
         if not isinstance(X, pd.DataFrame):
             X = pd.DataFrame(X)
