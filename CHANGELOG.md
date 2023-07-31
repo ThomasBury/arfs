@@ -1,5 +1,6 @@
 # Changes
-
+## 2.0.3
+ - Fix: remove unnecessary `__all__` in the preprocessing module and improve the consistency of the module docstrings 
 ## 2.0.2
  - Fix: when the L1 == 0 in fit_regularized, statsmodels returns the regularized wrapper without refit, which breaks the class (statistics not available)
 ## 2.0.1
