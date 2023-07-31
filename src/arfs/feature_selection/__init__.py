@@ -5,6 +5,8 @@ from .unsupervised import (
     CardinalityThreshold,
     CollinearityThreshold,
 )
+
+from .lasso import LassoFeatureSelection
 from .variable_importance import VariableImportance
 from .summary import make_fs_summary
 from .mrmr import MinRedundancyMaxRelevance
@@ -21,4 +23,5 @@ __all__ = [
     "BoostAGroota",
     "GrootCV",
     "MinRedundancyMaxRelevance",
+    "LassoFeatureSelection"
 ]
