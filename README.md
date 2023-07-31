@@ -19,7 +19,7 @@ Please note that one limitation of the lasso is that it treats the levels of a c
 
 ## Installation
 
-`$ pip install arfs`, requires python <3.10
+`$ pip install arfs`
 
 ## Example
 
