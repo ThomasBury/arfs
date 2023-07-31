@@ -1,10 +1,10 @@
-"""
-This module provides selectors using supervised statistics and a threshold
+"""Supervised Feature Selection
 
-**The module structure is the following:**
+This module provides selectors using supervised statistics and a threshold, using SHAP, permutation importance or impurity (Gini) importance.
 
-- The ``VariableImportance`` main class for identifying non-important features
-
+Module Structure:
+-----------------
+- ``VariableImportance`` main class for identifying non-important features
 """
 
 from __future__ import print_function

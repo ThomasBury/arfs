@@ -1,13 +1,15 @@
+"""GBM Wrapper
+
+This module offers a class to train base LightGBM and CatBoost models, with early stopping as the default behavior. 
+The target variable can be finite discrete (classification) or continuous (regression). 
+Additionally, the model allows boosting from an initial score (also known as a baseline for CatBoost) and accepts sample weights as input.
+
+Module Structure:
+-----------------
+- ``GradientBoosting``: main class to train a lightGBM  or catboost with early stopping
+
 """
-This module provides a class to train a base lightgbm and catboost models using early stopping as default.
-The target can be finite discrete (classification) or continuous (regression).
-It can boost from an initial score (aka baseline for catboost), take sample weight as input.
 
-**The module structure is the following:**
-
-- The ``GradientBoosting`` main class to train a lightGBM  or catboost with early stopping
-
-"""
 from sklearn.model_selection import (
     ShuffleSplit,
     StratifiedShuffleSplit,

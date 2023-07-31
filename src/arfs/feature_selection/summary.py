@@ -1,11 +1,11 @@
-"""
+"""Feature Selection Summary Module
+
 This module provides a function for creating the summary report of a FS pipeline
 
-**The module structure is the following:**
-
-- The ``make_fs_summary`` main function for creating the summary
-- The ``highlight_discarded`` function for creating style for the pd.DataFrame
-
+Module Structure:
+-----------------
+- ``make_fs_summary`` main function for creating the summary
+- ``highlight_discarded`` function for creating style for the pd.DataFrame
 """
 
 import pandas as pd

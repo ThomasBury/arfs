@@ -1,10 +1,13 @@
-"""
-This module provides a class for the Maximal Relevance, minimal redundancy feature selection
+"""MRMR Feature Selection Module
 
-**The module structure is the following:**
+This module provides MinRedundancyMaxRelevance (MRMR) feature selection for classification or regression tasks. 
+In a classification task, the target should be of object or pandas category dtype, while in a regression task, 
+the target should be of numpy categorical dtype. The predictors can be categorical or numerical without requiring encoding, 
+as the appropriate method (correlation, correlation ratio, or Theil's U) will be automatically selected based on the data type.
 
-- The ``MinRedundancyMaxRelevance`` parent class for the "treshold-based" selectors
-
+Module Structure:
+-----------------
+- ``MinRedundancyMaxRelevance``: MRMR feature selection class for classification or regression tasks.
 """
 
 import functools

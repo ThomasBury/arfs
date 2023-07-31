@@ -1,3 +1,23 @@
+"""LassoFeatureSelection Submodule
+
+This module provides LASSO-based feature selection, specifically designed for use with Generalized Linear Models (GLM). 
+The Lasso Regularized GLM introduces an L1 regularization penalty (Lasso regularization), 
+encouraging some coefficients to become exactly zero during the model fitting process. 
+This regularization effectively removes irrelevant features from the model, making it a 
+powerful tool for feature selection, particularly in datasets with numerous variables.
+
+Module Structure:
+-----------------
+- `EnetGLM`: class serves as a scikit-learn wrapper for the regularized statsmodels GLM, providing seamless integration with scikit-learn's ecosystem.
+- `weighted_cross_val_score`: function allows users to pass weights to the model and define a custom scoring metric.
+- `grid_search_cv`: function performs a weighted LASSO grid search to find the best Lasso parameter for the model.
+- `LassoFeatureSelection`: class is the core feature selection class, estimating the Lasso parameter through 
+    the grid search process, enabling efficient and effective feature selection.
+
+With this submodule, users can easily leverage Lasso Regularized GLMs and conduct feature selection, 
+improving model performance and interpretability in various datasets.
+"""
+
 import pandas as pd
 import numpy as np
 import statsmodels.api as sm
@@ -6,7 +26,7 @@ from sklearn.base import clone
 from sklearn.utils import check_array
 from sklearn.model_selection import StratifiedKFold, KFold
 from joblib import Parallel, delayed
-from typing import Any, Callable, Union, List, Tuple, Optional, Dict, Literal
+from typing import Union, Optional
 
 
 def _map_family_link(family: str = "gaussian", link: Optional[str] = None):

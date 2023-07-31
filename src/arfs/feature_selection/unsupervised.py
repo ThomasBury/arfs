@@ -1,12 +1,13 @@
-"""
+"""Unsupervised Feature Selection
+
 This module provides selectors using unsupervised statistics and a threshold
 
-**The module structure is the following:**
-
-- The ``MissingValueThreshold`` child of the ``BaseThresholdSelector``
-- The ``UniqueValuesThreshold`` child of the ``BaseThresholdSelector``
-- The ``CardinalityThreshold`` child of the ``BaseThresholdSelector``
-- The ``CollinearityThreshold`` child of the ``BaseThresholdSelector``
+Module Structure:
+-----------------
+- ``MissingValueThreshold``: child class of the ``BaseThresholdSelector``, filter out columns with too many missing values
+- ``UniqueValuesThreshold`` child of the ``BaseThresholdSelector``, filter out columns with zero variance
+- ``CardinalityThreshold`` child of the ``BaseThresholdSelector``, filter out categorical columns with too many levels  
+- ``CollinearityThreshold`` child of the ``BaseThresholdSelector``, filter out collinear columns
 """
 
 from __future__ import print_function

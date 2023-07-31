@@ -1,9 +1,10 @@
-"""
+"""Base Submodule
+
 This module provides a base class for selector using a statistic and a threshold
 
-**The module structure is the following:**
-
-- The ``BaseThresholdSelector`` parent class for the "treshold-based" selectors
+Module Structure:
+-----------------
+- ``BaseThresholdSelector``: parent class for the "treshold-based" selectors
 
 """
 

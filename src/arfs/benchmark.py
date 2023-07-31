@@ -1,10 +1,12 @@
-"""
+"""Benchmark Feature Selection
+
 This module provides utilities for comparing and benchmarking feature selection methods
 
-**The module structure is the following:**
-
-- The ``sklearn_pimp_bench`` function for comparing using the sklearn permutation importance
-- The ``compare_varimp`` function for comparing using 3 kinds of var.imp.
+Module Structure:
+-----------------
+- ``sklearn_pimp_bench``: function for comparing using the sklearn permutation importance
+- ``compare_varimp``: function for comparing using 3 kinds of var.imp.
+- ``highlight_tick``: function for highlighting specific (genuine or noise for instance) predictors in the importance chart
 """
 
 from __future__ import print_function, division

@@ -1,6 +1,4 @@
-"""
-Utility and validation functions
-  
+"""Utility and validation functions
 """
 
 from __future__ import print_function, division
