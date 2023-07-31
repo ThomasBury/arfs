@@ -1,5 +1,7 @@
 # Changes
 
+## 2.0.2
+ - Fix: when the L1 == 0 in fit_regularized, statsmodels returns the regularized wrapper without refit, which breaks the class (statistics not available)
 ## 2.0.1
  - Build: remove explicit dependencies on holoviews and panel
 ## 2.0.0
