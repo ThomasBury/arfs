@@ -23,5 +23,5 @@ __all__ = [
     "BoostAGroota",
     "GrootCV",
     "MinRedundancyMaxRelevance",
-    "LassoFeatureSelection"
+    "LassoFeatureSelection",
 ]

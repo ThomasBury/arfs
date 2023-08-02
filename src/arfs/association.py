@@ -1436,7 +1436,8 @@ def _callable_association_matrix_fn(
 
 
 def f_oneway_weighted(*args):
-    """Calculate the weighted F-statistic for one-way ANOVA (continuous target, categorical predictor).
+    """
+    Calculate the weighted F-statistic for one-way ANOVA (continuous target, categorical predictor).
 
     Parameters
     ----------
@@ -1455,6 +1456,7 @@ def f_oneway_weighted(*args):
     Notes
     -----
     The F-statistic is calculated as:
+
     .. math::
         F(rf) = \\frac{\\sum_i (\\bar{Y}_{i \\bullet} - \\bar{Y})^2 / (K-1)}{\\sum_i \\sum_k (\\bar{Y}_{ij} - \\bar{Y}_{i\\bullet})^2 / (N - K)}
     """
@@ -1667,13 +1669,13 @@ def f_cont_regression_parallel(
 def f_stat_regression_parallel(
     X, y, sample_weight=None, n_jobs=-1, force_finite=True, handle_na="drop"
 ):
-    """f_stat_regression_parallel computes the weighted explained variance for the provided categorical
-    and numerical predictors using parallelization of the code.
+    """
+    Compute the weighted explained variance for the provided categorical and numerical predictors using parallelization.
 
     Parameters
     ----------
     X : array-like of shape (n_samples, n_features)
-        Predictor dataframe.
+        The predictor dataframe.
     y : array-like of shape (n_samples,)
         The target vector.
     sample_weight : array-like of shape (n_samples,), optional
@@ -1835,7 +1837,8 @@ def f_cat_classification_parallel(
     force_finite=True,
     handle_na="drop",
 ):
-    """Univariate information dependence.
+    """
+    Univariate information dependence.
 
     It ranks features in the same order if all the features are positively correlated with the target.
     Note that it is therefore recommended as a feature selection criterion to identify
@@ -1858,15 +1861,15 @@ def f_cat_classification_parallel(
         Whether or not to force the F-statistics and associated p-values to
         be finite. There are two cases where the F-statistic is expected to not
         be finite:
-        - when the target `y` or some features in `X` are constant. In this
-          case, the Pearson's R correlation is not defined leading to obtain
-          `np.nan` values in the F-statistic and p-value. When
-          `force_finite=True`, the F-statistic is set to `0.0` and the
-          associated p-value is set to `1.0`.
-        - when a feature in `X` is perfectly correlated (or
-          anti-correlated) with the target `y`. In this case, the F-statistic
-          is expected to be `np.inf`. When `force_finite=True`, the F-statistic
-          is set to `np.finfo(dtype).max`.
+            - when the target `y` or some features in `X` are constant. In this
+              case, the Pearson's R correlation is not defined leading to obtain
+              `np.nan` values in the F-statistic and p-value. When
+              `force_finite=True`, the F-statistic is set to `0.0` and the
+              associated p-value is set to `1.0`.
+            - when a feature in `X` is perfectly correlated (or
+              anti-correlated) with the target `y`. In this case, the F-statistic
+              is expected to be `np.inf`. When `force_finite=True`, the F-statistic
+              is set to `np.finfo(dtype).max`.
 
     Returns
     -------
@@ -1908,13 +1911,13 @@ def f_cat_classification_parallel(
 def f_stat_classification_parallel(
     X, y, sample_weight=None, n_jobs=-1, force_finite=True, handle_na="drop"
 ):
-    """f_stat_classification_parallel computes the weighted ANOVA F-value for the provided categorical
-    and numerical predictors using parallelization of the code.
+    """
+    Compute the weighted ANOVA F-value for the provided categorical and numerical predictors using parallelization.
 
     Parameters
     ----------
     X : array-like of shape (n_samples, n_features)
-        Predictor dataframe.
+        The predictor dataframe.
     y : array-like of shape (n_samples,)
         The target vector.
     sample_weight : array-like of shape (n_samples,), optional
@@ -2110,26 +2113,27 @@ def xy_to_matrix(xy):
 
 
 def cluster_sq_matrix(sq_matrix, method="ward"):
-    """cluster_sq_matrix applies agglomerative clustering in order to sort
-    a correlation matrix.
+    """
+    Apply agglomerative clustering to sort a square correlation matrix.
 
     Parameters
     ----------
     sq_matrix : pd.DataFrame
-        a square correlation matrix
+        A square correlation matrix.
     method : str, optional
-        linkage method, by default "ward"
+        The linkage method, by default "ward".
 
     Returns
     -------
     pd.DataFrame
-        a sorted square matrix
+        A sorted square matrix.
 
-    Example:
-    --------
+    Example
+    -------
+    >>> from some_module import association_matrix, cluster_sq_matrix
+
     >>> assoc = association_matrix(iris_df, plot=False)
     >>> assoc_clustered = cluster_sq_matrix(assoc, method="complete")
-
     """
     d = sch.distance.pdist(sq_matrix.values)
     L = sch.linkage(d, method=method)

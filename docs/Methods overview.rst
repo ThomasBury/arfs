@@ -62,7 +62,7 @@ BorutaPy vs. Boruta R:
     * Using either the native variable importance, scikit permutation importance, SHAP importance.
 
     We highly recommend using pruned trees with a depth between 3-7. For more, see the docs of these functions, and the examples below. Original code and method by: Miron B Kursa, https://m2.icm.edu.pl/boruta/
-
+    
 GrootCV, a new method
 ---------------------
 
@@ -84,9 +84,7 @@ Re-implementing the Uber MRmr scheme using associations for handling continuous 
 Lasso
 -----
 
-Performing a simple grid search
-
- with enforced lasso regularization.
+Performing a simple grid search with enforced lasso regularization.
 The best model is chosen based on the minimum BIC or deviance score, and all non-zero coefficients are selected.
 The loss function can belong to the exponential family, as seen in the statsmodels GLM documentation.
 Using the bic metric is faster since it is evaluated on the training data, making it unsuitable for the test data, whereas the deviance is cross-validated.

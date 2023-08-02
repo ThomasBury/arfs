@@ -42,6 +42,7 @@ from .utils import create_dtype_dict
 # fix random seed for reproducibility
 np.random.seed(7)
 
+
 class OrdinalEncoderPandas(OrdinalEncoder):
     # class OrdinalEncoderPandas(BaseEstimator, TransformerMixin):
     """Encode categorical features as an integer array and returns a pandas DF.
@@ -391,10 +392,11 @@ def cat_var(data, col_excl=None, return_cat=True):
 
 
 class TreeDiscretizer(BaseEstimator, TransformerMixin):
-    """The purpose of the function is to discretize continuous and/or categorical data, returning a pandas DataFrame.
-    It is designed to support regression and binary classification tasks. Discretization, also known as quantization or binning,
-    allows for the partitioning of continuous features into discrete values. In certain datasets with continuous attributes,
-    discretization can be beneficial as it transforms the dataset into one with only nominal attributes.
+    """
+    Discretize continuous and/or categorical data using univariate regularized trees, returning a pandas DataFrame.
+    The TreeDiscretizer is designed to support regression and binary classification tasks.
+    Discretization, also known as quantization or binning, allows for the partitioning of continuous features into discrete values.
+    In certain datasets with continuous attributes, discretization can be beneficial as it transforms the dataset into one with only nominal attributes.
     Additionally, for categorical predictors, grouping levels can help reduce overfitting and create meaningful clusters.
 
     By encoding discretized features, a model can become more expressive while maintaining interpretability.
@@ -502,22 +504,22 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         self.cat_features = None
 
     def fit(self, X, y, sample_weight=None):
-        """Fit the discretizer on `X`.
+        """
+        Fit the TreeDiscretizer on the input data.
 
         Parameters
         ----------
         X : array-like of shape (n_samples, n_features)
-            Input data with shape (n_samples, n_features), where `n_samples` is the number of samples and
-            `n_features` is the number of features.
+            The predictor dataframe.
         y : array-like of shape (n_samples,)
-            Target for internally fitting the tree(s).
+            The target vector.
         sample_weight : array-like of shape (n_samples,), optional
-            Sample weight (e.g., exposure) if any.
+            The weight vector, by default None.
 
         Returns
         -------
-        X : pd.DataFrame
-            DataFrame with the binned and grouped columns.
+        self : object
+            Returns self.
         """
         X = X.copy()
 
@@ -640,7 +642,8 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X):
-        """Apply the discretizer on `X`. Only the columns with more than n_bins_max unique values will be transformed.
+        """
+        Apply the discretizer on `X`. Only the columns with more than n_bins_max unique values will be transformed.
 
         Parameters
         ----------
@@ -690,7 +693,8 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
 
 
 def highlight_discarded(s):
-    """highlight X in red and V in green.
+    """
+    highlight X in red and V in green.
 
     Parameters
     ----------

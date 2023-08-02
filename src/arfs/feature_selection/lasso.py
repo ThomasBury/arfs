@@ -89,17 +89,17 @@ class EnetGLM(BaseEstimator, RegressorMixin):
         link:
             the GLM link function
         alpha :
-            The penalty weight. If a scalar, the same penalty weight applies to all variables in the model. 
+            The penalty weight. If a scalar, the same penalty weight applies to all variables in the model.
             If a vector, it must have the same length as params, and contains a penalty weight for each coefficient.
         L1_wt :
-            The `L1_wt` parameter represents the weight of the L1 penalty term in the model and 
-            should be within the range 0 to 1. A value of 0 corresponds to ridge regression, 
-            while a value of 1 corresponds to lasso regression. However, for obtaining statistics, 
-            `L1_wt` should be set to a value greater than 0. If it is set to 0.0, statsmodels returns 
-            a ridge regularized wrapper without refitting the model, making the statistics unavailable 
-            and breaking the class. Nevertheless, you can set `L1_wt` to a very small value, such as 1e-9, 
+            The `L1_wt` parameter represents the weight of the L1 penalty term in the model and
+            should be within the range 0 to 1. A value of 0 corresponds to ridge regression,
+            while a value of 1 corresponds to lasso regression. However, for obtaining statistics,
+            `L1_wt` should be set to a value greater than 0. If it is set to 0.0, statsmodels returns
+            a ridge regularized wrapper without refitting the model, making the statistics unavailable
+            and breaking the class. Nevertheless, you can set `L1_wt` to a very small value, such as 1e-9,
             to obtain close-to-ridge behavior while still obtaining the necessary statistics.
-            
+
         fit_intercept :
             Whether to fit an intercept term in the model.
         """
@@ -157,13 +157,13 @@ class EnetGLM(BaseEstimator, RegressorMixin):
         self : object
             Returns self.
         """
-        
+
         # see the if kwargs.get("L1_wt", 1) == 0 condition in
         # https://www.statsmodels.org/dev/_modules/statsmodels/genmod/generalized_linear_model.html#GLM.fit_regularized
         # workaround to get the statistics
         if self.alpha == 0.0:
             self.alpha = 1e-9
-        
+
         if not isinstance(X, pd.DataFrame):
             X = pd.DataFrame(X)
             X.columns = [f"pred_{i}" for i in range(X.shape[1])]
