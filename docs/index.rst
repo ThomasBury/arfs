@@ -1,5 +1,5 @@
-Welcome to arfs's documentation v2!
-===================================
+Welcome to arfs's documentation!
+================================
 
 A package for performing All Relevant Feature Selection but not only that.
 
