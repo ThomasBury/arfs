@@ -1,4 +1,6 @@
 # Changes
+## 2.0.4
+ - Documentation: fix the format of some docstrings and remove old sphinx generated files
 ## 2.0.3
  - Fix: remove unnecessary `__all__` in the preprocessing module and improve the consistency of the module docstrings 
 ## 2.0.2
