@@ -953,40 +953,28 @@ class Leshy(SelectorMixin, BaseEstimator):
         return dec_reg, sha_max_history, imp_history, imp_sha_max
 
     def _calculate_support(self, confirmed, tentative, n_feat):
-        """Calculates the feature support arrays for the BorutaPy feature selection algorithm.
+        """
+        Calculate the feature support arrays.
 
         Parameters
         ----------
-        confirmed : array-like of shape (n_features,)
+        confirmed : array-like of shape (n_confirmed,)
             Indices of confirmed features.
-
-        tentative : array-like of shape (n_features,)
+        tentative : array-like of shape (n_tentative,)
             Indices of tentative features.
-
         n_feat : int
-            Number of features in the dataset.
+            Total number of features.
 
         Returns
         -------
         None
-            The function only sets the following class attributes:
-
-            n_features_ : int
-                Number of confirmed features.
-
-            support_ : ndarray of bool, shape (n_features,)
-                Boolean array representing the confirmed features.
-
-            support_weak_ : ndarray of bool, shape (n_features,)
-                Boolean array representing the tentative features.
-
-        Notes
-        -----
-        - The function modifies the following class attributes:
-            * self.n_features_
-            * self.support_
-            * self.support_weak_
-        - If self.keep_weak is True, the support_weak_ is also added to the support_.
+            The function populates the following class attributes:
+            - n_features_ : int
+                Number of selected features.
+            - support_ : ndarray of shape (n_feat,)
+                Boolean array indicating the selected features.
+            - support_weak_ : ndarray of shape (n_feat,)
+                Boolean array indicating the tentatively selected features.
         """
         # basic result variables
         self.n_features_ = confirmed.shape[0]
@@ -1000,12 +988,23 @@ class Leshy(SelectorMixin, BaseEstimator):
 
     def _calculate_absolute_ranking(self):
         """
-        Calculates the absolute ranking of the features based on their mean importance.
+        Compute feature importance scores using SHAP values.
 
-        Returns:
+        Parameters
+        ----------
+        new_x_tr : numpy.ndarray
+            The training dataset after being processed.
+        shap_matrix : numpy.ndarray
+            The matrix containing SHAP values computed by a LightGBM model.
+        param : dict
+            A dictionary containing the parameters for a LightGBM model.
+        objective : str
+            The objective function of the LightGBM model.
+
+        Returns
         -------
-        None
-            The function updates the `ranking_absolutes_` attribute of the instance with the absolute ranking.
+        list
+            A list of tuples containing feature names and their corresponding importance scores.
         """
         vimp_df = pd.DataFrame(self.imp_real_hist, columns=self.feature_names_in_)
         self.ranking_absolutes_ = list(
@@ -1062,27 +1061,21 @@ class Leshy(SelectorMixin, BaseEstimator):
 
     def _print_result(self, dec_reg, _iter, start_time):
         """
-        Calculate the feature support arrays.
+        Print the results of feature selection.
 
         Parameters
         ----------
-        confirmed : array-like of shape (n_confirmed,)
-            Indices of confirmed features.
-        tentative : array-like of shape (n_tentative,)
-            Indices of tentative features.
-        n_feat : int
-            Total number of features.
+        dec_reg : bool
+            Decision on whether to proceed with another round of feature selection.
+        _iter : int
+            Current iteration number.
+        start_time : float
+            Time when the feature selection process started.
 
         Returns
         -------
         None
-            The function populates the following class attributes:
-            - n_features_ : int
-                Number of selected features.
-            - support_ : ndarray of shape (n_feat,)
-                Boolean array indicating the selected features.
-            - support_weak_ : ndarray of shape (n_feat,)
-                Boolean array indicating the tentatively selected features.
+            The function prints the relevant results and running time.
         """
         if self.verbose > 0:
             self._print_results(dec_reg, _iter, 1)
@@ -1287,6 +1280,11 @@ def _get_shap_imp_fast(estimator, X, y, sample_weight=None, cat_feature=None):
     shap_imp : array
         The SHAP importance array.
     """
+    try:
+        from fasttreeshap import TreeExplainer as FastTreeExplainer
+    except ImportError:
+        ImportError("fasttreeshap is not installed")
+    
     # Clone the estimator to avoid modifying the original one
     estimator = clone(estimator)
 
@@ -1417,61 +1415,62 @@ def _get_imp(estimator, X, y, sample_weight=None, cat_feature=None):
 #
 ###################################
 class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
-    """BoostARoota becomes BoostAGroota, I'm Groot. BoostAGroota is an all relevant
-    feature selection method, while most other are minimal optimal;
-    this means it tries to find all features carrying
-    information usable for prediction, rather than finding a possibly compact
+    """
+    BoostAGroota is an all-relevant feature selection method, while most others are minimal optimal.
+    It tries to find all features carrying information usable for prediction, rather than finding a possibly compact
     subset of features on which some estimator has a minimal error.
-    Why bother with all relevant feature selection?
+
+    Why bother with all-relevant feature selection?
     When you try to understand the phenomenon that made your data, you should
     care about all factors that contribute to it, not just the bluntest signs
-    of it in context of your methodology (minimal optimal set of features
+    of it in the context of your methodology (minimal optimal set of features
     by definition depends on your estimator choice).
+
     Parameters
     ----------
-    estimator : sklear estimator
-        the model to train, lightGBM recommended, see the reduce lightgbm method
+    estimator : scikit-learn estimator
+        The model to train, lightGBM recommended, see the reduce lightgbm method.
     cutoff : float
-        the value by which the max of shadow imp is divided, to compare to real importance
+        The value by which the max of shadow imp is divided, to compare to real importance.
     iters : int (>0)
         The number of iterations to average for the feature importance (on the same split),
-        to reduce the variance
+        to reduce the variance.
     max_rounds : int (>0)
-        The number of times the core BoostARoota algorithm will run.
-        Each round eliminates more and more features
+        The number of times the core BoostAGroota algorithm will run.
+        Each round eliminates more and more features.
     delta : float (0 < delta <= 1)
-        Stopping criteria for whether another round is started
+        Stopping criteria for whether another round is started.
     silent : bool
-        Set to True if don't want to see the BoostARoota output printed.
+        Set to True if you don't want to see the BoostAGroota output printed.
     importance : str, default='shap'
-        the kind of feature importance to use. Possible values: 'shap' (Shapley values),
-        'pimp' (permutation importance) and 'native' (Gini/impurity)
+        The kind of feature importance to use. Possible values: 'shap' (Shapley values),
+        'pimp' (permutation importance), and 'native' (Gini/impurity).
+
     Attributes
     ----------
     selected_features_ : list of str
-        the list of columns to keep
+        The list of columns to keep.
     ranking_ : array of shape [n_features]
         The feature ranking, such that ``ranking_[i]`` corresponds to the
         ranking position of the i-th feature. Selected (i.e., estimated
-        best) features are assigned rank 1 and tentative features are assigned
+        best) features are assigned rank 1, and tentative features are assigned
         rank 2.
     ranking_absolutes_ : array of shape [n_features]
-        The absolute feature ranking as ordered by selection process. It does not guarantee
-        that this order is correct for all models. For a model agnostic ranking, see the
-        the attribute ``ranking``
+        The absolute feature ranking as ordered by the selection process. It does not guarantee
+        that this order is correct for all models. For a model-agnostic ranking, see the
+        attribute ``ranking``.
     sha_cutoff_df : dataframe
-        feature importance of the real+shadow predictors over iterations
+        Feature importance of the real+shadow predictors over iterations.
     mean_shadow : float
-        the threshold below which the predictors are rejected
+        The threshold below which the predictors are rejected.
+
     Examples
     --------
     >>> X = df[filtered_features].copy()
     >>> y = df['target'].copy()
     >>> w = df['weight'].copy()
-    >>>
-    >>> model = LGBMRegressor(n_jobs=-1, n_estimators=100, objective='rmse',
-    >>>                       random_state=42, verbose=0)
-    >>> feat_selector = BoostAGroota(est=model, cutoff=1, iters=10, max_rounds=10, delta=0.1, importance='shap')
+    >>> model = LGBMRegressor(n_jobs=-1, n_estimators=100, objective='rmse', random_state=42, verbose=0)
+    >>> feat_selector = BoostAGroota(estimator=model, cutoff=1, iters=10, max_rounds=10, delta=0.1, importance='shap')
     >>> feat_selector.fit(X, y, sample_weight=None)
     >>> print(feat_selector.selected_features_)
     >>> feat_selector.plot_importance(n_feat_per_inch=5)
@@ -1712,7 +1711,8 @@ def _reduce_vars_sklearn(
     imp_kind,
     cat_feature,
 ):
-    """Private function, reduce the number of predictors using a sklearn estimator
+    """
+    Private function, reduce the number of predictors using a sklearn estimator
 
     Parameters
     ----------
@@ -1822,39 +1822,43 @@ def _reduce_vars_sklearn(
 def _boostaroota(
     X, y, estimator, cutoff, iters, max_rounds, delta, silent, weight, imp
 ):
-    """Private function, reduce the number of predictors using a sklearn estimator
+    """
+    Private function, reduces the number of predictors using a sklearn estimator.
+
     Parameters
+    ----------
     x : pd.DataFrame
-        the dataframe to create shadow features on
+        The dataframe to create shadow features on.
     y : pd.Series
-        the target
-    estimator : sklear estimator
-        the model to train, lightGBM recommended, see the reduce lightgbm method
+        The target.
+    estimator : scikit-learn estimator
+        The model to train, lightGBM recommended, see the reduce lightgbm method.
     cutoff : float
-        the value by which the max of shadow imp is divided, to compare to real importance
+        The value by which the max of shadow imp is divided, to compare to real importance.
     iters : int (>0)
         The number of iterations to average for the feature importances (on the same split),
-        to reduce the variance
+        to reduce the variance.
     max_rounds : int (>0)
         The number of times the core BoostARoota algorithm will run.
-        Each round eliminates more and more features
+        Each round eliminates more and more features.
     delta : float (0 < delta <= 1)
-        Stopping criteria for whether another round is started
+        Stopping criteria for whether another round is started.
     silent : bool
-        Set to True if don't want to see the BoostARoota output printed.
-        Will still show any errors or warnings that may occur
-    weight : pd.series
-        sample_weight, if any
+        Set to True if you don't want to see the BoostARoota output printed.
+        Will still show any errors or warnings that may occur.
+    weight : pd.Series, optional
+        Sample weights, if any.
+
     Returns
     -------
     crit : bool
-        if the criteria has been reached or not
-    keep_vars : pd.dataframe
-        feature importance of the real predictors over iter
+        If the criteria have been reached or not.
+    keep_vars : pd.DataFrame
+        Feature importance of the real predictors over iterations.
     df_vimp : pd.DataFrame
-        feature importance of the real+shadow predictors over iter
+        Feature importance of the real+shadow predictors over iterations.
     mean_shadow : float
-        the feature importance threshold, to reject or not the predictors
+        The feature importance threshold to reject or not the predictors.
     """
     start_time = time.time()
     new_x = X.copy()
@@ -1916,67 +1920,72 @@ def _boostaroota(
 
 
 class GrootCV(SelectorMixin, BaseEstimator):
-    """A shuffled copy of the predictors matrix is added (shadows) to the original set of predictors.
+    """
+    GrootCV is a feature selection method based on cross-validation with lightGBM.
+
+    A shuffled copy of the predictors matrix is added (shadows) to the original set of predictors.
     The lightGBM is fitted using repeated cross-validation, the feature importance
     is extracted each time and averaged to smooth out the noise.
-    If the feature importance is larger than the average shadow feature importance then the predictors
-    are rejected, the others are kept.
-    - Cross-validated feature importance to smooth out the noise, based on lightGBM only
-      (which is, most of the time, the fastest and more accurate Boosting).
-    - the feature importance is derived using SHAP importance
-    - Taking the max of median of the shadow var. imp over folds otherwise not enough conservative and
-      it improves the convergence (needs less evaluation to find a threshold)
-    - Not based on a given percentage of cols needed to be deleted
-    - Plot method for var. imp
+    If the feature importance is larger than the average shadow feature importance then the predictors are rejected, the others are kept.
+        - Cross-validated feature importance to smooth out the noise, based on lightGBM only
+          (which is, most of the time, the fastest and more accurate Boosting).
+        - the feature importance is derived using SHAP importance
+        - Taking the max of median of the shadow var. imp over folds otherwise not enough conservative and
+          it improves the convergence (needs less evaluation to find a threshold)
+        - Not based on a given percentage of cols needed to be deleted
+        - Plot method for var. imp
 
     Parameters
     ----------
-    objective: str
-        the lightGBM objective
-    cutoff: float
-        the value by which the max of shadow imp is divided, to compare to real importance
-    n_folds: int, default=5
-        the number of folds for the cross-val
-    n_iter: int, default=5
-        the number of times the cross-validation is repeated
-    silent: bool, default=False
-        print out details or not
-    rf: bool, default=False
-        the lightGBM implementation of the random forest
-    fastshap: bool, default=True
-        enable or not the fasttreeshap (LinkedIn) implementation of the shap values
-    lgbm_params: dict, Optional
-        the parameters to pass to the lightGBM algorithm (python API). Note that some of
-        those parameters will be overridden by the algorithm. Namely:
-        objective, verbose, is_balanced
-    n_jobs: int, default 0
-        0 means default number of threads in OpenMP
-        for the best speed, set this to the number of real CPU cores, not the number of threads
-
+    objective : str or callable, default=None
+        The objective function to use in lightGBM. If None, it uses the objective specified in `lgbm_params`.
+    cutoff : float, default=1
+        The value by which the max of shadow imp is divided, to compare to real importance.
+    n_folds : int, default=5
+        The number of folds for cross-validation.
+    n_iter : int, default=5
+        The number of iterations to average for the feature importance (on the same split), to reduce variance.
+    silent : bool, default=True
+        Set to True if you don't want to see the GrootCV output printed.
+    rf : bool, default=False
+        If True, use random forest for calculating feature importances; otherwise, use lightGBM.
+    fastshap : bool, default=False
+        If True, use fastSHAP for calculating feature importances; otherwise, use SHAP.
+    n_jobs : int, default=0
+        The number of jobs to run in parallel. If 0, no parallelism is used.
+    lgbm_params : dict, default=None
+        The parameters for the lightGBM model.
 
     Attributes
     ----------
-    selected_features_: list of str
-        the list of columns to keep
-    ranking_ : array of shape [n_features]
-        The feature ranking, such that ``ranking_[i]`` corresponds to the
-        ranking position of the i-th feature. Selected (i.e., estimated
-        best) features are assigned rank 1 and tentative features are assigned
-        rank 2.
-    ranking_absolutes_ : array of shape [n_features]
-        The absolute feature ranking as ordered by selection process. It does not guarantee
-        that this order is correct for all models. For a model agnostic ranking, see the
-        the attribute ``ranking``
-    cv_df: dataframe
-        the statistics of the feature importance over the different repeats of the X-val
-    sha_cutoff: float
-        the threshold below which the predictors are rejected
+    selected_features_ : ndarray
+        The list of columns to keep as selected features.
+    cv_df : pd.DataFrame
+        DataFrame containing feature importance values for each fold and iteration.
+    sha_cutoff : float
+        The threshold below which the predictors are rejected.
+    ranking_absolutes_ : list
+        The absolute feature ranking as ordered by the selection process.
+    ranking_ : ndarray
+        The feature ranking, where 2 corresponds to selected features and 1 to tentative features.
+
+    Methods
+    -------
+    fit(X, y, sample_weight=None)
+        Fit the GrootCV on the input data.
+    transform(X)
+        Apply the fitted GrootCV on new data.
+    plot_importance(n_feat_per_inch=5)
+        Plot the feature importance of the fitted GrootCV.
+
+    Warnings
+    --------
+    If `sha_cutoff` is None, you should apply the fit method first.
     Examples
     -------
     >>> X = df[filtered_features].copy()
     >>> y = df['target'].copy()
     >>> w = df['weight'].copy()
-    >>>
     >>> feat_selector = arfsgroot.GrootCV(objective='rmse', cutoff = 1, n_folds=5, n_iter=5)
     >>> feat_selector.fit(X, y, sample_weight=None)
     >>> feat_selector.plot_importance(n_feat_per_inch=5)
@@ -2014,21 +2023,22 @@ class GrootCV(SelectorMixin, BaseEstimator):
             raise ValueError("cutoff, n_iter, and n_folds should be greater than 0.")
 
     def fit(self, X, y, sample_weight=None):
-        """Fit the GrootCV transformer with the provided estimator.
+        """
+        Fit the GrootCV on the input data.
 
         Parameters
         ----------
-        X : pd.DataFrame
-            the predictors matrix
-        y : pd.Series
-            the target
-        sample_weight : pd.Series, optional
-            sample weights, if any
+        X : pd.DataFrame of shape (n_samples, n_features)
+            The predictor dataframe.
+        y : array-like of shape (n_samples,)
+            The target vector.
+        sample_weight : array-like of shape (n_samples,), optional
+            The weight vector, by default None.
 
         Returns
         -------
-        self : GrootCV
-            fitted estimator
+        self : object
+            Returns self.
         """
 
         if not isinstance(X, pd.DataFrame):
@@ -2081,6 +2091,19 @@ class GrootCV(SelectorMixin, BaseEstimator):
         return self.support_
 
     def transform(self, X):
+        """
+        Apply the fitted GrootCV on new data.
+
+        Parameters
+        ----------
+        X : pd.DataFrame of shape (n_samples, n_features)
+            The predictor dataframe.
+
+        Returns
+        -------
+        X_selected : pd.DataFrame of shape (n_samples, n_selected_features)
+            The selected features from the input dataframe.
+        """
         if not isinstance(X, pd.DataFrame):
             raise TypeError("X is not a dataframe")
         return X[self.selected_features_]
@@ -2090,17 +2113,18 @@ class GrootCV(SelectorMixin, BaseEstimator):
 
     @mpl.rc_context(PLT_PARAMS)
     def plot_importance(self, n_feat_per_inch=5):
-        """Boxplot of the variable importance, ordered by magnitude
-        The max shadow variable importance illustrated by the dashed line.
-        Requires to apply the fit method first.
+        """
+        Plot the feature importance of the fitted GrootCV.
+
         Parameters
         ----------
         n_feat_per_inch : int, default=5
-            number of features to plot per inch (for scaling the figure)
+            The number of features per inch in the plot.
+
         Returns
         -------
-        fig : plt.figure
-            the matplotlib figure object containing the boxplot
+        fig : matplotlib.figure.Figure or None
+            The matplotlib figure containing the plot or None if no feature is selected.
         """
 
         if self.sha_cutoff is None:
@@ -2515,11 +2539,10 @@ def _train_lgb_model(
 
 
 def _compute_importance(new_x_tr, shap_matrix, param, objective, fastshap):
-    """
-    Compute feature importance scores using SHAP values.
+    """Compute feature importance scores using SHAP values.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     new_x_tr : numpy.ndarray
         The training dataset after being processed.
     shap_matrix : numpy.ndarray
@@ -2529,8 +2552,8 @@ def _compute_importance(new_x_tr, shap_matrix, param, objective, fastshap):
     objective : str
         The objective function of the LightGBM model.
 
-    Returns:
-    --------
+    Returns
+    -------
     list
         A list of tuples containing feature names and their corresponding importance scores.
     """
