@@ -49,8 +49,6 @@ project_root = os.path.dirname(cwd)
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "sphinxawesome_theme.docsearch",
-    "sphinxawesome.highlighting",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosectionlabel",
     "sphinx.ext.napoleon",
