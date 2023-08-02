@@ -1,10 +1,6 @@
-.. arfs documentation master file, created by
-   sphinx-quickstart on Mon Feb  7 15:05:24 2022.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Welcome to arfs's documentation!
 ================================
+A package for performing All Relevant Feature Selection but not only that.
 
 .. toctree::
    :maxdepth: 2
