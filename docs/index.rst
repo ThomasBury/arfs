@@ -32,3 +32,10 @@ A package for performing All Relevant Feature Selection but not only that.
    notebooks/lasso_feature_selection.ipynb
    notebooks/issue_categoricals.ipynb
    notebooks/issue_collinearity.ipynb
+   
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

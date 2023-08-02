@@ -60,7 +60,7 @@ extensions = [
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-# templates_path = ["_templates"]
+templates_path = ["_templates"]
 autosummary_generate = True
 
 # List of patterns, relative to source directory, that match files and
@@ -75,7 +75,7 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # a list of builtin themes.
 #
 # html_theme = "sphinx_rtd_theme"
-# html_permalinks_icon = "<span>#</span>"
+html_permalinks_icon = "<span>#</span>"
 html_theme = "sphinxawesome_theme"
 
 # Add any paths that contain custom static files (such as style sheets) here,
