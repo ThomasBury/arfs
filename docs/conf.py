@@ -49,14 +49,15 @@ project_root = os.path.dirname(cwd)
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    "not sphinx.ext.rtdtheme",
+    "sphinxawesome_theme.docsearch",
+    "sphinxawesome.highlighting",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosectionlabel",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "sphinx_autodoc_typehints",
     "sphinx_copybutton",
-    # "sphinxawesome-theme",
-    # "sphinx_rtd_theme",
     "nbsphinx",
     "sphinx_tabs.tabs",
 ]
@@ -77,7 +78,7 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # a list of builtin themes.
 #
 # html_theme = "sphinx_rtd_theme"
-html_permalinks_icon = "<span>#</span>"
+# html_permalinks_icon = "<span>#</span>"
 html_theme = "sphinxawesome_theme"
 
 # Add any paths that contain custom static files (such as style sheets) here,
