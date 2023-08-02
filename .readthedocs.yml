@@ -14,13 +14,16 @@ build:
 sphinx:
   configuration: docs/conf.py
 
-# Optional but recommended, declare the Python requirements required
-# to build your documentation
-# See https://docs.readthedocs.io/en/stable/guides/reproducible-builds.html
+# We recommend specifying your dependencies to enable reproducible builds:
+# https://docs.readthedocs.io/en/stable/guides/reproducible-builds.html
 python:
-   install:
-      - method: pip
-        path: .
-        extra_requirements:
-            - docs
-   system_packages: true
+  install:
+  - requirements: docs/requirements.txt
+
+# python:
+#    install:
+#       - method: pip
+#         path: .
+#         extra_requirements:
+#             - docs
+#    system_packages: true
