@@ -15,6 +15,7 @@
 # sys.path.insert(0, os.path.abspath('.'))
 import sys
 import os
+import datetime
 
 sys.path.insert(0, os.path.abspath("../../arfs"))
 # -- Project information -----------------------------------------------------
@@ -77,6 +78,12 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # html_theme = "sphinx_rtd_theme"
 html_permalinks_icon = "<span>#</span>"
 html_theme = "sphinxawesome_theme"
+
+# If not None, a 'Last updated on:' timestamp is inserted at every page
+# bottom, using the given strftime format.
+# The empty string is equivalent to '%b %d, %Y'.
+html_last_updated_fmt = "%B %d, %Y at %H:%M"
+today_fmt = "%B %d, %Y at %H:%M"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

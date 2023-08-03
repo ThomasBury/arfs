@@ -3,6 +3,8 @@ Welcome to arfs's documentation!
 
 A package for performing All Relevant Feature Selection but not only that.
 
+Documentation last change: |today|
+
 .. toctree::
    :maxdepth: 2
    :caption: User's guide
