@@ -10,7 +10,7 @@ build:
   tools:
     python: "3.10"
   jobs:
-    post_install:
+    pre_install:
       - pip uninstall -y sphinx-rtd-theme alabaster
 
 # Build documentation in the "docs/" directory with Sphinx
