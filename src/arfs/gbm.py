@@ -470,12 +470,6 @@ def _fit_early_stopped_lgb(
     else:
         feval_call = None
 
-    if callable(params["objective"]):
-        fobj_call = params["objective"]
-        params.pop("objective")
-    else:
-        fobj_call = None
-
     watchlist = [d_train, d_valid]
     evals_result = {}
     params["verbosity"] = -1
@@ -490,7 +484,7 @@ def _fit_early_stopped_lgb(
         train_set=d_train,
         valid_sets=watchlist,
         feval=feval_call,
-        fobj=fobj_call,
+        # fobj=fobj_call,
         callbacks=[
             early_stopping(10, verbose=False),
             log_evaluation(verbose_eval),
