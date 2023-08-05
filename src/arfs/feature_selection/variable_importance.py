@@ -24,7 +24,6 @@ import matplotlib.gridspec as gridspec
 from sklearn.utils.validation import check_is_fitted
 from sklearn.base import BaseEstimator
 from sklearn.feature_selection._base import SelectorMixin
-from fasttreeshap import TreeExplainer as FastTreeExplainer
 
 # ARFS
 from ..utils import reset_plot
@@ -372,6 +371,11 @@ def _compute_varimp_lgb(
         # )
         # perm_imp = perm_imp.importances_mean
         if fastshap:
+            try:
+                from fasttreeshap import TreeExplainer as FastTreeExplainer
+            except ImportError:
+                ImportError("fasttreeshap is not installed")
+            
             explainer = FastTreeExplainer(
                 gbm_model.model,
                 algorithm="auto",
