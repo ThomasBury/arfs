@@ -1,4 +1,8 @@
 # Changes
+
+## 2.0.5
+ - Fix: strictly greater than threshold rather than geq in the base threshold transformer
+ - Update: due to a change in the lightgbm train API (v4), update the code for GBM
 ## 2.0.4
  - Documentation: fix the format of some docstrings and remove old sphinx generated files
 ## 2.0.3
