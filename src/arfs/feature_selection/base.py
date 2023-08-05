@@ -106,9 +106,9 @@ class BaseThresholdSelector(SelectorMixin, BaseEstimator):
             "statistic", ascending=False
         )
         if self.greater_than_threshold:
-            self.support_ = self.statistic_series_.values >= self.threshold
+            self.support_ = self.statistic_series_.values > self.threshold
         else:
-            self.support_ = self.statistic_series_.values <= self.threshold
+            self.support_ = self.statistic_series_.values < self.threshold
 
         self.selected_features_ = self.feature_names_in_[self.support_]
         self.not_selected_features_ = self.feature_names_in_[~self.support_]
