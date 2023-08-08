@@ -21,6 +21,8 @@ Please note that one limitation of the lasso is that it treats the levels of a c
 
 `$ pip install arfs`
 
+REM: If you're interested in using the `fastshap` option, you'll need to install [fasttreeshap](https://github.com/linkedin/FastTreeSHAP) first. For a smooth installation process, I suggest using `conda install -c conda-forge fasttreeshap` since the c++ source code requires compilation. Using pip may involve additional dependencies, such as requiring VS for compiling the c++ code.
+
 ## Example
 
 Working examples for:
