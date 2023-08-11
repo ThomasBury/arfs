@@ -490,7 +490,7 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
 
         # force some params
         if self.task == "regression":
-            self.boost_params["objective"] = "RMSE"
+            self.boost_params["objective"] = "rmse"
         elif self.task == "classification":
             self.boost_params["objective"] = "binary"
 
