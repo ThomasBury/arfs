@@ -37,6 +37,51 @@ qualitative_colors = [
 #                   #
 #####################
 
+def concat_or_group(col, x, max_length=25):
+    """
+    Concatenate unique values from a column or return a group value.
+
+    Parameters
+    ----------
+    col : str
+        The name of the column to process.
+    x : pd.DataFrame
+        The DataFrame containing the data.
+    max_length : int, optional
+        The maximum length for concatenated strings, beyond which grouping is performed,
+        by default 40.
+
+    Returns
+    -------
+    str
+        A concatenated string of unique values if the length is less than `max_length`,
+        otherwise, a unique group value from the specified column.
+
+    Notes
+    -----
+    If the concatenated string length is greater than or equal to `max_length`, this
+    function returns the unique group value from the column with a "_g" suffix.
+
+    Examples
+    --------
+    >>> data = {
+    >>> 'Category_g': [1, 1, 2, 2, 3],
+    >>> 'Category': ['AAAAAAAAAAAAAAA', 'Bovoh', 'Ccccccccccccccc', 'D', 'E']}
+    >>> cat_bin_dict = {}
+    >>> col = 'Category'
+    >>> cat_bin_dict[col] = (
+    >>>     X[[f"{col}_g", col]]
+    >>>     .groupby(f"{col}_g")
+    >>>     .apply(lambda x: concat_or_group(col, x))
+    >>>     .to_dict()
+    >>> )
+    >>> print(cat_bin_dict)
+    >>> {'Category': {1: 'gr_1', 2: 'gr_2', 3: 'E'}}
+    """
+    unique_values = x[col].unique()
+    concat_str = " / ".join(map(str, unique_values)) 
+    return concat_str if len(concat_str) < max_length else concat_str[:7] + "/.../" + concat_str[-7:]
+
 
 def reset_plot():
     """Reset plot style"""

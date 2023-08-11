@@ -36,7 +36,7 @@ from typing import Any, Callable, Union, List, Tuple, Optional, Dict
 
 # ARFS
 from .gbm import GradientBoosting
-from .utils import create_dtype_dict
+from .utils import create_dtype_dict, concat_or_group
 
 
 # fix random seed for reproducibility
@@ -609,7 +609,7 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
                 self.cat_bin_dict[col] = (
                     X[[f"{col}_g", col]]
                     .groupby(f"{col}_g")
-                    .apply(lambda x: " / ".join(map(str, x[col].unique())))
+                    .apply(lambda x: concat_or_group(col, x, max_length=25)) #" / ".join(map(str, x[col].unique())))
                     .to_dict()
                 )
             else:
