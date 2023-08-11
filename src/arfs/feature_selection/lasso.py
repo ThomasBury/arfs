@@ -59,14 +59,23 @@ class EnetGLM(BaseEstimator, RegressorMixin):
 
     Parameters
     ----------
-    family : statsmodels.family object, optional (default=sm.families.Gaussian())
-        The distributional assumption of the model.
+    family : str, (default="gaussian")
+        The distributional assumption of the model. It can be any of the statsmodels distribution:
+        "gaussian", "binomial", "poisson", "gamma", "negativebinomial", "tweedie"
+    link : str, optional
+        the GLM link function. It can be any of the: "identity", "log", "logit", "probit", "cloglog", "inverse_squared"
     alpha : float, optional (default=0.0)
         The elastic net mixing parameter. 0 <= alpha <= 1.
         alpha = 0 is equivalent to ridge regression, alpha = 1 is equivalent to lasso regression.
     L1_wt : float, optional (default=0.0)
         The weight of the L1 penalty term. 0 <= L1_wt <= 1.
-        L1_wt = 0 is equivalent to ridge regression, L1_wt = 1 is equivalent to lasso regression.
+        The `L1_wt` parameter represents the weight of the L1 penalty term in the model and
+        should be within the range 0 to 1. A value of 0 corresponds to ridge regression,
+        while a value of 1 corresponds to lasso regression. However, for obtaining statistics,
+        `L1_wt` should be set to a value greater than 0. If it is set to 0.0, statsmodels returns
+        a ridge regularized wrapper without refitting the model, making the statistics unavailable
+        and breaking the class. Nevertheless, you can set `L1_wt` to a very small value, such as 1e-9,
+        to obtain close-to-ridge behavior while still obtaining the necessary statistics.
     fit_intercept : bool, optional (default=True)
         Whether to fit an intercept term in the model.
     """
@@ -318,7 +327,7 @@ def weighted_cross_val_score(estimator, X, y, sample_weight=None, cv=5, n_jobs=-
             "The estimator does not have a score method that takes a sample_weight argument."
         )
 
-    with Parallel(n_jobs=-1) as parallel:
+    with Parallel(n_jobs=n_jobs) as parallel:
         scores = parallel(
             delayed(_fit_and_score)(
                 estimator, X, y, train_index, test_index, sample_weight
@@ -394,8 +403,10 @@ def grid_search_cv(
     sample_weight: Optional[Union[pd.Series, np.ndarray]] = None,
     n_iterations: int = 10,
     family: str = "gaussian",
+    link: Optional[str] = None,
     score: str = "bic",
     fit_intercept: bool = True,
+    n_jobs: int = -1
 ) -> EnetGLM:
     """
     Perform grid search cross-validation for an Elastic Net Generalized Linear Model (EnetGLM).
@@ -412,8 +423,12 @@ def grid_search_cv(
         Number of iterations for the grid search.
     family : str, default="gaussian"
         The family of the GLM. Options: "gaussian", "poisson", "gamma", "negativebinomial", "binomial", "tweedie".
+    link : str, optional
+        the GLM link function. It can be any of the: "identity", "log", "logit", "probit", "cloglog", "inverse_squared"
     score : str, default="bic"
         The score to use for model selection. Options: "bic" (Bayesian Information Criterion) or "mean_cv" (mean cross-validation score).
+    n_jobs:
+        the number of processes
 
     Returns
     -------
@@ -425,7 +440,7 @@ def grid_search_cv(
     ValueError
         If the input data is not of the correct format or if an invalid family or score value is provided.
     """
-    estimator = EnetGLM(family=family, L1_wt=1.0, fit_intercept=fit_intercept)
+    estimator = EnetGLM(family=family, link=link, L1_wt=1.0, fit_intercept=fit_intercept)
 
     # Check if X and y are pandas DataFrames/Series and convert them to numpy arrays if necessary
     # X = check_array(X, accept_sparse=True, force_all_finite=False)
@@ -453,7 +468,7 @@ def grid_search_cv(
             param_score.append(estimator.bic_)
         else:
             scores = weighted_cross_val_score(
-                estimator, X, y, sample_weight=sample_weight, cv=5, n_jobs=-1
+                estimator, X, y, sample_weight=sample_weight, cv=5, n_jobs=n_jobs
             )
             param_score.append(np.mean(scores))
     # min deviance or min BIC
@@ -478,12 +493,17 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
 
     Parameters
     ----------
-    family : str, default="gaussian"
-        The family of the GLM. Options: "gaussian", "poisson", "gamma", "negativebinomial", "binomial", "tweedie".
+    family : str, (default="gaussian")
+        The distributional assumption of the model. It can be any of the statsmodels distribution:
+        "gaussian", "binomial", "poisson", "gamma", "negativebinomial", "tweedie"
+    link : str, optional
+        the GLM link function. It can be any of the: "identity", "log", "logit", "probit", "cloglog", "inverse_squared"
     n_iterations : int, default=10
         Number of iterations for the grid search.
     score : str, default="bic"
         The score to use for model selection. Options: "bic" (Bayesian Information Criterion) or "mean_cv" (mean cross-validation score).
+    n_jobs: int, default=-1
+        the number of processes. -1 means all the processes
 
     Attributes
     ----------
@@ -501,6 +521,8 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
         The input feature names.
     score : str
         The score used for model selection.
+    n_jobs: int
+        the number of processes. -1 means all the processes
 
     Methods
     -------
@@ -516,11 +538,14 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
     def __init__(
         self,
         family: str = "gaussian",
+        link: Optional[str] = None,
         n_iterations: int = 10,
         score: str = "bic",
         fit_intercept: bool = True,
+        n_jobs: int = -1
     ):
         self.family = family
+        self.link = link
         self.n_iterations = n_iterations
         self.best_estimator_ = None
         self.selected_features_ = None
@@ -528,6 +553,7 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
         self.feature_names_in_ = None
         self.score = score
         self.fit_intercept = fit_intercept
+        self.n_jobs = n_jobs
 
     def fit(
         self,
@@ -568,12 +594,14 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
 
         self.best_estimator_ = grid_search_cv(
             family=self.family,
+            link=self.link,
             X=X,
             y=y,
             sample_weight=sample_weight,
             n_iterations=self.n_iterations,
             score=self.score,
             fit_intercept=self.fit_intercept,
+            n_jobs=self.n_jobs,
         )
         self.support_ = self.best_estimator_.coef_ != 0
         self.selected_features_ = self.feature_names_in_[self.support_]
