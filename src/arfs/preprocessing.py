@@ -391,6 +391,11 @@ def cat_var(data, col_excl=None, return_cat=True):
     return df, cat_var_df, inv_mapper, mapper
 
 
+
+
+
+
+
 class TreeDiscretizer(BaseEstimator, TransformerMixin):
     """
     Discretize continuous and/or categorical data using univariate regularized trees, returning a pandas DataFrame.
@@ -521,125 +526,113 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         self : object
             Returns self.
         """
+        X, self.feature_names_in_ = self._prepare_input_dataframe(X)
+        self.bin_features, self.cat_features = self._determine_bin_and_cat_features(X, self.bin_features, self.cat_features)
+        self.n_unique_table_ = X[self.bin_features].nunique()
+        self.bin_features = self._filter_bin_features(self.bin_features, self.n_unique_table_, self.n_bins_max)
+        X, self.ordinal_encoder_dic = self._encode_categorical_features(X, self.bin_features, self.cat_features)
+        
+        for col in self.bin_features:
+            is_categorical = (self.cat_features is not None) and (col in self.cat_features)
+            self._fit_tree_and_create_bins(X, col, y, sample_weight, is_categorical)
+        
+        return self
+    
+    def _prepare_input_dataframe(self, X):
         X = X.copy()
 
         if not isinstance(X, pd.DataFrame):
             X = pd.DataFrame(X)
             X.columns = [f"pred_{i}" for i in range(X.shape[1])]
 
-        self.feature_names_in_ = X.columns.to_numpy()
+        return X, X.columns.to_numpy()
+    
+    def _determine_bin_and_cat_features(self, X, bin_features, cat_features):
+        
+        if bin_features is None or (isinstance(bin_features, str) and (bin_features == "numerical")):
+            bin_features = list(X.select_dtypes("number").columns)
+        elif isinstance(bin_features, str) and (bin_features == "all"):
+            bin_features = list(X.columns)
+        elif isinstance(bin_features, str) and (bin_features == "categorical"):
+            bin_features = list(X.select_dtypes(["category", "object", "bool"]).columns)
 
-        if self.bin_features is None:
-            self.bin_features = list(X.select_dtypes("number").columns)
-            self.cat_features = []
-        elif isinstance(self.bin_features, list):
-            self.cat_features = list(
-                set(self.bin_features)
-                - set(list(X[self.bin_features].select_dtypes("number").columns))
-            )
-        elif isinstance(self.bin_features, str) and (self.bin_features == "all"):
-            self.bin_features = list(X.columns)
-            self.cat_features = list(
-                set(self.bin_features) - set(list(X.select_dtypes("number").columns))
-            )
-        elif isinstance(self.bin_features, str) and (self.bin_features == "numerical"):
-            self.bin_features = list(X.select_dtypes("number").columns)
-        elif isinstance(self.bin_features, str) and (
-            self.bin_features == "categorical"
-        ):
-            self.bin_features = list(X.select_dtypes(["category", "object"]).columns)
-            self.cat_features = self.bin_features
+        # Calculate cat_features by subtracting bin_features from all numeric columns
+        cat_features = list(set(bin_features) - set(list(X[bin_features].select_dtypes("number").columns)))
+        return bin_features, cat_features
+    
+    def _filter_bin_features(self, bin_features, n_unique_table_, n_bins_max):
+        return (
+            n_unique_table_[n_unique_table_ > n_bins_max].index.to_list()
+            if n_bins_max
+            else bin_features
+        ) 
 
-        self.n_unique_table_ = X[self.bin_features].nunique()
-        # transform only the columns with more than n_bins_max
-        self.bin_features = (
-            self.n_unique_table_[self.n_unique_table_ > self.n_bins_max].index.to_list()
-            if self.n_bins_max
-            else self.bin_features
-        )
-
-        for col in self.bin_features:
-            is_categorical = (self.cat_features is not None) and (
-                col in self.cat_features
-            )
-            if is_categorical:
-                encoder = OrdinalEncoder(
-                    handle_unknown="use_encoded_value", unknown_value=np.nan
-                )
-                # create a category for missing
+    def _encode_categorical_features(self, X, bin_features, cat_features):
+        ordinal_encoder_dic = {}
+        for col in bin_features:
+            if col in cat_features:
+                # encode and create a category for missing
+                encoder = OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=np.nan)
                 X[col] = (
                     X[col]
                     .astype("category")
                     .cat.add_categories("missing_added")
                     .fillna("missing_added")
                 )
-                # encode
-                self.ordinal_encoder_dic[col] = encoder.fit(X[[col]])
+                ordinal_encoder_dic[col] = encoder.fit(X[[col]])
                 dum = encoder.transform(X[[col]])
                 if isinstance(dum, pd.DataFrame):
                     X[col] = dum.values.ravel()
                 else:
                     X[col] = dum.ravel()
 
-            else:
-                encoder = None
+        return X, ordinal_encoder_dic
+    
+    def _fit_tree_and_create_bins(self, X, col, y, sample_weight, is_categorical):
+        gbm_param = self.boost_params.copy()
+        tree = GradientBoosting(
+            cat_feat=None, params=gbm_param, show_learning_curve=False
+        )
+        tree.fit(X[[col]], y, sample_weight=sample_weight)
+        self.tree_dic[col] = tree
 
-            gbm_param = self.boost_params.copy()
-            tree = GradientBoosting(
-                cat_feat=None, params=gbm_param, show_learning_curve=False
+        # Create bins and handle categorical features
+        X[f"{col}_g"] = tree.predict(X[[col]])
+
+        if is_categorical:
+            dum = self.ordinal_encoder_dic[col].inverse_transform(X[[col]])
+            if isinstance(dum, pd.DataFrame):
+                X[col] = dum.values.ravel()
+            else:
+                X[col] = dum.ravel()
+
+            self.cat_bin_dict[col] = (
+                X[[f"{col}_g", col]]
+                .groupby(f"{col}_g")
+                .apply(lambda x: concat_or_group(col, x, max_length=25)) #" / ".join(map(str, x[col].unique())))
+                .to_dict()
             )
-            tree.fit(X[[col]], y, sample_weight=sample_weight)
+        else:
+            bin_array = (
+                X[[f"{col}_g", col]]
+                .groupby(f"{col}_g")
+                .aggregate(max)
+                .sort_values(col)
+                .values.ravel()
+            )
+            bin_array = np.delete(bin_array, [np.argmax(bin_array)])
+            bin_array = np.unique(np.append(bin_array, [-np.Inf, np.Inf]))
+            self.bin_upper_bound_dic[col] = bin_array
 
-            # store each fitted tree in a dictionary
-            self.tree_dic[col] = tree
+            nan_pred_val = tree.predict(np.expand_dims([np.nan], axis=1))[0]
+            non_nan_values = X[col].dropna().unique()
+            pred_values = tree.predict(np.expand_dims(non_nan_values, axis=1))
+            self.tree_imputer[col] = non_nan_values.flat[
+                np.abs(pred_values - nan_pred_val).argmin()
+            ]
 
-            # create the bins series
-            # predict, group by original values
-            # create monotonicly increasing bin for pd.cut
-            X[f"{col}_g"] = tree.predict(X[[col]])
+        del tree
 
-            if is_categorical:
-                # retrieve original values
-                dum = encoder.inverse_transform(X[[col]])
-                if isinstance(dum, pd.DataFrame):
-                    X[col] = dum.values.ravel()
-                else:
-                    X[col] = dum.ravel()
-
-                self.cat_bin_dict[col] = (
-                    X[[f"{col}_g", col]]
-                    .groupby(f"{col}_g")
-                    .apply(lambda x: concat_or_group(col, x, max_length=25)) #" / ".join(map(str, x[col].unique())))
-                    .to_dict()
-                )
-            else:
-                bin_array = (
-                    X[[f"{col}_g", col]]
-                    .groupby(f"{col}_g")
-                    .aggregate(max)
-                    .sort_values(col)
-                    .values.ravel()
-                )
-                # overwrite max for handling unseen larger values than max val on the train set
-                bin_array = np.delete(bin_array, [np.argmax(bin_array)])
-                # append -Inf and Inf for covering the whole interval, as in KBinsDiscretizer
-                bin_array = np.unique(np.append(bin_array, [-np.Inf, np.Inf]))
-                self.bin_upper_bound_dic[col] = bin_array
-                # the tree imputer: if nan is passed, the predicted value will be the
-                # same than another non-missing value and nan should fall into this bin
-                # the predicted value of a NaN
-                nan_pred_val = tree.predict(np.expand_dims([np.nan], axis=1))[0]
-                # the closest predicted value for non NaN inputs
-                non_nan_values = X[col].dropna().unique()
-                pred_values = tree.predict(np.expand_dims(non_nan_values, axis=1))
-                # store the value for knowing the bin into which the NaN should fall
-                self.tree_imputer[col] = non_nan_values.flat[
-                    np.abs(pred_values - nan_pred_val).argmin()
-                ]
-
-            del tree
-
-        return self
 
     def transform(self, X):
         """
