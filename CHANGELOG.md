@@ -1,5 +1,6 @@
 # Changes
-
+# 2.1.0
+ - Add a mechanism to the TreeDiscretizer that restricts the length of combined strings for categorical columns, preventing excessively lengthy entries.
 # 2.0.7
  - implement link for the lasso feature selection, e.g. log for ensuring positivity 
 # 2.0.6
