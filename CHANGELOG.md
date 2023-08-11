@@ -1,4 +1,6 @@
 # Changes
+# 2.1.1
+ - Refactor TreeDiscretizer
 # 2.1.0
  - Add a mechanism to the TreeDiscretizer that restricts the length of combined strings for categorical columns, preventing excessively lengthy entries.
 # 2.0.7
