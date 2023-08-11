@@ -1,5 +1,9 @@
 # Changes
 
+# 2.0.7
+ - implement link for the lasso feature selection, e.g. log for ensuring positivity 
+# 2.0.6
+ - downgrade the lightgbm version to 3.3.1 for compatibility reasons (with optuna for instance)
 ## 2.0.5
  - Fix: strictly greater than threshold rather than geq in the base threshold transformer
  - Update: due to a change in the lightgbm train API (v4), update the code for GBM
