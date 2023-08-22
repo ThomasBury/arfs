@@ -1,4 +1,6 @@
 # Changes
+# 2.1.2
+ - [BUG] fix a bug in computing the association matrix when a single column of a specific dtype is passed in the sub_matrix (nom-nom, num-num) calculators.
 # 2.1.1
  - Refactor TreeDiscretizer
 # 2.1.0
