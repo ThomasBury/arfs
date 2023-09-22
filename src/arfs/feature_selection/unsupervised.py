@@ -446,7 +446,7 @@ def _recursive_collinear_elimination(association_matrix, threshold):
     dum = dum.drop(columns=most_collinear_feature, index=most_collinear_feature)
 
     while len(to_drop) > 1:
-        most_collinear_feature, to_drop = _most_collinear(dum, 0.75)
+        most_collinear_feature, to_drop = _most_collinear(dum, threshold)
         most_collinear_features.append(most_collinear_feature)
         dum = dum.drop(columns=most_collinear_feature, index=most_collinear_feature)
     return most_collinear_features
