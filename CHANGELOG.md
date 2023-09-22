@@ -1,4 +1,6 @@
 # Changes
+# 2.1.3
+ - [BUG] fix the hardcoded threshold in collinearity elimination, closes #33
 # 2.1.2
  - [BUG] fix a bug in computing the association matrix when a single column of a specific dtype is passed in the sub_matrix (nom-nom, num-num) calculators.
 # 2.1.1

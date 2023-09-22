@@ -1,22 +1,19 @@
 cff-version: 1.2.0
 abstract: >-
-  All relevant feature selection means trying to find all features carrying information usable for prediction, 
-  rather than finding a possibly compact subset of features on which some particular model has a minimal error. 
-  This might include redundant predictors.
+  All relevant feature selection means trying to find all features carrying information usable for prediction,  rather than finding a possibly compact subset of features on which some particular model has a minimal error.  This might include redundant predictors.
 title: All relevant feature selection
 message: >-
-  If you use this software, please cite it using the
-  metadata from this file.
+  If you use this software, please cite it using the metadata from this file.
 type: software
 authors:
-  - given-names: Thomas
-    family-names: Bury
-    orcid: 'https://orcid.org/0000-0003-1421-4184'
+- given-names: Thomas
+  family-names: Bury
+  orcid: 'https://orcid.org/0000-0003-1421-4184'
 keywords:
-  - "Feature Selection"
-  - "All Relevant Feature Selection"
-  - "Machine Learning"
+- "Feature Selection"
+- "All Relevant Feature Selection"
+- "Machine Learning"
 license: MIT License
 url: 'https://github.com/ThomasBury/arfs'
-version: 2.1.2
+version: 2.1.3
 date-released: 2021-12-18
