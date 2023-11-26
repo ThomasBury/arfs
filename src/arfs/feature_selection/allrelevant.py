@@ -1284,7 +1284,7 @@ def _get_shap_imp_fast(estimator, X, y, sample_weight=None, cat_feature=None):
         from fasttreeshap import TreeExplainer as FastTreeExplainer
     except ImportError:
         ImportError("fasttreeshap is not installed")
-    
+
     # Clone the estimator to avoid modifying the original one
     estimator = clone(estimator)
 
@@ -1554,11 +1554,12 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         sample_weight : pd.series
             sample_weight, if any
         """
-        try:
-            from fasttreeshap import TreeExplainer as FastTreeExplainer
-        except ImportError:
-            warnings.warn("fasttreeshap is not installed. Fallback to shap.")
-            self.importance = "shap"
+        if self.importance == "fastshap":
+            try:
+                from fasttreeshap import TreeExplainer as FastTreeExplainer
+            except ImportError:
+                warnings.warn("fasttreeshap is not installed. Fallback to shap.")
+                self.importance = "shap"
 
         if isinstance(X, pd.DataFrame):
             self.feature_names_in_ = X.columns.to_numpy()
