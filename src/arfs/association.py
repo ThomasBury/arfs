@@ -60,43 +60,50 @@ _PRECISION = 1e-13
 
 
 def weighted_conditional_entropy(x, y, sample_weight=None):
-    """weighted_conditional_entropy computes the weighted conditional entropy between two
-    categorical predictors.
+    """
+    Computes the weighted conditional entropy between two categorical predictors.
 
     Parameters
     ----------
     x : pd.Series of shape (n_samples,)
-        The predictor vector
+        The predictor vector.
     y : pd.Series of shape (n_samples,)
-        The target vector
+        The target vector.
     sample_weight : array-like of shape (n_samples,), optional
-        The weight vector, by default None
+        The weight vector, by default None.
 
     Returns
     -------
     float
-        weighted conditional entropy
+        Weighted conditional entropy.
     """
 
+    # Handle sample_weight
     if sample_weight is None:
         sample_weight = np.ones(len(x))
     elif np.count_nonzero(sample_weight) == 0:
-        raise ValueError(
-            "All elements in sample_weight are zero. Cannot divide by zero."
-        )
+        raise ValueError("All elements in sample_weight are zero. Cannot divide by zero.")
 
-    df = pd.DataFrame({"x": x, "y": y, "sample_weight": sample_weight})
-    tot_weight = df["sample_weight"].sum()
-    y_counter = df[["y", "sample_weight"]].groupby("y").sum().to_dict()
-    y_counter = y_counter["sample_weight"]
-    xy_counter = df[["x", "y", "sample_weight"]].groupby(["x", "y"]).sum().to_dict()
-    xy_counter = xy_counter["sample_weight"]
+    # Total weight
+    tot_weight = np.sum(sample_weight)
+    if tot_weight == 0:
+        return 0
+
+    # Grouped weights for y and (x, y)
+    y_weights = np.bincount(y, weights=sample_weight)
+    xy_weights = {level: np.bincount(y[x == level], weights=sample_weight[x == level]) 
+                for level in np.unique(x)}
+
+    # Conditional entropy calculation
     h_xy = 0.0
-    for xy in xy_counter.keys():
-        p_xy = xy_counter[xy] / tot_weight if tot_weight != 0 else 0
-        p_y = y_counter[xy[1]] / tot_weight if tot_weight != 0 else 0
-        if p_xy != 0:
-            h_xy += p_xy * math.log(p_y / p_xy, math.e)
+    for level in xy_weights:
+        for y_index, xy_weight in enumerate(xy_weights[level]):
+            p_xy = xy_weight / tot_weight
+            p_y = y_weights[y_index] / tot_weight
+
+            if p_xy != 0:
+                h_xy += p_xy * math.log(p_y / p_xy, math.e)
+
     return h_xy
 
 
