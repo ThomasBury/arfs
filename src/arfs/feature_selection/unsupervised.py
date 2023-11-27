@@ -441,12 +441,16 @@ def _most_collinear(association_matrix, threshold):
 def _recursive_collinear_elimination(association_matrix, threshold):
     dum = association_matrix.copy()
     most_collinear_features = []
-    most_collinear_feature, to_drop = _most_collinear(association_matrix, threshold)
-    most_collinear_features.append(most_collinear_feature)
-    dum = dum.drop(columns=most_collinear_feature, index=most_collinear_feature)
 
-    while len(to_drop) > 1:
+    while True:
         most_collinear_feature, to_drop = _most_collinear(dum, threshold)
-        most_collinear_features.append(most_collinear_feature)
-        dum = dum.drop(columns=most_collinear_feature, index=most_collinear_feature)
+        
+        # Break if no more features to drop
+        if not to_drop:
+            break
+
+        if most_collinear_feature not in most_collinear_features:
+            most_collinear_features.append(most_collinear_feature)
+            dum = dum.drop(columns=most_collinear_feature, index=most_collinear_feature)
+
     return most_collinear_features
