@@ -82,7 +82,9 @@ def weighted_conditional_entropy(x, y, sample_weight=None):
     if sample_weight is None:
         sample_weight = np.ones(len(x))
     elif np.count_nonzero(sample_weight) == 0:
-        raise ValueError("All elements in sample_weight are zero. Cannot divide by zero.")
+        raise ValueError(
+            "All elements in sample_weight are zero. Cannot divide by zero."
+        )
 
     # Total weight
     tot_weight = np.sum(sample_weight)
@@ -91,8 +93,10 @@ def weighted_conditional_entropy(x, y, sample_weight=None):
 
     # Grouped weights for y and (x, y)
     y_weights = np.bincount(y, weights=sample_weight)
-    xy_weights = {level: np.bincount(y[x == level], weights=sample_weight[x == level]) 
-                for level in np.unique(x)}
+    xy_weights = {
+        level: np.bincount(y[x == level], weights=sample_weight[x == level])
+        for level in np.unique(x)
+    }
 
     # Conditional entropy calculation
     h_xy = 0.0
@@ -108,58 +112,64 @@ def weighted_conditional_entropy(x, y, sample_weight=None):
 
 
 def weighted_theils_u(x, y, sample_weight=None, as_frame=False):
-    """weighted_theils_u computes the weighted Theil's U statistic between two
-    categorical predictors.
+    """
+    Computes the weighted Theil's U statistic between two categorical predictors.
 
     Parameters
     ----------
     x : pd.Series of shape (n_samples,)
-        The predictor vector
+        The predictor vector.
     y : pd.Series of shape (n_samples,)
-        The target vector
+        The target vector.
     sample_weight : array-like of shape (n_samples,), optional
-        The weight vector, by default None
-    as_frame: bool
-        return output as a dataframe or a float
+        The weight vector, by default None.
+    as_frame : bool
+        Return output as a dataframe or a float.
 
     Returns
     -------
-    pd.DataFrame
-        predictor names and value of the Theil's U statistic
+    pd.DataFrame or float
+        Predictor names and value of the Theil's U statistic.
     """
 
     if sample_weight is None:
         sample_weight = np.ones(len(x))
 
-    df = pd.DataFrame({"x": x, "y": y, "sample_weight": sample_weight})
-    tot_weight = df["sample_weight"].sum()
-    y_counter = df[["y", "sample_weight"]].groupby("y").sum().to_dict()
-    y_counter = y_counter["sample_weight"]
-    x_counter = df[["x", "sample_weight"]].groupby("x").sum().to_dict()
-    x_counter = x_counter["sample_weight"]
-    p_x = list(map(lambda n: n / tot_weight, x_counter.values()))
+    tot_weight = np.sum(sample_weight)
+
+    # Vectorized weight calculations
+    y_weights = np.bincount(y, weights=sample_weight)
+    x_weights = np.bincount(x, weights=sample_weight)
+
+    # Entropy calculations
+    p_x = x_weights / tot_weight
     h_x = ss.entropy(p_x)
-    xy_counter = df[["x", "y", "sample_weight"]].groupby(["x", "y"]).sum().to_dict()
-    xy_counter = xy_counter["sample_weight"]
+
     h_xy = 0.0
-    for xy in xy_counter.keys():
-        p_xy = xy_counter[xy] / tot_weight if tot_weight != 0 else 0
-        p_y = y_counter[xy[1]] / tot_weight if tot_weight != 0 else 0
-        if p_xy != 0:
-            h_xy += p_xy * math.log(p_y / p_xy, math.e)
+    for unique_x in np.unique(x):
+        x_mask = x == unique_x
+        y_sub_weights = np.bincount(y[x_mask], weights=sample_weight[x_mask])
+        p_xy = y_sub_weights / tot_weight
+        p_y = y_weights / tot_weight
+        h_xy += np.sum(
+            p_xy * np.log(p_y / p_xy, out=np.zeros_like(p_xy), where=(p_xy != 0))
+        )
 
     if h_x == 0:
         return 1.0
-    else:
-        u = (h_x - h_xy) / h_x
-        if abs(u) < _PRECISION or abs(u - 1.0) < _PRECISION:
-            rounded_u = round(u)
-            warnings.warn(
-                f"Rounded U = {u} to {rounded_u}. This is probably due to floating point precision issues.",
-                RuntimeWarning,
-            )
-            u = rounded_u
 
+    u = (h_x - h_xy) / h_x
+
+    # Check for floating point precision issues
+    if abs(u) < _PRECISION or abs(u - 1.0) < _PRECISION:
+        rounded_u = round(u)
+        warnings.warn(
+            f"Rounded U = {u} to {rounded_u}. This is probably due to floating point precision issues.",
+            RuntimeWarning,
+        )
+        u = rounded_u
+
+    # Return as DataFrame or float
     if as_frame:
         return pd.DataFrame({"row": x.name, "col": y.name, "val": u}, index=[0])
     else:
@@ -288,28 +298,36 @@ def theils_u_series(X, target, sample_weight=None, n_jobs=-1, handle_na="drop"):
 
 
 def cramer_v(x, y, sample_weight=None, as_frame=False):
-    """cramer_v computes the weighted V statistic of two
-    categorical predictors.
+    """
+    Computes the weighted V statistic of two categorical predictors.
 
     Parameters
     ----------
     x : pd.Series of shape (n_samples,)
-        The predictor vector, the first categorical predictor
+        The first categorical predictor.
     y : pd.Series of shape (n_samples,)
-        second categorical predictor, order doesn't matter, symmetrical association
+        The second categorical predictor, order doesn't matter, symmetrical association.
     sample_weight : array-like of shape (n_samples,), optional
-        The weight vector, by default None
-    as_frame: bool
-        return output as a dataframe or a float
+        The weight vector, by default None.
+    as_frame : bool
+        Return output as a DataFrame or a float.
 
     Returns
     -------
-    pd.DataFrame
-        single row dataframe with the predictor names and the statistic value
+    pd.DataFrame or float
+        Single row DataFrame with the predictor names and the statistic value, or the statistic as a float.
     """
-    tot_weight = sample_weight.sum()
+
+    if sample_weight is None:
+        sample_weight = np.ones(len(x))
+    else:
+        sample_weight = np.asarray(sample_weight)
+        if sample_weight.sum() == 0:
+            raise ValueError("Sum of sample weights cannot be zero.")
+
     weighted_tab = pd.crosstab(x, y, sample_weight, aggfunc=sum).fillna(0)
-    chi2 = ss.chi2_contingency(weighted_tab)[0]
+    chi2 = ss.chi2_contingency(weighted_tab, correction=False)[0]
+    tot_weight = sample_weight.sum()
     phi2 = chi2 / tot_weight
     r, k = weighted_tab.shape
     phi2corr = max(0, phi2 - ((k - 1) * (r - 1)) / (tot_weight - 1))
@@ -318,11 +336,9 @@ def cramer_v(x, y, sample_weight=None, as_frame=False):
     v = np.sqrt(phi2corr / min((kcorr - 1), (rcorr - 1)))
 
     if as_frame:
-        x_name = x.name if isinstance(x, pd.Series) else "var"
-        y_name = y.name if isinstance(y, pd.Series) else "target"
-        return pd.DataFrame(
-            {"row": [x_name, y_name], "col": [y_name, x_name], "val": [v, v]}
-        )
+        x_name = x.name if x.name else "var1"
+        y_name = y.name if y.name else "var2"
+        return pd.DataFrame({"row": [x_name], "col": [y_name], "val": [v]})
     else:
         return v
 
@@ -460,32 +476,29 @@ def _weighted_correlation_ratio(*args):
     float
         value of the correlation ratio
     """
-    # how many levels (predictor)
-    n_classes = len(args)
-    # convert to float 2-uple d'array
-    args = [as_float_array(a) for a in args]
-    # compute the total weight per level
+    # Convert to float array and compute weights
+    args = [(np.asarray(a[0], dtype=float), np.asarray(a[1])) for a in args]
     weight_per_class = np.array([a[1].sum() for a in args])
-    # total weight
-    tot_weight = np.sum(weight_per_class)
-    # weighted sum of squares
-    ss_alldata = sum((a[1] * safe_sqr(a[0])).sum(axis=0) for a in args)
-    # list of weighted sums
-    sums_args = [np.asarray((a[0] * a[1]).sum(axis=0)) for a in args]
+    tot_weight = weight_per_class.sum()
+
+    # Weighted sum of squares and list of weighted sums
+    ss_alldata = sum((a[1] * np.square(a[0])).sum(axis=0) for a in args)
+    sums_args = [np.sum(a[0] * a[1], axis=0) for a in args]
     square_of_sums_alldata = sum(sums_args) ** 2
-    square_of_sums_args = [s**2 for s in sums_args]
-    sstot = ss_alldata - square_of_sums_alldata / float(tot_weight)
-    ssbn = 0.0
-    for k, _ in enumerate(args):
-        ssbn += square_of_sums_args[k] / weight_per_class[k]
-    ssbn -= square_of_sums_alldata / float(tot_weight)
+
+    # Total sum of squares and between-classes sum of squares
+    sstot = ss_alldata - square_of_sums_alldata / tot_weight
+    ssbn = sum(np.square(s) / w for s, w in zip(sums_args, weight_per_class))
+    ssbn -= square_of_sums_alldata / tot_weight
+
+    # Handle constant features
     constant_features_idx = np.where(sstot == 0.0)[0]
-    if np.nonzero(ssbn)[0].size != ssbn.size and constant_features_idx.size:
+    if np.any(ssbn) and constant_features_idx.size:
         warnings.warn("Features %s are constant." % constant_features_idx, UserWarning)
-    etasq = ssbn / sstot
-    # flatten matrix to vector in sparse case
-    etasq = np.asarray(etasq).ravel()
-    return np.sqrt(etasq)
+
+    # Correlation Ratio calculation
+    etasq = np.divide(ssbn, sstot, out=np.zeros_like(ssbn), where=sstot != 0)
+    return np.sqrt(etasq).ravel()
 
 
 def correlation_ratio(x, y, sample_weight=None, as_frame=False):
@@ -511,37 +524,33 @@ def correlation_ratio(x, y, sample_weight=None, as_frame=False):
     if sample_weight is None:
         sample_weight = np.ones_like(y)
 
-    # one 2-uple per level of the categorical feature x
+    # Determine the categorical and continuous variables
     if x.dtype in ["category", "object", "bool"]:
-        args = [
-            (
-                y[safe_mask(y, x == k)],
-                sample_weight[safe_mask(sample_weight, x == k)],
-            )
-            for k in np.unique(x)
-        ]
+        categorical, continuous = x, y
     elif y.dtype in ["category", "object", "bool"]:
-        args = [
-            (
-                x[safe_mask(x, y == k)],
-                sample_weight[safe_mask(sample_weight, y == k)],
-            )
-            for k in np.unique(y)
-        ]
+        categorical, continuous = y, x
     else:
         raise TypeError(
-            "one of the two series should be categorical/object and the other numerical"
+            "One of the series must be categorical and the other numerical."
         )
 
+    # Prepare arguments for the weighted correlation ratio calculation
+    unique_categories = np.unique(categorical)
+    args = [
+        (continuous[categorical == category], sample_weight[categorical == category])
+        for category in unique_categories
+    ]
+
+    # Compute the weighted correlation ratio
+    v = _weighted_correlation_ratio(*args)[0]
+
+    # Format the result
     if as_frame:
-        x_name = x.name if isinstance(x, pd.Series) else "var"
-        y_name = y.name if isinstance(y, pd.Series) else "target"
-        v = _weighted_correlation_ratio(*args)[0]
-        return pd.DataFrame(
-            {"row": [x_name, y_name], "col": [y_name, x_name], "val": [v, v]}
-        )
+        x_name = x.name if x.name else "var1"
+        y_name = y.name if y.name else "var2"
+        return pd.DataFrame({"row": [x_name], "col": [y_name], "val": [v]})
     else:
-        return _weighted_correlation_ratio(*args)[0]
+        return v
 
 
 def correlation_ratio_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop"):
@@ -1225,7 +1234,7 @@ def association_matrix(
     # in GLM supposed to be all the columns
     n_cat_cols = len(dtypes_dic["cat"])
     n_num_cols = len(dtypes_dic["num"])
-    
+
     df_to_concat = []
 
     # num-num, NaNs already checked above, not repeating the process
@@ -1243,7 +1252,7 @@ def association_matrix(
             w_num_num = wcorr_matrix(
                 X, sample_weight, n_jobs, handle_na=None, method=num_num_assoc
             )
-        df_to_concat.append(w_num_num) 
+        df_to_concat.append(w_num_num)
 
     # nom-num
     if (n_num_cols >= 1) and (n_cat_cols >= 1):
@@ -1257,8 +1266,10 @@ def association_matrix(
                 n_jobs=n_jobs,
             )
         else:
-            w_nom_num = correlation_ratio_matrix(X, sample_weight, n_jobs, handle_na=None)
-        df_to_concat.append(w_nom_num) 
+            w_nom_num = correlation_ratio_matrix(
+                X, sample_weight, n_jobs, handle_na=None
+            )
+        df_to_concat.append(w_nom_num)
 
     # nom-nom
     if n_cat_cols >= 2:
@@ -1275,8 +1286,7 @@ def association_matrix(
             w_nom_nom = cramer_v_matrix(X, sample_weight, n_jobs, handle_na=None)
         else:
             w_nom_nom = theils_u_matrix(X, sample_weight, n_jobs, handle_na=None)
-        df_to_concat.append(w_nom_nom) 
-
+        df_to_concat.append(w_nom_nom)
 
     return pd.concat(df_to_concat, ignore_index=True)
 
