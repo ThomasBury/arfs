@@ -20,6 +20,7 @@ import scipy.stats as ss
 
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from sklearn.utils import as_float_array, safe_sqr, safe_mask
+
 from multiprocessing import cpu_count
 from itertools import combinations, permutations, product
 from pandas.api.types import is_numeric_dtype
@@ -54,30 +55,72 @@ _PRECISION = 1e-13
 # - the function looping over a chunk of combinations
 # - the parallelization (sending different chunks to different cores and applying the latter function)
 
+
+def symmetric_function(func):
+    func.is_symmetric = True
+    return func
+
+
+def asymmetric_function(func):
+    func.is_symmetric = False
+    return func
+
+
+def create_col_combinations(func, selected_cols):
+    """
+    Create column combinations or permutations based on the symmetry of the function.
+
+    This function checks if `func` is symmetric. If it is, it creates combinations of `selected_cols`;
+    otherwise, it creates permutations.
+
+    Parameters
+    ----------
+    func : callable
+        The function to check for symmetry. Should be decorated with `@symmetric_function`.
+    selected_cols : list
+        The columns to be combined or permuted.
+
+    Returns
+    -------
+    list of tuples
+        A list of tuples representing column combinations or permutations.
+        If `func` is symmetric, combinations of `selected_cols` are returned;
+        otherwise, permutations are returned.
+    """
+
+    if getattr(func, "is_symmetric", False):
+        # If the function is symmetric, use combinations
+        return list(combinations(selected_cols, 2)) if selected_cols else []
+    else:
+        # If the function is not symmetric, use permutations
+        return list(permutations(selected_cols, 2)) if selected_cols else []
+
+
 ##################
 # CAT-CAT
 ##################
 
 
 def weighted_conditional_entropy(x, y, sample_weight=None):
-    """weighted_conditional_entropy computes the weighted conditional entropy between two
-    categorical predictors.
+    """
+    Computes the weighted conditional entropy between two categorical predictors.
 
     Parameters
     ----------
     x : pd.Series of shape (n_samples,)
-        The predictor vector
+        The predictor vector.
     y : pd.Series of shape (n_samples,)
-        The target vector
+        The target vector.
     sample_weight : array-like of shape (n_samples,), optional
-        The weight vector, by default None
+        The weight vector, by default None.
 
     Returns
     -------
     float
-        weighted conditional entropy
+        Weighted conditional entropy.
     """
 
+    # Handle sample_weight
     if sample_weight is None:
         sample_weight = np.ones(len(x))
     elif np.count_nonzero(sample_weight) == 0:
@@ -85,81 +128,114 @@ def weighted_conditional_entropy(x, y, sample_weight=None):
             "All elements in sample_weight are zero. Cannot divide by zero."
         )
 
-    df = pd.DataFrame({"x": x, "y": y, "sample_weight": sample_weight})
-    tot_weight = df["sample_weight"].sum()
-    y_counter = df[["y", "sample_weight"]].groupby("y").sum().to_dict()
-    y_counter = y_counter["sample_weight"]
-    xy_counter = df[["x", "y", "sample_weight"]].groupby(["x", "y"]).sum().to_dict()
-    xy_counter = xy_counter["sample_weight"]
+    # Integer encoding for categorical data
+    y_encoded, _ = pd.factorize(y)
+    x_encoded, _ = pd.factorize(x)
+
+    # Total weight
+    tot_weight = np.sum(sample_weight)
+    if tot_weight == 0:
+        return 0
+
+    # Grouped weights for y and (x, y)
+    y_weights = np.bincount(
+        y_encoded, weights=sample_weight, minlength=len(np.unique(y_encoded))
+    )
+    xy_weights = {
+        level: np.bincount(
+            y_encoded[x_encoded == level],
+            weights=sample_weight[x_encoded == level],
+            minlength=len(np.unique(y_encoded)),
+        )
+        for level in np.unique(x_encoded)
+    }
+
+    # Conditional entropy calculation
     h_xy = 0.0
-    for xy in xy_counter.keys():
-        p_xy = xy_counter[xy] / tot_weight if tot_weight != 0 else 0
-        p_y = y_counter[xy[1]] / tot_weight if tot_weight != 0 else 0
-        if p_xy != 0:
-            h_xy += p_xy * math.log(p_y / p_xy, math.e)
+    for level in xy_weights:
+        for y_index, xy_weight in enumerate(xy_weights[level]):
+            p_xy = xy_weight / tot_weight
+            p_y = y_weights[y_index] / tot_weight
+
+            if p_xy != 0:
+                h_xy += p_xy * math.log(p_y / p_xy, math.e)
+
     return h_xy
 
 
+@asymmetric_function
 def weighted_theils_u(x, y, sample_weight=None, as_frame=False):
-    """weighted_theils_u computes the weighted Theil's U statistic between two
-    categorical predictors.
+    """
+    Computes the weighted Theil's U statistic between two categorical predictors.
 
     Parameters
     ----------
     x : pd.Series of shape (n_samples,)
-        The predictor vector
+        The predictor vector.
     y : pd.Series of shape (n_samples,)
-        The target vector
+        The target vector.
     sample_weight : array-like of shape (n_samples,), optional
-        The weight vector, by default None
-    as_frame: bool
-        return output as a dataframe or a float
+        The weight vector, by default None.
+    as_frame : bool
+        Return output as a dataframe or a float.
 
     Returns
     -------
-    pd.DataFrame
-        predictor names and value of the Theil's U statistic
+    pd.DataFrame or float
+        Predictor names and value of the Theil's U statistic.
     """
 
     if sample_weight is None:
         sample_weight = np.ones(len(x))
 
-    df = pd.DataFrame({"x": x, "y": y, "sample_weight": sample_weight})
-    tot_weight = df["sample_weight"].sum()
-    y_counter = df[["y", "sample_weight"]].groupby("y").sum().to_dict()
-    y_counter = y_counter["sample_weight"]
-    x_counter = df[["x", "sample_weight"]].groupby("x").sum().to_dict()
-    x_counter = x_counter["sample_weight"]
-    p_x = list(map(lambda n: n / tot_weight, x_counter.values()))
+    tot_weight = np.sum(sample_weight)
+
+    # Integer encoding
+    y_encoded, y_unique = pd.factorize(y)
+    x_encoded, x_unique = pd.factorize(x)
+
+    # Extend bincount to cover all categories
+    y_weights = np.bincount(y_encoded, weights=sample_weight, minlength=len(y_unique))
+    x_weights = np.bincount(x_encoded, weights=sample_weight, minlength=len(x_unique))
+
+    # Entropy calculations
+    p_x = x_weights / tot_weight
     h_x = ss.entropy(p_x)
-    xy_counter = df[["x", "y", "sample_weight"]].groupby(["x", "y"]).sum().to_dict()
-    xy_counter = xy_counter["sample_weight"]
+
     h_xy = 0.0
-    for xy in xy_counter.keys():
-        p_xy = xy_counter[xy] / tot_weight if tot_weight != 0 else 0
-        p_y = y_counter[xy[1]] / tot_weight if tot_weight != 0 else 0
-        if p_xy != 0:
-            h_xy += p_xy * math.log(p_y / p_xy, math.e)
+    for unique_x in np.unique(x_encoded):
+        x_mask = x_encoded == unique_x
+        y_sub_weights = np.bincount(
+            y_encoded[x_mask], weights=sample_weight[x_mask], minlength=len(y_unique)
+        )
+        p_xy = y_sub_weights / tot_weight
+        p_y = y_weights / tot_weight
+        # Avoid division by zero in log calculation
+        valid_mask = (p_xy != 0) & (p_y != 0)
+        h_xy += np.sum(p_xy[valid_mask] * np.log(p_y[valid_mask] / p_xy[valid_mask]))
 
     if h_x == 0:
         return 1.0
-    else:
-        u = (h_x - h_xy) / h_x
-        if abs(u) < _PRECISION or abs(u - 1.0) < _PRECISION:
-            rounded_u = round(u)
-            warnings.warn(
-                f"Rounded U = {u} to {rounded_u}. This is probably due to floating point precision issues.",
-                RuntimeWarning,
-            )
-            u = rounded_u
 
+    u = (h_x - h_xy) / h_x
+
+    # Check for floating point precision issues
+    if abs(u) < _PRECISION or abs(u - 1.0) < _PRECISION:
+        rounded_u = round(u)
+        warnings.warn(
+            f"Rounded U = {u} to {rounded_u}. This is probably due to floating point precision issues.",
+            RuntimeWarning,
+        )
+        u = rounded_u
+
+    # Return as DataFrame or float
     if as_frame:
-        return pd.DataFrame({"row": x.name, "col": y.name, "val": u}, index=[0])
+        return pd.DataFrame({"row": [x.name], "col": [y.name], "val": [u]})
     else:
         return u
 
 
-def theils_u_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop"):
+def theils_u_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop"):
     """theils_u_matrix theils_u_matrix computes the weighted Theil's U statistic for
     categorical-categorical association. This is an asymmetric coefficient: U(x,y) != U(y,x)
     U(x, y) means the uncertainty of x given y: value is on the range of [0,1] -
@@ -213,14 +289,14 @@ def theils_u_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop"):
             df=X,
             comb_list=comb_list,
             sample_weight=sample_weight,
-            n_jobs=-1,
+            n_jobs=n_jobs,
         )
         return lst
     else:
         return None
 
 
-def theils_u_series(X, target, sample_weight=None, n_jobs=-1, handle_na="drop"):
+def theils_u_series(X, target, sample_weight=None, n_jobs=1, handle_na="drop"):
     """theils_u_series computes the weighted Theil's U statistic for
     categorical-categorical association. This is an asymmetric coefficient: U(x,y) != U(y,x)
     U(x, y) means the uncertainty of x given y: value is on the range of [0,1] -
@@ -280,29 +356,38 @@ def theils_u_series(X, target, sample_weight=None, n_jobs=-1, handle_na="drop"):
         return None
 
 
+@symmetric_function
 def cramer_v(x, y, sample_weight=None, as_frame=False):
-    """cramer_v computes the weighted V statistic of two
-    categorical predictors.
+    """
+    Computes the weighted V statistic of two categorical predictors.
 
     Parameters
     ----------
     x : pd.Series of shape (n_samples,)
-        The predictor vector, the first categorical predictor
+        The first categorical predictor.
     y : pd.Series of shape (n_samples,)
-        second categorical predictor, order doesn't matter, symmetrical association
+        The second categorical predictor, order doesn't matter, symmetrical association.
     sample_weight : array-like of shape (n_samples,), optional
-        The weight vector, by default None
-    as_frame: bool
-        return output as a dataframe or a float
+        The weight vector, by default None.
+    as_frame : bool
+        Return output as a DataFrame or a float.
 
     Returns
     -------
-    pd.DataFrame
-        single row dataframe with the predictor names and the statistic value
+    pd.DataFrame or float
+        Single row DataFrame with the predictor names and the statistic value, or the statistic as a float.
     """
-    tot_weight = sample_weight.sum()
+
+    if sample_weight is None:
+        sample_weight = np.ones(len(x))
+    else:
+        sample_weight = np.asarray(sample_weight)
+        if sample_weight.sum() == 0:
+            raise ValueError("Sum of sample weights cannot be zero.")
+
     weighted_tab = pd.crosstab(x, y, sample_weight, aggfunc=sum).fillna(0)
-    chi2 = ss.chi2_contingency(weighted_tab)[0]
+    chi2 = ss.chi2_contingency(weighted_tab, correction=False)[0]
+    tot_weight = sample_weight.sum()
     phi2 = chi2 / tot_weight
     r, k = weighted_tab.shape
     phi2corr = max(0, phi2 - ((k - 1) * (r - 1)) / (tot_weight - 1))
@@ -311,8 +396,8 @@ def cramer_v(x, y, sample_weight=None, as_frame=False):
     v = np.sqrt(phi2corr / min((kcorr - 1), (rcorr - 1)))
 
     if as_frame:
-        x_name = x.name if isinstance(x, pd.Series) else "var"
-        y_name = y.name if isinstance(y, pd.Series) else "target"
+        x_name = x.name if x.name else "var1"
+        y_name = y.name if y.name else "var2"
         return pd.DataFrame(
             {"row": [x_name, y_name], "col": [y_name, x_name], "val": [v, v]}
         )
@@ -320,7 +405,7 @@ def cramer_v(x, y, sample_weight=None, as_frame=False):
         return v
 
 
-def cramer_v_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop"):
+def cramer_v_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop"):
     """cramer_v_matrix computes the weighted Cramer's V statistic for
     categorical-categorical association. This is a symmetric coefficient: V(x,y) = V(y,x)
 
@@ -336,7 +421,7 @@ def cramer_v_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop"):
     sample_weight : array-like of shape (n_samples,), optional
         The weight vector, by default None
     n_jobs : int, optional
-        the number of cores to use for the computation, by default -1
+        the number of cores to use for the computation, by default 1
     handle_na : str, optional
         either drop rows with na, fill na with 0 or do nothing, by default "drop"
 
@@ -375,7 +460,7 @@ def cramer_v_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop"):
         return None
 
 
-def cramer_v_series(X, target, sample_weight=None, n_jobs=-1, handle_na="drop"):
+def cramer_v_series(X, target, sample_weight=None, n_jobs=1, handle_na="drop"):
     """cramer_v_series computes the weighted Cramer's V statistic for
     categorical-categorical association. This is a symmetric coefficient: V(x,y) = V(y,x)
 
@@ -393,7 +478,7 @@ def cramer_v_series(X, target, sample_weight=None, n_jobs=-1, handle_na="drop"):
     sample_weight : array-like of shape (n_samples,), optional
         The weight vector, by default None
     n_jobs : int, optional
-        the number of cores to use for the computation, by default -1
+        the number of cores to use for the computation, by default 1
     handle_na : str, optional
         either drop rows with na, fill na with 0 or do nothing, by default "drop"
 
@@ -453,34 +538,32 @@ def _weighted_correlation_ratio(*args):
     float
         value of the correlation ratio
     """
-    # how many levels (predictor)
-    n_classes = len(args)
-    # convert to float 2-uple d'array
-    args = [as_float_array(a) for a in args]
-    # compute the total weight per level
+    # Convert to float array and compute weights
+    args = [(np.asarray(a[0], dtype=float), np.asarray(a[1])) for a in args]
     weight_per_class = np.array([a[1].sum() for a in args])
-    # total weight
-    tot_weight = np.sum(weight_per_class)
-    # weighted sum of squares
-    ss_alldata = sum((a[1] * safe_sqr(a[0])).sum(axis=0) for a in args)
-    # list of weighted sums
-    sums_args = [np.asarray((a[0] * a[1]).sum(axis=0)) for a in args]
+    tot_weight = weight_per_class.sum()
+
+    # Weighted sum of squares and list of weighted sums
+    ss_alldata = sum((a[1] * np.square(a[0])).sum(axis=0) for a in args)
+    sums_args = [np.sum(a[0] * a[1], axis=0) for a in args]
     square_of_sums_alldata = sum(sums_args) ** 2
-    square_of_sums_args = [s**2 for s in sums_args]
-    sstot = ss_alldata - square_of_sums_alldata / float(tot_weight)
-    ssbn = 0.0
-    for k, _ in enumerate(args):
-        ssbn += square_of_sums_args[k] / weight_per_class[k]
-    ssbn -= square_of_sums_alldata / float(tot_weight)
+
+    # Total sum of squares and between-classes sum of squares
+    sstot = ss_alldata - square_of_sums_alldata / tot_weight
+    ssbn = sum(np.square(s) / w for s, w in zip(sums_args, weight_per_class))
+    ssbn -= square_of_sums_alldata / tot_weight
+
+    # Handle constant features
     constant_features_idx = np.where(sstot == 0.0)[0]
-    if np.nonzero(ssbn)[0].size != ssbn.size and constant_features_idx.size:
+    if np.any(ssbn) and constant_features_idx.size:
         warnings.warn("Features %s are constant." % constant_features_idx, UserWarning)
-    etasq = ssbn / sstot
-    # flatten matrix to vector in sparse case
-    etasq = np.asarray(etasq).ravel()
-    return np.sqrt(etasq)
+
+    # Correlation Ratio calculation
+    etasq = np.divide(ssbn, sstot, out=np.zeros_like(ssbn), where=sstot != 0)
+    return np.sqrt(etasq).ravel()
 
 
+@symmetric_function
 def correlation_ratio(x, y, sample_weight=None, as_frame=False):
     """Compute the weighted correlation ratio. The association between a continuous predictor (y)
     and a categorical predictor (x). It can be weighted.
@@ -501,43 +584,46 @@ def correlation_ratio(x, y, sample_weight=None, as_frame=False):
     float
         value of the correlation ratio
     """
+    if not (isinstance(x, pd.Series) and isinstance(y, pd.Series)):
+        raise TypeError(
+            f"Both x and y must be pandas Series. The type of x: {type(x)} and The type of y: {type(y)}"
+        )
+
     if sample_weight is None:
         sample_weight = np.ones_like(y)
 
-    # one 2-uple per level of the categorical feature x
+    # Determine the categorical and continuous variables
     if x.dtype in ["category", "object", "bool"]:
-        args = [
-            (
-                y[safe_mask(y, x == k)],
-                sample_weight[safe_mask(sample_weight, x == k)],
-            )
-            for k in np.unique(x)
-        ]
+        categorical, continuous = x, y
     elif y.dtype in ["category", "object", "bool"]:
-        args = [
-            (
-                x[safe_mask(x, y == k)],
-                sample_weight[safe_mask(sample_weight, y == k)],
-            )
-            for k in np.unique(y)
-        ]
+        categorical, continuous = y, x
     else:
         raise TypeError(
-            "one of the two series should be categorical/object and the other numerical"
+            "One of the series must be categorical and the other numerical."
         )
 
+    # Prepare arguments for the weighted correlation ratio calculation
+    unique_categories = np.unique(categorical)
+    args = [
+        (continuous[categorical == category], sample_weight[categorical == category])
+        for category in unique_categories
+    ]
+
+    # Compute the weighted correlation ratio
+    v = _weighted_correlation_ratio(*args)[0]
+
+    # Format the result
     if as_frame:
-        x_name = x.name if isinstance(x, pd.Series) else "var"
-        y_name = y.name if isinstance(y, pd.Series) else "target"
-        v = _weighted_correlation_ratio(*args)[0]
+        x_name = x.name if x.name else "var1"
+        y_name = y.name if y.name else "var2"
         return pd.DataFrame(
             {"row": [x_name, y_name], "col": [y_name, x_name], "val": [v, v]}
         )
     else:
-        return _weighted_correlation_ratio(*args)[0]
+        return v
 
 
-def correlation_ratio_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop"):
+def correlation_ratio_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop"):
     """correlation_ratio_matrix computes the weighted Correlation Ratio for
     categorical-numerical association. This is a symmetric coefficient: CR(x,y) = CR(y,x)
 
@@ -552,7 +638,7 @@ def correlation_ratio_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop")
     sample_weight : array-like of shape (n_samples,), optional
         The weight vector, by default None
     n_jobs : int, optional
-        the number of cores to use for the computation, by default -1
+        the number of cores to use for the computation, by default 1
     handle_na : str, optional
         either drop rows with na, fill na with 0 or do nothing, by default "drop"
 
@@ -588,16 +674,14 @@ def correlation_ratio_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop")
             df=X,
             comb_list=comb_list,
             sample_weight=sample_weight,
-            n_jobs=-1,
+            n_jobs=n_jobs,
         )
         return lst
     else:
         return None
 
 
-def correlation_ratio_series(
-    X, target, sample_weight=None, n_jobs=-1, handle_na="drop"
-):
+def correlation_ratio_series(X, target, sample_weight=None, n_jobs=1, handle_na="drop"):
     """correlation_ratio_series computes the weighted correlation ration for
     categorical-numerical association. This is a symmetric coefficient: CR(x,y) = CR(y,x)
 
@@ -756,6 +840,7 @@ def wspearman(x, y, w):
     return wcorr(wrank(x, w), wrank(y, w), w)
 
 
+@symmetric_function
 def weighted_corr(x, y, sample_weight=None, as_frame=False, method="pearson"):
     """weighted_corr computes the weighted correlation coefficient (Pearson or Spearman)
 
@@ -777,6 +862,8 @@ def weighted_corr(x, y, sample_weight=None, as_frame=False, method="pearson"):
     float or pd.DataFrame
         weighted correlation coefficient
     """
+    if sample_weight is None:
+        sample_weight = np.ones_like(y)
 
     if method == "pearson":
         c = wcorr(x, y, sample_weight)
@@ -794,7 +881,7 @@ def weighted_corr(x, y, sample_weight=None, as_frame=False, method="pearson"):
 
 
 def wcorr_series(
-    X, target, sample_weight=None, n_jobs=-1, handle_na="drop", method="pearson"
+    X, target, sample_weight=None, n_jobs=1, handle_na="drop", method="pearson"
 ):
     """wcorr_series computes the weighted correlation coefficient (Pearson or Spearman) for
     continuous-continuous association. This is an symmetric coefficient: corr(x,y) = corr(y,x)
@@ -812,7 +899,7 @@ def wcorr_series(
     sample_weight : array-like of shape (n_samples,), optional
         The weight vector, by default None
     n_jobs : int, optional
-        the number of cores to use for the computation, by default -1
+        the number of cores to use for the computation, by default 1
     handle_na : str, optional
         either drop rows with na, fill na with 0 or do nothing, by default "drop"
     method : str
@@ -849,7 +936,7 @@ def wcorr_series(
         return None
 
 
-def wcorr_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop", method="pearson"):
+def wcorr_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop", method="pearson"):
     """wcorr_matrix computes the weighted correlation statistic for
     (Pearson or Spearman) for continuous-continuous association.
     This is an symmetric coefficient: corr(x,y) = corr(y,x)
@@ -902,7 +989,7 @@ def wcorr_matrix(X, sample_weight=None, n_jobs=-1, handle_na="drop", method="pea
                 df=X,
                 comb_list=comb_list,
                 sample_weight=sample_weight,
-                n_jobs=-1,
+                n_jobs=n_jobs,
             )
             return lst
         else:
@@ -977,180 +1064,112 @@ def association_series(
     target,
     features=None,
     sample_weight=None,
-    nom_nom_assoc="theil",
-    num_num_assoc="pearson",
-    nom_num_assoc="correlation_ratio",
+    nom_nom_assoc=weighted_theils_u,
+    num_num_assoc=partial(weighted_corr, method="spearman"),
+    nom_num_assoc=correlation_ratio,
     normalize=False,
-    n_jobs=-1,
+    n_jobs=1,
     handle_na="drop",
 ):
-    """association_series computes the association matrix for cont-cont, cat-cont and cat-cat.
-    predictors. The weighted correlation matrix is used for the cont-cont predictors.
-    The correlation ratio is used between cont-cat predictors and either the Cramer's V or Theil's U
-    matrix for cat-cat predictors. The Pearson or Spearman correlation coefficient is used for
-    the cont-cont association.
+    """
+    Computes the association series for different types of predictors.
+
+    This function calculates the association between the specified `target` and other predictors in `X`.
+    It supports different types of associations: nominal-nominal, numerical-numerical, and nominal-numerical.
 
     Parameters
     ----------
-    X : array-like of shape (n_samples, n_features)
-        predictor dataframe
+    X : array-like, shape (n_samples, n_features)
+        Predictor dataframe.
     target : str or int
-        the predictor name or index with which to compute association
+        The predictor name or index with which to compute the association.
     features : list of str, optional
-        list of features with which to compute the association
-    sample_weight : array-like of shape (n_samples,), optional
-        The weight vector, by default None
-    nom_nom_assoc : str or callable
-        If callable, a function which receives two `pd.Series` (and optionally a weight array) and returns a single number.
-        If string, name of nominal-nominal (categorical-categorical) association to use.
-        Options are 'cramer' for Cramer's V or `theil` for Theil's U. If 'theil',
-        heat-map columns are the provided information (U = U(row|col)).
-    num_num_assoc : str or callable
-        If callable, a function which receives two `pd.Series` and returns a single number.
-        If string, name of numerical-numerical association to use. Options are 'pearson'
-        for Pearson's R, 'spearman' for Spearman's R.
-    nom_num_assoc : str or callable
-        If callable, a function which receives two `pd.Series` and returns a single number.
-        If string, name of nominal-numerical association to use. Options are 'correlation_ratio'
-        for correlation ratio
-    normalize : bool
-        either to normalize or not the scores
+        List of features with which to compute the association. If None, all features in X are used.
+    sample_weight : array-like, shape (n_samples,), optional
+        The weight vector, by default None.
+    nom_nom_assoc : callable
+        Function to compute the nominal-nominal (categorical-categorical) association.
+        It should take two pd.Series and an optional weight array, and return a single number.
+    num_num_assoc : callable
+        Function to compute the numerical-numerical association.
+        It should take two pd.Series and return a single number.
+    nom_num_assoc : callable
+        Function to compute the nominal-numerical association.
+        It should take two pd.Series and return a single number.
+    normalize : bool, optional
+        Whether to normalize the scores or not. If True, scores are normalized to the range [0, 1].
     n_jobs : int, optional
-        the number of cores to use for the computation, by default -1
+        The number of cores to use for the computation. The default, -1, uses all available cores.
     handle_na : str, optional
-        either drop rows with na, fill na with 0 or do nothing, by default "drop"
+        How to handle NA values. Options are 'drop', 'fill', and None. The default, 'drop', drops rows with NA values.
 
     Returns
     -------
     pd.Series
-        a series with all the association values with the target column
+        A series with all the association values with the target column, sorted in descending order.
 
     Raises
     ------
     TypeError
-        if features is not None and is not a list of strings
+        If `features` is provided but is not a list of strings.
+
+    Examples
+    --------
+    >>> import pandas as pd
+    >>> from sklearn import datasets
+    >>> iris = datasets.load_iris()
+    >>> X = pd.DataFrame(iris.data, columns=iris.feature_names)
+    >>> association_series(X, 'sepal length (cm)', num_num_assoc=my_num_num_function)
+
+    Notes
+    -----
+    The function dynamically selects the appropriate association method based on the data types
+    of the target and other predictors. For numerical-numerical associations,
+    it uses `num_num_assoc`; for nominal-nominal, `nom_nom_assoc`; and for nominal-numerical, `nom_num_assoc`.
     """
-    # sanity checks
+    # Input validation and preprocessing
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
-
-    if features and is_list_of_str(features):
+    if features is not None:
+        if not all(isinstance(f, str) for f in features):
+            raise TypeError("Features must be a list of strings.")
         data = X[features + [target]]
-    elif features and (not is_list_of_str(features)):
-        raise TypeError("features is not a list of strings")
-    elif features is None:
-        data = X
+    else:
+        data = X.copy()
 
-    dtypes_dic = create_dtype_dict(X)
+    # Determine the data types
+    is_numeric = pd.api.types.is_numeric_dtype
+    numeric_cols = data.select_dtypes(include=[np.number]).columns.tolist()
+    categorical_cols = data.select_dtypes(exclude=[np.number]).columns.tolist()
 
-    # only numeric, NaN already checked, not repeating the process
-    if X.dtypes.map(is_numeric_dtype).all():
-        if callable(num_num_assoc):
-            return _callable_association_series_fn(
-                assoc_fn=num_num_assoc,
-                X=data,
-                target=target,
-                sample_weight=sample_weight,
-                n_jobs=n_jobs,
-                kind="num-num",
-            )
-        else:
-            return wcorr_series(
-                data,
-                target,
-                sample_weight,
-                n_jobs,
-                handle_na=None,
-                method=num_num_assoc,
-            )
-
-    # only categorical (here understood as no numerical columns)
-    if not X.dtypes.map(is_numeric_dtype).any():
-        if callable(nom_nom_assoc):
-            return _callable_association_series_fn(
-                assoc_fn=nom_nom_assoc,
-                X=data,
-                target=target,
-                sample_weight=sample_weight,
-                n_jobs=n_jobs,
-                kind="nom-nom",
-            )
-        elif nom_nom_assoc == "theil":
-            return theils_u_series(data, target, sample_weight, n_jobs, handle_na=None)
-        elif nom_nom_assoc == "cramer":
-            return cramer_v_series(data, target, sample_weight, n_jobs, handle_na=None)
-
-    # cat-num
-    if callable(nom_num_assoc):
+    # Compute associations based on data types
+    if all(is_numeric(data[col]) for col in data.columns):
         assoc_series = _callable_association_series_fn(
-            assoc_fn=nom_num_assoc,
-            X=data,
-            target=target,
-            sample_weight=sample_weight,
-            n_jobs=n_jobs,
-            kind="nom-num",
+            num_num_assoc, data, target, sample_weight, n_jobs, "num-num"
+        )
+    elif all(not is_numeric(data[col]) for col in data.columns):
+        assoc_series = _callable_association_series_fn(
+            nom_nom_assoc, data, target, sample_weight, n_jobs, "nom-nom"
         )
     else:
-        assoc_series = correlation_ratio_series(
-            data, target, sample_weight, n_jobs, handle_na=None
+        assoc_series = _callable_association_series_fn(
+            nom_num_assoc, data, target, sample_weight, n_jobs, "nom-num"
         )
 
+        # Additional association for target-specific types
+        if is_numeric(data[target]):
+            assoc_series_complement = _callable_association_series_fn(
+                num_num_assoc, data, target, sample_weight, n_jobs, "num-num"
+            )
+            assoc_series = pd.concat([assoc_series, assoc_series_complement])
+        elif not is_numeric(data[target]):
+            assoc_series_complement = _callable_association_series_fn(
+                nom_nom_assoc, data, target, sample_weight, n_jobs, "nom-nom"
+            )
+            assoc_series = pd.concat([assoc_series, assoc_series_complement])
+
+    # Normalize if required
     if normalize:
         assoc_series = (assoc_series - assoc_series.min()) / np.ptp(assoc_series)
-
-    # cat-cat
-    if dtypes_dic[target] == "cat":
-        if callable(nom_nom_assoc):
-            assoc_series_complement = _callable_association_series_fn(
-                assoc_fn=nom_nom_assoc,
-                X=data,
-                target=target,
-                sample_weight=sample_weight,
-                n_jobs=n_jobs,
-                kind="nom-nom",
-            )
-        elif nom_nom_assoc == "theil":
-            assoc_series_complement = theils_u_series(
-                data, target, sample_weight, n_jobs, handle_na=None
-            )
-        else:
-            assoc_series_complement = cramer_v_series(
-                data, target, sample_weight, n_jobs, handle_na=None
-            )
-
-        if normalize:
-            assoc_series_complement = (
-                assoc_series_complement - assoc_series_complement.min()
-            ) / np.ptp(assoc_series_complement)
-
-        assoc_series = pd.concat([assoc_series, assoc_series_complement])
-
-    # num-num
-    if dtypes_dic[target] == "num":
-        if callable(num_num_assoc):
-            assoc_series_complement = _callable_association_series_fn(
-                assoc_fn=num_num_assoc,
-                X=data,
-                target=target,
-                sample_weight=sample_weight,
-                n_jobs=n_jobs,
-                kind="num-num",
-            )
-        else:
-            assoc_series_complement = wcorr_series(
-                data,
-                target,
-                sample_weight,
-                n_jobs,
-                handle_na=None,
-                method=num_num_assoc,
-            )
-
-        if normalize:
-            assoc_series_complement = (
-                assoc_series_complement - assoc_series_complement.min()
-            ) / np.ptp(assoc_series_complement)
-
-        assoc_series = pd.concat([assoc_series, assoc_series_complement])
 
     return assoc_series.sort_values(ascending=False)
 
@@ -1158,124 +1177,87 @@ def association_series(
 def association_matrix(
     X,
     sample_weight=None,
-    nom_nom_assoc="theil",
-    num_num_assoc="pearson",
-    nom_num_assoc="correlation_ratio",
-    n_jobs=-1,
+    nom_nom_assoc=weighted_theils_u,
+    num_num_assoc=weighted_corr,
+    nom_num_assoc=correlation_ratio,
+    n_jobs=1,
     handle_na="drop",
-    nom_nom_comb=None,
-    num_num_comb=None,
-    nom_num_comb=None,
 ):
-    """association_matrix computes the association matrix for cont-cont, cat-cont and cat-cat.
-    predictors. The weighted correlation matrix is used for the cont-cont predictors.
-    The correlation ratio is used between cont-cat predictors and either the Cramer's V or Theil's U
-    matrix for cat-cat predictors.
-
-    The association matrix is not symmetric is Theil is used. The obeservations might be weighted.
+    """
+    Computes the association matrix for continuous-continuous, categorical-continuous,
+    and categorical-categorical predictors using specified callable functions.
 
     Parameters
     ----------
     X : array-like of shape (n_samples, n_features)
-        predictor dataframe
+        Predictor dataframe.
     sample_weight : array-like of shape (n_samples,), optional
-        The weight vector, by default None
-    nom_nom_assoc : str or callable
-        If callable, a function which receives two `pd.Series` (and optionally a weight array) and returns a single number.
-        If string, name of nominal-nominal (categorical-categorical) association to use.
-        Options are 'cramer' for Cramer's V or `theil` for Theil's U. If 'theil',
-        heat-map columns are the provided information (U = U(row|col)).
-    num_num_assoc : str or callable
-        If callable, a function which receives two `pd.Series` and returns a single number.
-        If string, name of numerical-numerical association to use. Options are 'pearson'
-        for Pearson's R, 'spearman' for Spearman's R.
-    nom_num_assoc : str or callable
-        If callable, a function which receives two `pd.Series` and returns a single number.
-        If string, name of nominal-numerical association to use. Options are 'correlation_ratio'
-        for correlation ratio
+        The weight vector, by default None.
+    nom_nom_assoc : callable
+        Function to compute the categorical-categorical association.
+    num_num_assoc : callable
+        Function to compute the numerical-numerical association.
+    nom_num_assoc : callable
+        Function to compute the categorical-numerical association.
     n_jobs : int, optional
-        the number of cores to use for the computation, by default -1
+        The number of cores to use for the computation, by default 1.
     handle_na : str, optional
-        either drop rows with na, fill na with 0 or do nothing, by default "drop"
-    nom_nom_comb_list : list of 2-uple of strings
-        Pairs of column names corresponding to the entries for nom_nom associations.
-        If asymmetrical association, take care of providing an exhaustive list of column name pairs.
-    num_num_comb_list : list of 2-uple of strings
-        Pairs of column names corresponding to the entries for num_num associations
-    nom_num_comb_list : list of 2-uple of strings
-        Pairs of column names corresponding to the entries for nom_num associations
+        How to handle NA values ('drop', 'fill', or None), by default "drop".
 
     Returns
     -------
     pd.DataFrame
-        the association matrix
+        The association matrix.
     """
-    # sanity checks
+    # Input validation and preprocessing
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
 
-    # Cramer's V only for categorical columns
-    # in GLM supposed to be all the columns
     n_cat_cols = len(dtypes_dic["cat"])
     n_num_cols = len(dtypes_dic["num"])
-    
+
     df_to_concat = []
 
-    # num-num, NaNs already checked above, not repeating the process
+    # Numerical-Numerical Associations
     if n_num_cols >= 2:
-        if callable(num_num_assoc):
-            w_num_num = _callable_association_matrix_fn(
-                assoc_fn=num_num_assoc,
-                cols_comb=num_num_comb,
-                kind="num-num",
-                X=X,
-                sample_weight=sample_weight,
-                n_jobs=n_jobs,
-            )
-        else:
-            w_num_num = wcorr_matrix(
-                X, sample_weight, n_jobs, handle_na=None, method=num_num_assoc
-            )
-        df_to_concat.append(w_num_num) 
+        w_num_num = _callable_association_matrix_fn(
+            assoc_fn=num_num_assoc,
+            X=X,
+            sample_weight=sample_weight,
+            n_jobs=n_jobs,
+            kind="num-num",
+        )
+        df_to_concat.append(w_num_num)
 
-    # nom-num
-    if (n_num_cols >= 1) and (n_cat_cols >= 1):
-        if callable(nom_num_assoc):
-            w_nom_num = _callable_association_matrix_fn(
-                assoc_fn=nom_num_assoc,
-                cols_comb=nom_num_comb,
-                kind="nom-num",
-                X=X,
-                sample_weight=sample_weight,
-                n_jobs=n_jobs,
-            )
-        else:
-            w_nom_num = correlation_ratio_matrix(X, sample_weight, n_jobs, handle_na=None)
-        df_to_concat.append(w_nom_num) 
+    # Categorical-Numerical Associations
+    if n_num_cols >= 1 and n_cat_cols >= 1:
+        w_nom_num = _callable_association_matrix_fn(
+            assoc_fn=nom_num_assoc,
+            X=X,
+            sample_weight=sample_weight,
+            n_jobs=n_jobs,
+            kind="nom-num",
+        )
+        df_to_concat.append(w_nom_num)
 
-    # nom-nom
+    # Categorical-Categorical Associations
     if n_cat_cols >= 2:
-        if callable(nom_nom_assoc):
-            w_nom_nom = _callable_association_matrix_fn(
-                assoc_fn=nom_nom_assoc,
-                cols_comb=nom_nom_comb,
-                kind="nom-nom",
-                X=X,
-                sample_weight=sample_weight,
-                n_jobs=n_jobs,
-            )
-        elif nom_nom_assoc == "cramer":
-            w_nom_nom = cramer_v_matrix(X, sample_weight, n_jobs, handle_na=None)
-        else:
-            w_nom_nom = theils_u_matrix(X, sample_weight, n_jobs, handle_na=None)
-        df_to_concat.append(w_nom_nom) 
+        w_nom_nom = _callable_association_matrix_fn(
+            assoc_fn=nom_nom_assoc,
+            X=X,
+            sample_weight=sample_weight,
+            n_jobs=n_jobs,
+            kind="nom-nom",
+        )
+        df_to_concat.append(w_nom_nom)
 
-
-    return pd.concat(df_to_concat, ignore_index=True)
+    return (
+        pd.concat(df_to_concat, ignore_index=True) if df_to_concat else pd.DataFrame()
+    )
 
 
 def _callable_association_series_fn(
-    assoc_fn, X, target, sample_weight=None, n_jobs=-1, kind="nom-nom"
+    assoc_fn, X, target, sample_weight=None, n_jobs=1, kind="nom-nom"
 ):
     """_callable_association_series_fn private function, utility for computing association series
     for a callable custom association
@@ -1291,7 +1273,7 @@ def _callable_association_series_fn(
     sample_weight : array-like of shape (n_samples,), optional
         The weight vector, by default None
     n_jobs : int, optional
-        the number of cores to use for the computation, by default -1
+        the number of cores to use for the computation, by default 1
     kind : str
         kind of association, either 'num-num' or 'nom-nom' or 'nom-num'
 
@@ -1305,79 +1287,55 @@ def _callable_association_series_fn(
     ValueError
         if kind is not 'num-num' or 'nom-nom' or 'nom-num'
     """
+    X, sample_weight = _check_association_input(X, sample_weight, handle_na="drop")
+
+    # Validate 'kind' parameter
+    valid_kinds = ["num-num", "nom-nom", "nom-num"]
+    if kind not in valid_kinds:
+        raise ValueError(f"kind must be one of {valid_kinds}")
+
+    # Create dtype dictionaries
     col_dtypes_dic = create_dtype_dict(X)
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
 
-    if kind == "nom-nom":
-        if col_dtypes_dic[target] != "cat":
-            raise TypeError("the target column is not categorical")
-        nom_cols = dtypes_dic["cat"]
-        if nom_cols:
-            # define the number of cores
-            n_jobs = (
-                min(cpu_count(), len(nom_cols))
-                if n_jobs == -1
-                else min(cpu_count(), n_jobs)
+    # Determine predictor list based on 'kind'
+    if kind in ["nom-nom", "nom-num"]:
+        if kind == "nom-nom" and col_dtypes_dic[target] != "cat":
+            raise TypeError(
+                "Target column is not categorical for 'nom-nom' association"
             )
-            # parallelize jobs
-            _assoc_fn = partial(_compute_series, func_xyw=assoc_fn)
-            return parallel_df(
-                func=_assoc_fn,
-                df=X[nom_cols],
-                series=X[target],
-                sample_weight=sample_weight,
-                n_jobs=n_jobs,
-            )
-        else:
-            return None
+        pred_list = (
+            dtypes_dic["cat"]
+            if kind == "nom-nom"
+            else dtypes_dic["num"]
+            if col_dtypes_dic[target] == "cat"
+            else dtypes_dic["cat"]
+        )
+    else:  # kind == 'num-num'
+        pred_list = dtypes_dic["num"]
 
-    elif kind == "nom-num":
-        if col_dtypes_dic[target] == "cat":
-            # if the target is categorical, pick only num predictors
-            pred_list = dtypes_dic["num"]
-        else:
-            # if the target is numerical, the 2nd pred should be categorical
-            pred_list = dtypes_dic["cat"]
+    # Return None if no predictors are available
+    if not pred_list:
+        return None
 
-        if pred_list:
-            # define the number of cores
-            n_jobs = (
-                min(cpu_count(), len(pred_list))
-                if n_jobs == -1
-                else min(cpu_count(), n_jobs)
-            )
-            # parallelize jobs
-            _assoc_fn = partial(_compute_series, func_xyw=assoc_fn)
-            return parallel_df(
-                func=_assoc_fn,
-                df=X[pred_list],
-                series=X[target],
-                sample_weight=sample_weight,
-                n_jobs=n_jobs,
-            )
-        else:
-            return None
+    # Define the number of cores
+    n_jobs = (
+        min(cpu_count(), len(pred_list)) if n_jobs == -1 else min(cpu_count(), n_jobs)
+    )
 
-    elif kind == "num-num":
-        num_cols = dtypes_dic["num"]
-        if num_cols:
-            # parallelize jobs
-            _assoc_fn = partial(_compute_series, func_xyw=assoc_fn)
-            return parallel_df(
-                func=_assoc_fn,
-                df=X[num_cols],
-                series=X[target],
-                sample_weight=sample_weight,
-                n_jobs=n_jobs,
-            )
-        else:
-            return None
-    else:
-        raise ValueError("kind can be 'num-num' or 'nom-num' or 'nom-nom'")
+    # Setup parallel computation
+    _assoc_fn = partial(_compute_series, func_xyw=assoc_fn)
+    return parallel_df(
+        func=_assoc_fn,
+        df=X[pred_list],
+        series=X[target],
+        sample_weight=sample_weight,
+        n_jobs=n_jobs,
+    )
 
 
 def _callable_association_matrix_fn(
-    assoc_fn, X, sample_weight=None, n_jobs=-1, kind="nom-nom", cols_comb=None
+    assoc_fn, X, sample_weight=None, n_jobs=1, kind="nom-nom", cols_comb=None
 ):
     """_callable_association_matrix_fn private function, utility for computing association matrix
     for a callable custom association
@@ -1402,47 +1360,44 @@ def _callable_association_matrix_fn(
     pd.DataFrame
         the association matrix
     """
+    # Validate 'kind' parameter
+    valid_kinds = ["num-num", "nom-nom", "nom-num"]
+    if kind not in valid_kinds:
+        raise ValueError(f"kind must be one of {valid_kinds}")
+
+    # Create dtype dictionaries
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
 
+    # Determine column combinations based on 'kind' and 'cols_comb'
     if cols_comb is None:
         if kind == "num-num":
             selected_cols = dtypes_dic["num"]
+            cols_comb = create_col_combinations(assoc_fn, selected_cols)
         elif kind == "nom-nom":
             selected_cols = dtypes_dic["cat"]
+            cols_comb = create_col_combinations(assoc_fn, selected_cols)
         elif kind == "nom-num":
-            cat_cols = dtypes_dic["cat"]
-            num_cols = dtypes_dic["num"]
-            if cat_cols and num_cols:
-                # explicitely store the unique 2-combinations of column names
-                # the first one should be the categorical predictor
-                selected_cols = list(product(cat_cols, num_cols))
-        else:
-            selected_cols = None
+            # cols_comb = create_col_combinations(assoc_fn, selected_cols)
+            cols_comb = list(product(dtypes_dic["cat"], dtypes_dic["num"]))
 
-        if selected_cols:
-            # explicitely store the unique 2-combinations of column names
-            cols_comb = [comb for comb in combinations(selected_cols, 2)]
-            _assoc_fn = partial(_compute_matrix_entries, func_xyw=assoc_fn)
-            assoc = parallel_matrix_entries(
-                func=_assoc_fn,
-                df=X,
-                comb_list=cols_comb,
-                sample_weight=sample_weight,
-                n_jobs=n_jobs,
-            )
+    # Return None if no column combinations are available
+    if not cols_comb:
+        return None
 
-        else:
-            assoc = None
-    else:
-        _assoc_fn = partial(_compute_matrix_entries, func_xyw=assoc_fn)
-        assoc = parallel_matrix_entries(
-            func=_assoc_fn,
-            df=X,
-            comb_list=cols_comb,
-            sample_weight=sample_weight,
-            n_jobs=n_jobs,
-        )
-    return assoc
+    # Define the number of cores
+    n_jobs = (
+        min(cpu_count(), len(cols_comb)) if n_jobs == -1 else min(cpu_count(), n_jobs)
+    )
+
+    # Setup parallel computation
+    _assoc_fn = partial(_compute_matrix_entries, func_xyw=assoc_fn)
+    return parallel_matrix_entries(
+        func=_assoc_fn,
+        df=X,
+        comb_list=cols_comb,
+        sample_weight=sample_weight,
+        n_jobs=n_jobs,
+    )
 
 
 ################################
@@ -1551,7 +1506,7 @@ def f_cat_regression(x, y, sample_weight=None, as_frame=False):
         return f_oneway_weighted(*args)[0]
 
 
-def f_cat_regression_parallel(X, y, sample_weight=None, n_jobs=-1, handle_na="drop"):
+def f_cat_regression_parallel(X, y, sample_weight=None, n_jobs=1, handle_na="drop"):
     """f_cat_regression_parallel computes the weighted ANOVA F-value for the provided categorical predictors
     using parallelization of the code (continuous target, categorical predictor).
 
@@ -1564,7 +1519,7 @@ def f_cat_regression_parallel(X, y, sample_weight=None, n_jobs=-1, handle_na="dr
     sample_weight : array-like of shape (n_samples,), optional
         The weight vector, by default None
     n_jobs : int, optional
-        the number of cores to use for the computation, by default -1
+        the number of cores to use for the computation, by default 1
     handle_na : str, optional
         either drop rows with na, fill na with 0 or do nothing, by default "drop"
 

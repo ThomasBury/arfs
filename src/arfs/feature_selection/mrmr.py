@@ -110,7 +110,7 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         denominator_func=np.mean,
         only_same_domain=False,
         return_scores=False,
-        n_jobs=-1,
+        n_jobs=1,
         show_progress=True,
     ):
         self.n_features_to_select = n_features_to_select

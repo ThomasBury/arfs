@@ -27,7 +27,14 @@ from sklearn.feature_selection._base import SelectorMixin
 # ARFS
 from .base import BaseThresholdSelector
 from ..utils import create_dtype_dict
-from ..association import association_matrix, xy_to_matrix, plot_association_matrix
+from ..association import (
+    association_matrix,
+    xy_to_matrix,
+    plot_association_matrix,
+    weighted_theils_u,
+    weighted_corr,
+    correlation_ratio,
+)
 from ..preprocessing import OrdinalEncoderPandas
 
 
@@ -296,10 +303,10 @@ class CollinearityThreshold(SelectorMixin, BaseEstimator):
         self,
         threshold=0.80,
         method="association",
-        n_jobs=-1,
-        nom_nom_assoc="theil",
-        num_num_assoc="spearman",
-        nom_num_assoc="correlation_ratio",
+        n_jobs=1,
+        nom_nom_assoc=weighted_theils_u,
+        num_num_assoc=weighted_corr,
+        nom_num_assoc=correlation_ratio,
     ):
         self.threshold = threshold
         self.method = method
@@ -444,7 +451,7 @@ def _recursive_collinear_elimination(association_matrix, threshold):
 
     while True:
         most_collinear_feature, to_drop = _most_collinear(dum, threshold)
-        
+
         # Break if no more features to drop
         if not to_drop:
             break

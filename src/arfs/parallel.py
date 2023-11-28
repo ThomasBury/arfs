@@ -39,20 +39,23 @@ def parallel_matrix_entries(func, df, comb_list, sample_weight=None, n_jobs=-1):
     pd.DataFrame
         concatenated results into a single pandas DF
     """
+    # Determining the number of jobs
+    n_jobs = cpu_count() if n_jobs == -1 else min(cpu_count(), n_jobs)
 
     if n_jobs == 1:
-        return func(X=df, sample_weight=sample_weight, comb_list=comb_list)
+        lst = func(X=df, sample_weight=sample_weight, comb_list=comb_list)
+        return pd.concat(lst, ignore_index=True).sort_values("val", ascending=False)
 
-    n_jobs = (
-        min(cpu_count(), len(df.columns)) if n_jobs == -1 else min(cpu_count(), n_jobs)
-    )
     comb_chunks = np.array_split(comb_list, n_jobs)
     lst = Parallel(n_jobs=n_jobs)(
         delayed(func)(X=df, sample_weight=sample_weight, comb_list=comb_chunk)
         for comb_chunk in comb_chunks
     )
-    # return flatten list of pandas DF
-    return pd.concat(list(chain(*lst)), ignore_index=True)
+    # Directly return the single DataFrame if lst contains only one element
+    if len(lst) == 1:
+        return lst[0]
+    else:
+        return pd.concat(list(chain(*lst)), ignore_index=True)
 
 
 def parallel_df(func, df, series, sample_weight=None, n_jobs=-1):
@@ -77,19 +80,25 @@ def parallel_df(func, df, series, sample_weight=None, n_jobs=-1):
     pd.DataFrame
         concatenated results into a single pandas DF
     """
+    # Determining the number of jobs
+    n_jobs = cpu_count() if n_jobs == -1 else min(cpu_count(), n_jobs)
 
     if n_jobs == 1:
-        return func(df, series, sample_weight).sort_values(ascending=False)
+        lst = func(df, series, sample_weight).sort_values(ascending=False)
 
-    n_jobs = (
-        min(cpu_count(), len(df.columns)) if n_jobs == -1 else min(cpu_count(), n_jobs)
-    )
-    col_chunks = np.array_split(range(len(df.columns)), n_jobs)
-    lst = Parallel(n_jobs=n_jobs)(
-        delayed(func)(df.iloc[:, col_chunk], series, sample_weight)
-        for col_chunk in col_chunks
-    )
-    return pd.concat(lst).sort_values(ascending=False)
+        return (
+            pd.concat(lst, ignore_index=True).sort_values("val", ascending=False)
+            if isinstance(lst, list)
+            else lst
+        )
+    else:
+        col_chunks = np.array_split(range(len(df.columns)), n_jobs)
+        lst = Parallel(n_jobs=n_jobs)(
+            delayed(func)(df.iloc[:, col_chunk], series, sample_weight)
+            for col_chunk in col_chunks
+        )
+
+        return pd.concat(lst).sort_values(ascending=False)
 
 
 def _compute_series(
@@ -157,15 +166,9 @@ def _compute_matrix_entries(
     pd.DataFrame
         concatenated results into a single pandas DF
     """
-    v_df_list = []
-    for comb in comb_list:
-        v_df_list.append(
-            func_xyw(
-                x=X[comb[0]],
-                y=X[comb[1]],
-                sample_weight=sample_weight,
-                as_frame=True,
-            )
-        )
+    v_df_list = [
+        func_xyw(x=X[comb[0]], y=X[comb[1]], sample_weight=sample_weight, as_frame=True)
+        for comb in comb_list
+    ]
 
     return v_df_list

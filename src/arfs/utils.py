@@ -37,6 +37,7 @@ qualitative_colors = [
 #                   #
 #####################
 
+
 def concat_or_group(col, x, max_length=25):
     """
     Concatenate unique values from a column or return a group value.
@@ -79,8 +80,12 @@ def concat_or_group(col, x, max_length=25):
     >>> {'Category': {1: 'gr_1', 2: 'gr_2', 3: 'E'}}
     """
     unique_values = x[col].unique()
-    concat_str = " / ".join(map(str, unique_values)) 
-    return concat_str if len(concat_str) < max_length else concat_str[:7] + "/.../" + concat_str[-7:]
+    concat_str = " / ".join(map(str, unique_values))
+    return (
+        concat_str
+        if len(concat_str) < max_length
+        else concat_str[:7] + "/.../" + concat_str[-7:]
+    )
 
 
 def reset_plot():
@@ -498,7 +503,9 @@ def _get_titanic_data():
     # Fetch Titanic data and add random cat and numbers
     # Example taken from https://scikit-learn.org/stable/auto_examples/inspection/
     # plot_permutation_importance.html#sphx-glr-auto-examples-inspection-plot-permutation-importance-py
-    X, y = fetch_openml("titanic", version=1, as_frame=True, return_X_y=True)
+    X, y = fetch_openml(
+        "titanic", version=1, as_frame=True, return_X_y=True, parser="auto"
+    )
     rng = np.random.RandomState(seed=42)
     nice_guys = ["Rick", "Bender", "Cartman", "Morty", "Fry", "Vador", "Thanos"]
     X["random_cat"] = np.random.choice(nice_guys, X.shape[0])
