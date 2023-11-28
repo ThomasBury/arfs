@@ -314,11 +314,12 @@ class Leshy(SelectorMixin, BaseEstimator):
             Nothing but attributes
 
         """
-        try:
-            from fasttreeshap import TreeExplainer as FastTreeExplainer
-        except ImportError:
-            warnings.warn("fasttreeshap is not installed. Fallback to shap.")
-            self.importance = "shap"
+        if self.importance == "fastshap":
+            try:
+                from fasttreeshap import TreeExplainer as FastTreeExplainer
+            except ImportError:
+                warnings.warn("fasttreeshap is not installed. Fallback to shap.")
+                self.importance = "shap"
 
         if isinstance(X, pd.DataFrame):
             self.feature_names_in_ = X.columns.to_numpy()
