@@ -1,4 +1,8 @@
 # Changes
+# 2.2.0
+ - [BUG] fix the collinearity feature elimination
+ - [BUG] fix the feature importance if fasttreeshap not installed
+ - [REFACTORING] refactor the association module for removing redundancy and faster computation
 # 2.1.3
  - [BUG] fix the hardcoded threshold in collinearity elimination, closes #33
 # 2.1.2
