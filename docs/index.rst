@@ -21,6 +21,7 @@ Documentation last change: |today|
 
    notebooks/preprocessing.ipynb
    notebooks/basic_feature_selection.ipynb
+   notebooks/association_and_feature_selection.ipynb
    notebooks/arfs_classification.ipynb
    notebooks/arfs_regression.ipynb
    notebooks/arfs_large_data_sampling.ipynb
