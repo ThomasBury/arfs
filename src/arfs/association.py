@@ -1539,6 +1539,7 @@ def f_cat_regression_parallel(X, y, sample_weight=None, n_jobs=1, handle_na="dro
         y.name = "target"
 
     target = y.name
+    X = X.copy()
     X[target] = y.values
     # sanity checks
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
@@ -1611,6 +1612,7 @@ def f_cont_regression_parallel(
         y.name = "target"
 
     target = y.name
+    X = X.copy()
     X[target] = y.values
     # sanity checks
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
@@ -1779,6 +1781,7 @@ def f_cont_classification_parallel(
         y.name = "target"
 
     target = y.name
+    X = X.copy()
     X[target] = y.values
     # sanity checks
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
@@ -1851,6 +1854,7 @@ def f_cat_classification_parallel(
         y.name = "target"
 
     target = y.name
+    X = X.copy()
     X[target] = y.values
     # sanity checks
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
@@ -1879,7 +1883,7 @@ def f_cat_classification_parallel(
 
 
 def f_stat_classification_parallel(
-    X, y, sample_weight=None, n_jobs=-1, force_finite=True, handle_na="drop"
+    X, y, sample_weight=None, n_jobs=1, force_finite=True, handle_na="drop"
 ):
     """
     Compute the weighted ANOVA F-value for the provided categorical and numerical predictors using parallelization.
@@ -1893,7 +1897,7 @@ def f_stat_classification_parallel(
     sample_weight : array-like of shape (n_samples,), optional
         The weight vector, by default None.
     n_jobs : int, optional
-        The number of cores to use for the computation, by default -1.
+        The number of cores to use for the computation, by default 1.
     handle_na : str, optional
         Either drop rows with NA, fill NA with 0, or do nothing, by default "drop".
     force_finite : bool, optional
