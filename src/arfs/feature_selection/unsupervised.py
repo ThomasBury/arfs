@@ -445,7 +445,6 @@ def _most_collinear(association_matrix, threshold):
         .abs()
         .sum(axis=1)
     )
-    most_collinear_series /= 2
     return most_collinear_series.sort_values(ascending=False).index[0], to_drop
 
 
