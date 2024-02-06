@@ -424,16 +424,12 @@ class CollinearityThreshold(SelectorMixin, BaseEstimator):
 
 
 def _most_collinear(association_matrix, threshold):
-    cols_to_drop = [
-        column
-        for column in association_matrix.columns
-        if any(association_matrix.loc[:, column].abs() > threshold)
-    ]
-    rows_to_drop = [
-        row
-        for row in association_matrix.index
-        if any(association_matrix.loc[row, :].abs() > threshold)
-    ]
+    cols_to_drop = association_matrix.loc[
+        :, (association_matrix.abs() > threshold).any(axis=0)
+    ].columns.values
+    rows_to_drop = association_matrix.loc[
+        (association_matrix.abs() > threshold).any(axis=1), :
+    ].index.values
     to_drop = list(set(cols_to_drop).union(set(rows_to_drop)))
     most_collinear_series = (
         association_matrix[to_drop].abs().sum(axis=1).sort_values(ascending=False)
