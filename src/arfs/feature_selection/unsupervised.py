@@ -431,6 +431,8 @@ def _most_collinear(association_matrix, threshold):
         (association_matrix.abs() > threshold).any(axis=1), :
     ].index.values
     to_drop = list(set(cols_to_drop).union(set(rows_to_drop)))
+    if not to_drop:
+        return None, None
     most_collinear_series = (
         association_matrix[to_drop].abs().sum(axis=1).sort_values(ascending=False)
     )
