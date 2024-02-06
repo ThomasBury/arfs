@@ -458,7 +458,8 @@ def _recursive_collinear_elimination(association_matrix, threshold):
         # Break if no more features to drop
         if not to_drop:
             break
-
+        # the if statement below can probably also be removed since we can only
+        # remove features we have left in dum
         if most_collinear_feature not in most_collinear_features:
             most_collinear_features.append(most_collinear_feature)
             dum = dum.drop(columns=most_collinear_feature, index=most_collinear_feature)
