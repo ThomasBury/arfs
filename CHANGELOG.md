@@ -1,4 +1,8 @@
 # Changes
+
+# 2.2.3
+ - [BUG] change the default of the weighted correlation for consistency with existing doc
+ - [ENHANCEMENTS] speedup the correlation feature selector
 # 2.2.1
  - [BUG] add copy() to prevent modifying the input pandas DF in the mrmr when fitting the mrmr selector
 # 2.2.0
