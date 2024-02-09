@@ -424,25 +424,28 @@ class CollinearityThreshold(SelectorMixin, BaseEstimator):
 
 
 def _most_collinear(association_matrix, threshold):
-    cols_to_drop = [
-        column
-        for column in association_matrix.columns
-        if any(association_matrix.loc[:, column].abs() > threshold)
-    ]
-    rows_to_drop = [
-        row
-        for row in association_matrix.index
-        if any(association_matrix.loc[row, :].abs() > threshold)
-    ]
+    cols_to_drop = association_matrix.loc[
+        :, (association_matrix.abs() > threshold).any(axis=0)
+    ].columns.values
+    rows_to_drop = association_matrix.loc[
+        (association_matrix.abs() > threshold).any(axis=1), :
+    ].index.values
     to_drop = list(set(cols_to_drop).union(set(rows_to_drop)))
+    if not to_drop:
+        return None, None
+    # for features in `to_drop` sum up their column and row values to find
+    # the most collinear feature
     most_collinear_series = (
-        association_matrix[to_drop].abs().sum(axis=1).sort_values(ascending=False)
+        association_matrix.loc[:, to_drop]
+        .abs()
+        .sum(axis=0)
     )
     most_collinear_series += (
-        association_matrix[to_drop].abs().sum(axis=0).sort_values(ascending=False)
+        association_matrix.loc[to_drop, :]
+        .abs()
+        .sum(axis=1)
     )
-    most_collinear_series /= 2
-    return most_collinear_series.index[0], to_drop
+    return most_collinear_series.sort_values(ascending=False).index[0], to_drop
 
 
 def _recursive_collinear_elimination(association_matrix, threshold):
@@ -455,7 +458,8 @@ def _recursive_collinear_elimination(association_matrix, threshold):
         # Break if no more features to drop
         if not to_drop:
             break
-
+        # the if statement below can probably also be removed since we can only
+        # remove features we have left in dum
         if most_collinear_feature not in most_collinear_features:
             most_collinear_features.append(most_collinear_feature)
             dum = dum.drop(columns=most_collinear_feature, index=most_collinear_feature)
