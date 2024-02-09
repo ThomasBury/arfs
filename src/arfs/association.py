@@ -841,7 +841,7 @@ def wspearman(x, y, w):
 
 
 @symmetric_function
-def weighted_corr(x, y, sample_weight=None, as_frame=False, method="pearson"):
+def weighted_corr(x, y, sample_weight=None, as_frame=False, method="spearman"):
     """weighted_corr computes the weighted correlation coefficient (Pearson or Spearman)
 
     Parameters
