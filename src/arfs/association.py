@@ -881,7 +881,7 @@ def weighted_corr(x, y, sample_weight=None, as_frame=False, method="spearman"):
 
 
 def wcorr_series(
-    X, target, sample_weight=None, n_jobs=1, handle_na="drop", method="pearson"
+    X, target, sample_weight=None, n_jobs=1, handle_na="drop", method="spearman"
 ):
     """wcorr_series computes the weighted correlation coefficient (Pearson or Spearman) for
     continuous-continuous association. This is an symmetric coefficient: corr(x,y) = corr(y,x)
@@ -903,7 +903,7 @@ def wcorr_series(
     handle_na : str, optional
         either drop rows with na, fill na with 0 or do nothing, by default "drop"
     method : str
-        either "spearman" or "pearson", by default "pearson"
+        either "spearman" or "pearson", by default "spearman"
 
     Returns
     -------
@@ -936,7 +936,7 @@ def wcorr_series(
         return None
 
 
-def wcorr_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop", method="pearson"):
+def wcorr_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop", method="spearman"):
     """wcorr_matrix computes the weighted correlation statistic for
     (Pearson or Spearman) for continuous-continuous association.
     This is an symmetric coefficient: corr(x,y) = corr(y,x)
@@ -2270,7 +2270,7 @@ def plot_association_matrix(
     Categorical(nom): uncertainty coefficient & correlation ratio from 0 to 1.
     The uncertainty coefficient is assymmetrical, (approximating how much the elements on the
     left PROVIDE INFORMATION on elements in the row). Continuous(con): symmetrical numerical
-    correlations (Pearson's) from -1 to 1
+    correlations (Spearman's) from -1 to 1
 
     Parameters
     ----------
@@ -2356,7 +2356,7 @@ def plot_association_matrix_int(
     Categorical(nom): uncertainty coefficient & correlation ratio from 0 to 1.
     The uncertainty coefficient is assymmetrical, (approximating how much the elements on the
     left PROVIDE INFORMATION on elements in the row). Continuous(con): symmetrical numerical
-    correlations (Pearson's) from -1 to 1
+    correlations (Spearman's) from -1 to 1
 
     Parameters
     ----------
@@ -2425,7 +2425,7 @@ def plot_association_matrix_int(
         "*Categorical(nom): uncertainty coefficient & correlation ratio from 0 to 1. The uncertainty "
         "coefficient is assymmetrical, (approximating how much the elements on the "
         "left PROVIDE INFORMATION on elements in the row). Continuous(con): symmetrical numerical "
-        "correlations (Pearson's) from -1 to 1*"
+        "correlations (Spearman's) from -1 to 1*"
     )
     panel_layout = pn.Column(
         pn.pane.Markdown(title_str, align="start", style={"color": "#575757"}),  # bold
