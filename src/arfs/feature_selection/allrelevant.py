@@ -1774,37 +1774,31 @@ def _reduce_vars_sklearn(
         importance = imp_func[imp_kind](
             estimator, new_x, y, sample_weight=weight, cat_feature=cat_feature
         )
-
+        
+        
         # Create a dataframe to store the feature importances
         if i == 1:
             df = pd.DataFrame({"feature": new_x.columns})
-            df2 = df.copy()
 
-        # Store the feature importances in df2
+        # Store the feature importances
         try:
             # Normalize the feature importances
-            df2["fscore" + str(i)] = importance / importance.sum()
+            df["fscore" + str(i)] = importance / importance.sum()
         except ValueError:
             print("Only Sklearn tree based methods allowed")
-
-        # Merge the current feature importances with the existing ones in df
-        df = pd.merge(
-            df, df2, on="feature", how="outer", suffixes=("_x" + str(i), "_y" + str(i))
-        )
 
         # Print the iteration number if not silent
         if not silent:
             print("Round: ", this_round, " iteration: ", i)
-
     df["Mean"] = df.select_dtypes(include=[np.number]).mean(axis=1, skipna=True)
     # Split them back out
     real_vars = df.loc[~df["feature"].isin(shadow_names)]
     shadow_vars = df.loc[df["feature"].isin(shadow_names)]
 
-    # Get mean value from the shadows (max, like in Boruta, median to mitigate variance)
+    # Get mean value from the shadows (max, like in Boruta)
     mean_shadow = (
         shadow_vars.select_dtypes(include=[np.number])
-        .max(skipna=True)
+        .max(skipna=True, axis=1)
         .mean(skipna=True)
         / cutoff
     )
@@ -1850,6 +1844,8 @@ def _boostaroota(
         Will still show any errors or warnings that may occur.
     weight : pd.Series, optional
         Sample weights, if any.
+    imp : str
+        whether if native, shap, fastshap or permutation importance should be used
 
     Returns
     -------
