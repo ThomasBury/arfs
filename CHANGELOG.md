@@ -1,5 +1,9 @@
 # Changes
 
+# 2.2.4
+ - [BUG] add axis=1 to compute the max on the right dimension in _reduce_vars_sklearn
+ - [BUG] remove merge causing duplication of the feature importance in _reduce_vars_sklearn
+
 # 2.2.3
  - [BUG] change the default of the weighted correlation for consistency with existing doc
  - [ENHANCEMENTS] speedup the correlation feature selector
