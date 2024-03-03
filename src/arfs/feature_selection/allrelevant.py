@@ -1767,7 +1767,7 @@ def _reduce_vars_sklearn(
         new_x, shadow_names = _create_shadow(X)
         imp_func = {
             "shap": _get_shap_imp,
-            "fastshap": _get_shap_imp,
+            "fastshap": _get_shap_imp_fast,
             "pimp": _get_perm_imp,
             "native": _get_imp,
         }
