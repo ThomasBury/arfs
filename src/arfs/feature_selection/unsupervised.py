@@ -6,7 +6,7 @@ Module Structure:
 -----------------
 - ``MissingValueThreshold``: child class of the ``BaseThresholdSelector``, filter out columns with too many missing values
 - ``UniqueValuesThreshold`` child of the ``BaseThresholdSelector``, filter out columns with zero variance
-- ``CardinalityThreshold`` child of the ``BaseThresholdSelector``, filter out categorical columns with too many levels  
+- ``CardinalityThreshold`` child of the ``BaseThresholdSelector``, filter out categorical columns with too many levels
 - ``CollinearityThreshold`` child of the ``BaseThresholdSelector``, filter out collinear columns
 """
 
@@ -423,12 +423,12 @@ class CollinearityThreshold(SelectorMixin, BaseEstimator):
         return f
 
 
-def _most_collinear(association_matrix, threshold):
-    cols_to_drop = association_matrix.loc[
-        :, (association_matrix.abs() > threshold).any(axis=0)
+def _most_collinear(association_matrix_abs, threshold):
+    cols_to_drop = association_matrix_abs.loc[
+        :, (association_matrix_abs > threshold).any(axis=0)
     ].columns.values
-    rows_to_drop = association_matrix.loc[
-        (association_matrix.abs() > threshold).any(axis=1), :
+    rows_to_drop = association_matrix_abs.loc[
+        (association_matrix_abs > threshold).any(axis=1), :
     ].index.values
     to_drop = list(set(cols_to_drop).union(set(rows_to_drop)))
     if not to_drop:
@@ -436,13 +436,11 @@ def _most_collinear(association_matrix, threshold):
     # for features in `to_drop` sum up their column and row values to find
     # the most collinear feature
     most_collinear_series = (
-        association_matrix.loc[:, to_drop]
-        .abs()
+        association_matrix_abs.loc[:, to_drop]
         .sum(axis=0)
     )
     most_collinear_series += (
-        association_matrix.loc[to_drop, :]
-        .abs()
+        association_matrix_abs.loc[to_drop, :]
         .sum(axis=1)
     )
     # not necessarily but avoids exceeding 1
@@ -451,7 +449,7 @@ def _most_collinear(association_matrix, threshold):
 
 
 def _recursive_collinear_elimination(association_matrix, threshold):
-    dum = association_matrix.copy()
+    dum = association_matrix.abs()
     most_collinear_features = []
 
     while True:
