@@ -1,5 +1,9 @@
 # Changes
 
+# 2.2.5
+ - [BUG] fix the calculation of the SHAP feature importance for multi-class
+ - [ENHANCEMENT] return the feature for the importance
+
 # 2.2.4
  - [BUG] add axis=1 to compute the max on the right dimension in _reduce_vars_sklearn
  - [BUG] remove merge causing duplication of the feature importance in _reduce_vars_sklearn
