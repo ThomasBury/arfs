@@ -313,7 +313,7 @@ class VariableImportance(SelectorMixin, BaseEstimator):
         ax2.set(frame_on=False)
 
         fig.align_labels()
-        plt.show()
+        return fig
 
 
 def _compute_varimp_lgb(
