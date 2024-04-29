@@ -1258,7 +1258,7 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
             if isinstance(shap_values, list):
                 # For LightGBM classifier in sklearn API, SHAP returns a list of arrays
                 # https://github.com/slundberg/shap/issues/526
-                shap_imp = np.mean([np.abs(sv).mean(0) for sv in shap_values], axis=0)
+                shap_imp = np.abs(reshaped_values).sum(axis=-1).mean(axis=0)
             else:
                 shap_imp = np.abs(shap_values).mean(0)
         else:
