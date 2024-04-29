@@ -3,8 +3,8 @@ import numpy as np
 import lightgbm as lgb
 from arfs.feature_selection.allrelevant import Leshy, BoostAGroota, GrootCV
 from arfs.utils import (
-    _generated_corr_dataset_regr,
-    _generated_corr_dataset_classification,
+    _make_corr_dataset_regression,
+    _make_corr_dataset_classification,
 )
 from arfs.utils import LightForestClassifier, LightForestRegressor
 
@@ -18,7 +18,7 @@ class TestLeshy:
         # too slow for circleci to run them in a reasonable time
         # takes 2 min on laptop, 1h or more on circleci
         # sklearn random forest implementation
-        # X, y, w = _generated_corr_dataset_classification()
+        # X, y, w = _make_corr_dataset_classification()
         # rfc = RandomForestClassifier(max_features='sqrt', max_samples=0.632, n_estimators=100)
         # bt = BorutaPy(rfc)
         # bt.fit(X.values, y)
@@ -26,7 +26,7 @@ class TestLeshy:
 
         # lightGBM random forest implementation
         baseline_list = ["var0", "var1", "var2", "var3", "var4"]
-        X, y, w = _generated_corr_dataset_classification(size=100)
+        X, y, w = _make_corr_dataset_classification(size=100)
         n_feat = X.shape[1]
         rfc = LightForestClassifier(n_feat)
         # RandomForestClassifier(max_features='sqrt', max_samples=0.632, n_estimators=100) # --> too slow
@@ -51,7 +51,7 @@ class TestLeshy:
 
         # lightGBM random forest implementation
         baseline_list = ["var0", "var1", "var2", "var3", "var4"]
-        X, y, w = _generated_corr_dataset_regr(size=100)
+        X, y, w = _make_corr_dataset_regression(size=100)
         n_feat = X.shape[1]
         rfr = LightForestRegressor(n_feat)
         # rfr = RandomForestRegressor(max_features=0.3, max_samples=0.632, n_estimators=10)
@@ -68,7 +68,7 @@ class TestLeshy:
         # too slow for circleci to run them in a reasonable time
         # takes 2 min on laptop, 1h or more on circleci
         # # sklearn random forest implementation
-        # X, y, w = _generated_corr_dataset_classification()
+        # X, y, w = _make_corr_dataset_classification()
         # rfc = RandomForestClassifier(max_features='sqrt', max_samples=0.632, n_estimators=100)
         # bt = BorutaPy(rfc)
         # bt.fit(X.values, y)
@@ -76,7 +76,7 @@ class TestLeshy:
 
         # lightGBM random forest implementation
         baseline_list = ["var0", "var1", "var2", "var3", "var4"]
-        X, y, w = _generated_corr_dataset_classification(size=100)
+        X, y, w = _make_corr_dataset_classification(size=100)
         n_feat = X.shape[1]
         model = LightForestClassifier(n_feat)
         arfs = Leshy(model, verbose=0, max_iter=10, random_state=42, importance="shap")
@@ -100,7 +100,7 @@ class TestLeshy:
 
         # lightGBM random forest implementation
         baseline_list = ["var0", "var1", "var2", "var3", "var4"]
-        X, y, w = _generated_corr_dataset_regr(size=500)
+        X, y, w = _make_corr_dataset_regression(size=500)
         n_feat = X.shape[1]
         model = LightForestRegressor(n_feat)
         arfs = Leshy(model, verbose=0, max_iter=10, random_state=42, importance="shap")
@@ -115,7 +115,7 @@ class TestLeshy:
     def test_leshy_clf_with_lgb_and_shap_feature_importance_and_sample_weight(self):
         baseline_list = ["var0", "var1", "var2", "var3", "var4"]
 
-        X, y, w = _generated_corr_dataset_classification(size=500)
+        X, y, w = _make_corr_dataset_classification(size=500)
         model = lgb.LGBMClassifier(verbose=-1, force_col_wise=True, n_estimators=10)
         arfs = Leshy(model, verbose=0, max_iter=10, random_state=42, importance="shap")
         arfs.fit(X, y, w)
@@ -128,7 +128,7 @@ class TestLeshy:
     def test_leshy_regr_with_lgb_and_shap_feature_importance_and_sample_weight(self):
         baseline_list = ["var0", "var1", "var2", "var3", "var4", "var5"]
 
-        X, y, w = _generated_corr_dataset_classification(size=500)
+        X, y, w = _make_corr_dataset_classification(size=500)
         model = lgb.LGBMRegressor(verbose=-1, force_col_wise=True, n_estimators=10)
         arfs = Leshy(model, verbose=0, max_iter=10, random_state=42, importance="shap")
         arfs.fit(X, y, w)
@@ -149,10 +149,10 @@ class TestBoostAGroota:
     ):
         baseline_list = ["var0", "var1", "var2", "var3", "var4"]
 
-        X, y, w = _generated_corr_dataset_classification(size=500)
+        X, y, w = _make_corr_dataset_classification(size=500)
         model = lgb.LGBMClassifier(verbose=-1, force_col_wise=True, n_estimators=10)
         arfs = BoostAGroota(
-            est=model,
+            estimator=model,
             cutoff=1,
             iters=3,
             max_rounds=3,
@@ -172,10 +172,10 @@ class TestBoostAGroota:
     ):
         baseline_list = ["var0", "var1", "var2", "var3", "var4"]
 
-        X, y, w = _generated_corr_dataset_classification(size=500)
+        X, y, w = _make_corr_dataset_classification(size=500)
         model = lgb.LGBMClassifier(verbose=-1, force_col_wise=True, n_estimators=10)
         arfs = BoostAGroota(
-            est=model,
+            estimator=model,
             cutoff=1,
             iters=3,
             max_rounds=3,
@@ -195,10 +195,10 @@ class TestBoostAGroota:
     ):
         baseline_list = ["var0", "var1", "var2", "var3", "var4", "var5"]
 
-        X, y, w = _generated_corr_dataset_regr(size=500)
+        X, y, w = _make_corr_dataset_regression(size=500)
         model = lgb.LGBMRegressor(verbose=-1, force_col_wise=True, n_estimators=10)
         arfs = BoostAGroota(
-            est=model,
+            estimator=model,
             cutoff=1,
             iters=3,
             max_rounds=3,
@@ -218,10 +218,10 @@ class TestBoostAGroota:
     ):
         baseline_list = ["var0", "var1", "var2", "var3", "var4", "var5"]
 
-        X, y, w = _generated_corr_dataset_regr(size=500)
+        X, y, w = _make_corr_dataset_regression(size=500)
         model = lgb.LGBMRegressor(verbose=-1, force_col_wise=True, n_estimators=10)
         arfs = BoostAGroota(
-            est=model,
+            estimator=model,
             cutoff=1,
             iters=3,
             max_rounds=3,
@@ -245,7 +245,7 @@ class TestGrootCV:
     def test_grootcv_classification_with_and_sample_weight(self):
         baseline_list = ["var0", "var1", "var2", "var3", "var4"]
 
-        X, y, w = _generated_corr_dataset_classification(size=100)
+        X, y, w = _make_corr_dataset_classification(size=100)
         arfs = GrootCV(objective="binary", cutoff=1, n_folds=3, n_iter=3, silent=False)
         arfs.fit(X, y, w)
         grootcv_list = sorted(arfs.feature_names_in_[arfs.support_])
@@ -257,7 +257,7 @@ class TestGrootCV:
     def test_grootcv_regression_with_and_sample_weight(self):
         baseline_list = ["var0", "var1", "var2", "var3", "var4", "var5"]
 
-        X, y, w = _generated_corr_dataset_regr(size=100)
+        X, y, w = _make_corr_dataset_regression(size=100)
         arfs = GrootCV(objective="l2", cutoff=1, n_folds=3, n_iter=3, silent=False)
         arfs.fit(X, y, w)
         grootcv_list = sorted(arfs.feature_names_in_[arfs.support_])

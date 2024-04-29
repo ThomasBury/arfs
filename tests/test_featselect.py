@@ -8,8 +8,8 @@ from arfs.feature_selection import (
     CollinearityThreshold,
 )
 from arfs.utils import (
-    _generated_corr_dataset_regr,
-    _generated_corr_dataset_classification,
+    _make_corr_dataset_regression,
+    _make_corr_dataset_classification,
 )
 
 
@@ -20,7 +20,7 @@ class TestFeatSelectMissing:
 
     def test_identify_missing_for_classification(self):
         # not task dependent (same for clf and regr)
-        X, y, w = _generated_corr_dataset_classification(size=10)
+        X, y, w = _make_corr_dataset_classification(size=10)
         fs = MissingValueThreshold(threshold=0.01)
         fs.fit(X)
         message = "Expected: {0}, Actual: {1}".format(
@@ -36,7 +36,7 @@ class TestFeatSelectZeroVariance:
 
     def test_identify_single_unique_classification(self):
         # not task dependent (same for clf and regr)
-        X, y, w = _generated_corr_dataset_classification(size=10)
+        X, y, w = _make_corr_dataset_classification(size=10)
         fs = UniqueValuesThreshold(threshold=2)
         fs.fit(X)
         message = "Expected: {0}, Actual: {1}".format(
@@ -52,7 +52,7 @@ class TestFeatSelectHighCardinality:
 
     def test_identify_high_cardinality_classification(self):
         # not task dependent (same for clf and regr)
-        X, y, w = _generated_corr_dataset_classification(size=100)
+        X, y, w = _make_corr_dataset_classification(size=100)
         fs = CardinalityThreshold(threshold=5)
         fs.fit(X)
         expected = sorted(["dummy", "nice_guys"])
@@ -155,7 +155,7 @@ class TestFeatSelectHighCardinality:
 #         assert 'var10' in fs.ops['zero_importance'], message
 
 #     def test_identify_zero_importance_for_classification_with_early_stopping(self):
-#         X, y, w = _generated_corr_dataset_classification(size=100)
+#         X, y, w = _make_corr_dataset_classification(size=100)
 #         fs = FeatureSelector(X=X, y=y, sample_weight=w)
 #         fs.identify_zero_importance(task='classification', eval_metric='auc', n_iterations=2,
 #                                     early_stopping=True)
@@ -164,7 +164,7 @@ class TestFeatSelectHighCardinality:
 
 #     @pytest.mark.xfail
 #     def test_identify_zero_importance_for_classification_with_early_stopping_no_eval_metric(self):
-#         X, y, w = _generated_corr_dataset_classification(size=10)
+#         X, y, w = _make_corr_dataset_classification(size=10)
 #         fs = FeatureSelector(X=X, y=y, sample_weight=w)
 #         # Xfail: expected to fail because the eval metric is not provided
 #         fs.identify_zero_importance(task='classification', eval_metric=None, n_iterations=2,
@@ -174,7 +174,7 @@ class TestFeatSelectHighCardinality:
 
 #     @pytest.mark.xfail
 #     def test_identify_zero_importance_for_classification_with_early_stopping_no_eval_metric_no_objective(self):
-#         X, y, w = _generated_corr_dataset_classification(size=10)
+#         X, y, w = _make_corr_dataset_classification(size=10)
 #         fs = FeatureSelector(X=X, y=y, sample_weight=w)
 #         # Xfail: expected to fail because the eval metric is not provided
 #         fs.identify_zero_importance(task='classification', eval_metric=None, objective=None, n_iterations=2,
@@ -184,7 +184,7 @@ class TestFeatSelectHighCardinality:
 
 #     @pytest.mark.xfail
 #     def test_identify_zero_importance_for_classification_with_early_stopping_wrong_task(self):
-#         X, y, w = _generated_corr_dataset_classification(size=10)
+#         X, y, w = _make_corr_dataset_classification(size=10)
 #         fs = FeatureSelector(X=X, y=y, sample_weight=w)
 #         # Xfail: expected to fail because the eval metric is not provided
 #         fs.identify_zero_importance(task='regression', eval_metric='auc', objective='cross-entropy', n_iterations=2,
@@ -193,7 +193,7 @@ class TestFeatSelectHighCardinality:
 #         assert 'var10' in fs.ops['zero_importance'], message
 
 #     def test_identify_zero_importance_for_classification_without_early_stopping(self):
-#         X, y, w = _generated_corr_dataset_classification(size=100)
+#         X, y, w = _make_corr_dataset_classification(size=100)
 #         fs = FeatureSelector(X=X, y=y, sample_weight=w)
 #         fs.identify_zero_importance(task='classification', objective='binary', n_iterations=2,
 #                                     early_stopping=False)
@@ -201,7 +201,7 @@ class TestFeatSelectHighCardinality:
 #         assert 'var10' in fs.ops['zero_importance'], message
 
 #     def test_identify_zero_importance_for_classification_without_early_stopping_no_objective(self):
-#         X, y, w = _generated_corr_dataset_classification(size=100)
+#         X, y, w = _make_corr_dataset_classification(size=100)
 #         fs = FeatureSelector(X=X, y=y, sample_weight=w)
 #         fs.identify_zero_importance(task='classification', n_iterations=2,
 #                                     early_stopping=False)
@@ -285,7 +285,7 @@ class TestFeatSelectHighCardinality:
 #         assert len(fs.ops['low_importance']) >= expected, message
 
 #     def test_identify_low_importance_for_classification_with_early_stopping(self):
-#         X, y, w = _generated_corr_dataset_classification(size=100)
+#         X, y, w = _make_corr_dataset_classification(size=100)
 #         fs = FeatureSelector(X=X, y=y, sample_weight=w)
 #         fs.identify_zero_importance(task='classification', eval_metric='auc', n_iterations=2, early_stopping=True)
 #         cum_imp_threshold = 0.95
@@ -296,7 +296,7 @@ class TestFeatSelectHighCardinality:
 
 #     @pytest.mark.xfail
 #     def test_identify_low_importance_for_classification_with_early_stopping_no_eval_metric(self):
-#         X, y, w = _generated_corr_dataset_classification(size=100)
+#         X, y, w = _make_corr_dataset_classification(size=100)
 #         fs = FeatureSelector(X=X, y=y, sample_weight=w)
 #         # Xfail: expected to fail because the eval metric is not provided
 #         fs.identify_zero_importance(task='classification', eval_metric=None, n_iterations=2,
@@ -309,7 +309,7 @@ class TestFeatSelectHighCardinality:
 
 #     @pytest.mark.xfail
 #     def test_identify_low_importance_for_classification_with_early_stopping_no_eval_metric_no_objective(self):
-#         X, y, w = _generated_corr_dataset_classification(size=100)
+#         X, y, w = _make_corr_dataset_classification(size=100)
 #         fs = FeatureSelector(X=X, y=y, sample_weight=w)
 #         # Xfail: expected to fail because the eval metric is not provided
 #         fs.identify_zero_importance(task='classification', eval_metric=None, objective=None, n_iterations=2,
@@ -322,7 +322,7 @@ class TestFeatSelectHighCardinality:
 
 #     @pytest.mark.xfail
 #     def test_identify_low_importance_for_classification_with_early_stopping_wrong_task(self):
-#         X, y, w = _generated_corr_dataset_classification(size=100)
+#         X, y, w = _make_corr_dataset_classification(size=100)
 #         fs = FeatureSelector(X=X, y=y, sample_weight=w)
 #         # Xfail: expected to fail because the eval metric is not provided
 #         fs.identify_zero_importance(task='regression', eval_metric='auc', objective='cross-entropy', n_iterations=2,
@@ -334,7 +334,7 @@ class TestFeatSelectHighCardinality:
 #         assert len(fs.ops['low_importance']) >= expected, message
 
 #     def test_identify_low_importance_for_classification_without_early_stopping(self):
-#         X, y, w = _generated_corr_dataset_classification(size=100)
+#         X, y, w = _make_corr_dataset_classification(size=100)
 #         fs = FeatureSelector(X=X, y=y, sample_weight=w)
 #         fs.identify_zero_importance(task='classification', n_iterations=2, early_stopping=False)
 #         cum_imp_threshold = 0.95
