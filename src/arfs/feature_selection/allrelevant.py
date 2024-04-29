@@ -1232,14 +1232,19 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
         if is_classifier(estimator) and (len(np.unique(y_tt)) > 2):
             # For multi-class classifiers, reshape the shap_matrix
             n_features = X_tt.shape[1]
+            n_samples = X_tt.shape[0]
             n_features_plus_bias = n_features + 1
             n_classes = len(np.unique(y_tt))
             # Reshape the array to [n_samples, n_features + 1, n_classes]
-            reshaped_values = shap_values.reshape(-1, n_features_plus_bias, n_classes)
+            reshaped_values = shap_matrix.reshape(n_samples, n_classes, n_features_plus_bias)
 
+            # Since we need (n_samples, n_features + 1, n_classes), transpose the second and third dimensions
+            reshaped_values = reshaped_values.transpose(0, 2, 1)
+            reshaped_values = reshaped_values[:, :-1, :]
+            reshaped_values.shape
             # Sum the contributions for each class ignoring the bias term
-            # To include the bias in the sum, just keep it: reshaped_values.sum(axis=2)
-            shap_imp = np.abs(reshaped_values[:, :, :]).sum(axis=2)[:, :-1].sum(axis=0)
+            # average on all the samples
+            shap_imp = np.abs(reshaped_values).sum(axis=-1).mean(axis=0)
         else:
             shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
     else:
