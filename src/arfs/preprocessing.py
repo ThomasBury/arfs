@@ -616,7 +616,7 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
             bin_array = (
                 X[[f"{col}_g", col]]
                 .groupby(f"{col}_g")
-                .aggregate(max)
+                .aggregate("max")
                 .sort_values(col)
                 .values.ravel()
             )
@@ -671,7 +671,7 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
                     X[col] = X[col].map(self.cat_bin_dict[col])
                 else:
                     # retrieve the association the tree learnt for missing values
-                    X[col].fillna(self.tree_imputer[col], inplace=True)
+                    X[col] = X[col].fillna(self.tree_imputer[col])
                     # apply the binning
                     X[col] = pd.cut(
                         X[col],
