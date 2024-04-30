@@ -1,5 +1,9 @@
 # Changes
 
+# 2.2.6
+ - [BUG] fix the calculation of the SHAP feature importance for multi-class
+ - [ENHANCEMENT] Update pandas aggregation to get rid of the future deprecation warnings
+
 # 2.2.5
  - [BUG] fix the calculation of the SHAP feature importance for multi-class
  - [ENHANCEMENT] return the feature for the importance
