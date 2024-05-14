@@ -104,7 +104,7 @@ class VariableImportance(SelectorMixin, BaseEstimator):
         threshold=0.99,
         lgb_kwargs={"objective": "rmse", "zero_as_missing": False},
         encoder_kwargs=None,
-        fastshap=True,
+        fastshap=False,
         verbose=-1,
     ):
         self.task = task

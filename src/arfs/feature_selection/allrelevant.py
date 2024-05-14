@@ -2469,7 +2469,7 @@ def _train_lgb_model(
     weight_val,
     category_cols=None,
     early_stopping_rounds=20,
-    fastshap=True,
+    fastshap=False,
     **params,
 ):
     """
