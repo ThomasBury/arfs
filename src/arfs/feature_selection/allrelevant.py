@@ -55,7 +55,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import scipy as sp
 
-from typing import Tuple
+from typing import Tuple, Optional, Union, Iterable
 from tqdm.auto import tqdm
 from sklearn.utils import check_random_state, check_X_y
 from sklearn.base import BaseEstimator, is_regressor, is_classifier, clone
@@ -1948,6 +1948,11 @@ class GrootCV(SelectorMixin, BaseEstimator):
         The value by which the max of shadow imp is divided, to compare to real importance.
     n_folds : int, default=5
         The number of folds for cross-validation.
+    folds : Optional[Union[Iterable[Tuple[np.ndarray, np.ndarray]]
+        (generator or iterator of (train_idx, test_idx) tuples, scikit-learn splitter object or None, optional (default=None)) 
+        If generator or iterator, it should yield the train and test indices for each fold. If object, it should be one of the scikit-learn 
+        splitter classes (https://scikit-learn.org/stable/modules/classes.html#splitter-classes) and have split method. 
+        This argument has highest priority over other data split arguments.
     n_iter : int, default=5
         The number of iterations to average for the feature importance (on the same split), to reduce variance.
     silent : bool, default=True
@@ -2001,6 +2006,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
         objective=None,
         cutoff=1,
         n_folds=5,
+        folds=None,
         n_iter=5,
         silent=True,
         rf=False,
@@ -2011,6 +2017,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
         self.objective = objective
         self.cutoff = cutoff
         self.n_folds = n_folds
+        self.folds = folds
         self.n_iter = n_iter
         self.silent = silent
         self.rf = rf
@@ -2064,6 +2071,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
             objective=self.objective,
             cutoff=self.cutoff,
             n_folds=self.n_folds,
+            folds=self.folds,
             n_iter=self.n_iter,
             silent=self.silent,
             weight=sample_weight,
@@ -2194,6 +2202,7 @@ def _reduce_vars_lgb_cv(
     X,
     y,
     objective,
+    folds,
     n_folds,
     cutoff,
     n_iter,
@@ -2215,6 +2224,13 @@ def _reduce_vars_lgb_cv(
             the target
     objective : str
             the lightGBM objective
+    folds : 
+        (generator or iterator of (train_idx, test_idx) tuples, scikit-learn splitter object or None, optional (default=None)) 
+        If generator or iterator, it should yield the train and test indices for each fold. If object, it should be one of the scikit-learn 
+        splitter classes (https://scikit-learn.org/stable/modules/classes.html#splitter-classes) and have split method. 
+        This argument has highest priority over other data split arguments.
+    nfold : int
+        Number of folds in CV.
     cutoff : float
             the value by which the max of shadow imp is divided, to compare to real importance
     n_iter : int
@@ -2258,11 +2274,13 @@ def _reduce_vars_lgb_cv(
     category_cols = dtypes_dic["cat"] + dtypes_dic["time"] + dtypes_dic["unk"]
     cat_idx = [X.columns.get_loc(col) for col in category_cols]
 
-    rkf = RepeatedKFold(n_splits=n_folds, n_repeats=n_iter, random_state=2652124)
+    if folds is None:
+        folds = RepeatedKFold(n_splits=n_folds, n_repeats=n_iter, random_state=2652124)
+    
     iter = 0
     df = pd.DataFrame({"feature": X.columns})
     for tridx, validx in tqdm(
-        rkf.split(X, y), total=rkf.get_n_splits(), desc="Repeated k-fold"
+        folds.split(X, y), total=folds.get_n_splits(), desc="Cross Validation"
     ):
         X_train, X_val, y_train, y_val, weight_tr, weight_val = _split_data(
             X, y, tridx, validx, weight
