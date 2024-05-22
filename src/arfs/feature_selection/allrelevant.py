@@ -1698,6 +1698,14 @@ def _create_shadow(X_train):
     X_shadow.columns = shadow_names
     # Combine to make one new dataframe
     new_x = pd.concat([X_train, X_shadow], axis=1)
+    # Separate the columns that start with 'ShadowVar' from the other columns
+    shadow_columns = [col for col in new_x.columns if col.startswith('ShadowVar')]
+    other_columns = [col for col in new_x.columns if not col.startswith('ShadowVar')]
+    
+    # Concatenate the two lists of column names
+    new_column_order = other_columns + shadow_columns
+    # Reorder the DataFrame columns
+    new_x = new_x[new_column_order]
     return new_x, shadow_names
 
 
@@ -2145,6 +2153,14 @@ class GrootCV(SelectorMixin, BaseEstimator):
 
         b_df = self.cv_df.T.copy()
         b_df.columns = b_df.iloc[0]
+        # Separate the columns that start with 'ShadowVar' from the other columns
+        shadow_columns = [col for col in b_df.columns if col.startswith('ShadowVar')]
+        other_columns = [col for col in b_df.columns if not col.startswith('ShadowVar')]
+        
+        # Concatenate the two lists of column names
+        new_column_order = other_columns + shadow_columns
+        # Reorder the DataFrame columns
+        b_df = b_df[new_column_order]
         b_df = b_df.drop(b_df.index[0])
         b_df = b_df.drop(b_df.index[-1])
         b_df = b_df.convert_dtypes()
