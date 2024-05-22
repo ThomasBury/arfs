@@ -1,5 +1,9 @@
 # Changes
 
+# 2.3.0
+ - [BUG] corrected the column names for the GrootCV scheme, setting the shadow var in last position to guarantee the real names are used
+ - [ENHANCEMENT] support user defined cross-validation scheme for time series applications for GrootCV
+
 # 2.2.6
  - [BUG] fix the calculation of the SHAP feature importance for multi-class
  - [ENHANCEMENT] Update pandas aggregation to get rid of the future deprecation warnings
