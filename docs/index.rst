@@ -24,6 +24,7 @@ Documentation last change: |today|
    notebooks/association_and_feature_selection.ipynb
    notebooks/arfs_classification.ipynb
    notebooks/arfs_regression.ipynb
+   notebooks/arfs_timeseries.ipynb
    notebooks/arfs_large_data_sampling.ipynb
    notebooks/arfs_on_GPU.ipynb
    notebooks/arfs_shap_vs_fastshap.ipynb
