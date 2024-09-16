@@ -7,25 +7,25 @@ jobs:
   build-and-test:
     parallelism: 4
     docker:
-      - image: circleci/python:3.7.9
-    environment: PYTHONPATH=./src
-    executor: python/default
+    - image: circleci/python:3.9
+      environment:
+        PYTHONPATH: ./src
     steps:
-      - checkout
-      - run:
-          command: |
-             pip install --upgrade pip
-             pip install -r requirements-test.txt
-          name: Install Test requirements
-      - run:
-          command: pip install -e .[all]
-          name: Install Pacakge
-      - run:
-          command: pytest -k test_featselect
-          no_output_timeout: 10m
-          name: Test
+    - checkout
+    - run:
+        name: Install Test Requirements
+        command: |
+          pip install --upgrade pip
+          pip install -r requirements-test.txt
+    - run:
+        name: Install Package
+        command: pip install -e .[all]
+    - run:
+        name: Run Tests
+        command: pytest -k test_featselect
+        no_output_timeout: 10m
 
 workflows:
   main:
     jobs:
-      - build-and-test
+    - build-and-test
