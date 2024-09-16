@@ -1,5 +1,8 @@
 # Changes
 
+# 2.3.1
+ - [BUG] replace np.Inf by np.inf for compatibility purpose
+
 # 2.3.0
  - [BUG] corrected the column names for the GrootCV scheme, setting the shadow var in last position to guarantee the real names are used
  - [ENHANCEMENT] support user defined cross-validation scheme for time series applications for GrootCV

@@ -621,7 +621,7 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
                 .values.ravel()
             )
             bin_array = np.delete(bin_array, [np.argmax(bin_array)])
-            bin_array = np.unique(np.append(bin_array, [-np.Inf, np.Inf]))
+            bin_array = np.unique(np.append(bin_array, [-np.inf, np.inf]))
             self.bin_upper_bound_dic[col] = bin_array
 
             nan_pred_val = tree.predict(np.expand_dims([np.nan], axis=1))[0]
