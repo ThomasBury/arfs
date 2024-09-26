@@ -1253,16 +1253,19 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
             model, feature_perturbation="tree_path_dependent"
         )
         shap_values = explainer.shap_values(X_tt)
-        # For multi-class classifiers, reshape the shap_values
-        if is_classifier(estimator):
+        # Calculate feature importance from SHAP values for multi-class classifiers
+        if is_classifier(model):
+            # For multi-class models, SHAP values might be a list (e.g., LightGBM) or a multi-dimensional array
             if isinstance(shap_values, list):
-                # For LightGBM classifier in sklearn API, SHAP returns a list of arrays
-                # https://github.com/slundberg/shap/issues/526
-                shap_imp = np.abs(reshaped_values).sum(axis=-1).mean(axis=0)
+                # LightGBM in sklearn API might return a list of arrays; aggregate them by taking the absolute mean across classes
+                shap_imp = np.mean([np.abs(shap_val).sum(axis=-1) for shap_val in shap_values], axis=0)
+            elif isinstance(shap_values, np.ndarray) and shap_values.ndim > 2:
+                # If SHAP values are a 3D array, sum absolute contributions over all classes
+                shap_imp = np.abs(shap_values).sum(axis=-1).mean(axis=0)
             else:
-                shap_imp = np.abs(shap_values).mean(0)
-        else:
-            shap_imp = np.abs(shap_values).mean(0)
+                # For single-dimensional or binary classification, calculate the average feature importance directly
+                shap_imp = np.abs(shap_values).mean(axis=0)
+
     return shap_imp
 
 
