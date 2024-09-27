@@ -55,7 +55,7 @@ def sample(df, n=1000, sample_weight=None, method="gower"):
         gd = gower_matrix(X, cat_features=non_num_cols, weight=sample_weight)
 
         labels = AgglomerativeClustering(
-            n_clusters=n, affinity="precomputed", linkage="complete"
+            n_clusters=n, metric="precomputed", linkage="complete"
         ).fit_predict(gd)
         X["label"] = labels
         X["label"] = "clus_" + X["label"].astype(str)
