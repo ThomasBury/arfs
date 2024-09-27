@@ -1265,6 +1265,8 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
             else:
                 # For single-dimensional or binary classification, calculate the average feature importance directly
                 shap_imp = np.abs(shap_values).mean(axis=0)
+        else:
+            shap_imp = np.abs(shap_values).mean(0)
 
     return shap_imp
 
