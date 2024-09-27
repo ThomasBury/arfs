@@ -1545,7 +1545,11 @@ def f_cat_regression_parallel(X, y, sample_weight=None, n_jobs=1, handle_na="dro
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
 
     y = X[target].copy()
-    X = X.drop(target, axis=1)
+    
+    # Ensure 'target' is a valid column in X
+    if target in X.columns:
+        X = X.drop(columns=[target])
+
 
     # define the number of cores
     n_jobs = min(cpu_count(), X.shape[1]) if n_jobs == -1 else min(cpu_count(), n_jobs)
