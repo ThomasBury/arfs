@@ -156,3 +156,6 @@ fabric.properties
 
 # Editor-based Rest Client
 .idea/httpRequests
+
+# catboost
+docs/notebooks/catboost_info
