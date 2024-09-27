@@ -1,5 +1,8 @@
 # Changes
 
+# 2.3.2
+ - [BUG] Fix errors generated when updating dependencies with different naming for arguments
+  
 # 2.3.1
  - [BUG] replace np.Inf by np.inf for compatibility purpose
 
