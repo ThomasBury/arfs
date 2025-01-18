@@ -273,6 +273,10 @@ class Leshy(SelectorMixin, BaseEstimator):
         verbose=0,
         keep_weak=False,
     ):
+        
+        if max_iter < 2:
+            raise ValueError("max_iter must be > 1 for Leshy to work properly")
+        
         self.estimator = estimator
         self.n_estimators = n_estimators
         self.perc = perc
