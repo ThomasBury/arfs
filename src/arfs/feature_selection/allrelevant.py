@@ -926,7 +926,7 @@ class Leshy(SelectorMixin, BaseEstimator):
         sha_max_history = []
         imp_history = np.empty((0, X.shape[1]))
 
-        for _iter in range(1, self.max_iter):
+        for _iter in range(1, self.max_iter + 1):
             if not np.any(dec_reg == 0):
                 break
             self._update_tree_num(dec_reg)
