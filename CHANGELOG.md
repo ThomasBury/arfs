@@ -1,5 +1,8 @@
 # Changes
 
+# 2.3.3
+ - [BUG] Fix range, which should run from 1 to `max_iter`
+
 # 2.3.2
  - [BUG] Fix errors generated when updating dependencies with different naming for arguments
   
