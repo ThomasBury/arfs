@@ -2,7 +2,7 @@
 
 This module provides MinRedundancyMaxRelevance (MRMR) feature selection for classification or regression tasks. 
 In a classification task, the target should be of object or pandas category dtype, while in a regression task, 
-the target should be of numpy categorical dtype. The predictors can be categorical or numerical without requiring encoding, 
+the target should be numeric. The predictors can be categorical or numerical without requiring encoding,
 as the appropriate method (correlation, correlation ratio, or Theil's U) will be automatically selected based on the data type.
 
 Module Structure:
@@ -42,16 +42,16 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
     relevance_func: callable, optional
         relevance function having arguments "X", "y", "sample_weight" and returning a pd.Series
         containing a score of relevance for each feature
-    redundancy: callable, optional
+    redundancy_func: callable, optional
         Redundancy method.
         If callable, it should take "X", "sample_weight" as input and return a pandas.Series
         containing a score of redundancy for each feature.
-    denominator: str or callable (optional, default='mean')
+    denominator_func: str or callable (optional, default='mean')
         Synthesis function to apply to the denominator of MRMR score.
         If string, name of method. Supported: 'max', 'mean'.
         If callable, it should take an iterable as input and return a scalar.
     task: str
-        either "regression" or "classifiction"
+        either "regression" or "classification"
     only_same_domain: bool (optional, default=False)
         If False, all the necessary correlation coefficients are computed.
         If True, only features belonging to the same domain are compared.
@@ -60,7 +60,7 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
     return_scores: bool (optional, default=False)
         If False, only the list of selected features is returned.
         If True, a tuple containing (list of selected features, relevance, redundancy) is returned.
-    n_jobs: int (optional, default=-1)
+    n_jobs: int (optional, default=1)
         Maximum number of workers to use. Only used when relevance = "f" or redundancy = "corr".
         If -1, use as many workers as min(cpu count, number of features).
     show_progress: bool (optional, default=True)
@@ -89,10 +89,11 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
     >>> pred_name = [f"pred_{i}" for i in range(X.shape[1])]
     >>> X.columns = pred_name
     >>> y.name = "target"
-    >>> fs_mrmr = MinRedundancyMaxRelevance(n_features_to_select=5,
+    >>> fs_mrmr = MinRedundancyMaxRelevance(
+    >>>                  n_features_to_select=5,
     >>>                  relevance_func=None,
     >>>                  redundancy_func=None,
-    >>>                  task= "regression",#"classification",
+    >>>                  task="regression", #"classification",
     >>>                  denominator_func=np.mean,
     >>>                  only_same_domain=False,
     >>>                  return_scores=False,
@@ -146,16 +147,16 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         X : pd.DataFrame, shape (n_samples, n_features)
             Data from which to compute variances, where `n_samples` is
             the number of samples and `n_features` is the number of features.
-        y : any, default=None
-            Ignored. This parameter exists only for compatibility with
-            sklearn.pipeline.Pipeline.
+        y : array-like or pd.Series of shape (n_samples,)
+            Target vector. Must be numeric for regression or categorical for classification.
         sample_weight : pd.Series, optional, shape (n_samples,)
             weights for computing the statistics (e.g. weighted average)
 
         Returns
         -------
         self : object
-            Returns the instance itself.
+            If `return_scores=False`, returns self.
+            If `return_scores=True`, returns (selected_features, relevance_scores).
         """
 
         if isinstance(X, pd.DataFrame):
@@ -212,6 +213,9 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
             [x in self.selected_features for x in self.feature_names_in_]
         )
         self.not_selected_features_ = self.not_selected_features
+
+        if self.return_scores:
+            return self.selected_features_, self.relevance_, self.redundancy_
         return self
 
     def transform(self, X):
@@ -232,7 +236,7 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
             raise TypeError("X is not a dataframe")
         return X[self.selected_features_]
 
-    def fit_transform(self, X, y, sample_weight=None):
+    def fit_transform(self, X, y, sample_weight=None, **fit_params):
         """
         Fit to data, then transform it.
         Fits transformer to `X` and `y` and optionally sample_weight
