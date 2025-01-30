@@ -271,7 +271,7 @@ def theils_u_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop"):
     cat_cols = dtypes_dic["cat"]
 
     if cat_cols and (len(cat_cols) >= 2):
-        # explicitely store the unique 2-permutation of column names
+        # explicitly store the unique 2-permutation of column names
         # permutations and not combinations because U is asymmetric
         comb_list = [comb for comb in permutations(cat_cols, 2)]
         # define the number of cores
@@ -439,7 +439,7 @@ def cramer_v_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop"):
     cat_cols = dtypes_dic["cat"]
 
     if cat_cols and (len(cat_cols) >= 2):
-        # explicitely store the unique 2-combinations of column names
+        # explicitly store the unique 2-combinations of column names
         comb_list = [comb for comb in combinations(cat_cols, 2)]
         # define the number of cores
         n_jobs = (
@@ -656,7 +656,7 @@ def correlation_ratio_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop"):
     num_cols = dtypes_dic["num"]
 
     if cat_cols and num_cols:
-        # explicitely store the unique 2-combinations of column names
+        # explicitly store the unique 2-combinations of column names
         # the first one should be the categorical predictor
         comb_list = list(product(cat_cols, num_cols))
         # define the number of cores
@@ -764,9 +764,9 @@ def wcov(x, y, w):
     Parameters
     ----------
     x : array-like of shape (n_samples,)
-        the perdictor 1 array
+        the predictor 1 array
     y : array-like of shape (n_samples,)
-        the perdictor 2 array
+        the predictor 2 array
     w : array-like of shape (n_samples,)
         the sample weights array
 
@@ -784,9 +784,9 @@ def wcorr(x, y, w):
     Parameters
     ----------
     x : array-like of shape (n_samples,)
-        the perdictor 1 array
+        the predictor 1 array
     y : array-like of shape (n_samples,)
-        the perdictor 2 array
+        the predictor 2 array
     w : array-like of shape (n_samples,)
         the sample weights array
 
@@ -1432,7 +1432,7 @@ def f_oneway_weighted(*args):
     """
     # how many levels (predictor)
     n_classes = len(args)
-    # convert to float 2-uple d'array
+    # convert to float 2-tuple array
     args = [as_float_array(a) for a in args]
     # compute the total weight per level
     weight_per_class = np.array([a[1].sum() for a in args])
@@ -2272,7 +2272,7 @@ def plot_association_matrix(
     The sorting is done using hierarchical clustering,
     very like in seaborn or other packages.
     Categorical(nom): uncertainty coefficient & correlation ratio from 0 to 1.
-    The uncertainty coefficient is assymmetrical, (approximating how much the elements on the
+    The uncertainty coefficient is asymmetrical, (approximating how much the elements on the
     left PROVIDE INFORMATION on elements in the row). Continuous(con): symmetrical numerical
     correlations (Spearman's) from -1 to 1
 
@@ -2427,7 +2427,7 @@ def plot_association_matrix_int(
     title_str = "**Continuous (con) and Categorical (nom) Associations **"
     sub_title_str = (
         "*Categorical(nom): uncertainty coefficient & correlation ratio from 0 to 1. The uncertainty "
-        "coefficient is assymmetrical, (approximating how much the elements on the "
+        "coefficient is asymmetrical, (approximating how much the elements on the "
         "left PROVIDE INFORMATION on elements in the row). Continuous(con): symmetrical numerical "
         "correlations (Spearman's) from -1 to 1*"
     )

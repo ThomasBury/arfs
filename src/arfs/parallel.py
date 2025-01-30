@@ -17,14 +17,14 @@ from itertools import chain
 
 def parallel_matrix_entries(func, df, comb_list, sample_weight=None, n_jobs=-1):
     """parallel_matrix_entries applies a function to each chunk of
-    combinaison of columns of the dataframe, distributed by cores.
+    combination of columns of the dataframe, distributed by cores.
     This is similar to https://github.com/smazzanti/mrmr/mrmr/pandas.py
 
 
     Parameters
     ----------
     func : callable
-        function to be applied to each column
+        function to be applied to each pair of columns in comb_list
     df : pd.DataFrame
         the dataframe on which to apply the function
     comb_list : list of tuples of str
@@ -145,8 +145,8 @@ def _compute_matrix_entries(
     sample_weight=None,
     func_xyw=None,
 ):
-    """base closure for computing matrix entries appling a function to each chunk of
-    combinaison of columns of the dataframe, distributed by cores.
+    """base closure for computing matrix entries applying a function to each chunk of
+    combination of columns of the dataframe, distributed by cores.
     This is similar to https://github.com/smazzanti/mrmr/mrmr/pandas.py
 
     Parameters
@@ -158,13 +158,13 @@ def _compute_matrix_entries(
     func_xyw : callable, optional
         callable (function) for computing the individual elements of the matrix
         takes two mandatory inputs (x and y) and an optional input w, sample_weights
-    comb_list : list of 2-uple of str
+    comb_list : list of 2-tuple of str
         Pairs of column names corresponding to the entries
 
     Returns
     -------
-    pd.DataFrame
-        concatenated results into a single pandas DF
+    List[pd.DataFrame]
+        a list of partial dfs to be concatenated
     """
     v_df_list = [
         func_xyw(x=X[comb[0]], y=X[comb[1]], sample_weight=sample_weight, as_frame=True)
