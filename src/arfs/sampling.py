@@ -19,7 +19,7 @@ def sample(df, n=1000, sample_weight=None, method="gower"):
     For the clustering algorithm, clusters are determined using the Gower distance
     (mixed type data) and the dataset is shrunk from n_samples to n_clusters.
 
-    For the isolation forest algorithm, samples are added till a suffisant 2-samples
+    For the isolation forest algorithm, samples are added till a sufficient 2-samples
     KS statistics is reached or if the number iteration reached the max number (20)
 
     Parameters
@@ -278,7 +278,7 @@ def _gower_distance_row(
     feature_weight_num : np.array
         weight vector for the numerical features
     feature_weight_sum : float
-        The sum of the wieghts
+        The sum of the weights
     ranges_of_numeric : np.array
         range of the scaled numerical features (between 0 and 1)
 
@@ -426,7 +426,7 @@ def get_5_percent_splits(length):
 
 
 def isolation_forest(X, sample_weight=None):
-    """fits isloation forest to the dataset and gives an anomally score to every sample
+    """fits isolation forest to the dataset and gives an anomaly score to every sample
 
     Parameters
     ----------
@@ -440,8 +440,8 @@ def isolation_forest(X, sample_weight=None):
 
 
 def isof_find_sample(X, sample_weight=None):
-    """Finds a sample by comparing the distributions of the anomally scores between the sample and the original
-    distribution using the KS-test. Starts of a 5% howver will increase to 10% and then 15% etc. if a significant sample can not be found
+    """Finds a sample by comparing the distributions of the anomaly scores between the sample and the original
+    distribution using the KS-test. Starts of a 5% however will increase to 10% and then 15% etc. if a significant sample can not be found
 
     References
     ----------

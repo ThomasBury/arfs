@@ -475,7 +475,7 @@ def _fit_early_stopped_lgb(
     params["verbosity"] = -1
 
     n_trees = params["num_boost_round"] if "num_boost_round" in params else 10_000
-    # remove key if exists to avoid LGB userwarnings
+    # remove key if exists to avoid LGB user warnings
     params.pop("num_boost_round", None)
 
     model = lgb.train(

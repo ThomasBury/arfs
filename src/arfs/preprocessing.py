@@ -879,12 +879,12 @@ class PatsyTransformer(BaseEstimator, TransformerMixin):
         Pasty formula used to transform the data.
 
     add_intercept : boolean, default=False
-        Wether to add an intersept. By default scikit-learn has built-in
+        Whether to add an intercept. By default scikit-learn has built-in
         intercepts for all models, so we don't add an intercept to the data,
         even if one is specified in the formula.
 
     eval_env : environment or int, default=0
-        Envirionment in which to evalute the formula.
+        Environment in which to evaluate the formula.
         Defaults to the scope in which PatsyModel was instantiated.
 
     NA_action : string or NAAction, default="drop"
@@ -902,14 +902,14 @@ class PatsyTransformer(BaseEstimator, TransformerMixin):
         data type that transform method will return. Default is ``"dataframe"``
         for numpy array, but if you would like to get Pandas dataframe (for
         example for using it in scikit transformers with dataframe as input
-        use ``"dataframe"`` and if numpy array use ``"ndarray"``
+        use ``"dataframe"`` and if numpy array use ``"ndarray"``)
 
     Note
     ----
     PastyTransformer does by default not add an intercept, even if you
     specified it in the formula. You need to set add_intercept=True.
 
-    As scikit-learn transformers can not ouput y, the formula
+    As scikit-learn transformers can not output y, the formula
     should not contain a left hand side.  If you need to transform both
     features and targets, use PatsyModel.
     """

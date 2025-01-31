@@ -5,7 +5,7 @@ This module provides utilities for comparing and benchmarking feature selection 
 Module Structure:
 -----------------
 - ``sklearn_pimp_bench``: function for comparing using the sklearn permutation importance
-- ``compare_varimp``: function for comparing using 3 kinds of var.imp.
+- ``compare_varimp``: function for comparing using possible 4 kinds of variable importance
 - ``highlight_tick``: function for highlighting specific (genuine or noise for instance) predictors in the importance chart
 """
 
@@ -33,7 +33,7 @@ def sklearn_pimp_bench(model, X, y, task="regression", sample_weight=None):
     y : array-like or None, shape (n_samples, ) or (n_samples, n_classes)
         Targets for supervised or None for unsupervised.
     task : str, optional
-        kind of task, either 'regression' or 'classification", by default 'regression'
+        kind of task, either 'regression' or 'classification', by default 'regression'
     sample_weight : array-like of shape (n_samples,), optional
         Sample weights, by default None
 
@@ -152,7 +152,7 @@ def compare_varimp(feat_selector, models, X, y, sample_weight=None):
 
 
 def highlight_tick(str_match, figure, color="red", axis="y"):
-    """Highlight the x/y tick-labels if they contains a given string
+    """Highlight the x/y tick-labels if they contain a given string
 
     Parameters
     ----------
