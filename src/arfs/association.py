@@ -553,13 +553,17 @@ def _weighted_correlation_ratio(*args):
     ssbn = sum(np.square(s) / w for s, w in zip(sums_args, weight_per_class))
     ssbn -= square_of_sums_alldata / tot_weight
 
+    # Ensure sstot and ssbn are at least 1D arrays to avoid shape issues
+    sstot = np.atleast_1d(sstot)
+    ssbn = np.atleast_1d(ssbn)
+
     # Handle constant features
     constant_features_idx = np.where(sstot == 0.0)[0]
     if np.any(ssbn) and constant_features_idx.size:
         warnings.warn("Features %s are constant." % constant_features_idx, UserWarning)
 
     # Correlation Ratio calculation
-    etasq = np.divide(ssbn, sstot, out=np.zeros_like(ssbn), where=sstot != 0)
+    etasq = np.divide(ssbn, sstot, out=np.zeros_like(sstot), where=sstot != 0)
     return np.sqrt(etasq).ravel()
 
 
