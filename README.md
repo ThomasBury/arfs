@@ -66,6 +66,8 @@ The Boruta algorithm tries to capture all the important features you might have 
 At every iteration, the algorithm compares the Z-scores of the shuffled copies of the features and the original features to see if the latter performed better than the former. If it does, the algorithm will mark the feature as important. In essence, the algorithm is trying to validate the importance of the feature by comparing with randomly shuffled copies, which increases the robustness. This is done by simply comparing the number of times a feature did better with the shadow features using a binomial distribution. Since the whole process is done on the same train-test split, the variance of the variable importance comes only from the different re-fit of the model over the different iterations.
 
 
+<img src="./docs/boruta.png" alt="drawing" width="600"/>
+
 ## BoostARoota
 
 BoostARoota follows closely the Boruta method but modifies a few things:
@@ -81,6 +83,8 @@ BoostARoota follows closely the Boruta method but modifies a few things:
  * Method returns the features remaining once completed.
 
 In the spirit, the same heuristic than Boruta but using Boosting (originally Boruta was supporting only random forest). The validation of the importance is done by comparing to the maximum of the median var. imp of the shadow predictors (in Boruta, a statistical test is performed using the Z-score). Since the whole process is done on the same train-test split, the variance of the variable importance comes only from the different re-fit of the model over the different iterations.
+
+<img src="./docs/boostaroota.png" alt="drawing" width="600"/>
 
 ## Modifications to Boruta and BoostARoota
 
@@ -111,6 +115,7 @@ In the spirit, the same heuristic than Boruta but using Boosting (originally Bor
   - Not based on a given percentage of cols needed to be deleted
   - Plot method for var. imp
 
+<img src="./docs/grootcv.png" alt="drawing" width="400"/>
 
 ## References
 
