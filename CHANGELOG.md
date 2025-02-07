@@ -1,5 +1,9 @@
 # Changes
 
+# 2.4.0
+ - [BUG] Add a safety for the array size in the weighted correlation ratio
+ - [DOC] Contribution for better documentation, typos and fixing docstrings
+
 # 2.3.3
  - [BUG] Fix range, which should run from 1 to `max_iter`
 
