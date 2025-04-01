@@ -1,34 +1,45 @@
 """GBM Wrapper
 
-This module offers a class to train base LightGBM and CatBoost models, with early stopping as the default behavior. 
-The target variable can be finite discrete (classification) or continuous (regression). 
-Additionally, the model allows boosting from an initial score (also known as a baseline for CatBoost) and accepts sample weights as input.
+This module offers a class to train base LightGBM models, with early stopping
+as the default behavior. The target variable can be finite discrete (classification)
+or continuous (regression). Additionally, the model allows boosting from an
+initial score and accepts sample weights as input.
+
+This module is part of the 'arfs' package and relies on 'arfs.utils'.
 
 Module Structure:
 -----------------
-- ``GradientBoosting``: main class to train a lightGBM  or catboost with early stopping
+- ``GradientBoosting``: main class to train a lightGBM with early stopping
 
+Dependencies:
+-------------
+- Requires 'arfs.utils' for 'create_dtype_dict'.
 """
 
+# Standard library imports
+import gc
+import warnings
+from datetime import date
+from pathlib import Path
+from typing import List, Optional, Union, Dict, Tuple, Any
+
+# Third-party imports
+import joblib
+import lightgbm as lgb
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 from sklearn.model_selection import (
+    GroupShuffleSplit,
     ShuffleSplit,
     StratifiedShuffleSplit,
-    GroupShuffleSplit,
 )
-import lightgbm as lgb
-from lightgbm import early_stopping, log_evaluation, record_evaluation
-import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-import numpy as np
-import joblib
-from datetime import date
-import warnings
-import gc
-import os
-from pathlib import Path
+# Local imports
 from arfs.utils import create_dtype_dict
 
+
+# --- Matplotlib Configuration ---
 QUAL_COLORS = [
     (0.188235, 0.635294, 0.854902),
     (0.898039, 0.682353, 0.219608),
@@ -52,553 +63,712 @@ MPL_PARAMS = {
 }
 
 
+# --- Main GradientBoosting Class ---
 class GradientBoosting:
-    """Performs the training of a base lightGBM/CatBoost using early stopping. It works for any of the
-    supported loss function (lightGBM/CatBoost), so for regression and classification you can use an instance of
-    this class. For the early stopping process, 20% of the data set is used and a fix seed is used for
-    reproducibility.
+    """Performs the training of a base LightGBM using early stopping.
 
-    The resulting model can be saved at the desired location.
-    Last, you can pass relevant lightGBM/Catboost parameters and/or sample weights (exposure, etc.) if needed.
-
-    Init score of Booster to start from, if required (like for GLM residuals modelling using GBM).
-
+    Works for regression and classification objectives supported by LightGBM.
+    Uses a fixed 20% validation split for early stopping (stratified if specified).
+    Allows boosting from an initial score and using sample weights.
 
     Parameters
     ----------
-    cat_feat : List[str], 'auto' or None,
-        The list of column names of the categorical predictors. For catboost, much more efficient if those columns
-        are of dtype pd.Categorical. For lightGBM, most of the time better to integer encode and NOT consider
-        them as categorical (set this parameter as None).
-    params : dict, default=None
-        you can pass the parameters that you want to lightGBM/Catboost, as long as they are valid.
-        If None, default parameters are passed.
+    cat_feat : List[str], 'auto', or None, default='auto'
+        List of categorical feature names.
+        If 'auto', uses `arfs.utils.create_dtype_dict` to identify columns
+        with dtypes 'object', 'category', 'bool', 'datetime', 'timedelta',
+        'datetimetz', and any unrecognized types as categorical for LightGBM.
+        If None, no features are treated as categorical by LightGBM.
+        Note: For LightGBM, integer-encoded features often perform well even
+              when not explicitly marked as categorical.
+    params : dict, optional
+        LightGBM parameters. Must include 'objective'. If None, uses default
+        RMSE objective with 10,000 boosting rounds (subject to early stopping).
     stratified : bool, default=False
-        stratified shuffle split for the early stopping process. For classification problem, it guarantees
-        the same proportion
+        Whether to use StratifiedShuffleSplit for the validation set. Ensures
+        class proportions are maintained in classification tasks.
     show_learning_curve : bool, default=True
-        if show or not the learning curve
+        If True, generates and stores the learning curve plot.
     verbose_eval : int, default=50
-        period for printing the train and validation results. If < 1, no output
+        Period (in boosting rounds) for printing training/validation metrics.
+        Set to 0 or False to disable logging during training.
+    return_valid_features : bool, default=False
+        If True, stores the validation features (X_val) used for early stopping.
 
     Attributes
     ----------
-    cat_feat : Union[str, List[str], None]
-        The list of categorical predictors after pre-processing
-    model_params : Dict
-        the dictionary of model parameters
-    learning_curve : plt.figure
-        the learning curve
-    is_init_score :  bool
-        boosted from an initial score or not
+    model : lgb.Booster or None
+        The trained LightGBM Booster object.
+    cat_feat : Union[List[str], None]
+        Categorical features used (after potential 'auto' detection).
+    model_params : Dict[str, Any] or None
+        Parameters of the trained LightGBM model.
+    params : Dict[str, Any] or None
+        Original parameters passed during initialization.
+    learning_curve : plt.Figure or None
+        Matplotlib figure object of the learning curve, if generated.
+    is_init_score : bool
+        True if the model was trained with an initial score.
     stratified : bool
-        either if stratified shuffle split was used or not for the early stopping process
+        Whether stratified splitting was used.
+    show_learning_curve : bool
+        Whether the learning curve was requested.
+    verbose_eval : int
+        Verbosity level used during training.
+    return_valid_features : bool
+        Whether validation features were stored.
+    valid_features : pd.DataFrame or None
+        Validation features (X_val), if `return_valid_features` was True.
 
     Example
     -------
-    >>> # set up the trainer
-    >>> save_path = "C:/Users/mtpl_bi_pp/base/"
-    >>> gbm_model = GradientBoosting(cat_feat='auto',
-    >>>                              stratified=False,
-    >>>                              params={
-    >>>                                 'objective': 'tweedie',
-    >>>                                 'tweedie_variance_power': 1.1
-    >>>                             })
+    >>> # Example Usage (assuming X_tr, y_tr, X_tt exist)
+    >>> gbm_trainer = GradientBoosting(
+    ...     cat_feat='auto', # Automatically detect categorical/object/bool/time cols
+    ...     stratified=False,
+    ...     params={'objective': 'regression_l1', 'metric': 'mae', 'n_estimators': 500}
+    ... )
+    >>> # Train the model (assuming sample_weight 'exp_tr' exists if needed)
+    >>> # gbm_trainer.fit(X=X_tr, y=y_tr, sample_weight=exp_tr)
+    >>> gbm_trainer.fit(X=X_tr, y=y_tr) # Without sample weight
     >>>
-    >>> # train the model
-    >>> gbm_model.fit(X=X_tr,y=y_tr,sample_weight=exp_tr)
+    >>> # Predict on test data
+    >>> y_pred = gbm_trainer.predict(X_tt)
     >>>
-    >>> # predict new values (test set)
-    >>> y_bt = gbm_model.predict(X_tt)
-    >>>
-    >>> # save the model
-    >>> gbm_model.save(save_path='C:/models/', name="my_fancy_model")
-
+    >>> # Save the model
+    >>> # gbm_trainer.save(save_path='./models/', name="my_regression_model")
     """
 
     def __init__(
         self,
-        cat_feat="auto",
-        params=None,
-        stratified=False,
-        show_learning_curve=True,
-        verbose_eval=50,
-        return_valid_features=False,
+        cat_feat: Union[List[str], str, None] = "auto",
+        params: Optional[Dict[str, Any]] = None,
+        stratified: bool = False,
+        show_learning_curve: bool = True,
+        verbose_eval: int = 50,
+        return_valid_features: bool = False,
     ):
-        self.model = None
-        self.cat_feat = cat_feat
-        self.model_params = None
-        self.params = params
-        self.learning_curve = None
-        self.is_init_score = False
-        self.stratified = stratified
-        self.show_learning_curve = show_learning_curve
-        self.verbose_eval = verbose_eval
-        self.return_valid_features = return_valid_features
-        self.valid_features = None
+        self.model: Optional[lgb.Booster] = None
+        self.cat_feat_input = cat_feat # Store original input
+        self.cat_feat: Optional[List[str]] = None # Processed list
+        self.model_params: Optional[Dict[str, Any]] = None
+        self.params: Optional[Dict[str, Any]] = params
+        self.learning_curve: Optional[plt.Figure] = None
+        self.is_init_score: bool = False
+        self.stratified: bool = stratified
+        self.show_learning_curve: bool = show_learning_curve
+        # Ensure verbose_eval is usable by log_evaluation (expects int or bool)
+        self.verbose_eval: Union[int, bool] = verbose_eval if verbose_eval > 0 else False
+        self.return_valid_features: bool = return_valid_features
+        self.valid_features: Optional[pd.DataFrame] = None
 
-    def __repr__(self):
-        s = (
-            "GradientBoosting(cat_feat={cat_feat},\n"
-            "                 params={params})".format(
-                cat_feat=self.cat_feat, params=self.params
-            )
+    def __repr__(self) -> str:
+        """Provides a string representation of the GradientBoosting object."""
+        return (
+            f"{self.__class__.__name__}("
+            f"cat_feat={self.cat_feat_input!r}, "
+            f"params={self.params!r}, "
+            f"stratified={self.stratified!r}, "
+            f"show_learning_curve={self.show_learning_curve!r}, "
+            f"verbose_eval={self.verbose_eval!r}, "
+            f"return_valid_features={self.return_valid_features!r})"
         )
-        return s
 
     def fit(
         self,
-        X,
-        y,
-        sample_weight=None,
-        init_score=None,
-        groups=None,
-    ):
-        """Fit the lightGBM/Catboost either using the python API and early stopping
+        X: Union[pd.DataFrame, np.ndarray],
+        y: Union[pd.Series, np.ndarray],
+        sample_weight: Optional[Union[pd.Series, np.ndarray]] = None,
+        init_score: Optional[Union[pd.Series, np.ndarray]] = None,
+        groups: Optional[Union[pd.Series, np.ndarray]] = None,
+    ) -> None:
+        """Fits the LightGBM model using early stopping.
 
         Parameters
         ----------
         X : pd.DataFrame or np.ndarray
-            the predictors' matrix
+            Predictor matrix (features).
         y : pd.Series or np.ndarray
-            the target series/array
+            Target variable.
         sample_weight : pd.Series or np.ndarray, optional
-            the sample_weight series/array, if relevant. If not None, it should be of the same length as the
-            target (default ``None``)
+            Sample weights. Must have the same length as y.
         init_score : pd.Series or np.ndarray, optional
-            the initial score to boost from (series/array), if relevant. If not None,
-            it should be of the same length as the target (default ``None``)
+            Initial scores to boost from. Must have the same length as y.
         groups : pd.Series or np.ndarray, optional
-            the groups (e.g. polID) for robust cross validation.
-            The same group will not appear in two different folds.
-
+            Group labels for GroupShuffleSplit. Ensures samples from the same
+            group are not in both train and validation sets.
         """
-        if (self.params is not None) and (not isinstance(self.params, dict)):
-            raise TypeError(
-                "params should be either None or a dictionary of lightgbm params"
-            )
-        elif (isinstance(self.params, dict)) and (
-            "objective" not in self.params.keys()
-        ):
-            raise KeyError("Provide the objective in the params dict")
+        # --- Input Validation and Preparation ---
+        if self.params is not None and not isinstance(self.params, dict):
+            raise TypeError("params must be None or a dictionary.")
+        if isinstance(self.params, dict) and "objective" not in self.params:
+            raise KeyError("params dictionary must include an 'objective'.")
 
-        if self.cat_feat == "auto":
-            dtypes_dic = create_dtype_dict(df=X, dic_keys="dtypes")
-            category_cols = dtypes_dic["cat"] + dtypes_dic["time"] + dtypes_dic["unk"]
-            self.cat_feat = category_cols if category_cols else None
+        # Ensure X is a DataFrame for potential 'auto' cat_feat detection
+        if not isinstance(X, pd.DataFrame):
+            # Warning: Column names will be lost if originally numpy
+            warnings.warn("Input X is not a pandas DataFrame. Converting, column names might be lost.")
+            X = pd.DataFrame(X) # Potential high memory usage for large arrays
 
-        if not isinstance(X, (pd.Series, pd.DataFrame)):
-            X = pd.DataFrame(X)
+        # Handle categorical features
+        if self.cat_feat_input == "auto":
+            try:
+                # Use create_dtype_dict to find column names by type groups
+                # It identifies:
+                # 'cat': object, category, bool
+                # 'time': datetime, timedelta, datetimetz
+                # 'unk': Any other non-numeric, non-interval types
+                dtypes_dic = create_dtype_dict(df=X, dic_keys="dtypes")
+                # Combine columns identified as cat, time, or unknown
+                # These will be treated as categorical by LightGBM
+                category_cols = (
+                    dtypes_dic.get("cat", [])
+                    + dtypes_dic.get("time", [])
+                    + dtypes_dic.get("unk", [])
+                )
+                self.cat_feat = category_cols if category_cols else None
+                if self.cat_feat:
+                     print(f"Auto-detected categorical features (cat/time/unk dtypes): {self.cat_feat}")
+            except Exception as e:
+                 warnings.warn(f"Error during auto-detection of categorical features: {e}. Proceeding with cat_feat=None.")
+                 self.cat_feat = None
+        elif isinstance(self.cat_feat_input, list):
+             # Validate that provided categorical features exist in X
+             missing_cols = [col for col in self.cat_feat_input if col not in X.columns]
+             if missing_cols:
+                 raise ValueError(f"Categorical features not found in X: {missing_cols}")
+             self.cat_feat = self.cat_feat_input
+        elif self.cat_feat_input is None:
+             self.cat_feat = None
+        else:
+             raise TypeError("cat_feat must be 'auto', a list of column names, or None.")
 
+        # Ensure y is a Series
         if not isinstance(y, pd.Series):
-            y = pd.Series(y)
+            y = pd.Series(y, name="target") # Assign a default name
 
+        # Ensure sample_weight and init_score are Series if provided
         if sample_weight is not None:
             if not isinstance(sample_weight, pd.Series):
-                sample_weight = pd.Series(sample_weight)
+                sample_weight = pd.Series(sample_weight, name="sample_weight")
+            if len(sample_weight) != len(y):
+                 raise ValueError("Length of sample_weight must match length of y.")
 
         if init_score is not None:
             self.is_init_score = True
             if not isinstance(init_score, pd.Series):
-                init_score = pd.Series(init_score)
+                init_score = pd.Series(init_score, name="init_score")
+            if len(init_score) != len(y):
+                 raise ValueError("Length of init_score must match length of y.")
 
+        # Ensure groups is a Series if provided
+        if groups is not None:
+            if not isinstance(groups, pd.Series):
+                groups = pd.Series(groups, name="groups")
+            if len(groups) != len(y):
+                 raise ValueError("Length of groups must match length of y.")
+
+
+        # --- Model Training ---
         output = _fit_early_stopped_lgb(
             X=X,
             y=y,
             sample_weight=sample_weight,
-            params=self.params,
+            params=self.params.copy() if self.params else None, # Pass a copy
             init_score=init_score,
-            cat_feat=self.cat_feat,
+            cat_feat=self.cat_feat, # Use processed list
             stratified=self.stratified,
             groups=groups,
-            learning_curve=self.show_learning_curve,
+            show_learning_curve=self.show_learning_curve,
             verbose_eval=self.verbose_eval,
             return_valid_features=self.return_valid_features,
         )
 
-        if self.show_learning_curve:
-            if self.return_valid_features:
-                self.model, self.valid_features, self.learning_curve = (
-                    output[0],
-                    output[1],
-                    output[2],
-                )
-            else:
-                self.model, self.learning_curve = output[0], output[1]
-        else:
-            if self.return_valid_features:
-                self.model, self.valid_features = output[0], output[1]
-            else:
-                self.model = output
+        # --- Process Output ---
+        if self.return_valid_features and self.show_learning_curve:
+            self.model, self.valid_features, self.learning_curve = output
+        elif self.return_valid_features and not self.show_learning_curve:
+            self.model, self.valid_features = output
+        elif not self.return_valid_features and self.show_learning_curve:
+            self.model, self.learning_curve = output
+        else: # Not returning valid features, not showing learning curve
+            self.model = output
 
-        self.model_params = self.model.params
+        # Store final model parameters
+        if self.model:
+            self.model_params = self.model.params
 
-    def predict(self, X, predict_proba=False):
-        """Predict the new values using the fitted model.
+
+    def predict(
+        self, X: Union[pd.DataFrame, np.ndarray], predict_proba: bool = False
+    ) -> np.ndarray:
+        """Predicts target values or probabilities for new data.
 
         Parameters
         ----------
         X : pd.DataFrame or np.ndarray
-            the predictors' matrix
+            Predictor matrix for which to make predictions.
         predict_proba : bool, default=False
-            returns probabilities (only for classification) (default ``False``)
-        """
-        if self.is_init_score:
-            raise AttributeError(
-                "The model is fitted from an initial score, use the `predict_raw` method instead\n"
-                "Please also check what is returned by the predicted method, for the raw version\n"
-                "you might have to apply `exp`"
-            )
+            If True and the objective is classification, returns class
+            probabilities. Otherwise, returns predicted values (regression)
+            or class labels (classification).
 
-        obj_fn = self.model_params["objective"]
-        # self.params['objective']
-        # LightGBM
-
-        if not predict_proba and ("binary" in obj_fn):
-            # rounding the values and convert to integer
-            return self.model.predict(X).round(0).astype(int)
-        elif not predict_proba and ("multi" in obj_fn):
-            y_pred = self.model.predict(X)
-            # find the class using the argmax function
-            # one proba per class and pick the largest prob
-            return np.array([np.argmax(line) for line in y_pred])
-        else:
-            return self.model.predict(X)
-
-    def predict_raw(self, X, **kwargs):
-        """The native predict method, if you need raw_score, etc.
-
-
-        Parameters
-        ----------
-        X : pd.DataFrame or np.ndarray
-            the predictors' matrix
-
-        **kwargs : dict, optional
-            optional dictionary of other parameters for the prediction.
-            See the ``lightgbm`` and ``catboost`` documentation for details.
+        Returns
+        -------
+        np.ndarray
+            Predicted values or probabilities.
 
         Raises
         ------
-        Exception
-            "method not found" if the method specified in the init differs from "lgb" or "cat"
-
+        AttributeError
+            If the model was trained with `init_score` (use `predict_raw`).
+        ValueError
+            If the model has not been trained yet.
         """
+        if self.model is None:
+            raise ValueError("Model has not been trained yet. Call fit() first.")
+        if self.is_init_score:
+            raise AttributeError(
+                "Model was fitted with init_score. Use predict_raw() instead "
+                "for raw outputs. Apply transformations (e.g., exp) manually "
+                "if needed."
+            )
+
+        # Ensure X is DataFrame if model was trained on DataFrame (for feature names)
+        if isinstance(self.model.feature_name(), list) and not isinstance(X, pd.DataFrame):
+             warnings.warn("Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.")
+             # Assuming columns match the order during training if no names provided
+             try:
+                 X = pd.DataFrame(X, columns=self.model.feature_name())
+             except ValueError:
+                  raise ValueError(f"Input X has {X.shape[1]} columns, but model expects {len(self.model.feature_name())}.")
+
+
+        obj_fn = self.model_params.get("objective", "") if self.model_params else ""
+
+        # Standard prediction
+        y_pred_raw = self.model.predict(X)
+
+        # Post-processing based on objective and predict_proba
+        if "binary" in obj_fn:
+            if predict_proba:
+                # Return probabilities for the positive class
+                # LightGBM binary predict often returns probabilities directly
+                # Ensure it's 1D array for consistency if needed
+                return y_pred_raw if y_pred_raw.ndim == 1 else y_pred_raw[:, 1]
+            else:
+                # Return class labels (0 or 1)
+                return (y_pred_raw > 0.5).astype(int)
+        elif "multiclass" in obj_fn:
+            if predict_proba:
+                # Return probabilities for all classes
+                return y_pred_raw
+            else:
+                # Return the class index with the highest probability
+                return np.argmax(y_pred_raw, axis=1)
+        else: # Regression or other objectives
+            if predict_proba:
+                 warnings.warn("predict_proba=True is ignored for non-classification objectives.")
+            return y_pred_raw
+
+
+    def predict_raw(self, X: Union[pd.DataFrame, np.ndarray], **kwargs) -> np.ndarray:
+        """Provides direct access to the underlying LightGBM predict method.
+
+        Useful for obtaining raw scores, leaf indices, etc., especially when
+        `init_score` was used during training.
+
+        Parameters
+        ----------
+        X : pd.DataFrame or np.ndarray
+            Predictor matrix.
+        **kwargs : dict, optional
+            Additional keyword arguments passed directly to `lgb.Booster.predict()`.
+            Examples: `raw_score=True`, `pred_leaf=True`. See LightGBM docs.
+
+        Returns
+        -------
+        np.ndarray
+            The raw prediction output from the LightGBM model.
+
+        Raises
+        ------
+        ValueError
+            If the model has not been trained yet.
+        """
+        if self.model is None:
+            raise ValueError("Model has not been trained yet. Call fit() first.")
+
+        # Ensure X is DataFrame if model was trained on DataFrame (for feature names)
+        if isinstance(self.model.feature_name(), list) and not isinstance(X, pd.DataFrame):
+             warnings.warn("Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.")
+             try:
+                 X = pd.DataFrame(X, columns=self.model.feature_name())
+             except ValueError:
+                  raise ValueError(f"Input X has {X.shape[1]} columns, but model expects {len(self.model.feature_name())}.")
+
         return self.model.predict(X, **kwargs)
 
-    def save(self, save_path=None, name=None):
-        """Save method, saves the model as pkl file in the specified folder as name.pkl
-        If the path is None, then the model is saved in the current working directory.
-        If the name is not specified, the model is saved as 'gbm_base_model_[TIMESTAMP].pkl
+
+    def save(self, save_path: Optional[str] = None, name: Optional[str] = None) -> str:
+        """Saves the trained model and learning curve (if generated).
+
+        Model is saved using joblib. Learning curve is saved as a PNG image.
 
         Parameters
         ----------
         save_path : str, optional
-            folder where to save the model, as a pickle/joblib file
+            Directory path to save the files. If None, saves in the current
+            working directory. The directory will be created if it doesn't exist.
         name : str, optional
-            name of the model name
+            Base name for the saved files (without extension). If None, defaults
+            to 'gbm_base_model_{objective}_{date}'.
 
         Returns
         -------
         str
-            where the pkl file is saved
+            The full path to the saved model file (.joblib).
 
+        Raises
+        ------
+        ValueError
+            If the model has not been trained yet.
+        TypeError
+            If the learning curve exists but is not a matplotlib Figure.
         """
+        if self.model is None:
+            raise ValueError("Model has not been trained yet. Cannot save.")
+
+        # Determine file names
         if name:
-            file_name = f"{str(name)}.joblib"
-            fig_name = f"{str(name)}_learning_curve.png"
+            base_name = str(name)
         else:
-            file_name = f"gbm_base_model_{str(self.params['objective'])}.joblib"
-            fig_name = f"gbm_base_model_learning_curve_{str(date.today())}.png"
+            obj = self.model_params.get('objective', 'unknown_obj')
+            base_name = f"gbm_base_model_{obj}_{date.today()}"
 
+        model_file_name = f"{base_name}.joblib"
+        fig_file_name = f"{base_name}_learning_curve.png"
+
+        # Determine save directory
         if save_path:
-            file_path = os.path.join(save_path, file_name)
-            fig_path = os.path.join(save_path, fig_name)
+            save_dir = Path(save_path)
+            # Create directory if it doesn't exist
+            save_dir.mkdir(parents=True, exist_ok=True)
+            model_file_path = save_dir / model_file_name
+            fig_file_path = save_dir / fig_file_name
         else:
-            file_path = file_name
-            fig_path = fig_name
-        print(f"Saving model as: {file_path}")
-        joblib.dump(self.model, file_path)
+            model_file_path = Path(model_file_name)
+            fig_file_path = Path(fig_file_name)
 
-        self.learning_curve.savefig(
-            fig_path, bbox_inches="tight"
-        )  # save the figure to file
-        return file_path
+        # Save model
+        print(f"Saving model to: {model_file_path}")
+        joblib.dump(self.model, model_file_path)
 
-    def load(self, model_path):
-        if Path(model_path).is_file():
-            # load model and update method
-            self.model = joblib.load(model_path)
+        # Save learning curve if it exists
+        if self.learning_curve:
+            if isinstance(self.learning_curve, plt.Figure):
+                print(f"Saving learning curve to: {fig_file_path}")
+                self.learning_curve.savefig(fig_file_path, bbox_inches="tight")
+                plt.close(self.learning_curve) # Close figure to free memory
+            else:
+                 warnings.warn("Learning curve attribute exists but is not a matplotlib Figure. Cannot save.")
+
+        return str(model_file_path)
+
+
+    def load(self, model_path: str) -> None:
+        """Loads a previously saved LightGBM model.
+
+        Overwrites the current `model` and `model_params` attributes.
+
+        Parameters
+        ----------
+        model_path : str
+            Path to the saved model file (.joblib).
+
+        Raises
+        ------
+        FileNotFoundError
+            If the model file does not exist at the specified path.
+        """
+        model_file = Path(model_path)
+        if not model_file.is_file():
+            raise FileNotFoundError(f"Model file not found at: {model_path}")
+
+        print(f"Loading model from: {model_path}")
+        self.model = joblib.load(model_file)
+        if self.model:
             self.model_params = self.model.params
-
-            self.cat_feat = self.model.params
+            # Attempt to infer cat_feat from loaded model if possible (might not be stored directly)
+            # This part is heuristic; cat_feat isn't directly stored in older booster files this way
+            if hasattr(self.model, 'pandas_categorical') and self.model.pandas_categorical:
+                 self.cat_feat = self.model.pandas_categorical
+                 print(f"Inferred categorical features from loaded model: {self.cat_feat}")
+            else:
+                 # Cannot reliably get cat_feat from older models, keep original setting or None
+                 print("Could not reliably infer categorical features from the loaded model.")
+                 self.cat_feat = self.cat_feat_input if isinstance(self.cat_feat_input, list) else None
         else:
-            raise ValueError("The model file does not exist, please check the path")
+             raise ValueError("Failed to load model from file.")
 
 
+# --- Helper Functions ---
 def _fit_early_stopped_lgb(
-    X,
-    y,
-    sample_weight=None,
-    groups=None,
-    init_score=None,
-    params=None,
-    cat_feat=None,
-    stratified=False,
-    learning_curve=True,
-    verbose_eval=0,
-    return_valid_features=False,
-):
-    """convenience function, early stopping for lightGBM, using dataset and setting categorical feature, sample weights
-    and baseline (init_score), if any. User defined params can be passed.
-    It works for classification and regression.
+    X: pd.DataFrame,
+    y: pd.Series,
+    sample_weight: Optional[pd.Series],
+    groups: Optional[pd.Series],
+    init_score: Optional[pd.Series],
+    params: Optional[Dict[str, Any]],
+    cat_feat: Optional[List[str]],
+    stratified: bool,
+    show_learning_curve: bool,
+    verbose_eval: Union[int, bool],
+    return_valid_features: bool,
+) -> Union[
+        lgb.Booster,
+        Tuple[lgb.Booster, pd.DataFrame],
+        Tuple[lgb.Booster, plt.Figure],
+        Tuple[lgb.Booster, pd.DataFrame, plt.Figure],
+    ]:
+    """Internal function to train LightGBM with early stopping."""
 
-    Parameters
-    ----------
-    X : pd.DataFrame or np.ndarray
-        the predictors' matrix
-    y : pd.Series or np.ndarray
-        the target series/array
-    sample_weight : pd.Series or np.ndarray, optional
-        the sample_weight series/array, if relevant. If not None, it should be of the same length as the
-        target (default ``None``)
-    groups : pd.Series or np.ndarray, optional
-        the groups (e.g. polID) for robust cross validation.
-        The same group will not appear in two different folds.
-    params : dict, optional
-        you can pass the parameters that you want to lightGBM/Catboost, as long as they are valid.
-        If None, default parameters are passed.
-    init_score : pd.Series or np.ndarray, optional
-        the initial score to boost from (series/array), if relevant. If not None,
-        it should be of the same length as the target (default ``None``)
-    cat_feat : str or list of strings, optional
-        Categorical features. If list of int, interpreted as indices. If list of strings, interpreted as feature names
-        (need to specify ``feature_name`` as well). If 'auto' and data is pandas DataFrame, pandas unordered categorical
-        columns are used. All values in categorical features should be less than int32 max value (2147483647). Large
-        values could be memory consuming. Consider using consecutive integers starting from zero. All negative values
-        in categorical features will be treated as missing values. The output cannot be monotonically constrained with
-        respect to a categorical feature (default ``None``)
-    stratified : bool, default = False
-        stratified shuffle split for the early stopping process. For classification problem, it guarantees
-        the same proportion
-    learning_curve : bool, default = False
-        if show or not the learning curve
-    verbose_eval : int, default = 0
-        period for printing the train and validation results. If < 1, no output
-    return_valid_features : bool, default = False
-        Whether or not to return validation features
-
-    Returns
-    -------
-    model : object
-        model object
-    fig : plt.figure
-        the learning curves, matplotlib figure object
-
-    """
+    # --- Data Splitting ---
     (
-        X_train,
-        y_train,
-        X_val,
-        y_val,
-        sample_weight_val,
-        sample_weight_train,
-        init_score_val,
-        init_score_train,
+        X_train, y_train, X_val, y_val,
+        sw_val, sw_train, # sample weights
+        is_val, is_train, # init scores
     ) = _make_split(
-        X=X,
-        y=y,
-        sample_weight=sample_weight,
-        init_score=init_score,
-        groups=groups,
-        stratified=stratified,
-        test_size=0.2,
+        X=X, y=y, sample_weight=sample_weight, init_score=init_score,
+        groups=groups, stratified=stratified, test_size=0.2,
     )
 
-    col_list = list(X.columns)
+    # --- Prepare LightGBM Datasets ---
+    # Note: LightGBM recommends using pd.Categorical dtype for categorical features
+    #       for optimal performance, but handles string/object types too.
+    #       Consider converting specified cat_feat columns to pd.Categorical
+    #       before creating lgb.Dataset if performance is critical.
+    # Example:
+    # if cat_feat:
+    #     for col in cat_feat:
+    #         X_train[col] = X_train[col].astype('category')
+    #         X_val[col] = X_val[col].astype('category')
+
+    # If cat_feat list is provided or detected, pass it. Otherwise 'auto'.
+    categorical_feature_param = cat_feat if cat_feat else 'auto'
+
     d_train = lgb.Dataset(
-        X_train, label=y_train, categorical_feature=cat_feat, free_raw_data=False
+        X_train, label=y_train,
+        categorical_feature=categorical_feature_param,
+        free_raw_data=False # Keep data for potential future use/inspection
     )
     d_valid = lgb.Dataset(
-        X_val,
-        label=y_val,
-        categorical_feature=cat_feat,
-        reference=d_train,
-        free_raw_data=False,
+        X_val, label=y_val,
+        categorical_feature=categorical_feature_param,
+        reference=d_train, # Important for consistency
+        free_raw_data=False
     )
-    # set weight if any
-    if sample_weight is not None:
-        d_train = d_train.set_weight(sample_weight_train)
-        d_valid = d_valid.set_weight(sample_weight_val)
 
-    # set initial score if any
-    if init_score is not None:
-        d_train = d_train.set_init_score(init_score_train)
-        d_valid = d_valid.set_init_score(init_score_val)
+    # Set weights and initial scores if provided
+    if sw_train is not None:
+        d_train.set_weight(sw_train)
+    if sw_val is not None:
+        d_valid.set_weight(sw_val)
+    if is_train is not None:
+        d_train.set_init_score(is_train)
+    if is_val is not None:
+        d_valid.set_init_score(is_val)
 
-    # check that if the params argument is not None, it is a dictionary
-    if params is None:
-        warnings.warn("No params dictionary provided, using RMSE as default")
-        params = {"objective": "rmse", "metric": "rmse", "num_boost_round": 10_000}
-    elif not isinstance(params, dict):
-        raise TypeError(
-            "params should be either None or a dictionary of lightgbm params"
-        )
+    # --- Parameter Handling ---
+    train_params = params.copy() if params else {}
 
-    if "num_boost_round" not in params:
-        # a very large number of trees, to guarantee early stopping and convergence
-        params["num_boost_round"] = 10_000
-    # Check if the objective is passed as an argument, dictionary key or both
-    if "objective" not in params:
-        raise KeyError("No objective provided in the params dictionary")
-    # if no metric provided --> set to same as objective (early stopping)
-    # requires a metric
-    if "metric" not in params and not callable(params["objective"]):
-        params["metric"] = params["objective"]
-    elif "metric" not in params and callable(params["objective"]):
+    # Default parameters if none provided
+    if not train_params:
+        warnings.warn("No params dictionary provided. Using default RMSE objective.")
+        train_params = {"objective": "rmse", "metric": "rmse"}
+
+    # Ensure objective is present
+    if "objective" not in train_params:
+        # This case should be caught in the main class, but double-check
+        raise KeyError("No 'objective' provided in the params dictionary.")
+
+    # Set default metric if missing and objective is standard string
+    if "metric" not in train_params and isinstance(train_params["objective"], str):
+        # Avoid setting metric if objective is not suitable (e.g., 'custom')
+        if train_params["objective"] not in ['custom', 'None', None]:
+             train_params["metric"] = train_params["objective"]
+             print(f"No 'metric' provided, using objective '{train_params['objective']}' as metric.")
+        else:
+             raise KeyError(
+                 f"Objective '{train_params['objective']}' requires an explicit 'metric' for early stopping."
+             )
+    elif "metric" not in train_params and callable(train_params["objective"]):
         raise KeyError(
-            "No metric provided for early stopping and could not set objective as metric (scoring)\n"
-            "because the objective is user defined"
+            "A 'metric' must be provided in params for early stopping when "
+            "using a custom objective function."
         )
 
-    if "metric" in params:
-        if isinstance(params["metric"], str):
-            feval_call = None
-        else:
-            feval_call = params["metric"]
-            params["metric"] = "custom"
-    else:
-        feval_call = None
+    # Handle n_estimators / num_boost_round
+    # Use 'n_estimators' as the preferred key, fallback to 'num_boost_round'
+    n_trees = train_params.pop('n_estimators', train_params.pop('num_boost_round', 10000))
+    if n_trees <= 0:
+         warnings.warn(f"n_estimators/num_boost_round ({n_trees}) is <= 0. Setting to default 10000.")
+         n_trees = 10000
+    print(f"Training up to {n_trees} boosting rounds.")
 
-    watchlist = [d_train, d_valid]
+
+    # Handle custom evaluation metric (feval)
+    feval_callback = None
+    if "metric" in train_params and callable(train_params["metric"]):
+        feval_callback = train_params["metric"]
+        # LightGBM needs a metric name even for custom feval
+        # Use 'custom' or the name of the function if available
+        train_params["metric"] = "custom"
+        print("Using custom evaluation metric.")
+
+
+    # Set verbosity for LightGBM internal messages (-1 = Fatal, 0 = Error/Warning, 1 = Info)
+    # Keep user-controlled printouts via log_evaluation callback
+    train_params["verbosity"] = -1 # Suppress internal LightGBM logs
+
+    # --- Callbacks ---
     evals_result = {}
-    params["verbosity"] = -1
+    callbacks = [
+        # Stop if validation metric doesn't improve for 10 rounds.
+        # `verbose=False` here prevents early_stopping's own messages.
+        lgb.early_stopping(stopping_rounds=10, verbose=False),
+        # Log metrics every `verbose_eval` rounds using print().
+        lgb.log_evaluation(period=verbose_eval if isinstance(verbose_eval, int) and verbose_eval > 0 else 0),
+        # Store metric history.
+        lgb.record_evaluation(eval_result=evals_result),
+    ]
 
-    n_trees = params["num_boost_round"] if "num_boost_round" in params else 10_000
-    # remove key if exists to avoid LGB user warnings
-    params.pop("num_boost_round", None)
-
+    # --- Training ---
     model = lgb.train(
-        params,
-        num_boost_round=n_trees,
+        params=train_params,
         train_set=d_train,
-        valid_sets=watchlist,
-        feval=feval_call,
-        # fobj=fobj_call,
-        callbacks=[
-            early_stopping(10, verbose=False),
-            log_evaluation(verbose_eval),
-            record_evaluation(eval_result=evals_result),
-        ],
+        num_boost_round=n_trees,
+        valid_sets=[d_train, d_valid], # Use both for monitoring
+        valid_names=['train', 'valid'], # Assign names
+        feval=feval_callback, # Custom metric function, if any
+        callbacks=callbacks,
     )
 
-    if learning_curve:
-        with mpl.rc_context(MPL_PARAMS):
-            fig, ax = plt.subplots()
-            ax = lgb.plot_metric(evals_result, ax=ax)
-            up_lim = model.best_iteration + 50
-            ax.axvline(
-                x=model.best_iteration, color="grey", linestyle="--", label="best_iter"
-            )
-            ax.set_xlim([0, up_lim])
+    # --- Post-Training ---
+    fig = None
+    if show_learning_curve:
+        try:
+            with mpl.rc_context(MPL_PARAMS):
+                fig, ax = plt.subplots()
+                lgb.plot_metric(evals_result, ax=ax, xlabel='Boosting Round', ylabel='Metric Value')
+                # Add vertical line for best iteration
+                if model.best_iteration:
+                    ax.axvline(
+                        x=model.best_iteration, color="grey", linestyle="--",
+                        label=f"Best Iteration ({model.best_iteration})"
+                    )
+                    ax.legend() # Show legend including the best iteration label
+                    # Adjust x-limit for better visualization
+                    up_lim = max(50, model.best_iteration + 50) # Show at least 50 rounds
+                    ax.set_xlim([0, up_lim])
+                ax.set_title("LightGBM Learning Curve")
+                fig.tight_layout()
+        except Exception as e:
+             warnings.warn(f"Could not generate learning curve plot: {e}")
+             if fig:
+                 plt.close(fig) # Close figure if created but failed during plotting
+             fig = None # Ensure fig is None if plotting fails
 
-        del d_train
-        del d_valid
-        gc.enable()
-        gc.collect()
-        if return_valid_features:
-            return model, X_val, fig
-        else:
-            return model, fig
-    else:
-        if return_valid_features:
-            return model, X_val
-        else:
-            return model
+
+    # --- Cleanup and Return ---
+    # Explicitly delete datasets to potentially free memory sooner
+    del d_train, d_valid
+    gc.collect() # Suggest garbage collection
+
+    # Return based on user flags
+    if return_valid_features and show_learning_curve:
+        return model, X_val, fig
+    elif return_valid_features and not show_learning_curve:
+        return model, X_val
+    elif not return_valid_features and show_learning_curve:
+        return model, fig
+    else: # Not returning valid features, not showing learning curve
+        return model
 
 
 def _make_split(
-    X,
-    y,
-    sample_weight=None,
-    init_score=None,
-    groups=None,
-    stratified=False,
-    test_size=0.2,
-):
-    """_make_split is a private function for splitting the dataset according to the task
+    X: pd.DataFrame,
+    y: pd.Series,
+    sample_weight: Optional[pd.Series],
+    init_score: Optional[pd.Series],
+    groups: Optional[pd.Series],
+    stratified: bool,
+    test_size: float = 0.2,
+    random_state: int = 42,
+) -> Tuple[
+        pd.DataFrame, pd.Series, pd.DataFrame, pd.Series, # X_train, y_train, X_val, y_val
+        Optional[pd.Series], Optional[pd.Series],       # sample_weight_val, sample_weight_train
+        Optional[pd.Series], Optional[pd.Series],       # init_score_val, init_score_train
+    ]:
+    """Splits data into training and validation sets."""
 
-    Parameters
-    ----------
-    X : pd.DataFrame or np.ndarray
-        the predictors' matrix
-    y : pd.Series or np.ndarray
-        the target series/array
-    sample_weight : pd.Series or np.ndarray, optional
-        the sample_weight series/array, if relevant. If not None, it should be of the same length as the
-        target (default ``None``)
-    groups : pd.Series or np.ndarray, optional
-        the groups (e.g. polID) for robust cross validation.
-        The same group will not appear in two different folds.
-    stratified : bool, default False
-        stratified shuffle split for the early stopping process. For classification problem, it guarantees
-        the same proportion
-    test_size : float, default 0.2
-        test set size, percentage of the total number of rows, by default .2
-
-    Returns
-    -------
-    Tuple[Union[pd.DataFrame, pd.Series]]
-        the split data, target, weights and initial scores (if any)
-    """
-
+    # Choose the appropriate splitter
     if stratified:
-        rs = StratifiedShuffleSplit(n_splits=1, test_size=test_size, random_state=42)
-        splitter = rs.split(X, y)
-    elif (not stratified) and (groups is not None):
-        rs = GroupShuffleSplit(n_splits=1, test_size=test_size, random_state=42)
-        splitter = rs.split(X, y, groups)
+        # StratifiedShuffleSplit requires y for stratification
+        splitter = StratifiedShuffleSplit(
+            n_splits=1, test_size=test_size, random_state=random_state
+        )
+        split_generator = splitter.split(X, y)
+    elif groups is not None:
+        # GroupShuffleSplit requires groups
+        splitter = GroupShuffleSplit(
+            n_splits=1, test_size=test_size, random_state=random_state
+        )
+        split_generator = splitter.split(X, y, groups=groups)
     else:
-        rs = ShuffleSplit(n_splits=1, test_size=test_size, random_state=42)
-        splitter = rs.split(X, y)
+        # Default ShuffleSplit
+        splitter = ShuffleSplit(
+            n_splits=1, test_size=test_size, random_state=random_state
+        )
+        split_generator = splitter.split(X, y)
 
-    for train_index, test_index in splitter:
-        X_val, y_val = X.iloc[test_index], y.iloc[test_index]
-        X_train, y_train = X.iloc[train_index], y.iloc[train_index]
-        if sample_weight is not None:
-            sample_weight_val, sample_weight_train = (
-                sample_weight.iloc[test_index],
-                sample_weight.iloc[train_index],
-            )
-        else:
-            sample_weight_val, sample_weight_train = None, None
-
-        if init_score is not None:
-            init_score_val, init_score_train = (
-                init_score.iloc[test_index],
-                init_score.iloc[train_index],
-            )
-        else:
-            init_score_val, init_score_train = None, None
-
-    return (
-        X_train,
-        y_train,
-        X_val,
-        y_val,
-        sample_weight_val,
-        sample_weight_train,
-        init_score_val,
-        init_score_train,
-    )
+    # Get the indices
+    try:
+        train_index, val_index = next(split_generator)
+    except StopIteration:
+         # Should not happen with n_splits=1, but handle defensively
+         raise RuntimeError("Failed to generate train/validation split.")
 
 
-def gbm_flavour(estimator):
-    model_str = str(type(estimator))
+    # Perform the split using iloc for robustness
+    X_train, X_val = X.iloc[train_index], X.iloc[val_index]
+    y_train, y_val = y.iloc[train_index], y.iloc[val_index]
+
+    # Split optional arrays if they exist
+    sw_train, sw_val = (None, None)
+    if sample_weight is not None:
+        sw_train, sw_val = sample_weight.iloc[train_index], sample_weight.iloc[val_index]
+
+    is_train, is_val = (None, None)
+    if init_score is not None:
+        is_train, is_val = init_score.iloc[train_index], init_score.iloc[val_index]
+
+    print(f"Data split: Train={len(X_train)} samples, Validation={len(X_val)} samples.")
+
+    return X_train, y_train, X_val, y_val, sw_val, sw_train, is_val, is_train
+
+
+# --- Optional Utility Function ---
+def gbm_flavour(estimator: object) -> str:
+    """Identifies the type of GBM estimator (basic check)."""
+    model_str = str(type(estimator)).lower()
     if "lightgbm" in model_str:
-        method = "lgb"
+        return "lgb"
     elif "catboost" in model_str:
-        method = "cat"
+        return "cat"
+    elif "xgboost" in model_str:
+        return "xgb"
     else:
-        method = "unknown"
-    return method
+        # Could add checks for sklearn GBMs etc.
+        return "unknown"
+
