@@ -1,5 +1,10 @@
 # Changes
 
+# 3.0.0
+
+ - [ENHANCEMENT] Upgrade to newer SHAP and lightgbm version
+ - [ENHANCEMENT] Migrate project management to `uv`
+
 # 2.4.0
  - [BUG] Add a safety for the array size in the weighted correlation ratio
  - [DOC] Contribution for better documentation, typos and fixing docstrings
