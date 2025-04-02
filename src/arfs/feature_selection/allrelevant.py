@@ -739,7 +739,7 @@ class Leshy(SelectorMixin, BaseEstimator):
             [description]
         """
         # check X and y are consistent len, X is Array and y is column
-        X, y = check_X_y(X, y, dtype=None, force_all_finite=False)
+        X, y = check_X_y(X, y, dtype=None, ensure_all_finite=False)
         if self.perc <= 0 or self.perc > 100:
             raise ValueError("The percentile should be between 0 and 100.")
 
@@ -1174,19 +1174,17 @@ def _split_fit_estimator(estimator, X, y, sample_weight=None, cat_feature=None):
         else:
             X_tr, X_tt, y_tr, y_tt = train_test_split(X, y, stratify=y, random_state=42)
         w_tr, w_tt = None, None
-
+        
     if check_if_tree_based(estimator):
         try:
-            # handle cat features if supported by the fit method
-            if is_catboost(estimator) or (
-                "cat_feature" in estimator.fit.__code__.co_varnames
-            ):
-                model = estimator.fit(
-                    X_tr, y_tr, sample_weight=w_tr, cat_features=cat_idx
-                )
+            # Handle LightGBM categorical features at initialization
+            if is_lightgbm(estimator):
+                model = estimator.fit(X_tr, y_tr, sample_weight=w_tr, categorical_feature=cat_idx)
+            elif is_catboost(estimator) or ("cat_feature" in estimator.fit.__code__.co_varnames):
+                model = estimator.fit(X_tr, y_tr, sample_weight=w_tr, cat_features=cat_idx)
             else:
                 model = estimator.fit(X_tr, y_tr, sample_weight=w_tr)
-
+                
         except Exception as e:
             raise ValueError(
                 "Please check your X and y variable. The provided "
@@ -1198,9 +1196,10 @@ def _split_fit_estimator(estimator, X, y, sample_weight=None, cat_feature=None):
     return model, X_tt, y_tt, w_tt
 
 
-def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
-    """Get the SHAP feature importance
 
+def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
+    """Get the SHAP feature importance (compatible with all SHAP versions)
+    
     Parameters
     ----------
     estimator : estimator object
@@ -1212,68 +1211,57 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
     sample_weight : array-like, shape = [n_samples], default=None
         Individual weights for each sample.
     cat_feature : list of int or None, default=None
-        The list of integers, columns loc, of the categorical predictors. Avoids detecting and encoding
-        each iteration if the exact same columns are passed to the selection methods.
+        The list of integers, columns loc, of the categorical predictors.
 
     Returns
     -------
     shap_imp : array
         The SHAP importance array.
     """
-    # Clone the estimator to avoid modifying the original one
     estimator = clone(estimator)
-
-    # Split the data into train and test sets and fit the model
     model, X_tt, y_tt, w_tt = _split_fit_estimator(
         estimator, X, y, sample_weight=sample_weight, cat_feature=cat_feature
     )
-    # Compute the SHAP values
-    if is_lightgbm(estimator):
-        # For LightGBM models use the built-in SHAP method
-        shap_matrix = model.predict(X_tt, pred_contrib=True)
 
-        # The shape of the shap_matrix depends on whether the estimator is a classifier or a regressor
-        if is_classifier(estimator) and (len(np.unique(y_tt)) > 2):
-            # For multi-class classifiers, reshape the shap_matrix
-            n_features = X_tt.shape[1]
-            n_samples = X_tt.shape[0]
-            n_features_plus_bias = n_features + 1
-            n_classes = len(np.unique(y_tt))
-            # Reshape the array to [n_samples, n_features + 1, n_classes]
-            reshaped_values = shap_matrix.reshape(n_samples, n_classes, n_features_plus_bias)
-
-            # Since we need (n_samples, n_features + 1, n_classes), transpose the second and third dimensions
-            reshaped_values = reshaped_values.transpose(0, 2, 1)
-            reshaped_values = reshaped_values[:, :-1, :]
-            reshaped_values.shape
-            # Sum the contributions for each class ignoring the bias term
-            # average on all the samples
-            shap_imp = np.abs(reshaped_values).sum(axis=-1).mean(axis=0)
-        else:
-            shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
-    else:
-        # For other tree-based models, use the shap.TreeExplainer method to compute SHAP values
-        explainer = shap.TreeExplainer(
-            model, feature_perturbation="tree_path_dependent"
-        )
-        shap_values = explainer.shap_values(X_tt)
-        # Calculate feature importance from SHAP values for multi-class classifiers
-        if is_classifier(model):
-            # For multi-class models, SHAP values might be a list (e.g., LightGBM) or a multi-dimensional array
-            if isinstance(shap_values, list):
-                # LightGBM in sklearn API might return a list of arrays; aggregate them by taking the absolute mean across classes
-                shap_imp = np.mean([np.abs(shap_val).sum(axis=-1) for shap_val in shap_values], axis=0)
-            elif isinstance(shap_values, np.ndarray) and shap_values.ndim > 2:
-                # If SHAP values are a 3D array, sum absolute contributions over all classes
-                shap_imp = np.abs(shap_values).sum(axis=-1).mean(axis=0)
+    explainer = shap.TreeExplainer(model)
+    shap_values = explainer.shap_values(X_tt)
+    
+    if isinstance(shap_values, list):
+        # Pre-v0.45.0 format
+        if is_classifier(estimator):
+            if len(np.unique(y)) > 2:  # Multiclass
+                # Reconstruct the concatenated matrix like in _compute_importance
+                shap_concat = np.concatenate(shap_values, axis=1)
+                n_feat = X_tt.shape[1]
+                shap_values = np.delete(
+                    shap_concat,
+                    list(range(n_feat, (n_feat + 1) * len(shap_values), n_feat + 1)),
+                    axis=1
+                )
+                shap_imp = np.abs(shap_values[:, :-1]).mean(axis=0)
             else:
-                # For single-dimensional or binary classification, calculate the average feature importance directly
+                # Binary - use positive class only (consistent with _compute_importance)
+                shap_imp = np.abs(shap_values[1][:, :-1]).mean(axis=0)
+        else:
+            # Regression
+            shap_imp = np.abs(shap_values[0][:, :-1]).mean(axis=0)
+            
+    elif isinstance(shap_values, np.ndarray):
+        # v0.45.0+ format
+        if is_classifier(estimator):
+            if shap_values.ndim == 3:
+                # Multiclass - sum across classes
+                shap_imp = np.abs(shap_values).sum(axis=2).mean(axis=0)
+            else:
+                # bias has been move to a separate attributes, no more a column
                 shap_imp = np.abs(shap_values).mean(axis=0)
         else:
-            shap_imp = np.abs(shap_values).mean(0)
+            # Regression
+            shap_imp = np.abs(shap_values).mean(axis=0)
+    else:
+        raise ValueError(f"Unsupported SHAP values format: {type(shap_values)}")
 
     return shap_imp
-
 
 def _get_shap_imp_fast(estimator, X, y, sample_weight=None, cat_feature=None):
     """Get the SHAP feature importance using the fasttreeshap implementation
@@ -1395,35 +1383,25 @@ def _get_imp(estimator, X, y, sample_weight=None, cat_feature=None):
     """
     # be sure to use an non-fitted estimator
     estimator = clone(estimator)
-
     try:
         if cat_feature is None:
             X, _, cat_idx = get_pandas_cat_codes(X)
         else:
             cat_idx = cat_feature
 
-        # handle catboost and cat features
-        if is_catboost(estimator) or (
-            "cat_feature" in estimator.fit.__code__.co_varnames
-        ):
-            X = pd.DataFrame(X)
+        if is_lightgbm(estimator):
+            estimator.fit(X, y, sample_weight=sample_weight, categorical_feature=cat_idx)
+        elif is_catboost(estimator) or ("cat_feature" in estimator.fit.__code__.co_varnames):
             estimator.fit(X, y, sample_weight=sample_weight, cat_features=cat_idx)
         else:
             estimator.fit(X, y, sample_weight=sample_weight)
-
     except Exception as e:
-        raise ValueError(
-            "Please check your X and y variable. The provided "
-            "estimator cannot be fitted to your data.\n" + str(e)
-        )
-    try:
-        imp = estimator.feature_importances_
-    except Exception:
-        raise ValueError(
-            "Only methods with feature_importance_ attribute "
-            "are currently supported in BorutaPy."
-        )
-    return imp
+        raise ValueError(f"Estimator fitting failed: {str(e)}")
+
+    if is_lightgbm(estimator):
+        return estimator.booster_.feature_importance(importance_type='gain')  # LightGBM 4.x compatible
+    else:
+        return estimator.feature_importances_
 
 
 ###################################
@@ -1549,7 +1527,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
             "                delta={delta},\n"
             "                silent={silent}, \n"
             '                importance="{importance}")'.format(
-                estimator=self.estimator,
+                est=self.estimator,
                 cutoff=self.cutoff,
                 iters=self.iters,
                 mr=self.max_rounds,
@@ -2547,41 +2525,34 @@ def _train_lgb_model(
     tuple of (Booster, numpy.ndarray, int)
         The trained LightGBM model, its SHAP values for X_train, and the best iteration reached during training.
     """
-
-    d_train = lgb.Dataset(
-        X_train, label=y_train, weight=weight_train, categorical_feature=category_cols
-    )
-    d_valid = lgb.Dataset(
-        X_val, label=y_val, weight=weight_val, categorical_feature=category_cols
-    )
-    watchlist = [d_train, d_valid]
+    d_train = lgb.Dataset(X_train, label=y_train, weight=weight_train)
+    d_valid = lgb.Dataset(X_val, label=y_val, weight=weight_val)
+    
+    if category_cols:
+        d_train.set_categorical_feature(category_cols)
+        d_valid.set_categorical_feature(category_cols)
 
     bst = lgb.train(
         params,
         train_set=d_train,
         num_boost_round=10000,
-        valid_sets=watchlist,
-        categorical_feature=category_cols,
-        callbacks=[early_stopping(early_stopping_rounds, False, False)],
+        valid_sets=[d_train, d_valid],
+        callbacks=[lgb.early_stopping(early_stopping_rounds)],
     )
 
-    if fastshap:
-        try:
-            from fasttreeshap import TreeExplainer as FastTreeExplainer
-        except ImportError:
-            raise ImportError(
-                "fasttreeshap is not installed. Please install it using 'pip/conda install fasttreeshap'."
-            )
-
-        explainer = FastTreeExplainer(
-            bst,
-            algorithm="auto",
-            shortcut=False,
-            feature_perturbation="tree_path_dependent",
-        )
+    # Compute SHAP values with proper version handling
+    try:
+        if fastshap:
+            from fasttreeshap import TreeExplainer
+            explainer = TreeExplainer(bst, algorithm="v1")
+        else:
+            import shap
+            explainer = shap.TreeExplainer(bst)
+        
         shap_matrix = explainer.shap_values(X_train)
-    else:
-        shap_matrix = bst.predict(X_train, pred_contrib=True)
+        
+    except Exception as e:
+        raise RuntimeError(f"SHAP computation failed: {str(e)}")
 
     return bst, shap_matrix, bst.best_iteration
 
@@ -2605,21 +2576,37 @@ def _compute_importance(new_x_tr, shap_matrix, param, objective, fastshap):
     list
         A list of tuples containing feature names and their corresponding importance scores.
     """
+    try:
+        from shap import __version__ as shap_version
+        new_shap = tuple(map(int, shap_version.split('.')[:2])) >= (0, 45)
+    except Exception:
+        new_shap = False  # Assume old version if can't check
+
     if fastshap:
-        if objective == "softmax":
+        if not new_shap and objective == "softmax" and isinstance(shap_matrix, list):
             shap_matrix = np.abs(np.concatenate(shap_matrix, axis=1))
         shap_imp = np.mean(np.abs(shap_matrix), axis=0)
     else:
-        if objective == "softmax":
-            n_feat = new_x_tr.shape[1]
-            shap_matrix = np.delete(
-                shap_matrix,
-                list(range(n_feat, (n_feat + 1) * param["num_class"], n_feat + 1)),
-                axis=1,
-            )
-            shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
+        if new_shap:
+            # the bias is now in a dedicated attribute, no more a column
+            if objective == "softmax":
+                shap_imp = np.mean(np.abs(shap_matrix).sum(axis=2), axis=0)
+            else:
+                shap_imp = np.mean(np.abs(shap_matrix), axis=0)
         else:
-            shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
+            if objective == "softmax":
+                n_feat = new_x_tr.shape[1]
+                shap_matrix = np.delete(
+                    shap_matrix,
+                    list(range(n_feat, (n_feat + 1) * param["num_class"], n_feat + 1)),
+                    axis=1,
+                )
+                shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
+            else:
+                if isinstance(shap_matrix, list):
+                    shap_matrix = shap_matrix[1]  # Positive class
+                shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
+    
     importance = dict(zip(new_x_tr.columns, shap_imp))
     return sorted(importance.items(), key=operator.itemgetter(1))
 
