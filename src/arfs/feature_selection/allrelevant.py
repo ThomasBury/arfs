@@ -1395,35 +1395,26 @@ def _get_imp(estimator, X, y, sample_weight=None, cat_feature=None):
     """
     # be sure to use an non-fitted estimator
     estimator = clone(estimator)
-
     try:
         if cat_feature is None:
             X, _, cat_idx = get_pandas_cat_codes(X)
         else:
             cat_idx = cat_feature
-
-        # handle catboost and cat features
-        if is_catboost(estimator) or (
-            "cat_feature" in estimator.fit.__code__.co_varnames
-        ):
-            X = pd.DataFrame(X)
+        if is_lightgbm(estimator):
+            # For LightGBM, set categorical features at init
+            estimator.set_params(categorical_feature=cat_idx)
+            estimator.fit(X, y, sample_weight=sample_weight)
+        elif is_catboost(estimator) or ("cat_feature" in estimator.fit.__code__.co_varnames):
             estimator.fit(X, y, sample_weight=sample_weight, cat_features=cat_idx)
         else:
             estimator.fit(X, y, sample_weight=sample_weight)
-
     except Exception as e:
-        raise ValueError(
-            "Please check your X and y variable. The provided "
-            "estimator cannot be fitted to your data.\n" + str(e)
-        )
-    try:
-        imp = estimator.feature_importances_
-    except Exception:
-        raise ValueError(
-            "Only methods with feature_importance_ attribute "
-            "are currently supported in BorutaPy."
-        )
-    return imp
+        raise ValueError(f"Estimator fitting failed: {str(e)}")
+    if is_lightgbm(estimator):
+        # Use booster_.feature_importance() for LightGBM 4.x compatibility
+        return estimator.booster_.feature_importance(importance_type='gain')
+    else:
+        return estimator.feature_importances_
 
 
 ###################################
