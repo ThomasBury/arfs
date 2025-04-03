@@ -1,9 +1,9 @@
 """LassoFeatureSelection Submodule
 
-This module provides LASSO-based feature selection, specifically designed for use with Generalized Linear Models (GLM). 
-The Lasso Regularized GLM introduces an L1 regularization penalty (Lasso regularization), 
-encouraging some coefficients to become exactly zero during the model fitting process. 
-This regularization effectively removes irrelevant features from the model, making it a 
+This module provides LASSO-based feature selection, specifically designed for use with Generalized Linear Models (GLM).
+The Lasso Regularized GLM introduces an L1 regularization penalty (Lasso regularization),
+encouraging some coefficients to become exactly zero during the model fitting process.
+This regularization effectively removes irrelevant features from the model, making it a
 powerful tool for feature selection, particularly in datasets with numerous variables.
 
 Module Structure:
@@ -11,10 +11,10 @@ Module Structure:
 - `EnetGLM`: class serves as a scikit-learn wrapper for the regularized statsmodels GLM, providing seamless integration with scikit-learn's ecosystem.
 - `weighted_cross_val_score`: function allows users to pass weights to the model and define a custom scoring metric.
 - `grid_search_cv`: function performs a weighted LASSO grid search to find the best Lasso parameter for the model.
-- `LassoFeatureSelection`: class is the core feature selection class, estimating the Lasso parameter through 
+- `LassoFeatureSelection`: class is the core feature selection class, estimating the Lasso parameter through
     the grid search process, enabling efficient and effective feature selection.
 
-With this submodule, users can easily leverage Lasso Regularized GLMs and conduct feature selection, 
+With this submodule, users can easily leverage Lasso Regularized GLMs and conduct feature selection,
 improving model performance and interpretability in various datasets.
 """
 
@@ -406,7 +406,7 @@ def grid_search_cv(
     link: Optional[str] = None,
     score: str = "bic",
     fit_intercept: bool = True,
-    n_jobs: int = -1
+    n_jobs: int = -1,
 ) -> EnetGLM:
     """
     Perform grid search cross-validation for an Elastic Net Generalized Linear Model (EnetGLM).
@@ -440,7 +440,9 @@ def grid_search_cv(
     ValueError
         If the input data is not of the correct format or if an invalid family or score value is provided.
     """
-    estimator = EnetGLM(family=family, link=link, L1_wt=1.0, fit_intercept=fit_intercept)
+    estimator = EnetGLM(
+        family=family, link=link, L1_wt=1.0, fit_intercept=fit_intercept
+    )
 
     # Check if X and y are pandas DataFrames/Series and convert them to numpy arrays if necessary
     # X = check_array(X, accept_sparse=True, force_all_finite=False)
@@ -542,7 +544,7 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
         n_iterations: int = 10,
         score: str = "bic",
         fit_intercept: bool = True,
-        n_jobs: int = -1
+        n_jobs: int = -1,
     ):
         self.family = family
         self.link = link

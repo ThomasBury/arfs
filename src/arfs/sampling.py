@@ -1,5 +1,5 @@
-"""This module provide methods for sampling large datasets for reducing the running time
-"""
+"""This module provide methods for sampling large datasets for reducing the running time"""
+
 import numpy as np
 import pandas as pd
 from scipy.sparse import issparse

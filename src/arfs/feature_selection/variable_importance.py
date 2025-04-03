@@ -295,14 +295,20 @@ class VariableImportance(SelectorMixin, BaseEstimator):
         ax2.tick_params(axis="x", labelrotation=90)
 
         importance_min_value_on_axis = max_norm_importance if log else 0
-        x_vert, y_vert = [importance_index, importance_index], [
-            importance_min_value_on_axis,
-            self.threshold,
-        ]
-        x_horiz, y_horiz = [importance_min_value_on_axis, importance_index], [
-            self.threshold,
-            self.threshold,
-        ]
+        x_vert, y_vert = (
+            [importance_index, importance_index],
+            [
+                importance_min_value_on_axis,
+                self.threshold,
+            ],
+        )
+        x_horiz, y_horiz = (
+            [importance_min_value_on_axis, importance_index],
+            [
+                self.threshold,
+                self.threshold,
+            ],
+        )
 
         ax2.plot(x_vert, y_vert, linestyle="dashed", color="r")
         ax2.plot(x_horiz, y_horiz, linestyle="dashed", color="r")
@@ -375,7 +381,7 @@ def _compute_varimp_lgb(
                 from fasttreeshap import TreeExplainer as FastTreeExplainer
             except ImportError:
                 ImportError("fasttreeshap is not installed")
-            
+
             explainer = FastTreeExplainer(
                 gbm_model.model,
                 algorithm="auto",
@@ -402,9 +408,11 @@ def _compute_varimp_lgb(
                 n_samples = gbm_model.valid_features.shape[0]
                 y_freq_table = pd.Series(y.fillna(0)).value_counts(normalize=True)
                 n_classes = y_freq_table.size
-                
+
                 # Reshape the array to [n_samples, n_features + 1, n_classes]
-                reshaped_values = shap_matrix.reshape(n_samples, n_classes, n_features_plus_bias)
+                reshaped_values = shap_matrix.reshape(
+                    n_samples, n_classes, n_features_plus_bias
+                )
 
                 # Since we need (n_samples, n_features + 1, n_classes), transpose the second and third dimensions
                 reshaped_values = reshaped_values.transpose(0, 2, 1)

@@ -35,9 +35,9 @@ class TestLeshy:
         leshy_rfc_list = sorted(arfs.feature_names_in_[arfs.support_])
 
         # assert borutapy_rfc_list == leshy_rfc_list, "same selected features are expected"
-        assert bool(
-            set(baseline_list) & set(leshy_rfc_list)
-        ), "expect non-empty intersection"
+        assert bool(set(baseline_list) & set(leshy_rfc_list)), (
+            "expect non-empty intersection"
+        )
 
     def test_borutaPy_vs_leshy_with_rfr_and_native_feature_importance(self):
         # too slow for circleci to run them in a reasonable time
@@ -60,9 +60,9 @@ class TestLeshy:
         leshy_rfc_list = sorted(arfs.feature_names_in_[arfs.support_])
 
         # assert borutapy_rfc_list == leshy_rfc_list, "same selected features are expected"
-        assert bool(
-            set(baseline_list) & set(leshy_rfc_list)
-        ), "expect non-empty intersection"
+        assert bool(set(baseline_list) & set(leshy_rfc_list)), (
+            "expect non-empty intersection"
+        )
 
     def test_borutaPy_vs_leshy_with_rfc_and_shap_feature_importance(self):
         # too slow for circleci to run them in a reasonable time
@@ -84,9 +84,9 @@ class TestLeshy:
         leshy_rfc_list = sorted(arfs.feature_names_in_[arfs.support_])
 
         # assert borutapy_rfc_list == leshy_rfc_list, "same selected features are expected"
-        assert bool(
-            set(baseline_list) & set(leshy_rfc_list)
-        ), "expect non-empty intersection"
+        assert bool(set(baseline_list) & set(leshy_rfc_list)), (
+            "expect non-empty intersection"
+        )
 
     def test_borutaPy_vs_leshy_with_rfr_and_shap_feature_importance(self):
         # too slow for circleci to run them in a reasonable time
@@ -108,9 +108,9 @@ class TestLeshy:
         leshy_rfc_list = sorted(arfs.feature_names_in_[arfs.support_])
 
         # assert borutapy_rfc_list == leshy_rfc_list, "same selected features are expected"
-        assert bool(
-            set(baseline_list) & set(leshy_rfc_list)
-        ), "expect non-empty intersection"
+        assert bool(set(baseline_list) & set(leshy_rfc_list)), (
+            "expect non-empty intersection"
+        )
 
     def test_leshy_clf_with_lgb_and_shap_feature_importance_and_sample_weight(self):
         baseline_list = ["var0", "var1", "var2", "var3", "var4"]
@@ -121,9 +121,9 @@ class TestLeshy:
         arfs.fit(X, y, w)
         leshy_list = sorted(arfs.feature_names_in_[arfs.support_])
 
-        assert bool(
-            set(baseline_list) & set(leshy_list)
-        ), "expect non-empty intersection"
+        assert bool(set(baseline_list) & set(leshy_list)), (
+            "expect non-empty intersection"
+        )
 
     def test_leshy_regr_with_lgb_and_shap_feature_importance_and_sample_weight(self):
         baseline_list = ["var0", "var1", "var2", "var3", "var4", "var5"]
@@ -134,9 +134,9 @@ class TestLeshy:
         arfs.fit(X, y, w)
         leshy_list = sorted(arfs.feature_names_in_[arfs.support_])
 
-        assert bool(
-            set(baseline_list) & set(leshy_list)
-        ), "expect non-empty intersection"
+        assert bool(set(baseline_list) & set(leshy_list)), (
+            "expect non-empty intersection"
+        )
 
 
 class TestBoostAGroota:
@@ -163,9 +163,9 @@ class TestBoostAGroota:
         arfs.fit(X, y, w)
         leshy_list = sorted(arfs.feature_names_in_[arfs.support_])
 
-        assert bool(
-            set(baseline_list) & set(leshy_list)
-        ), "expect non-empty intersection"
+        assert bool(set(baseline_list) & set(leshy_list)), (
+            "expect non-empty intersection"
+        )
 
     def test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight(
         self,
@@ -186,9 +186,9 @@ class TestBoostAGroota:
         arfs.fit(X, y, w)
         leshy_list = sorted(arfs.feature_names_in_[arfs.support_])
 
-        assert bool(
-            set(baseline_list) & set(leshy_list)
-        ), "expect non-empty intersection"
+        assert bool(set(baseline_list) & set(leshy_list)), (
+            "expect non-empty intersection"
+        )
 
     def test_boostagroota_rgr_with_lgb_and_shap_feature_importance_and_sample_weight(
         self,
@@ -209,9 +209,9 @@ class TestBoostAGroota:
         arfs.fit(X, y, w)
         leshy_list = sorted(arfs.feature_names_in_[arfs.support_])
 
-        assert bool(
-            set(baseline_list) & set(leshy_list)
-        ), "expect non-empty intersection"
+        assert bool(set(baseline_list) & set(leshy_list)), (
+            "expect non-empty intersection"
+        )
 
     def test_boostagroota_regr_with_lgb_and_pimp_feature_importance_and_sample_weight(
         self,
@@ -232,9 +232,9 @@ class TestBoostAGroota:
         arfs.fit(X, y, w)
         leshy_list = sorted(arfs.feature_names_in_[arfs.support_])
 
-        assert bool(
-            set(baseline_list) & set(leshy_list)
-        ), "expect non-empty intersection"
+        assert bool(set(baseline_list) & set(leshy_list)), (
+            "expect non-empty intersection"
+        )
 
 
 class TestGrootCV:
@@ -250,9 +250,9 @@ class TestGrootCV:
         arfs.fit(X, y, w)
         grootcv_list = sorted(arfs.feature_names_in_[arfs.support_])
 
-        assert bool(
-            set(baseline_list) & set(grootcv_list)
-        ), "expect non-empty intersection"
+        assert bool(set(baseline_list) & set(grootcv_list)), (
+            "expect non-empty intersection"
+        )
 
     def test_grootcv_regression_with_and_sample_weight(self):
         baseline_list = ["var0", "var1", "var2", "var3", "var4", "var5"]
@@ -262,6 +262,6 @@ class TestGrootCV:
         arfs.fit(X, y, w)
         grootcv_list = sorted(arfs.feature_names_in_[arfs.support_])
 
-        assert bool(
-            set(baseline_list) & set(grootcv_list)
-        ), "expect non-empty intersection"
+        assert bool(set(baseline_list) & set(grootcv_list)), (
+            "expect non-empty intersection"
+        )

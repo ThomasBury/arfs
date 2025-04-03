@@ -391,11 +391,6 @@ def cat_var(data, col_excl=None, return_cat=True):
     return df, cat_var_df, inv_mapper, mapper
 
 
-
-
-
-
-
 class TreeDiscretizer(BaseEstimator, TransformerMixin):
     """
     Discretize continuous and/or categorical data using univariate regularized trees, returning a pandas DataFrame.
@@ -527,17 +522,25 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
             Returns self.
         """
         X, self.feature_names_in_ = self._prepare_input_dataframe(X)
-        self.bin_features, self.cat_features = self._determine_bin_and_cat_features(X, self.bin_features, self.cat_features)
+        self.bin_features, self.cat_features = self._determine_bin_and_cat_features(
+            X, self.bin_features, self.cat_features
+        )
         self.n_unique_table_ = X[self.bin_features].nunique()
-        self.bin_features = self._filter_bin_features(self.bin_features, self.n_unique_table_, self.n_bins_max)
-        X, self.ordinal_encoder_dic = self._encode_categorical_features(X, self.bin_features, self.cat_features)
-        
+        self.bin_features = self._filter_bin_features(
+            self.bin_features, self.n_unique_table_, self.n_bins_max
+        )
+        X, self.ordinal_encoder_dic = self._encode_categorical_features(
+            X, self.bin_features, self.cat_features
+        )
+
         for col in self.bin_features:
-            is_categorical = (self.cat_features is not None) and (col in self.cat_features)
+            is_categorical = (self.cat_features is not None) and (
+                col in self.cat_features
+            )
             self._fit_tree_and_create_bins(X, col, y, sample_weight, is_categorical)
-        
+
         return self
-    
+
     def _prepare_input_dataframe(self, X):
         X = X.copy()
 
@@ -546,10 +549,11 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
             X.columns = [f"pred_{i}" for i in range(X.shape[1])]
 
         return X, X.columns.to_numpy()
-    
+
     def _determine_bin_and_cat_features(self, X, bin_features, cat_features):
-        
-        if bin_features is None or (isinstance(bin_features, str) and (bin_features == "numerical")):
+        if bin_features is None or (
+            isinstance(bin_features, str) and (bin_features == "numerical")
+        ):
             bin_features = list(X.select_dtypes("number").columns)
         elif isinstance(bin_features, str) and (bin_features == "all"):
             bin_features = list(X.columns)
@@ -557,22 +561,27 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
             bin_features = list(X.select_dtypes(["category", "object", "bool"]).columns)
 
         # Calculate cat_features by subtracting bin_features from all numeric columns
-        cat_features = list(set(bin_features) - set(list(X[bin_features].select_dtypes("number").columns)))
+        cat_features = list(
+            set(bin_features)
+            - set(list(X[bin_features].select_dtypes("number").columns))
+        )
         return bin_features, cat_features
-    
+
     def _filter_bin_features(self, bin_features, n_unique_table_, n_bins_max):
         return (
             n_unique_table_[n_unique_table_ > n_bins_max].index.to_list()
             if n_bins_max
             else bin_features
-        ) 
+        )
 
     def _encode_categorical_features(self, X, bin_features, cat_features):
         ordinal_encoder_dic = {}
         for col in bin_features:
             if col in cat_features:
                 # encode and create a category for missing
-                encoder = OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=np.nan)
+                encoder = OrdinalEncoder(
+                    handle_unknown="use_encoded_value", unknown_value=np.nan
+                )
                 X[col] = (
                     X[col]
                     .astype("category")
@@ -587,7 +596,7 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
                     X[col] = dum.ravel()
 
         return X, ordinal_encoder_dic
-    
+
     def _fit_tree_and_create_bins(self, X, col, y, sample_weight, is_categorical):
         gbm_param = self.boost_params.copy()
         tree = GradientBoosting(
@@ -609,7 +618,9 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
             self.cat_bin_dict[col] = (
                 X[[f"{col}_g", col]]
                 .groupby(f"{col}_g")
-                .apply(lambda x: concat_or_group(col, x, max_length=25)) #" / ".join(map(str, x[col].unique())))
+                .apply(
+                    lambda x: concat_or_group(col, x, max_length=25)
+                )  # " / ".join(map(str, x[col].unique())))
                 .to_dict()
             )
         else:
@@ -632,7 +643,6 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
             ]
 
         del tree
-
 
     def transform(self, X):
         """

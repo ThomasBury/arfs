@@ -273,10 +273,9 @@ class Leshy(SelectorMixin, BaseEstimator):
         verbose=0,
         keep_weak=False,
     ):
-        
         if max_iter < 2:
             raise ValueError("max_iter must be > 1 for Leshy to work properly")
-        
+
         self.estimator = estimator
         self.n_estimators = n_estimators
         self.perc = perc
@@ -1174,17 +1173,23 @@ def _split_fit_estimator(estimator, X, y, sample_weight=None, cat_feature=None):
         else:
             X_tr, X_tt, y_tr, y_tt = train_test_split(X, y, stratify=y, random_state=42)
         w_tr, w_tt = None, None
-        
+
     if check_if_tree_based(estimator):
         try:
             # Handle LightGBM categorical features at initialization
             if is_lightgbm(estimator):
-                model = estimator.fit(X_tr, y_tr, sample_weight=w_tr, categorical_feature=cat_idx)
-            elif is_catboost(estimator) or ("cat_feature" in estimator.fit.__code__.co_varnames):
-                model = estimator.fit(X_tr, y_tr, sample_weight=w_tr, cat_features=cat_idx)
+                model = estimator.fit(
+                    X_tr, y_tr, sample_weight=w_tr, categorical_feature=cat_idx
+                )
+            elif is_catboost(estimator) or (
+                "cat_feature" in estimator.fit.__code__.co_varnames
+            ):
+                model = estimator.fit(
+                    X_tr, y_tr, sample_weight=w_tr, cat_features=cat_idx
+                )
             else:
                 model = estimator.fit(X_tr, y_tr, sample_weight=w_tr)
-                
+
         except Exception as e:
             raise ValueError(
                 "Please check your X and y variable. The provided "
@@ -1196,10 +1201,9 @@ def _split_fit_estimator(estimator, X, y, sample_weight=None, cat_feature=None):
     return model, X_tt, y_tt, w_tt
 
 
-
 def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
     """Get the SHAP feature importance (compatible with all SHAP versions)
-    
+
     Parameters
     ----------
     estimator : estimator object
@@ -1225,7 +1229,7 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
 
     explainer = shap.TreeExplainer(model)
     shap_values = explainer.shap_values(X_tt)
-    
+
     if isinstance(shap_values, list):
         # Pre-v0.45.0 format
         if is_classifier(estimator):
@@ -1236,7 +1240,7 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
                 shap_values = np.delete(
                     shap_concat,
                     list(range(n_feat, (n_feat + 1) * len(shap_values), n_feat + 1)),
-                    axis=1
+                    axis=1,
                 )
                 shap_imp = np.abs(shap_values[:, :-1]).mean(axis=0)
             else:
@@ -1245,7 +1249,7 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
         else:
             # Regression
             shap_imp = np.abs(shap_values[0][:, :-1]).mean(axis=0)
-            
+
     elif isinstance(shap_values, np.ndarray):
         # v0.45.0+ format
         if is_classifier(estimator):
@@ -1262,6 +1266,7 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
         raise ValueError(f"Unsupported SHAP values format: {type(shap_values)}")
 
     return shap_imp
+
 
 def _get_shap_imp_fast(estimator, X, y, sample_weight=None, cat_feature=None):
     """Get the SHAP feature importance using the fasttreeshap implementation
@@ -1390,8 +1395,12 @@ def _get_imp(estimator, X, y, sample_weight=None, cat_feature=None):
             cat_idx = cat_feature
 
         if is_lightgbm(estimator):
-            estimator.fit(X, y, sample_weight=sample_weight, categorical_feature=cat_idx)
-        elif is_catboost(estimator) or ("cat_feature" in estimator.fit.__code__.co_varnames):
+            estimator.fit(
+                X, y, sample_weight=sample_weight, categorical_feature=cat_idx
+            )
+        elif is_catboost(estimator) or (
+            "cat_feature" in estimator.fit.__code__.co_varnames
+        ):
             estimator.fit(X, y, sample_weight=sample_weight, cat_features=cat_idx)
         else:
             estimator.fit(X, y, sample_weight=sample_weight)
@@ -1399,7 +1408,9 @@ def _get_imp(estimator, X, y, sample_weight=None, cat_feature=None):
         raise ValueError(f"Estimator fitting failed: {str(e)}")
 
     if is_lightgbm(estimator):
-        return estimator.booster_.feature_importance(importance_type='gain')  # LightGBM 4.x compatible
+        return estimator.booster_.feature_importance(
+            importance_type="gain"
+        )  # LightGBM 4.x compatible
     else:
         return estimator.feature_importances_
 
@@ -1681,14 +1692,14 @@ def _create_shadow(X_train):
     for c in X_shadow.columns:
         np.random.shuffle(X_shadow[c].values)
     # Rename the shadow variables
-    shadow_names = [f"ShadowVar{i+1}" for i in range(X_train.shape[1])]
+    shadow_names = [f"ShadowVar{i + 1}" for i in range(X_train.shape[1])]
     X_shadow.columns = shadow_names
     # Combine to make one new dataframe
     new_x = pd.concat([X_train, X_shadow], axis=1)
     # Separate the columns that start with 'ShadowVar' from the other columns
-    shadow_columns = [col for col in new_x.columns if col.startswith('ShadowVar')]
-    other_columns = [col for col in new_x.columns if not col.startswith('ShadowVar')]
-    
+    shadow_columns = [col for col in new_x.columns if col.startswith("ShadowVar")]
+    other_columns = [col for col in new_x.columns if not col.startswith("ShadowVar")]
+
     # Concatenate the two lists of column names
     new_column_order = other_columns + shadow_columns
     # Reorder the DataFrame columns
@@ -1776,8 +1787,7 @@ def _reduce_vars_sklearn(
         importance = imp_func[imp_kind](
             estimator, new_x, y, sample_weight=weight, cat_feature=cat_feature
         )
-        
-        
+
         # Create a dataframe to store the feature importances
         if i == 1:
             df = pd.DataFrame({"feature": new_x.columns})
@@ -1944,9 +1954,9 @@ class GrootCV(SelectorMixin, BaseEstimator):
     n_folds : int, default=5
         The number of folds for cross-validation.
     folds : Optional[Union[Iterable[Tuple[np.ndarray, np.ndarray]]
-        (generator or iterator of (train_idx, test_idx) tuples, scikit-learn splitter object or None, optional (default=None)) 
-        If generator or iterator, it should yield the train and test indices for each fold. If object, it should be one of the scikit-learn 
-        splitter classes (https://scikit-learn.org/stable/modules/classes.html#splitter-classes) and have split method. 
+        (generator or iterator of (train_idx, test_idx) tuples, scikit-learn splitter object or None, optional (default=None))
+        If generator or iterator, it should yield the train and test indices for each fold. If object, it should be one of the scikit-learn
+        splitter classes (https://scikit-learn.org/stable/modules/classes.html#splitter-classes) and have split method.
         This argument has highest priority over other data split arguments.
     n_iter : int, default=5
         The number of iterations to average for the feature importance (on the same split), to reduce variance.
@@ -2141,9 +2151,9 @@ class GrootCV(SelectorMixin, BaseEstimator):
         b_df = self.cv_df.T.copy()
         b_df.columns = b_df.iloc[0]
         # Separate the columns that start with 'ShadowVar' from the other columns
-        shadow_columns = [col for col in b_df.columns if col.startswith('ShadowVar')]
-        other_columns = [col for col in b_df.columns if not col.startswith('ShadowVar')]
-        
+        shadow_columns = [col for col in b_df.columns if col.startswith("ShadowVar")]
+        other_columns = [col for col in b_df.columns if not col.startswith("ShadowVar")]
+
         # Concatenate the two lists of column names
         new_column_order = other_columns + shadow_columns
         # Reorder the DataFrame columns
@@ -2227,10 +2237,10 @@ def _reduce_vars_lgb_cv(
             the target
     objective : str
             the lightGBM objective
-    folds : 
-        (generator or iterator of (train_idx, test_idx) tuples, scikit-learn splitter object or None, optional (default=None)) 
-        If generator or iterator, it should yield the train and test indices for each fold. If object, it should be one of the scikit-learn 
-        splitter classes (https://scikit-learn.org/stable/modules/classes.html#splitter-classes) and have split method. 
+    folds :
+        (generator or iterator of (train_idx, test_idx) tuples, scikit-learn splitter object or None, optional (default=None))
+        If generator or iterator, it should yield the train and test indices for each fold. If object, it should be one of the scikit-learn
+        splitter classes (https://scikit-learn.org/stable/modules/classes.html#splitter-classes) and have split method.
         This argument has highest priority over other data split arguments.
     nfold : int
         Number of folds in CV.
@@ -2279,7 +2289,7 @@ def _reduce_vars_lgb_cv(
 
     if folds is None:
         folds = RepeatedKFold(n_splits=n_folds, n_repeats=n_iter, random_state=2652124)
-    
+
     iter = 0
     df = pd.DataFrame({"feature": X.columns})
     for tridx, validx in tqdm(
@@ -2527,7 +2537,7 @@ def _train_lgb_model(
     """
     d_train = lgb.Dataset(X_train, label=y_train, weight=weight_train)
     d_valid = lgb.Dataset(X_val, label=y_val, weight=weight_val)
-    
+
     if category_cols:
         d_train.set_categorical_feature(category_cols)
         d_valid.set_categorical_feature(category_cols)
@@ -2544,13 +2554,15 @@ def _train_lgb_model(
     try:
         if fastshap:
             from fasttreeshap import TreeExplainer
+
             explainer = TreeExplainer(bst, algorithm="v1")
         else:
             import shap
+
             explainer = shap.TreeExplainer(bst)
-        
+
         shap_matrix = explainer.shap_values(X_train)
-        
+
     except Exception as e:
         raise RuntimeError(f"SHAP computation failed: {str(e)}")
 
@@ -2578,7 +2590,8 @@ def _compute_importance(new_x_tr, shap_matrix, param, objective, fastshap):
     """
     try:
         from shap import __version__ as shap_version
-        new_shap = tuple(map(int, shap_version.split('.')[:2])) >= (0, 45)
+
+        new_shap = tuple(map(int, shap_version.split(".")[:2])) >= (0, 45)
     except Exception:
         new_shap = False  # Assume old version if can't check
 
@@ -2606,7 +2619,7 @@ def _compute_importance(new_x_tr, shap_matrix, param, objective, fastshap):
                 if isinstance(shap_matrix, list):
                     shap_matrix = shap_matrix[1]  # Positive class
                 shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
-    
+
     importance = dict(zip(new_x_tr.columns, shap_imp))
     return sorted(importance.items(), key=operator.itemgetter(1))
 

@@ -35,6 +35,7 @@ from sklearn.model_selection import (
     ShuffleSplit,
     StratifiedShuffleSplit,
 )
+
 # Local imports
 from arfs.utils import create_dtype_dict
 
@@ -149,8 +150,8 @@ class GradientBoosting:
         return_valid_features: bool = False,
     ):
         self.model: Optional[lgb.Booster] = None
-        self.cat_feat_input = cat_feat # Store original input
-        self.cat_feat: Optional[List[str]] = None # Processed list
+        self.cat_feat_input = cat_feat  # Store original input
+        self.cat_feat: Optional[List[str]] = None  # Processed list
         self.model_params: Optional[Dict[str, Any]] = None
         self.params: Optional[Dict[str, Any]] = params
         self.learning_curve: Optional[plt.Figure] = None
@@ -158,7 +159,9 @@ class GradientBoosting:
         self.stratified: bool = stratified
         self.show_learning_curve: bool = show_learning_curve
         # Ensure verbose_eval is usable by log_evaluation (expects int or bool)
-        self.verbose_eval: Union[int, bool] = verbose_eval if verbose_eval > 0 else False
+        self.verbose_eval: Union[int, bool] = (
+            verbose_eval if verbose_eval > 0 else False
+        )
         self.return_valid_features: bool = return_valid_features
         self.valid_features: Optional[pd.DataFrame] = None
 
@@ -207,8 +210,10 @@ class GradientBoosting:
         # Ensure X is a DataFrame for potential 'auto' cat_feat detection
         if not isinstance(X, pd.DataFrame):
             # Warning: Column names will be lost if originally numpy
-            warnings.warn("Input X is not a pandas DataFrame. Converting, column names might be lost.")
-            X = pd.DataFrame(X) # Potential high memory usage for large arrays
+            warnings.warn(
+                "Input X is not a pandas DataFrame. Converting, column names might be lost."
+            )
+            X = pd.DataFrame(X)  # Potential high memory usage for large arrays
 
         # Handle categorical features
         if self.cat_feat_input == "auto":
@@ -228,55 +233,58 @@ class GradientBoosting:
                 )
                 self.cat_feat = category_cols if category_cols else None
                 if self.cat_feat:
-                     print(f"Auto-detected categorical features (cat/time/unk dtypes): {self.cat_feat}")
+                    print(
+                        f"Auto-detected categorical features (cat/time/unk dtypes): {self.cat_feat}"
+                    )
             except Exception as e:
-                 warnings.warn(f"Error during auto-detection of categorical features: {e}. Proceeding with cat_feat=None.")
-                 self.cat_feat = None
+                warnings.warn(
+                    f"Error during auto-detection of categorical features: {e}. Proceeding with cat_feat=None."
+                )
+                self.cat_feat = None
         elif isinstance(self.cat_feat_input, list):
-             # Validate that provided categorical features exist in X
-             missing_cols = [col for col in self.cat_feat_input if col not in X.columns]
-             if missing_cols:
-                 raise ValueError(f"Categorical features not found in X: {missing_cols}")
-             self.cat_feat = self.cat_feat_input
+            # Validate that provided categorical features exist in X
+            missing_cols = [col for col in self.cat_feat_input if col not in X.columns]
+            if missing_cols:
+                raise ValueError(f"Categorical features not found in X: {missing_cols}")
+            self.cat_feat = self.cat_feat_input
         elif self.cat_feat_input is None:
-             self.cat_feat = None
+            self.cat_feat = None
         else:
-             raise TypeError("cat_feat must be 'auto', a list of column names, or None.")
+            raise TypeError("cat_feat must be 'auto', a list of column names, or None.")
 
         # Ensure y is a Series
         if not isinstance(y, pd.Series):
-            y = pd.Series(y, name="target") # Assign a default name
+            y = pd.Series(y, name="target")  # Assign a default name
 
         # Ensure sample_weight and init_score are Series if provided
         if sample_weight is not None:
             if not isinstance(sample_weight, pd.Series):
                 sample_weight = pd.Series(sample_weight, name="sample_weight")
             if len(sample_weight) != len(y):
-                 raise ValueError("Length of sample_weight must match length of y.")
+                raise ValueError("Length of sample_weight must match length of y.")
 
         if init_score is not None:
             self.is_init_score = True
             if not isinstance(init_score, pd.Series):
                 init_score = pd.Series(init_score, name="init_score")
             if len(init_score) != len(y):
-                 raise ValueError("Length of init_score must match length of y.")
+                raise ValueError("Length of init_score must match length of y.")
 
         # Ensure groups is a Series if provided
         if groups is not None:
             if not isinstance(groups, pd.Series):
                 groups = pd.Series(groups, name="groups")
             if len(groups) != len(y):
-                 raise ValueError("Length of groups must match length of y.")
-
+                raise ValueError("Length of groups must match length of y.")
 
         # --- Model Training ---
         output = _fit_early_stopped_lgb(
             X=X,
             y=y,
             sample_weight=sample_weight,
-            params=self.params.copy() if self.params else None, # Pass a copy
+            params=self.params.copy() if self.params else None,  # Pass a copy
             init_score=init_score,
-            cat_feat=self.cat_feat, # Use processed list
+            cat_feat=self.cat_feat,  # Use processed list
             stratified=self.stratified,
             groups=groups,
             show_learning_curve=self.show_learning_curve,
@@ -291,13 +299,12 @@ class GradientBoosting:
             self.model, self.valid_features = output
         elif not self.return_valid_features and self.show_learning_curve:
             self.model, self.learning_curve = output
-        else: # Not returning valid features, not showing learning curve
+        else:  # Not returning valid features, not showing learning curve
             self.model = output
 
         # Store final model parameters
         if self.model:
             self.model_params = self.model.params
-
 
     def predict(
         self, X: Union[pd.DataFrame, np.ndarray], predict_proba: bool = False
@@ -335,14 +342,19 @@ class GradientBoosting:
             )
 
         # Ensure X is DataFrame if model was trained on DataFrame (for feature names)
-        if isinstance(self.model.feature_name(), list) and not isinstance(X, pd.DataFrame):
-             warnings.warn("Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.")
-             # Assuming columns match the order during training if no names provided
-             try:
-                 X = pd.DataFrame(X, columns=self.model.feature_name())
-             except ValueError:
-                  raise ValueError(f"Input X has {X.shape[1]} columns, but model expects {len(self.model.feature_name())}.")
-
+        if isinstance(self.model.feature_name(), list) and not isinstance(
+            X, pd.DataFrame
+        ):
+            warnings.warn(
+                "Model was trained with feature names, but input X for prediction is not a DataFrame. Converting."
+            )
+            # Assuming columns match the order during training if no names provided
+            try:
+                X = pd.DataFrame(X, columns=self.model.feature_name())
+            except ValueError:
+                raise ValueError(
+                    f"Input X has {X.shape[1]} columns, but model expects {len(self.model.feature_name())}."
+                )
 
         obj_fn = self.model_params.get("objective", "") if self.model_params else ""
 
@@ -366,11 +378,12 @@ class GradientBoosting:
             else:
                 # Return the class index with the highest probability
                 return np.argmax(y_pred_raw, axis=1)
-        else: # Regression or other objectives
+        else:  # Regression or other objectives
             if predict_proba:
-                 warnings.warn("predict_proba=True is ignored for non-classification objectives.")
+                warnings.warn(
+                    "predict_proba=True is ignored for non-classification objectives."
+                )
             return y_pred_raw
-
 
     def predict_raw(self, X: Union[pd.DataFrame, np.ndarray], **kwargs) -> np.ndarray:
         """Provides direct access to the underlying LightGBM predict method.
@@ -400,15 +413,20 @@ class GradientBoosting:
             raise ValueError("Model has not been trained yet. Call fit() first.")
 
         # Ensure X is DataFrame if model was trained on DataFrame (for feature names)
-        if isinstance(self.model.feature_name(), list) and not isinstance(X, pd.DataFrame):
-             warnings.warn("Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.")
-             try:
-                 X = pd.DataFrame(X, columns=self.model.feature_name())
-             except ValueError:
-                  raise ValueError(f"Input X has {X.shape[1]} columns, but model expects {len(self.model.feature_name())}.")
+        if isinstance(self.model.feature_name(), list) and not isinstance(
+            X, pd.DataFrame
+        ):
+            warnings.warn(
+                "Model was trained with feature names, but input X for prediction is not a DataFrame. Converting."
+            )
+            try:
+                X = pd.DataFrame(X, columns=self.model.feature_name())
+            except ValueError:
+                raise ValueError(
+                    f"Input X has {X.shape[1]} columns, but model expects {len(self.model.feature_name())}."
+                )
 
         return self.model.predict(X, **kwargs)
-
 
     def save(self, save_path: Optional[str] = None, name: Optional[str] = None) -> str:
         """Saves the trained model and learning curve (if generated).
@@ -443,7 +461,7 @@ class GradientBoosting:
         if name:
             base_name = str(name)
         else:
-            obj = self.model_params.get('objective', 'unknown_obj')
+            obj = self.model_params.get("objective", "unknown_obj")
             base_name = f"gbm_base_model_{obj}_{date.today()}"
 
         model_file_name = f"{base_name}.joblib"
@@ -469,12 +487,13 @@ class GradientBoosting:
             if isinstance(self.learning_curve, plt.Figure):
                 print(f"Saving learning curve to: {fig_file_path}")
                 self.learning_curve.savefig(fig_file_path, bbox_inches="tight")
-                plt.close(self.learning_curve) # Close figure to free memory
+                plt.close(self.learning_curve)  # Close figure to free memory
             else:
-                 warnings.warn("Learning curve attribute exists but is not a matplotlib Figure. Cannot save.")
+                warnings.warn(
+                    "Learning curve attribute exists but is not a matplotlib Figure. Cannot save."
+                )
 
         return str(model_file_path)
-
 
     def load(self, model_path: str) -> None:
         """Loads a previously saved LightGBM model.
@@ -501,15 +520,26 @@ class GradientBoosting:
             self.model_params = self.model.params
             # Attempt to infer cat_feat from loaded model if possible (might not be stored directly)
             # This part is heuristic; cat_feat isn't directly stored in older booster files this way
-            if hasattr(self.model, 'pandas_categorical') and self.model.pandas_categorical:
-                 self.cat_feat = self.model.pandas_categorical
-                 print(f"Inferred categorical features from loaded model: {self.cat_feat}")
+            if (
+                hasattr(self.model, "pandas_categorical")
+                and self.model.pandas_categorical
+            ):
+                self.cat_feat = self.model.pandas_categorical
+                print(
+                    f"Inferred categorical features from loaded model: {self.cat_feat}"
+                )
             else:
-                 # Cannot reliably get cat_feat from older models, keep original setting or None
-                 print("Could not reliably infer categorical features from the loaded model.")
-                 self.cat_feat = self.cat_feat_input if isinstance(self.cat_feat_input, list) else None
+                # Cannot reliably get cat_feat from older models, keep original setting or None
+                print(
+                    "Could not reliably infer categorical features from the loaded model."
+                )
+                self.cat_feat = (
+                    self.cat_feat_input
+                    if isinstance(self.cat_feat_input, list)
+                    else None
+                )
         else:
-             raise ValueError("Failed to load model from file.")
+            raise ValueError("Failed to load model from file.")
 
 
 # --- Helper Functions ---
@@ -526,21 +556,31 @@ def _fit_early_stopped_lgb(
     verbose_eval: Union[int, bool],
     return_valid_features: bool,
 ) -> Union[
-        lgb.Booster,
-        Tuple[lgb.Booster, pd.DataFrame],
-        Tuple[lgb.Booster, plt.Figure],
-        Tuple[lgb.Booster, pd.DataFrame, plt.Figure],
-    ]:
+    lgb.Booster,
+    Tuple[lgb.Booster, pd.DataFrame],
+    Tuple[lgb.Booster, plt.Figure],
+    Tuple[lgb.Booster, pd.DataFrame, plt.Figure],
+]:
     """Internal function to train LightGBM with early stopping."""
 
     # --- Data Splitting ---
     (
-        X_train, y_train, X_val, y_val,
-        sw_val, sw_train, # sample weights
-        is_val, is_train, # init scores
+        X_train,
+        y_train,
+        X_val,
+        y_val,
+        sw_val,
+        sw_train,  # sample weights
+        is_val,
+        is_train,  # init scores
     ) = _make_split(
-        X=X, y=y, sample_weight=sample_weight, init_score=init_score,
-        groups=groups, stratified=stratified, test_size=0.2,
+        X=X,
+        y=y,
+        sample_weight=sample_weight,
+        init_score=init_score,
+        groups=groups,
+        stratified=stratified,
+        test_size=0.2,
     )
 
     # --- Prepare LightGBM Datasets ---
@@ -555,18 +595,20 @@ def _fit_early_stopped_lgb(
     #         X_val[col] = X_val[col].astype('category')
 
     # If cat_feat list is provided or detected, pass it. Otherwise 'auto'.
-    categorical_feature_param = cat_feat if cat_feat else 'auto'
+    categorical_feature_param = cat_feat if cat_feat else "auto"
 
     d_train = lgb.Dataset(
-        X_train, label=y_train,
+        X_train,
+        label=y_train,
         categorical_feature=categorical_feature_param,
-        free_raw_data=False # Keep data for potential future use/inspection
+        free_raw_data=False,  # Keep data for potential future use/inspection
     )
     d_valid = lgb.Dataset(
-        X_val, label=y_val,
+        X_val,
+        label=y_val,
         categorical_feature=categorical_feature_param,
-        reference=d_train, # Important for consistency
-        free_raw_data=False
+        reference=d_train,  # Important for consistency
+        free_raw_data=False,
     )
 
     # Set weights and initial scores if provided
@@ -595,13 +637,15 @@ def _fit_early_stopped_lgb(
     # Set default metric if missing and objective is standard string
     if "metric" not in train_params and isinstance(train_params["objective"], str):
         # Avoid setting metric if objective is not suitable (e.g., 'custom')
-        if train_params["objective"] not in ['custom', 'None', None]:
-             train_params["metric"] = train_params["objective"]
-             print(f"No 'metric' provided, using objective '{train_params['objective']}' as metric.")
+        if train_params["objective"] not in ["custom", "None", None]:
+            train_params["metric"] = train_params["objective"]
+            print(
+                f"No 'metric' provided, using objective '{train_params['objective']}' as metric."
+            )
         else:
-             raise KeyError(
-                 f"Objective '{train_params['objective']}' requires an explicit 'metric' for early stopping."
-             )
+            raise KeyError(
+                f"Objective '{train_params['objective']}' requires an explicit 'metric' for early stopping."
+            )
     elif "metric" not in train_params and callable(train_params["objective"]):
         raise KeyError(
             "A 'metric' must be provided in params for early stopping when "
@@ -610,12 +654,15 @@ def _fit_early_stopped_lgb(
 
     # Handle n_estimators / num_boost_round
     # Use 'n_estimators' as the preferred key, fallback to 'num_boost_round'
-    n_trees = train_params.pop('n_estimators', train_params.pop('num_boost_round', 10000))
+    n_trees = train_params.pop(
+        "n_estimators", train_params.pop("num_boost_round", 10000)
+    )
     if n_trees <= 0:
-         warnings.warn(f"n_estimators/num_boost_round ({n_trees}) is <= 0. Setting to default 10000.")
-         n_trees = 10000
+        warnings.warn(
+            f"n_estimators/num_boost_round ({n_trees}) is <= 0. Setting to default 10000."
+        )
+        n_trees = 10000
     print(f"Training up to {n_trees} boosting rounds.")
-
 
     # Handle custom evaluation metric (feval)
     feval_callback = None
@@ -626,10 +673,9 @@ def _fit_early_stopped_lgb(
         train_params["metric"] = "custom"
         print("Using custom evaluation metric.")
 
-
     # Set verbosity for LightGBM internal messages (-1 = Fatal, 0 = Error/Warning, 1 = Info)
     # Keep user-controlled printouts via log_evaluation callback
-    train_params["verbosity"] = -1 # Suppress internal LightGBM logs
+    train_params["verbosity"] = -1  # Suppress internal LightGBM logs
 
     # --- Callbacks ---
     evals_result = {}
@@ -638,7 +684,11 @@ def _fit_early_stopped_lgb(
         # `verbose=False` here prevents early_stopping's own messages.
         lgb.early_stopping(stopping_rounds=10, verbose=False),
         # Log metrics every `verbose_eval` rounds using print().
-        lgb.log_evaluation(period=verbose_eval if isinstance(verbose_eval, int) and verbose_eval > 0 else 0),
+        lgb.log_evaluation(
+            period=verbose_eval
+            if isinstance(verbose_eval, int) and verbose_eval > 0
+            else 0
+        ),
         # Store metric history.
         lgb.record_evaluation(eval_result=evals_result),
     ]
@@ -648,9 +698,9 @@ def _fit_early_stopped_lgb(
         params=train_params,
         train_set=d_train,
         num_boost_round=n_trees,
-        valid_sets=[d_train, d_valid], # Use both for monitoring
-        valid_names=['train', 'valid'], # Assign names
-        feval=feval_callback, # Custom metric function, if any
+        valid_sets=[d_train, d_valid],  # Use both for monitoring
+        valid_names=["train", "valid"],  # Assign names
+        feval=feval_callback,  # Custom metric function, if any
         callbacks=callbacks,
     )
 
@@ -660,30 +710,35 @@ def _fit_early_stopped_lgb(
         try:
             with mpl.rc_context(MPL_PARAMS):
                 fig, ax = plt.subplots()
-                lgb.plot_metric(evals_result, ax=ax, xlabel='Boosting Round', ylabel='Metric Value')
+                lgb.plot_metric(
+                    evals_result, ax=ax, xlabel="Boosting Round", ylabel="Metric Value"
+                )
                 # Add vertical line for best iteration
                 if model.best_iteration:
                     ax.axvline(
-                        x=model.best_iteration, color="grey", linestyle="--",
-                        label=f"Best Iteration ({model.best_iteration})"
+                        x=model.best_iteration,
+                        color="grey",
+                        linestyle="--",
+                        label=f"Best Iteration ({model.best_iteration})",
                     )
-                    ax.legend() # Show legend including the best iteration label
+                    ax.legend()  # Show legend including the best iteration label
                     # Adjust x-limit for better visualization
-                    up_lim = max(50, model.best_iteration + 50) # Show at least 50 rounds
+                    up_lim = max(
+                        50, model.best_iteration + 50
+                    )  # Show at least 50 rounds
                     ax.set_xlim([0, up_lim])
                 ax.set_title("LightGBM Learning Curve")
                 fig.tight_layout()
         except Exception as e:
-             warnings.warn(f"Could not generate learning curve plot: {e}")
-             if fig:
-                 plt.close(fig) # Close figure if created but failed during plotting
-             fig = None # Ensure fig is None if plotting fails
-
+            warnings.warn(f"Could not generate learning curve plot: {e}")
+            if fig:
+                plt.close(fig)  # Close figure if created but failed during plotting
+            fig = None  # Ensure fig is None if plotting fails
 
     # --- Cleanup and Return ---
     # Explicitly delete datasets to potentially free memory sooner
     del d_train, d_valid
-    gc.collect() # Suggest garbage collection
+    gc.collect()  # Suggest garbage collection
 
     # Return based on user flags
     if return_valid_features and show_learning_curve:
@@ -692,7 +747,7 @@ def _fit_early_stopped_lgb(
         return model, X_val
     elif not return_valid_features and show_learning_curve:
         return model, fig
-    else: # Not returning valid features, not showing learning curve
+    else:  # Not returning valid features, not showing learning curve
         return model
 
 
@@ -706,10 +761,15 @@ def _make_split(
     test_size: float = 0.2,
     random_state: int = 42,
 ) -> Tuple[
-        pd.DataFrame, pd.Series, pd.DataFrame, pd.Series, # X_train, y_train, X_val, y_val
-        Optional[pd.Series], Optional[pd.Series],       # sample_weight_val, sample_weight_train
-        Optional[pd.Series], Optional[pd.Series],       # init_score_val, init_score_train
-    ]:
+    pd.DataFrame,
+    pd.Series,
+    pd.DataFrame,
+    pd.Series,  # X_train, y_train, X_val, y_val
+    Optional[pd.Series],
+    Optional[pd.Series],  # sample_weight_val, sample_weight_train
+    Optional[pd.Series],
+    Optional[pd.Series],  # init_score_val, init_score_train
+]:
     """Splits data into training and validation sets."""
 
     # Choose the appropriate splitter
@@ -736,9 +796,8 @@ def _make_split(
     try:
         train_index, val_index = next(split_generator)
     except StopIteration:
-         # Should not happen with n_splits=1, but handle defensively
-         raise RuntimeError("Failed to generate train/validation split.")
-
+        # Should not happen with n_splits=1, but handle defensively
+        raise RuntimeError("Failed to generate train/validation split.")
 
     # Perform the split using iloc for robustness
     X_train, X_val = X.iloc[train_index], X.iloc[val_index]
@@ -747,7 +806,10 @@ def _make_split(
     # Split optional arrays if they exist
     sw_train, sw_val = (None, None)
     if sample_weight is not None:
-        sw_train, sw_val = sample_weight.iloc[train_index], sample_weight.iloc[val_index]
+        sw_train, sw_val = (
+            sample_weight.iloc[train_index],
+            sample_weight.iloc[val_index],
+        )
 
     is_train, is_val = (None, None)
     if init_score is not None:
@@ -771,4 +833,3 @@ def gbm_flavour(estimator: object) -> str:
     else:
         # Could add checks for sklearn GBMs etc.
         return "unknown"
-

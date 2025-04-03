@@ -435,14 +435,8 @@ def _most_collinear(association_matrix_abs, threshold):
         return None, None
     # for features in `to_drop` sum up their column and row values to find
     # the most collinear feature
-    most_collinear_series = (
-        association_matrix_abs.loc[:, to_drop]
-        .sum(axis=0)
-    )
-    most_collinear_series += (
-        association_matrix_abs.loc[to_drop, :]
-        .sum(axis=1)
-    )
+    most_collinear_series = association_matrix_abs.loc[:, to_drop].sum(axis=0)
+    most_collinear_series += association_matrix_abs.loc[to_drop, :].sum(axis=1)
     # not necessarily but avoids exceeding 1
     most_collinear_series /= 2
     return most_collinear_series.sort_values(ascending=False).index[0], to_drop

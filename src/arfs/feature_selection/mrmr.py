@@ -1,7 +1,7 @@
 """MRMR Feature Selection Module
 
-This module provides MinRedundancyMaxRelevance (MRMR) feature selection for classification or regression tasks. 
-In a classification task, the target should be of object or pandas category dtype, while in a regression task, 
+This module provides MinRedundancyMaxRelevance (MRMR) feature selection for classification or regression tasks.
+In a classification task, the target should be of object or pandas category dtype, while in a regression task,
 the target should be numeric. The predictors can be categorical or numerical without requiring encoding,
 as the appropriate method (correlation, correlation ratio, or Theil's U) will be automatically selected based on the data type.
 
