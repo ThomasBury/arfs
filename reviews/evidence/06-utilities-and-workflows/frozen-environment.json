@@ -1,0 +1,138 @@
+{
+  "review_date": "2026-10-11",
+  "commit": "03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2",
+  "python": "3.12.7 (main, Oct  8 2024, 00:20:25) [Clang 18.1.8 ]",
+  "executable": "/tmp/arfs-review-03f67d0/locked-env/bin/python",
+  "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+  "versions": {
+    "arfs": "3.0.0",
+    "autocommand": "2.2.2",
+    "backports.tarfile": "1.2.0",
+    "cloudpickle": "3.1.1",
+    "contourpy": "1.3.0",
+    "coverage": "7.8.0",
+    "cycler": "0.12.1",
+    "fonttools": "4.56.0",
+    "importlib_metadata": "8.0.0",
+    "inflect": "7.3.1",
+    "iniconfig": "2.1.0",
+    "jaraco.collections": "5.1.0",
+    "jaraco.context": "5.3.0",
+    "jaraco.functools": "4.0.1",
+    "jaraco.text": "3.12.1",
+    "joblib": "1.4.2",
+    "kiwisolver": "1.4.7",
+    "lightgbm": "4.6.0",
+    "llvmlite": "0.43.0",
+    "matplotlib": "3.9.4",
+    "more-itertools": "10.3.0",
+    "numba": "0.60.0",
+    "numpy": "2.0.2",
+    "packaging": "24.2",
+    "pandas": "2.2.3",
+    "patsy": "1.0.1",
+    "pillow": "11.1.0",
+    "platformdirs": "4.2.2",
+    "pluggy": "1.5.0",
+    "pyparsing": "3.2.3",
+    "pytest": "8.3.5",
+    "pytest-cov": "6.0.0",
+    "python-dateutil": "2.9.0.post0",
+    "pytz": "2025.2",
+    "scikit-learn": "1.6.1",
+    "scipy": "1.13.1",
+    "seaborn": "0.13.2",
+    "setuptools": "80.9.0",
+    "shap": "0.47.1",
+    "six": "1.17.0",
+    "slicer": "0.0.8",
+    "statsmodels": "0.14.4",
+    "threadpoolctl": "3.6.0",
+    "tomli": "2.0.1",
+    "tqdm": "4.67.1",
+    "typeguard": "4.3.0",
+    "typing_extensions": "4.13.0",
+    "tzdata": "2025.2",
+    "wheel": "0.45.1",
+    "zipp": "3.19.2"
+  },
+  "modules": {
+    "arfs.utils": {
+      "installed_path": "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py",
+      "matches_checkout": true,
+      "sha256": "4dcae037cea59e68884fc44d1be37b840c444ec4813c9cb39bc69ffebbaf38e4"
+    },
+    "arfs.association": {
+      "installed_path": "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py",
+      "matches_checkout": true,
+      "sha256": "46e5a5f8757fa8f3f810fc34a90723887d3693f455ca0ff66b6f8425c80bcc23"
+    },
+    "arfs.benchmark": {
+      "installed_path": "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/benchmark.py",
+      "matches_checkout": true,
+      "sha256": "c596f7c220bc5d9ce3bc7c613e69cde43e3b5202f0c9a47f591630c0395ab8b4"
+    },
+    "arfs.preprocessing": {
+      "installed_path": "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/preprocessing.py",
+      "matches_checkout": true,
+      "sha256": "b8ef4df216724173daaaf14afda273ec586572437f86defcbfb12ebafc643790"
+    },
+    "arfs.feature_selection.allrelevant": {
+      "installed_path": "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py",
+      "matches_checkout": true,
+      "sha256": "86c1be444b09ec1278f1685acaaee849a84642f5b3a207ab1126ba3051261c7c"
+    },
+    "arfs.feature_selection.variable_importance": {
+      "installed_path": "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py",
+      "matches_checkout": true,
+      "sha256": "3370955a62c8fd057a5f5b547d1798ad57dd0f53ded8a509a0d0690166faeb03"
+    },
+    "arfs.feature_selection.unsupervised": {
+      "installed_path": "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/unsupervised.py",
+      "matches_checkout": true,
+      "sha256": "61cadc4d6bb791514759dce210a4acbe93f3b29a3613a9d6fdca7f1ca98cb531"
+    }
+  },
+  "notebook_sha256": {
+    "arfs_shap_vs_fastshap.ipynb": "dba337e9ae297119cefa271e823770513106fadf5ade4898ac36a1ea69d92c1b",
+    "mrmr_feature_selection.ipynb": "eae25d5e8cbfc0671af3693fea786661be3c54ac1d656b63981c4d882b3ea877",
+    "arfs_non_normal_loss_and_sample_weight.ipynb": "14f905993e46a402220ec790d44282b82a781140550a50d83e97fc419c838c83",
+    "arfs_large_data_sampling.ipynb": "d3212b081aded2de959f8f3e1c22e3680cda45b262f7d248414e86417031b414",
+    "association_and_feature_selection.ipynb": "a398ef118380a708193016b80b45b49e3e5673665e8c8388d48dcd798ba3729a",
+    "lasso_feature_selection.ipynb": "d9948d53054e943330121510634874c47a0cf2d80f9a2d85370134eb2faa810a",
+    "mrmr_fs_VS_arfs.ipynb": "b200a8104f62698eac0e987fe95034ce061336aee9153db87465ef228bd194b7",
+    "arfs_regression.ipynb": "5ebc1ae3671c8b5e59e243a769879ec9508c4db6c5539162be25609a058bbf06",
+    "basic_feature_selection.ipynb": "d38e3f191c6d50620043b6b3269d77293f27300099e95b43f3bdb1229a5f949f",
+    "arfs_classification.ipynb": "daa12a657d2fa6b7f050dbf00778b3ba302f323251c11f510f9753f6bc9ef7af",
+    "issue_collinearity.ipynb": "9d9d1c4d7ac13111c0697faafb54b44c0c6f773eab31d03945ec6051b76c9d0f",
+    "arfs_boruta_borutaShap_comparison.ipynb": "bd63b27e579109c6bef9d99772b1ce2d3530d2a72c1dc31e8d1559637955a2a3",
+    "arfs_timeseries.ipynb": "c13cf69321b4f481360ef8e7c070a7fae2bb6b2b7582a5010bbc44ee2a366f49",
+    "issue_categoricals.ipynb": "0cc93f44bec0a7b312b939e523e4a3bcc0222ed9b6a5874e6c7d5d4e3654b407",
+    "preprocessing.ipynb": "e6d1038b3d29a9bb450c1eaa754a3cf9575ffb053524c4e6fbfad07f236be328",
+    "arfs_grootcv_custom_params.ipynb": "55c47bbebc4a7523d5ae5711c004607ef3eb0e38884f0475ed7dc0fecd06df2d",
+    "arfs_on_GPU.ipynb": "025bb1cf90bfa27e790802f3c946698e3798bec7261b05e74513a22c7d5eafd8"
+  },
+  "resources": {
+    "dataset/data/boston_bunch.joblib": {
+      "path": "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/dataset/data/boston_bunch.joblib",
+      "sha256": "a846958600c5121ca59a4db70f0ee1b459f0c2ae4d35343bf46f575c4e84c8db",
+      "matches_checkout": true
+    },
+    "dataset/data/housing.zip": {
+      "path": "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/dataset/data/housing.zip",
+      "sha256": "c33d9522ba02d8bb3e1822a8ba3b3f76f4bf39c10b9ba7c1334e0c92886c56ed",
+      "matches_checkout": true
+    }
+  },
+  "cpu_counts": {
+    "multiprocessing": 4,
+    "joblib": 4
+  },
+  "thread_settings": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "NUMBA_NUM_THREADS": "1"
+  },
+  "workaround": "Unit 0 setuptools==80.9.0 retained; no installs or ARFS patches in this unit"
+}

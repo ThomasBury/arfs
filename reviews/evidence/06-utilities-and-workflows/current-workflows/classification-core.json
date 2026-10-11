@@ -1,0 +1,101 @@
+{
+  "workflow": "classification-core",
+  "notebook": "arfs_classification",
+  "cell_numbering": "zero-based JSON index",
+  "records": [
+    {
+      "cell": 1,
+      "source": "# from IPython.core.display import display, HTML\n# display(HTML(\"<style>.container { width:95% !important; }</style>\"))\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport gc\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.base import clone\nfrom sklearn.ensemble import RandomForestClassifier\nfrom lightgbm import LGBMClassifier\n\nimport arfs\nimport arfs.feature_selection.allrelevant as arfsgroot\nfrom arfs.feature_selection import (\n    MissingValueThreshold,\n    UniqueValuesThreshold,\n    CollinearityThreshold,\n)\nfrom arfs.utils import LightForestClassifier\nfrom arfs.benchmark import highlight_tick, compare_varimp, sklearn_pimp_bench\nfrom arfs.utils import load_data\n\nplt.style.use(\"fivethirtyeight\")\nrng = np.random.RandomState(seed=42)\n\n# import warnings\n# warnings.filterwarnings('ignore')",
+      "changes": [
+        "Omitted optional XGBoost/CatBoost imports; all other statements retained"
+      ],
+      "sha256": "a938cd586d64e855be11a709ac7dcce0a5cd93860e34bc936a8dbdfaea901f54",
+      "status": "passed",
+      "output_tail": [
+        "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.",
+        "  from pkg_resources import resource_filename"
+      ]
+    },
+    {
+      "cell": "local-data-substitution",
+      "source": "from arfs.utils import load_data\ncancer = load_data('cancer')\nX, y = cancer.data, cancer.target\nX_encoded = X.copy()\n",
+      "changes": [
+        "Local cancer replaces remote Titanic; explicit numeric X_encoded repairs only missing setup for this smoke check"
+      ],
+      "sha256": "b631a82f4085f11d8685fb71e3ee19c099e2eceac115241ab76ba39bc159b46e",
+      "status": "passed",
+      "input_shape": [
+        569,
+        33
+      ],
+      "encoded_shape": [
+        569,
+        33
+      ],
+      "output_tail": []
+    },
+    {
+      "cell": 9,
+      "source": "# Let's use lightgbm as booster, see below for using more models\nmodel = LGBMClassifier(random_state=42, verbose=-1)\n# model = CatBoostClassifier(random_state=42, verbose=0)\n# model = XGBClassifier(random_state=42, verbosity=0)",
+      "changes": [],
+      "sha256": "1a0bf28a8688f9cd28b951590e58d50fbd6a6d6828c95d9e8783b999111aa1f8",
+      "status": "passed",
+      "input_shape": [
+        569,
+        33
+      ],
+      "encoded_shape": [
+        569,
+        33
+      ],
+      "output_tail": []
+    },
+    {
+      "cell": 11,
+      "source": "# Leshy\nfeat_selector = arfsgroot.Leshy(\n    model, n_estimators=20, verbose=1, max_iter=10, random_state=42, importance=\"native\"\n)\nfeat_selector.fit(X_encoded, y, sample_weight=None)\nprint(f\"The selected features: {feat_selector.get_feature_names_out()}\")\nprint(f\"The agnostic ranking: {feat_selector.ranking_}\")\nprint(f\"The naive ranking: {feat_selector.ranking_absolutes_}\")\nfig = feat_selector.plot_importance(n_feat_per_inch=5)\n\n# highlight synthetic random variable\nfig = highlight_tick(figure=fig, str_match=\"random\")\nfig = highlight_tick(figure=fig, str_match=\"genuine\", color=\"green\")\nplt.show()",
+      "changes": [
+        "Removed timing-only %%time magic"
+      ],
+      "sha256": "554181f35ea0f2f0bd98f8aa6f1a0cb4498ca723b6bf4d18a9b0e1efb4bff9bd",
+      "status": "passed",
+      "input_shape": [
+        569,
+        33
+      ],
+      "encoded_shape": [
+        569,
+        33
+      ],
+      "selected_features": [
+        "mean texture",
+        "mean concavity",
+        "mean concave points",
+        "area error",
+        "worst radius",
+        "worst texture",
+        "worst perimeter",
+        "worst area",
+        "worst smoothness",
+        "worst concavity",
+        "worst concave points"
+      ],
+      "output_tail": [
+        "",
+        "Leshy finished running using native var. imp.",
+        "",
+        "Iteration: \t1 / 10",
+        "Confirmed: \t11",
+        "Tentative: \t4",
+        "Rejected: \t18",
+        "All relevant predictors selected in 00:00:02.20",
+        "The selected features: ['mean texture' 'mean concavity' 'mean concave points' 'area error'",
+        " 'worst radius' 'worst texture' 'worst perimeter' 'worst area'",
+        " 'worst smoothness' 'worst concavity' 'worst concave points']",
+        "The agnostic ranking: [ 5  1 10 10 15 12  1  1 15 17 10  3  2  1 18  8 13  5 13 19  1  1  1  1",
+        "  1  5  1  1  2  2  5 20  2]",
+        "The naive ranking: ['worst perimeter', 'worst area', 'mean concave points', 'worst concave points', 'worst texture', 'worst radius', 'mean concavity', 'worst smoothness', 'mean texture', 'area error', 'worst concavity', 'genuine_num', 'worst fractal dimension', 'perimeter error', 'worst symmetry', 'texture error', 'mean area', 'radius error', 'compactness error', 'random_num1', 'worst compactness', 'mean radius', 'symmetry error', 'concave points error', 'mean fractal dimension', 'smoothness error', 'mean perimeter', 'mean smoothness', 'concavity error', 'mean compactness', 'fractal dimension error', 'mean symmetry', 'random_num2']",
+        "arfs_classification:cell-11:14: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown"
+      ]
+    }
+  ]
+}

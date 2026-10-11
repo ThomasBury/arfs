@@ -1,0 +1,59 @@
+{
+  "workflow": "regression-benchmark",
+  "notebook": "arfs_regression",
+  "cell_numbering": "zero-based JSON index",
+  "records": [
+    {
+      "cell": 1,
+      "source": "# from IPython.core.display import display, HTML\n# display(HTML(\"<style>.container { width:95% !important; }</style>\"))\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport gc\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.base import clone\nfrom sklearn.ensemble import RandomForestRegressor\nfrom lightgbm import LGBMRegressor\n\nimport arfs\nimport arfs.feature_selection.allrelevant as arfsgroot\nfrom arfs.feature_selection import (\n    MissingValueThreshold,\n    UniqueValuesThreshold,\n    CollinearityThreshold,\n    make_fs_summary,\n)\nfrom arfs.utils import LightForestRegressor\nfrom arfs.benchmark import highlight_tick, compare_varimp\nfrom arfs.utils import load_data\n\nplt.style.use(\"fivethirtyeight\")\nrng = np.random.RandomState(seed=42)\n\n# import warnings\n# warnings.filterwarnings('ignore')",
+      "changes": [
+        "Omitted optional XGBoost/CatBoost imports; all other statements retained"
+      ],
+      "sha256": "67aaf677db4705a8e2b3726c0a845fc5494163b6641b591a7e0b5e8deba0a400",
+      "status": "passed",
+      "output_tail": [
+        "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.",
+        "  from pkg_resources import resource_filename"
+      ]
+    },
+    {
+      "cell": 6,
+      "source": "boston = load_data(name=\"Boston\")\nX, y = boston.data, boston.target",
+      "changes": [],
+      "sha256": "b7b209da60f3c9ed16993f86d6e05efd4a6c06f5881623e66f2787ba3915f814",
+      "status": "passed",
+      "input_shape": [
+        506,
+        18
+      ],
+      "output_tail": []
+    },
+    {
+      "cell": 9,
+      "source": "# Let's use lightgbm as booster, see below for using more models\nmodel = LGBMRegressor(random_state=42, verbose=-1)",
+      "changes": [],
+      "sha256": "80cc39968418ca7f01ce24935afee608fa41ad3ddcd6e8397c0e982bf46d889f",
+      "status": "passed",
+      "input_shape": [
+        506,
+        18
+      ],
+      "output_tail": []
+    },
+    {
+      "cell": 34,
+      "source": "model = clone(model)\n# Benchmark with scikit-learn permutation importance\nprint(\"=\" * 20 + \" Benchmarking using sklearn permutation importance \" + \"=\" * 20)\nfig = sklearn_pimp_bench(model, X, y, task=\"regression\", sample_weight=None)",
+      "changes": [
+        "Removed timing-only %%time magic"
+      ],
+      "sha256": "6c1b4bb13db9761e3b2bcbe67d1ab097aa3ad7b45c81215ab1a95ea059a9ccc1",
+      "status": "failed",
+      "exception": "NameError",
+      "message": "name 'sklearn_pimp_bench' is not defined",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/workflows.py\", line 38, in execute\n    exec(compile(source,f'{notebook}:cell-{cell}','exec'),ns)\n  File \"arfs_regression:cell-34\", line 4, in <module>\nNameError: name 'sklearn_pimp_bench' is not defined\n",
+      "output_tail": [
+        "==================== Benchmarking using sklearn permutation importance ===================="
+      ]
+    }
+  ]
+}

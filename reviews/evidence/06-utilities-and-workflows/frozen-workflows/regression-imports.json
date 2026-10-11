@@ -1,0 +1,18 @@
+{
+  "workflow": "regression-imports",
+  "notebook": "arfs_regression",
+  "cell_numbering": "zero-based JSON index",
+  "records": [
+    {
+      "cell": 1,
+      "source": "# from IPython.core.display import display, HTML\n# display(HTML(\"<style>.container { width:95% !important; }</style>\"))\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport gc\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.base import clone\nfrom sklearn.ensemble import RandomForestRegressor\nfrom lightgbm import LGBMRegressor\nfrom xgboost import XGBRegressor\nfrom catboost import CatBoostRegressor\n\nimport arfs\nimport arfs.feature_selection.allrelevant as arfsgroot\nfrom arfs.feature_selection import (\n    MissingValueThreshold,\n    UniqueValuesThreshold,\n    CollinearityThreshold,\n    make_fs_summary,\n)\nfrom arfs.utils import LightForestRegressor\nfrom arfs.benchmark import highlight_tick, compare_varimp\nfrom arfs.utils import load_data\n\nplt.style.use(\"fivethirtyeight\")\nrng = np.random.RandomState(seed=42)\n\n# import warnings\n# warnings.filterwarnings('ignore')",
+      "changes": [],
+      "sha256": "de863b071370523cb53f1df33f7945177705358d2d654ad0dcd2ef9b002856aa",
+      "status": "failed",
+      "exception": "ModuleNotFoundError",
+      "message": "No module named 'xgboost'",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/workflows.py\", line 38, in execute\n    exec(compile(source,f'{notebook}:cell-{cell}','exec'),ns)\n  File \"arfs_regression:cell-1\", line 10, in <module>\nModuleNotFoundError: No module named 'xgboost'\n",
+      "output_tail": []
+    }
+  ]
+}

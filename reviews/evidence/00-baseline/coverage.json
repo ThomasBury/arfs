@@ -1,0 +1,179 @@
+{
+  "meta": {
+    "format": 3,
+    "version": "7.8.0",
+    "timestamp": "2026-10-10T22:20:07.360125",
+    "branch_coverage": false,
+    "show_contexts": false
+  },
+  "files": {
+    "src/arfs/__init__.py": {
+      "summary": {
+        "covered_lines": 1,
+        "num_statements": 1,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 0
+      }
+    },
+    "src/arfs/association.py": {
+      "summary": {
+        "covered_lines": 73,
+        "num_statements": 619,
+        "percent_covered": 11.793214862681745,
+        "percent_covered_display": "12",
+        "missing_lines": 546,
+        "excluded_lines": 0
+      }
+    },
+    "src/arfs/benchmark.py": {
+      "summary": {
+        "covered_lines": 0,
+        "num_statements": 57,
+        "percent_covered": 0.0,
+        "percent_covered_display": "0",
+        "missing_lines": 57,
+        "excluded_lines": 0
+      }
+    },
+    "src/arfs/feature_selection/__init__.py": {
+      "summary": {
+        "covered_lines": 7,
+        "num_statements": 7,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 0
+      }
+    },
+    "src/arfs/feature_selection/allrelevant.py": {
+      "summary": {
+        "covered_lines": 494,
+        "num_statements": 722,
+        "percent_covered": 68.42105263157895,
+        "percent_covered_display": "68",
+        "missing_lines": 228,
+        "excluded_lines": 0
+      }
+    },
+    "src/arfs/feature_selection/base.py": {
+      "summary": {
+        "covered_lines": 28,
+        "num_statements": 36,
+        "percent_covered": 77.77777777777777,
+        "percent_covered_display": "78",
+        "missing_lines": 8,
+        "excluded_lines": 0
+      }
+    },
+    "src/arfs/feature_selection/lasso.py": {
+      "summary": {
+        "covered_lines": 26,
+        "num_statements": 144,
+        "percent_covered": 18.055555555555557,
+        "percent_covered_display": "18",
+        "missing_lines": 118,
+        "excluded_lines": 0
+      }
+    },
+    "src/arfs/feature_selection/mrmr.py": {
+      "summary": {
+        "covered_lines": 19,
+        "num_statements": 99,
+        "percent_covered": 19.19191919191919,
+        "percent_covered_display": "19",
+        "missing_lines": 80,
+        "excluded_lines": 0
+      }
+    },
+    "src/arfs/feature_selection/summary.py": {
+      "summary": {
+        "covered_lines": 4,
+        "num_statements": 15,
+        "percent_covered": 26.666666666666668,
+        "percent_covered_display": "27",
+        "missing_lines": 11,
+        "excluded_lines": 0
+      }
+    },
+    "src/arfs/feature_selection/unsupervised.py": {
+      "summary": {
+        "covered_lines": 50,
+        "num_statements": 107,
+        "percent_covered": 46.728971962616825,
+        "percent_covered_display": "47",
+        "missing_lines": 57,
+        "excluded_lines": 0
+      }
+    },
+    "src/arfs/feature_selection/variable_importance.py": {
+      "summary": {
+        "covered_lines": 21,
+        "num_statements": 134,
+        "percent_covered": 15.671641791044776,
+        "percent_covered_display": "16",
+        "missing_lines": 113,
+        "excluded_lines": 0
+      }
+    },
+    "src/arfs/gbm.py": {
+      "summary": {
+        "covered_lines": 27,
+        "num_statements": 258,
+        "percent_covered": 10.465116279069768,
+        "percent_covered_display": "10",
+        "missing_lines": 231,
+        "excluded_lines": 0
+      }
+    },
+    "src/arfs/parallel.py": {
+      "summary": {
+        "covered_lines": 9,
+        "num_statements": 33,
+        "percent_covered": 27.272727272727273,
+        "percent_covered_display": "27",
+        "missing_lines": 24,
+        "excluded_lines": 0
+      }
+    },
+    "src/arfs/preprocessing.py": {
+      "summary": {
+        "covered_lines": 47,
+        "num_statements": 256,
+        "percent_covered": 18.359375,
+        "percent_covered_display": "18",
+        "missing_lines": 209,
+        "excluded_lines": 0
+      }
+    },
+    "src/arfs/sampling.py": {
+      "summary": {
+        "covered_lines": 0,
+        "num_statements": 178,
+        "percent_covered": 0.0,
+        "percent_covered_display": "0",
+        "missing_lines": 178,
+        "excluded_lines": 0
+      }
+    },
+    "src/arfs/utils.py": {
+      "summary": {
+        "covered_lines": 111,
+        "num_statements": 224,
+        "percent_covered": 49.55357142857143,
+        "percent_covered_display": "50",
+        "missing_lines": 113,
+        "excluded_lines": 0
+      }
+    }
+  },
+  "totals": {
+    "covered_lines": 917,
+    "num_statements": 2890,
+    "percent_covered": 31.730103806228374,
+    "percent_covered_display": "32",
+    "missing_lines": 1973,
+    "excluded_lines": 0
+  }
+}

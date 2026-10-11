@@ -1,0 +1,80 @@
+Command: /tmp/arfs-review-03f67d0/locked-env/bin/python -m pytest /home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py -q -rx --tb=short -c /dev/null --rootdir=/home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks -p no:cacheprovider
+...x..............xxx.xxxxxxx.xxxx.xxxx...xxx............xxx...xxx.xx..  [100%]
+=============================== warnings summary ===============================
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+    from pkg_resources import resource_filename
+
+checks.py::test_prediction_shapes_labels_and_raw_scores[regression]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/gbm.py:383: UserWarning: predict_proba=True is ignored for non-classification objectives.
+    warnings.warn(
+
+checks.py::test_prediction_shapes_labels_and_raw_scores[regression]
+checks.py::test_prediction_shapes_labels_and_raw_scores[binary]
+checks.py::test_prediction_shapes_labels_and_raw_scores[multiclass]
+checks.py::test_parameter_alias_precedence_and_array_fit
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/gbm.py:348: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.
+    warnings.warn(
+
+checks.py::test_parameter_alias_precedence_and_array_fit
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/gbm.py:213: UserWarning: Input X is not a pandas DataFrame. Converting, column names might be lost.
+    warnings.warn(
+
+checks.py::test_benchmark_weighted_reference_and_feature_labels[regression]
+checks.py::test_benchmark_weighted_reference_and_feature_labels[classification]
+checks.py::test_benchmark_integer_feature_names
+checks.py::test_benchmark_real_plot
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/benchmark.py:99: UserWarning: Tight layout not applied. The bottom and top margins cannot be made large enough to accommodate all Axes decorations.
+    fig.tight_layout()
+
+checks.py::test_benchmark_weighted_reference_and_feature_labels[regression]
+checks.py::test_benchmark_weighted_reference_and_feature_labels[classification]
+checks.py::test_benchmark_preprocessing_uses_training_rows_only
+checks.py::test_benchmark_real_plot
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/benchmark.py:104: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+    plt.show()
+
+checks.py::test_benchmark_real_plot
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/benchmark.py:94: MatplotlibDeprecationWarning: The 'labels' parameter of boxplot() has been renamed 'tick_labels' since Matplotlib 3.9; support for the old name will be dropped in 3.11.
+    ax.boxplot(
+
+checks.py::test_compare_reinitializes_selector_for_each_model
+checks.py::test_compare_reinitializes_selector_for_each_model
+checks.py::test_compare_reinitializes_selector_for_each_model
+checks.py::test_compare_reinitializes_selector_for_each_model
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/joblib/externals/loky/backend/fork_exec.py:38: DeprecationWarning: This process (pid=3771643) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    pid = os.fork()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_stratification_and_groups_do_not_leak - F1: stratification silently defeats requested group isolation
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_reordered_features_preserve_prediction_or_raise[predict] - F2: named prediction inputs are used positionally without schema validation
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_reordered_features_preserve_prediction_or_raise[predict_raw] - F2: named prediction inputs are used positionally without schema validation
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_replacement_feature_rejected - F2: same-width replacement column is accepted
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_multiclass_aliases_return_labels[softmax] - F3: valid multiclass aliases bypass class-label postprocessing
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_multiclass_aliases_return_labels[ova] - F3: valid multiclass aliases bypass class-label postprocessing
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_multiclass_aliases_return_labels[ovr] - F3: valid multiclass aliases bypass class-label postprocessing
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_advertised_auto_categorical_input[object] - F4: auto-detection does not convert advertised unsupported categorical dtypes
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_advertised_auto_categorical_input[string] - F4: auto-detection does not convert advertised unsupported categorical dtypes
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_advertised_auto_categorical_input[datetime64[ns]] - F4: auto-detection does not convert advertised unsupported categorical dtypes
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_advertised_auto_categorical_input[timedelta64[ns]] - F4: auto-detection does not convert advertised unsupported categorical dtypes
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_none_disables_categorical_features - F5: cat_feat=None still enables native categorical inference
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_invalid_targets_rejected[nan] - F6: nonfinite regression targets are accepted
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_invalid_targets_rejected[inf] - F6: nonfinite regression targets are accepted
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_invalid_targets_rejected[-inf] - F6: nonfinite regression targets are accepted
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_invalid_weights_rejected[negative] - F7: invalid weights reach LightGBM without rejection
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_invalid_weights_rejected[nan] - F7: invalid weights reach LightGBM without rejection
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_invalid_weights_rejected[infinite] - F7: invalid weights reach LightGBM without rejection
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_invalid_weights_rejected[all_zero] - F7: invalid weights reach LightGBM without rejection
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_multiclass_initial_score_matrix - F8: multiclass initial-score matrices are coerced to a 1D Series
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_refit_resets_initial_score_flag - F9: a normal refit retains the previous initial-score guard
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_refit_resets_optional_outputs - F9: disabled per-fit outputs retain old validation data and curve
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_reload_preserves_initial_score_contract - F10: saved Booster loses the initial-score prediction guard
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_reload_preserves_category_names - F10: load treats category levels as categorical feature names
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_load_into_previously_fitted_wrapper - F10: loading a normal Booster retains a previous initial-score flag
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_benchmark_preprocessing_uses_training_rows_only - F11: benchmark fits its category encoder before the holdout split
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_benchmark_accepts_documented_array - F12: documented ndarray input requires DataFrame.columns
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_benchmark_integer_feature_names - F12: integer feature names fail substring highlighting
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_compare_grootcv_configuration_is_real - F14: GrootCV ignores injected estimator and importance mode
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_compare_reinitializes_selector_for_each_model - F15: comparison reuses selector with stale estimator flags and advanced RNG
+41 passed, 30 xfailed, 20 warnings in 43.72s

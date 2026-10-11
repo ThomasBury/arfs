@@ -1,0 +1,55 @@
+....xxxx..xxxxxxxxxxxxx.xxxxxx..xxxxxxxx                                 [100%]
+=============================== warnings summary ===============================
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:10
+  /tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+    from pkg_resources import resource_filename
+
+checks.py::test_ordinal_codes_unknown_missing_index_and_passthrough
+checks.py::test_dtype_selector_combines_filters
+checks.py::test_ordinal_clone_and_inverse_values
+checks.py::test_ordinal_feature_names_describe_full_output
+checks.py::test_ordinal_pandas_output_mode
+checks.py::test_ordinal_inverse_preserves_input
+checks.py::test_ordinal_set_params_dtype
+  /tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/preprocessing.py:315: Pandas4Warning: For backward compatibility, 'str' dtypes are included by select_dtypes when 'object' dtype is specified. This behavior is deprecated and will be removed in a future version. Explicitly pass 'str' to `include` to select them, or to `exclude` to remove them and silence this warning.
+  See https://pandas.pydata.org/docs/user_guide/migration-3-strings.html#string-migration-select-dtypes for details on how to write code that works with pandas 2 and 3.
+    df_row = df_row.select_dtypes(
+
+checks.py: 31 warnings
+  /tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/gbm.py:348: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_ordinal_feature_names_describe_full_output - F8: metadata omits passthrough columns
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_ordinal_pandas_output_mode - F8: pandas output uses incomplete feature names
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_ordinal_inverse_preserves_input - F13: inverse transformation changes caller data
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_ordinal_set_params_dtype - F14: output_dtype update does not update parent dtype
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_tree_bins_preserve_fitted_leaf_partition[regression] - F1: response grouping merges separate numerical leaves
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_tree_bins_preserve_fitted_leaf_partition[classification] - F1: response grouping merges separate numerical leaves
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_tree_bins_preserve_leaf_between_observed_values - F1: observed maxima replace actual numerical split thresholds
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_tree_generated_column_name_cannot_change_another_feature_fit - F2: temporary x_g column overwrites real predictor
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_tree_updated_bin_limit_is_respected - F4: n_bins set_params does not rebuild training parameters
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_tree_updated_task_is_respected - F4: task set_params leaves old objective
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_tree_single_tree_contract_survives_boost_params - F4: n_estimators overrides one-tree constraint
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_tree_constructor_preserves_parameter_dictionary - F4: constructor mutates caller parameter dictionary
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_tree_refit_rediscovers_columns - F6: fit replaces all selector with previous column names
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_tree_array_fit_transform - F7: array conversion only happens during fit
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_tree_raw_categorical_transform - F5: raw mode skips fitted categorical encoder
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_tree_existing_missing_sentinel_category - F9: fixed missing category collides with real category
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_tree_all_missing_numeric_feature - F9: all-missing numeric feature has no imputation candidate
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_interval_public_midpoints[estimator] - F3: dtype-changing loc assignment fails on pandas 3
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_interval_public_midpoints[function] - F3: dtype-changing loc assignment fails on pandas 3
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_tree_midpoint_pipeline - F3: notebook tree-to-midpoint pipeline fails on pandas 3
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_interval_single_string_column[estimator] - F12: scalar column name is treated as individual characters
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_interval_single_string_column[function] - F12: scalar column name is treated as individual characters
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_interval_refit - F6: fitted cols parameter is a pandas Index; second fit fails
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_patsy_raise_policy_also_applies_during_transform[dataframe] - F10: transform omits NA_action and silently drops rows
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_patsy_raise_policy_also_applies_during_transform[ndarray] - F10: transform omits NA_action and silently drops rows
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_patsy_add_intercept_false - F11: add_intercept is never applied
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_patsy_named_dictionary - F7: named dictionary columns are renamed to pred_N
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_patsy_array_transform - F7: array conversion only occurs in fit
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_patsy_refit_rediscovers_automatic_formula - F6: inferred formula becomes a fixed constructor parameter
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_cat_var_public_roundtrip_without_missing - F15: cat_var dtype-changing assignment fails on pandas 3
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py::test_cat_var_missing_is_distinct_from_observed_category - F15: missing category aliases first level; pandas 3 fails earlier
+9 passed, 31 xfailed, 39 warnings in 8.47s

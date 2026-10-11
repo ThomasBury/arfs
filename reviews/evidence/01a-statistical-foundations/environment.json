@@ -1,0 +1,92 @@
+{
+  "commit": "03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2",
+  "review_date": "2026-10-11",
+  "python": "3.12.7 (main, Oct  8 2024, 00:20:25) [Clang 18.1.8 ]",
+  "executable": "/tmp/arfs-review-03f67d0/locked-env/bin/python",
+  "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+  "versions": {
+    "arfs": "3.0.0",
+    "cloudpickle": "3.1.1",
+    "contourpy": "1.3.0",
+    "coverage": "7.8.0",
+    "cycler": "0.12.1",
+    "fonttools": "4.56.0",
+    "iniconfig": "2.1.0",
+    "joblib": "1.4.2",
+    "kiwisolver": "1.4.7",
+    "lightgbm": "4.6.0",
+    "llvmlite": "0.43.0",
+    "matplotlib": "3.9.4",
+    "numba": "0.60.0",
+    "numpy": "2.0.2",
+    "packaging": "24.2",
+    "pandas": "2.2.3",
+    "patsy": "1.0.1",
+    "pillow": "11.1.0",
+    "pluggy": "1.5.0",
+    "pyparsing": "3.2.3",
+    "pytest": "8.3.5",
+    "pytest-cov": "6.0.0",
+    "python-dateutil": "2.9.0.post0",
+    "pytz": "2025.2",
+    "scikit-learn": "1.6.1",
+    "scipy": "1.13.1",
+    "seaborn": "0.13.2",
+    "setuptools": "80.9.0",
+    "shap": "0.47.1",
+    "six": "1.17.0",
+    "slicer": "0.0.8",
+    "statsmodels": "0.14.4",
+    "threadpoolctl": "3.6.0",
+    "tqdm": "4.67.1",
+    "typing_extensions": "4.13.0",
+    "tzdata": "2025.2"
+  },
+  "source_hashes": {
+    "association.py": {
+      "sha256": "46e5a5f8757fa8f3f810fc34a90723887d3693f455ca0ff66b6f8425c80bcc23",
+      "installed_path": "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py",
+      "matches_checkout": true
+    },
+    "parallel.py": {
+      "sha256": "8338ff10d235b6ef6e79b5882f2bb5cb26ff624bec41b6fa0728e8d0809fbae4",
+      "installed_path": "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/parallel.py",
+      "matches_checkout": true
+    },
+    "utils.py": {
+      "sha256": "4dcae037cea59e68884fc44d1be37b840c444ec4813c9cb39bc69ffebbaf38e4",
+      "installed_path": "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py",
+      "matches_checkout": true
+    },
+    "feature_selection/mrmr.py": {
+      "sha256": "b9585ff7346006b5a4571c521b2ab070d34a84f10f5b4c04f5b34db67458103b",
+      "installed_path": "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py",
+      "matches_checkout": true
+    },
+    "feature_selection/unsupervised.py": {
+      "sha256": "61cadc4d6bb791514759dce210a4acbe93f3b29a3613a9d6fdca7f1ca98cb531",
+      "installed_path": "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/unsupervised.py",
+      "matches_checkout": true
+    }
+  },
+  "workaround": "setuptools==80.9.0, installed during unit 0; no ARFS source patch",
+  "environment_reused_from_unit_0": true,
+  "thread_limits": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "NUMBA_NUM_THREADS": "1"
+  },
+  "test_workers": [
+    1,
+    2
+  ],
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    20261011
+  ]
+}

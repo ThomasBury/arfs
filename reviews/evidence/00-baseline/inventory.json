@@ -1,0 +1,603 @@
+{
+  "modules": {
+    "src/arfs/__init__.py": {
+      "lines": 3,
+      "definitions": [],
+      "imports": []
+    },
+    "src/arfs/association.py": {
+      "lines": 2449,
+      "definitions": [
+        "symmetric_function",
+        "asymmetric_function",
+        "create_col_combinations",
+        "weighted_conditional_entropy",
+        "weighted_theils_u",
+        "theils_u_matrix",
+        "theils_u_series",
+        "cramer_v",
+        "cramer_v_matrix",
+        "cramer_v_series",
+        "correlation_ratio",
+        "correlation_ratio_matrix",
+        "correlation_ratio_series",
+        "wm",
+        "wcov",
+        "wcorr",
+        "wrank",
+        "wspearman",
+        "weighted_corr",
+        "wcorr_series",
+        "wcorr_matrix",
+        "weighted_correlation_1cpu",
+        "association_series",
+        "association_matrix",
+        "f_oneway_weighted",
+        "f_cat_regression",
+        "f_cat_regression_parallel",
+        "f_cont_regression_parallel",
+        "f_stat_regression_parallel",
+        "f_cont_classification",
+        "f_cont_classification_parallel",
+        "f_cat_classification_parallel",
+        "f_stat_classification_parallel",
+        "is_list_of_str",
+        "matrix_to_xy",
+        "xy_to_matrix",
+        "cluster_sq_matrix",
+        "heatmap",
+        "annotate_heatmap",
+        "plot_association_matrix",
+        "plot_association_matrix_int"
+      ],
+      "imports": [
+        "import math",
+        "import warnings",
+        "import matplotlib",
+        "import numpy as np",
+        "import gc",
+        "import pandas as pd",
+        "import scipy.stats as ss",
+        "import matplotlib.pyplot as plt",
+        "import scipy.cluster.hierarchy as sch",
+        "import scipy.stats as ss",
+        "from mpl_toolkits.axes_grid1 import make_axes_locatable",
+        "from sklearn.utils import as_float_array, safe_sqr, safe_mask",
+        "from multiprocessing import cpu_count",
+        "from itertools import combinations, permutations, product",
+        "from pandas.api.types import is_numeric_dtype",
+        "from scipy.stats import rankdata",
+        "from functools import partial",
+        "from .parallel import parallel_matrix_entries, parallel_df, _compute_series, _compute_matrix_entries",
+        "from .utils import create_dtype_dict"
+      ]
+    },
+    "src/arfs/benchmark.py": {
+      "lines": 190,
+      "definitions": [
+        "sklearn_pimp_bench",
+        "compare_varimp",
+        "highlight_tick"
+      ],
+      "imports": [
+        "from __future__ import print_function, division",
+        "import itertools",
+        "from matplotlib import pyplot as plt",
+        "from sklearn.model_selection import train_test_split",
+        "from sklearn.inspection import permutation_importance",
+        "from sklearn.base import clone",
+        "from .preprocessing import OrdinalEncoderPandas"
+      ]
+    },
+    "src/arfs/feature_selection/__init__.py": {
+      "lines": 27,
+      "definitions": [],
+      "imports": [
+        "from .allrelevant import Leshy, BoostAGroota, GrootCV",
+        "from .unsupervised import MissingValueThreshold, UniqueValuesThreshold, CardinalityThreshold, CollinearityThreshold",
+        "from .lasso import LassoFeatureSelection",
+        "from .variable_importance import VariableImportance",
+        "from .summary import make_fs_summary",
+        "from .mrmr import MinRedundancyMaxRelevance"
+      ]
+    },
+    "src/arfs/feature_selection/allrelevant.py": {
+      "lines": 2662,
+      "definitions": [
+        "Leshy",
+        "BoostAGroota",
+        "GrootCV"
+      ],
+      "imports": [
+        "from __future__ import print_function, division",
+        "import operator",
+        "import warnings",
+        "import time",
+        "import shap",
+        "import numpy as np",
+        "import pandas as pd",
+        "import lightgbm as lgb",
+        "import matplotlib as mpl",
+        "import matplotlib.pyplot as plt",
+        "import scipy as sp",
+        "from typing import Tuple, Optional, Union, Iterable",
+        "from tqdm.auto import tqdm",
+        "from sklearn.utils import check_random_state, check_X_y",
+        "from sklearn.base import BaseEstimator, is_regressor, is_classifier, clone",
+        "from sklearn.utils.validation import check_is_fitted",
+        "from sklearn.feature_selection._base import SelectorMixin",
+        "from sklearn.model_selection import RepeatedKFold, train_test_split",
+        "from sklearn.inspection import permutation_importance",
+        "from sklearn.utils.validation import _check_sample_weight",
+        "from matplotlib.lines import Line2D",
+        "from lightgbm import early_stopping",
+        "from ..utils import check_if_tree_based, is_lightgbm, is_catboost, create_dtype_dict, get_pandas_cat_codes, validate_sample_weight"
+      ]
+    },
+    "src/arfs/feature_selection/base.py": {
+      "lines": 168,
+      "definitions": [
+        "BaseThresholdSelector"
+      ],
+      "imports": [
+        "from __future__ import print_function",
+        "import pandas as pd",
+        "import numpy as np",
+        "from sklearn.utils.validation import check_is_fitted",
+        "from sklearn.base import BaseEstimator",
+        "from sklearn.feature_selection._base import SelectorMixin"
+      ]
+    },
+    "src/arfs/feature_selection/lasso.py": {
+      "lines": 657,
+      "definitions": [
+        "EnetGLM",
+        "weighted_cross_val_score",
+        "grid_search_cv",
+        "LassoFeatureSelection",
+        "drop_existing_sm_constant_from_df"
+      ],
+      "imports": [
+        "import pandas as pd",
+        "import numpy as np",
+        "import statsmodels.api as sm",
+        "from sklearn.base import BaseEstimator, TransformerMixin, RegressorMixin",
+        "from sklearn.base import clone",
+        "from sklearn.utils import check_array",
+        "from sklearn.model_selection import StratifiedKFold, KFold",
+        "from joblib import Parallel, delayed",
+        "from typing import Union, Optional"
+      ]
+    },
+    "src/arfs/feature_selection/mrmr.py": {
+      "lines": 350,
+      "definitions": [
+        "MinRedundancyMaxRelevance"
+      ],
+      "imports": [
+        "import functools",
+        "import numpy as np",
+        "import pandas as pd",
+        "from sklearn.base import BaseEstimator",
+        "from sklearn.utils.validation import check_is_fitted",
+        "from tqdm.auto import tqdm",
+        "from sklearn.feature_selection._base import SelectorMixin",
+        "from ..association import f_stat_classification_parallel, f_stat_regression_parallel, association_series"
+      ]
+    },
+    "src/arfs/feature_selection/summary.py": {
+      "lines": 73,
+      "definitions": [
+        "highlight_discarded",
+        "make_fs_summary"
+      ],
+      "imports": [
+        "import pandas as pd",
+        "import numpy as np"
+      ]
+    },
+    "src/arfs/feature_selection/unsupervised.py": {
+      "lines": 461,
+      "definitions": [
+        "MissingValueThreshold",
+        "UniqueValuesThreshold",
+        "CardinalityThreshold",
+        "CollinearityThreshold"
+      ],
+      "imports": [
+        "from __future__ import print_function",
+        "from tqdm.auto import trange",
+        "import pandas as pd",
+        "import numpy as np",
+        "from sklearn.utils.validation import check_is_fitted",
+        "from sklearn.base import BaseEstimator",
+        "from sklearn.feature_selection._base import SelectorMixin",
+        "from .base import BaseThresholdSelector",
+        "from ..utils import create_dtype_dict",
+        "from ..association import association_matrix, xy_to_matrix, plot_association_matrix, weighted_theils_u, weighted_corr, correlation_ratio",
+        "from ..preprocessing import OrdinalEncoderPandas"
+      ]
+    },
+    "src/arfs/feature_selection/variable_importance.py": {
+      "lines": 450,
+      "definitions": [
+        "VariableImportance"
+      ],
+      "imports": [
+        "from __future__ import print_function",
+        "from tqdm.auto import trange",
+        "import pandas as pd",
+        "import numpy as np",
+        "import matplotlib.pyplot as plt",
+        "import matplotlib.gridspec as gridspec",
+        "from sklearn.utils.validation import check_is_fitted",
+        "from sklearn.base import BaseEstimator",
+        "from sklearn.feature_selection._base import SelectorMixin",
+        "from ..utils import reset_plot",
+        "from ..gbm import GradientBoosting",
+        "from ..preprocessing import OrdinalEncoderPandas"
+      ]
+    },
+    "src/arfs/gbm.py": {
+      "lines": 835,
+      "definitions": [
+        "GradientBoosting",
+        "gbm_flavour"
+      ],
+      "imports": [
+        "import gc",
+        "import warnings",
+        "from datetime import date",
+        "from pathlib import Path",
+        "from typing import List, Optional, Union, Dict, Tuple, Any",
+        "import joblib",
+        "import lightgbm as lgb",
+        "import matplotlib as mpl",
+        "import matplotlib.pyplot as plt",
+        "import numpy as np",
+        "import pandas as pd",
+        "from sklearn.model_selection import GroupShuffleSplit, ShuffleSplit, StratifiedShuffleSplit",
+        "from arfs.utils import create_dtype_dict"
+      ]
+    },
+    "src/arfs/parallel.py": {
+      "lines": 174,
+      "definitions": [
+        "parallel_matrix_entries",
+        "parallel_df"
+      ],
+      "imports": [
+        "import numpy as np",
+        "import pandas as pd",
+        "from joblib import Parallel, delayed",
+        "from multiprocessing import cpu_count",
+        "from itertools import chain"
+      ]
+    },
+    "src/arfs/preprocessing.py": {
+      "lines": 1022,
+      "definitions": [
+        "OrdinalEncoderPandas",
+        "dtype_column_selector",
+        "cat_var",
+        "TreeDiscretizer",
+        "highlight_discarded",
+        "IntervalToMidpoint",
+        "transform_interval_to_midpoint",
+        "find_interval_midpoint",
+        "PatsyTransformer"
+      ],
+      "imports": [
+        "from __future__ import print_function",
+        "from tqdm.auto import tqdm",
+        "import pandas as pd",
+        "from pandas.api.types import IntervalDtype",
+        "import numpy as np",
+        "import re",
+        "from sklearn.preprocessing import OrdinalEncoder",
+        "from sklearn.base import BaseEstimator, TransformerMixin",
+        "from patsy import dmatrix, EvalEnvironment, ModelDesc, INTERCEPT",
+        "from typing import Any, Callable, Union, List, Tuple, Optional, Dict",
+        "from .gbm import GradientBoosting",
+        "from .utils import create_dtype_dict, concat_or_group"
+      ]
+    },
+    "src/arfs/sampling.py": {
+      "lines": 477,
+      "definitions": [
+        "sample",
+        "get_most_common",
+        "gower_matrix",
+        "smallest_indices",
+        "gower_topn",
+        "get_5_percent_splits",
+        "isolation_forest",
+        "isof_find_sample"
+      ],
+      "imports": [
+        "import numpy as np",
+        "import pandas as pd",
+        "from scipy.sparse import issparse",
+        "from collections import Counter",
+        "from sklearn.cluster import AgglomerativeClustering",
+        "from sklearn.ensemble import IsolationForest",
+        "from scipy.stats import ks_2samp",
+        "from .utils import is_list_of_str, is_list_of_bool, is_list_of_int"
+      ]
+    },
+    "src/arfs/utils.py": {
+      "lines": 923,
+      "definitions": [
+        "concat_or_group",
+        "reset_plot",
+        "set_my_plt_style",
+        "create_dtype_dict",
+        "get_pandas_cat_codes",
+        "validate_sample_weight",
+        "validate_sample_weight",
+        "validate_pandas_input",
+        "check_if_tree_based",
+        "is_lightgbm",
+        "is_catboost",
+        "is_xgboost",
+        "LightForestRegressor",
+        "LightForestClassifier",
+        "is_list_of_str",
+        "is_list_of_bool",
+        "is_list_of_int",
+        "plot_y_vs_X",
+        "load_data"
+      ],
+      "imports": [
+        "from __future__ import print_function, division",
+        "import lightgbm as lgb",
+        "import matplotlib as mpl",
+        "import numpy as np",
+        "import pandas as pd",
+        "from pkg_resources import resource_filename",
+        "from matplotlib import pyplot as plt",
+        "from sklearn.impute import SimpleImputer",
+        "from sklearn.compose import make_column_transformer",
+        "from sklearn.pipeline import make_pipeline",
+        "from sklearn.datasets import fetch_openml",
+        "from sklearn.datasets import load_breast_cancer",
+        "from sklearn.utils import Bunch",
+        "import joblib"
+      ]
+    }
+  },
+  "tests": [
+    {
+      "nodeid": "tests/test_allrelevant.py::TestLeshy::test_borutaPy_vs_leshy_with_rfc_and_native_feature_importance",
+      "line": 17,
+      "assertions": [
+        "assert bool(set(baseline_list) & set(leshy_rfc_list)), 'expect non-empty intersection'"
+      ]
+    },
+    {
+      "nodeid": "tests/test_allrelevant.py::TestLeshy::test_borutaPy_vs_leshy_with_rfr_and_native_feature_importance",
+      "line": 42,
+      "assertions": [
+        "assert bool(set(baseline_list) & set(leshy_rfc_list)), 'expect non-empty intersection'"
+      ]
+    },
+    {
+      "nodeid": "tests/test_allrelevant.py::TestLeshy::test_borutaPy_vs_leshy_with_rfc_and_shap_feature_importance",
+      "line": 67,
+      "assertions": [
+        "assert bool(set(baseline_list) & set(leshy_rfc_list)), 'expect non-empty intersection'"
+      ]
+    },
+    {
+      "nodeid": "tests/test_allrelevant.py::TestLeshy::test_borutaPy_vs_leshy_with_rfr_and_shap_feature_importance",
+      "line": 91,
+      "assertions": [
+        "assert bool(set(baseline_list) & set(leshy_rfc_list)), 'expect non-empty intersection'"
+      ]
+    },
+    {
+      "nodeid": "tests/test_allrelevant.py::TestLeshy::test_leshy_clf_with_lgb_and_shap_feature_importance_and_sample_weight",
+      "line": 115,
+      "assertions": [
+        "assert bool(set(baseline_list) & set(leshy_list)), 'expect non-empty intersection'"
+      ]
+    },
+    {
+      "nodeid": "tests/test_allrelevant.py::TestLeshy::test_leshy_regr_with_lgb_and_shap_feature_importance_and_sample_weight",
+      "line": 128,
+      "assertions": [
+        "assert bool(set(baseline_list) & set(leshy_list)), 'expect non-empty intersection'"
+      ]
+    },
+    {
+      "nodeid": "tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_clf_with_lgb_and_shap_feature_importance_and_sample_weight",
+      "line": 147,
+      "assertions": [
+        "assert bool(set(baseline_list) & set(leshy_list)), 'expect non-empty intersection'"
+      ]
+    },
+    {
+      "nodeid": "tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight",
+      "line": 170,
+      "assertions": [
+        "assert bool(set(baseline_list) & set(leshy_list)), 'expect non-empty intersection'"
+      ]
+    },
+    {
+      "nodeid": "tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_rgr_with_lgb_and_shap_feature_importance_and_sample_weight",
+      "line": 193,
+      "assertions": [
+        "assert bool(set(baseline_list) & set(leshy_list)), 'expect non-empty intersection'"
+      ]
+    },
+    {
+      "nodeid": "tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_regr_with_lgb_and_pimp_feature_importance_and_sample_weight",
+      "line": 216,
+      "assertions": [
+        "assert bool(set(baseline_list) & set(leshy_list)), 'expect non-empty intersection'"
+      ]
+    },
+    {
+      "nodeid": "tests/test_allrelevant.py::TestGrootCV::test_grootcv_classification_with_and_sample_weight",
+      "line": 245,
+      "assertions": [
+        "assert bool(set(baseline_list) & set(grootcv_list)), 'expect non-empty intersection'"
+      ]
+    },
+    {
+      "nodeid": "tests/test_allrelevant.py::TestGrootCV::test_grootcv_regression_with_and_sample_weight",
+      "line": 257,
+      "assertions": [
+        "assert bool(set(baseline_list) & set(grootcv_list)), 'expect non-empty intersection'"
+      ]
+    },
+    {
+      "nodeid": "tests/test_featselect.py::TestFeatSelectMissing::test_identify_missing_for_classification",
+      "line": 21,
+      "assertions": [
+        "assert fs.not_selected_features_ == ['var12'], message"
+      ]
+    },
+    {
+      "nodeid": "tests/test_featselect.py::TestFeatSelectZeroVariance::test_identify_single_unique_classification",
+      "line": 37,
+      "assertions": [
+        "assert fs.not_selected_features_ == ['var10'], message"
+      ]
+    },
+    {
+      "nodeid": "tests/test_featselect.py::TestFeatSelectHighCardinality::test_identify_high_cardinality_classification",
+      "line": 53,
+      "assertions": [
+        "assert actual == expected, message"
+      ]
+    }
+  ],
+  "notebook_imports": {
+    "docs/notebooks/arfs_boruta_borutaShap_comparison.ipynb": [
+      "import arfs",
+      "import arfs.feature_selection as arfsfs",
+      "import arfs.feature_selection.allrelevant as arfsgroot",
+      "from arfs.utils import LightForestClassifier, LightForestRegressor",
+      "from arfs.benchmark import highlight_tick, compare_varimp, sklearn_pimp_bench",
+      "from arfs.utils import load_data",
+      "from arfs.preprocessing import OrdinalEncoderPandas"
+    ],
+    "docs/notebooks/arfs_classification.ipynb": [
+      "import arfs",
+      "import arfs.feature_selection.allrelevant as arfsgroot",
+      "from arfs.feature_selection import (",
+      "from arfs.utils import LightForestClassifier",
+      "from arfs.benchmark import highlight_tick, compare_varimp, sklearn_pimp_bench",
+      "from arfs.utils import load_data",
+      "from arfs.preprocessing import OrdinalEncoderPandas"
+    ],
+    "docs/notebooks/arfs_grootcv_custom_params.ipynb": [
+      "import arfs",
+      "from arfs.feature_selection import GrootCV",
+      "from arfs.utils import load_data",
+      "from arfs.benchmark import highlight_tick"
+    ],
+    "docs/notebooks/arfs_large_data_sampling.ipynb": [
+      "import arfs.feature_selection as arfsfs",
+      "from arfs.preprocessing import OrdinalEncoderPandas",
+      "from arfs.benchmark import highlight_tick, compare_varimp, sklearn_pimp_bench",
+      "from arfs.utils import load_data",
+      "from arfs.sampling import sample",
+      "import arfs"
+    ],
+    "docs/notebooks/arfs_non_normal_loss_and_sample_weight.ipynb": [
+      "import arfs",
+      "from arfs.feature_selection import GrootCV, Leshy, BoostAGroota, make_fs_summary",
+      "from arfs.feature_selection import MinRedundancyMaxRelevance",
+      "from arfs.utils import load_data",
+      "from arfs.benchmark import highlight_tick"
+    ],
+    "docs/notebooks/arfs_on_GPU.ipynb": [
+      "import arfs",
+      "from arfs.feature_selection import GrootCV, Leshy",
+      "from arfs.utils import load_data",
+      "from arfs.benchmark import highlight_tick"
+    ],
+    "docs/notebooks/arfs_regression.ipynb": [
+      "import arfs",
+      "import arfs.feature_selection.allrelevant as arfsgroot",
+      "from arfs.feature_selection import (",
+      "from arfs.utils import LightForestRegressor",
+      "from arfs.benchmark import highlight_tick, compare_varimp",
+      "from arfs.utils import load_data"
+    ],
+    "docs/notebooks/arfs_shap_vs_fastshap.ipynb": [
+      "import arfs",
+      "from arfs.feature_selection import GrootCV, Leshy",
+      "from arfs.utils import load_data",
+      "from arfs.benchmark import highlight_tick"
+    ],
+    "docs/notebooks/arfs_timeseries.ipynb": [
+      "from arfs.benchmark import highlight_tick",
+      "from arfs.feature_selection.allrelevant import GrootCV",
+      "import arfs"
+    ],
+    "docs/notebooks/association_and_feature_selection.ipynb": [
+      "from arfs.utils import load_data",
+      "from arfs.feature_selection.unsupervised import CollinearityThreshold",
+      "from arfs.association import asymmetric_function, xy_to_matrix",
+      "from arfs.association import ("
+    ],
+    "docs/notebooks/basic_feature_selection.ipynb": [
+      "import arfs",
+      "import arfs.preprocessing as arfspp",
+      "import arfs.feature_selection as arfsfs",
+      "from arfs.utils import (",
+      "from arfs.preprocessing import dtype_column_selector",
+      "from arfs.preprocessing import OrdinalEncoderPandas",
+      "from arfs.utils import load_data"
+    ],
+    "docs/notebooks/issue_categoricals.ipynb": [
+      "import arfs",
+      "import arfs.feature_selection as arfsfs",
+      "import arfs.feature_selection.allrelevant as arfsgroot",
+      "from arfs.utils import LightForestClassifier, LightForestRegressor",
+      "from arfs.benchmark import highlight_tick, compare_varimp, sklearn_pimp_bench",
+      "from arfs.utils import load_data"
+    ],
+    "docs/notebooks/issue_collinearity.ipynb": [
+      "import arfs",
+      "import arfs.feature_selection as arfsfs",
+      "import arfs.feature_selection.allrelevant as arfsgroot",
+      "from arfs.utils import LightForestClassifier, LightForestRegressor",
+      "from arfs.benchmark import highlight_tick, compare_varimp, sklearn_pimp_bench",
+      "from arfs.utils import load_data"
+    ],
+    "docs/notebooks/lasso_feature_selection.ipynb": [
+      "from arfs.feature_selection.lasso import LassoFeatureSelection",
+      "from arfs.preprocessing import PatsyTransformer",
+      "import arfs.feature_selection as arfsfs",
+      "from arfs.utils import _make_corr_dataset_regression",
+      "from arfs.preprocessing import TreeDiscretizer, IntervalToMidpoint",
+      "from arfs.feature_selection import UniqueValuesThreshold, MissingValueThreshold"
+    ],
+    "docs/notebooks/mrmr_feature_selection.ipynb": [
+      "import arfs",
+      "from arfs.utils import load_data",
+      "from arfs.feature_selection import MinRedundancyMaxRelevance",
+      "from arfs.preprocessing import TreeDiscretizer",
+      "from arfs.feature_selection import ("
+    ],
+    "docs/notebooks/mrmr_fs_VS_arfs.ipynb": [
+      "import arfs",
+      "from arfs.utils import load_data",
+      "from arfs.feature_selection import (",
+      "from arfs.benchmark import highlight_tick"
+    ],
+    "docs/notebooks/preprocessing.ipynb": [
+      "import arfs",
+      "import arfs.preprocessing as arfspp",
+      "from arfs.utils import (",
+      "from arfs.preprocessing import dtype_column_selector",
+      "from arfs.preprocessing import OrdinalEncoderPandas",
+      "from arfs.preprocessing import TreeDiscretizer",
+      "from arfs.feature_selection import ("
+    ]
+  }
+}

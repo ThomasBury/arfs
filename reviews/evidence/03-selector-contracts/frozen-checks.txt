@@ -1,0 +1,84 @@
+............x.xxxxxxxxxxxxxxxxxxx.....xxxxx...xxx..xxxxxxxx....x.xxx.... [ 98%]
+x                                                                        [100%]
+=============================== warnings summary ===============================
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+    from pkg_resources import resource_filename
+
+checks.py: 12 warnings
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The MissingValueThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+checks.py: 14 warnings
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The UniqueValuesThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+checks.py::test_threshold_fit_transform_metadata_refit_reorder_and_input_preservation[CardinalityThreshold]
+checks.py::test_threshold_fit_transform_metadata_refit_reorder_and_input_preservation[CardinalityThreshold]
+checks.py::test_threshold_fit_transform_metadata_refit_reorder_and_input_preservation[CardinalityThreshold]
+checks.py::test_threshold_fit_transform_metadata_refit_reorder_and_input_preservation[CardinalityThreshold]
+checks.py::test_threshold_fit_transform_metadata_refit_reorder_and_input_preservation[CardinalityThreshold]
+checks.py::test_duplicate_names_either_rejected_or_positionally_selected[CardinalityThreshold]
+checks.py::test_unfitted_support_and_names_raise_not_fitted[CardinalityThreshold]
+checks.py::test_unfitted_support_and_names_raise_not_fitted[CardinalityThreshold]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The CardinalityThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+checks.py::test_unfitted_support_and_names_raise_not_fitted[CollinearityThreshold]
+checks.py::test_unfitted_support_and_names_raise_not_fitted[CollinearityThreshold]
+checks.py::test_real_collinearity_negative_duplicate_metadata_and_refit
+checks.py::test_real_collinearity_negative_duplicate_metadata_and_refit
+checks.py::test_real_collinearity_negative_duplicate_metadata_and_refit
+checks.py::test_real_collinearity_negative_duplicate_metadata_and_refit
+checks.py::test_real_collinearity_negative_duplicate_metadata_and_refit
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The CollinearityThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+checks.py: 20 warnings
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The VariableImportance or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_cardinality_string_extension_dtype - F4: StringDtype is not counted as categorical
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_duplicate_names_either_rejected_or_positionally_selected[UniqueValuesThreshold] - F5: duplicate names reintroduce or multiply columns
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_duplicate_names_either_rejected_or_positionally_selected[CardinalityThreshold] - F5: duplicate names reintroduce or multiply columns
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_custom_statistic_aligns_by_documented_feature_index - F6: base ignores statistic Series labels
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_invalid_thresholds_rejected_at_fit[MissingValueThreshold--0.1] - F7: invalid thresholds accepted at fit including set_params
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_invalid_thresholds_rejected_at_fit[MissingValueThreshold-1.1] - F7: invalid thresholds accepted at fit including set_params
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_invalid_thresholds_rejected_at_fit[MissingValueThreshold-nan] - F7: invalid thresholds accepted at fit including set_params
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_invalid_thresholds_rejected_at_fit[UniqueValuesThreshold-0] - F7: invalid thresholds accepted at fit including set_params
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_invalid_thresholds_rejected_at_fit[CardinalityThreshold-0] - F7: invalid thresholds accepted at fit including set_params
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_invalid_thresholds_rejected_at_fit[CollinearityThreshold-nan] - F7: invalid thresholds accepted at fit including set_params
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_invalid_thresholds_rejected_at_fit[CollinearityThreshold-1.1] - F7: invalid thresholds accepted at fit including set_params
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_invalid_thresholds_rejected_at_fit[VariableImportance-nan] - F7: invalid thresholds accepted at fit including set_params
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_invalid_thresholds_rejected_at_fit[VariableImportance-1.1] - F7: invalid thresholds accepted at fit including set_params
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_nonpositive_iterations_rejected[0] - F7: nonpositive iteration count silently does no training
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_nonpositive_iterations_rejected[-1] - F7: nonpositive iteration count silently does no training
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_unfitted_transform_raises_not_fitted[MissingValueThreshold] - F12: transform lacks fitted-state guard
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_unfitted_transform_raises_not_fitted[UniqueValuesThreshold] - F12: transform lacks fitted-state guard
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_unfitted_transform_raises_not_fitted[CardinalityThreshold] - F12: transform lacks fitted-state guard
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_unfitted_transform_raises_not_fitted[CollinearityThreshold] - F12: transform lacks fitted-state guard
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_unfitted_transform_raises_not_fitted[VariableImportance] - F12: transform lacks fitted-state guard
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_fitted_feature_count[MissingValueThreshold] - F12: documented n_features_in_ is missing
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_fitted_feature_count[UniqueValuesThreshold] - F12: documented n_features_in_ is missing
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_fitted_feature_count[CardinalityThreshold] - F12: documented n_features_in_ is missing
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_fitted_feature_count[CollinearityThreshold] - F12: documented n_features_in_ is missing
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_fitted_feature_count[VariableImportance] - F12: documented n_features_in_ is missing
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_collinearity_handles_fewer_than_two_features[0] - F8: no association pairs crashes after earlier selection
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_collinearity_handles_fewer_than_two_features[1] - F8: no association pairs crashes after earlier selection
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_collinearity_tie_is_reproducible_between_processes - F9: tie results depend on process hash seed
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_cumulative_threshold_includes_crossing_feature[0.5-expected0] - F1: first feature reaching cumulative threshold is discarded
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_cumulative_threshold_includes_crossing_feature[0.9-expected1] - F1: first feature reaching cumulative threshold is discarded
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_cumulative_threshold_includes_crossing_feature[1.0-expected2] - F1: first feature reaching cumulative threshold is discarded
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_real_zero_importance_is_not_selected - F2: all-zero importance normalizes to NaN and keeps everything
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_nonfinite_contributions_rejected[nan] - F2: nonfinite importance silently retains invalid predictors
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_nonfinite_contributions_rejected[inf] - F2: nonfinite importance silently retains invalid predictors
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_real_dominant_feature_is_retained - F1: a real single-signal fit discards its only useful feature
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_real_iterations_actually_change_split_or_model - F3: every iteration trains identical data and model
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_real_multiclass_accepts_array_target - F11: multiclass path calls fillna on ndarray labels
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_missing_fasttreeshap_reports_import_error - F13: optional fasttreeshap import error is constructed but not raised
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_summary_real_pipeline_name_preserving_transformer_and_empty_selection - F14: undeclared Jinja2 dependency
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_every_public_export_exists - Inherited unit 0: BaseThresholdSelector declared but not imported
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_collinearity_invalid_method_rejected_at_fit - F7: invalid method bypasses constructor validation through set_params
+32 passed, 41 xfailed, 62 warnings in 31.37s

@@ -1,0 +1,73 @@
+............xxxxxxxxxxxxxxxxxxx..                                        [100%]
+=============================== warnings summary ===============================
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+    from pkg_resources import resource_filename
+
+checks.py::test_bic_grid_matches_direct_statsmodels_search
+checks.py::test_numpy_bic_selector_transform_and_names_agree
+checks.py::test_poisson_cv_chooses_minimum_actual_deviance
+checks.py::test_binary_deviance_selector_runs
+checks.py::test_single_row_transform_matches_batch
+checks.py::test_existing_constant_preserves_design_and_support_alignment[const]
+checks.py::test_existing_constant_preserves_design_and_support_alignment[constant]
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_missing_target_does_not_silently_fit
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/sklearn/utils/deprecation.py:151: FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.
+    warnings.warn(
+
+checks.py::test_supported_family_predict_matches_direct_response_mean[negativebinomial-None]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:1367: ValueWarning: Negative binomial dispersion parameter alpha not set. Using default value alpha=1.0.
+    warnings.warn("Negative binomial dispersion parameter alpha not "
+
+checks.py: 10 warnings
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:648: RuntimeWarning: divide by zero encountered in divide
+    ll_obs += -np.log(scale / var_weights) - np.log(2 * np.pi)
+
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:578: RuntimeWarning: invalid value encountered in divide
+    tmp /= self.iweights * self.n_trials
+
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_set_params_rebuilds_model_objective[params1]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1464: UserWarning: Elastic net fitting did not converge
+    warnings.warn("Elastic net fitting did not converge")
+
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1891: RuntimeWarning: invalid value encountered in scalar subtract
+    prsq = 1 - np.exp((self.llnull - self.llf) * (2 / self.nobs))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_score_equals_response_scale_deviance[poisson] - F2: inverse link is applied twice
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_score_equals_response_scale_deviance[binomial] - F2: inverse link is applied twice
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_score_equals_response_scale_deviance[gamma] - F2: inverse link is applied twice
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_poisson_cv_chooses_minimum_actual_deviance - F2: wrong Poisson deviance selects the null model
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_binary_deviance_selector_runs - F3: StratifiedKFold.split is called without y
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_array_cv_matches_dataframe_cv - F4: CV unconditionally uses DataFrame.iloc
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_single_row_prediction_matches_batch - F5: add_constant detects constants separately in each batch
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_single_row_transform_matches_batch - F5: transform omits the learned intercept for a single row
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_existing_constant_preserves_design_and_support_alignment[const] - F5: feature names assume an added intercept even when none is added
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_existing_constant_preserves_design_and_support_alignment[constant] - F5: feature names assume an added intercept even when none is added
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_no_intercept_predict_uses_same_columns_as_fit - F5: fit drops named constants but predict does not
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_zero_weights_are_excluded_or_rejected_explicitly - F6: zero Gaussian weights produce infinite BIC and arbitrary first-alpha selection
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_set_params_rebuilds_model_objective[params0] - F7: objective is constructed only in __init__
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_set_params_rebuilds_model_objective[params1] - F7: objective is constructed only in __init__
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_reordered_prediction_columns_are_aligned_or_rejected - F8: dataframe feature names are ignored at prediction
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_sklearn_search_prefers_better_gaussian_predictions - F9: sklearn maximizes the positive deviance score
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_estimator_fit_returns_self - F10: fit returns None
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_documented_near_ridge_matches_penalized_fit - F11: refit=True discards the advertised near-ridge shrinkage
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_cv_folds_are_independent_and_leave_estimator_unfitted - F12: CV shares the caller's estimator across folds
+14 passed, 19 xfailed, 37 warnings in 9.10s

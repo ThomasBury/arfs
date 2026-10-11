@@ -1,0 +1,40 @@
+..xxxxxxxxxxx.xxx..xx.xx.                                                [100%]
+=============================== warnings summary ===============================
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:10
+  /tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+    from pkg_resources import resource_filename
+
+checks.py::test_utility_basics_and_explicit_side_effects
+checks.py::test_utility_basics_and_explicit_side_effects
+checks.py::test_utility_basics_and_explicit_side_effects
+  /tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:154: Pandas4Warning: For backward compatibility, 'str' dtypes are included by select_dtypes when 'object' dtype is specified. This behavior is deprecated and will be removed in a future version. Explicitly pass 'str' to `include` to select them, or to `exclude` to remove them and silence this warning.
+  See https://pandas.pydata.org/docs/user_guide/migration-3-strings.html#string-migration-select-dtypes for details on how to write code that works with pandas 2 and 3.
+    categorical_cols = df.select_dtypes(include=["object", "category", "bool"]).columns
+
+checks.py::test_leshy_plot_colors_match_support
+checks.py::test_other_selector_plot_membership_and_empty_histories
+checks.py::test_other_selector_plot_membership_and_empty_histories
+  /tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/plotting/_matplotlib/boxplot.py:112: MatplotlibDeprecationWarning: vert: bool was deprecated in Matplotlib 3.11 and will be removed in 3.13. Use orientation: {'vertical', 'horizontal'} instead.
+    bp = ax.boxplot(ys, **kwds)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_encoding_preserves_distinct_values[values0] - F1: stringification merges distinct categories
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_encoding_preserves_distinct_values[values1] - F1: stringification merges distinct categories
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_encoding_preserves_distinct_values[values2] - F1: stringification merges distinct categories
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_target_plot_uses_each_feature[columns0-2] - F2: scatter uses subplot column number as feature label
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_target_plot_uses_each_feature[columns1-2] - F2: scatter uses subplot column number as feature label
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_target_plot_uses_each_feature[columns2-1] - F2: scatter uses subplot column number as feature label
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_target_plot_uses_each_feature[columns3-2] - F2: scatter uses subplot column number as feature label
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_leshy_plot_colors_match_support - F3: Leshy colors sorted boxes by counts instead of membership
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_importance_plot_at_threshold_one - F4: valid threshold 1 has no cumulative value strictly above it
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_importance_plot_respects_limit - F5: plot_n changes height but never limits plotted data
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_importance_cumulative_plot_includes_first_feature - F6: default log scale on categorical rank hides the first feature
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_one_feature_association_plot - F7: clustering cannot handle a one-feature matrix
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_association_sign_order_annotations_and_owner - F11: hierarchy.distance is not a public SciPy API
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_empty_association_rejected - F11: hierarchy.distance is not a public SciPy API
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_generator_does_not_reset_global_rng[_make_corr_dataset_regression] - F8: generators reset the global NumPy RNG
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_generator_does_not_reset_global_rng[_make_corr_dataset_classification] - F8: generators reset the global NumPy RNG
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_odd_size_regression - F9: regression high-cardinality column has size minus one for odd sizes
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_validate_pandas_input_accepts_array - F10: documented NumPy input has no values attribute
+7 passed, 18 xfailed, 7 warnings in 9.61s

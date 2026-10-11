@@ -1,0 +1,29 @@
+[
+  {
+    "attempt": "make-html",
+    "command": [
+      "make",
+      "-C",
+      "/home/bsatom/Documents/arfs/docs",
+      "html",
+      "SPHINXBUILD=/tmp/arfs-review-03f67d0/wheel-env/bin/python -m sphinx",
+      "BUILDDIR=/tmp/arfs-review06-workflows-current-y1g7ww7r/docs-build"
+    ],
+    "exit_code": 2,
+    "output": "make: Entering directory '/home/bsatom/Documents/arfs/docs'\n/tmp/arfs-review-03f67d0/wheel-env/bin/python: No module named sphinx\nmake: *** [Makefile:20: html] Error 1\nmake: Leaving directory '/home/bsatom/Documents/arfs/docs'\n"
+  },
+  {
+    "attempt": "configured-source",
+    "command": [
+      "/tmp/arfs-review-03f67d0/wheel-env/bin/python",
+      "-m",
+      "sphinx",
+      "-b",
+      "html",
+      "/home/bsatom/Documents/arfs/docs",
+      "/tmp/arfs-review06-workflows-current-y1g7ww7r/direct-build"
+    ],
+    "exit_code": 1,
+    "output": "/tmp/arfs-review-03f67d0/wheel-env/bin/python: No module named sphinx\n"
+  }
+]

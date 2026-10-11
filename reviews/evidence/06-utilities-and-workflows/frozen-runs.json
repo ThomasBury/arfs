@@ -1,0 +1,72 @@
+[
+  {
+    "name": "environment",
+    "command": [
+      "/tmp/arfs-review-03f67d0/locked-env/bin/python",
+      "/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/environment.py",
+      "/home/bsatom/Documents/arfs",
+      "/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/frozen-environment.json"
+    ],
+    "cwd": "/tmp/arfs-review06-frozen-jdujoh5w",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "tail": [
+      "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.",
+      "  from pkg_resources import resource_filename"
+    ]
+  },
+  {
+    "name": "checks",
+    "command": [
+      "/tmp/arfs-review-03f67d0/locked-env/bin/python",
+      "-m",
+      "pytest",
+      "/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py",
+      "-q",
+      "-rx",
+      "--tb=short",
+      "-c",
+      "/dev/null",
+      "--rootdir=/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "cwd": "/tmp/arfs-review06-frozen-jdujoh5w",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "tail": [
+      "XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_generator_does_not_reset_global_rng[_make_corr_dataset_regression] - F8: generators reset the global NumPy RNG",
+      "XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_generator_does_not_reset_global_rng[_make_corr_dataset_classification] - F8: generators reset the global NumPy RNG",
+      "XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_odd_size_regression - F9: regression high-cardinality column has size minus one for odd sizes",
+      "XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_validate_pandas_input_accepts_array - F10: documented NumPy input has no values attribute",
+      "9 passed, 16 xfailed, 1 warning in 8.61s"
+    ]
+  },
+  {
+    "name": "failures",
+    "command": [
+      "/tmp/arfs-review-03f67d0/locked-env/bin/python",
+      "-m",
+      "pytest",
+      "/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py",
+      "-q",
+      "--runxfail",
+      "--tb=short",
+      "-c",
+      "/dev/null",
+      "--rootdir=/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "cwd": "/tmp/arfs-review06-frozen-jdujoh5w",
+    "exit_code": 1,
+    "expected_exit_code": 1,
+    "tail": [
+      "FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_generator_does_not_reset_global_rng[_make_corr_dataset_regression]",
+      "FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_generator_does_not_reset_global_rng[_make_corr_dataset_classification]",
+      "FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_odd_size_regression",
+      "FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_validate_pandas_input_accepts_array",
+      "16 failed, 9 passed, 1 warning in 8.07s"
+    ]
+  }
+]

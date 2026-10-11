@@ -1,0 +1,174 @@
+..FFFFFFFFFFF.F....FF.FF.                                                [100%]
+=================================== FAILURES ===================================
+_______________ test_encoding_preserves_distinct_values[values0] _______________
+/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py:84: in test_encoding_preserves_distinct_values
+    assert encoded.category.nunique() == 2
+E   assert 1 == 2
+E    +  where 1 = nunique()
+E    +    where nunique = 0    0\n1    0\nName: category, dtype: int64.nunique
+E    +      where 0    0\n1    0\nName: category, dtype: int64 =    category\n0         0\n1         0.category
+_______________ test_encoding_preserves_distinct_values[values1] _______________
+/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py:84: in test_encoding_preserves_distinct_values
+    assert encoded.category.nunique() == 2
+E   assert 1 == 2
+E    +  where 1 = nunique()
+E    +    where nunique = 0    0\n1    0\nName: category, dtype: int64.nunique
+E    +      where 0    0\n1    0\nName: category, dtype: int64 =    category\n0         0\n1         0.category
+_______________ test_encoding_preserves_distinct_values[values2] _______________
+/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py:84: in test_encoding_preserves_distinct_values
+    assert encoded.category.nunique() == 2
+E   assert 1 == 2
+E    +  where 1 = nunique()
+E    +    where nunique = 0    0\n1    0\nName: category, dtype: int64.nunique
+E    +      where 0    0\n1    0\nName: category, dtype: int64 =    category\n0         0\n1         0.category
+________________ test_target_plot_uses_each_feature[columns0-2] ________________
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/indexes/base.py:3805: in get_loc
+    return self._engine.get_loc(casted_key)
+index.pyx:167: in pandas._libs.index.IndexEngine.get_loc
+    ???
+index.pyx:196: in pandas._libs.index.IndexEngine.get_loc
+    ???
+pandas/_libs/hashtable_class_helper.pxi:7081: in pandas._libs.hashtable.PyObjectHashTable.get_item
+    ???
+pandas/_libs/hashtable_class_helper.pxi:7089: in pandas._libs.hashtable.PyObjectHashTable.get_item
+    ???
+E   KeyError: 0
+
+The above exception was the direct cause of the following exception:
+/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py:91: in test_target_plot_uses_each_feature
+    fig = u.plot_y_vs_X(frame, np.arange(12), ncols=ncols)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:672: in plot_y_vs_X
+    axs[row, col].scatter(X[col], y, alpha=0.1)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/frame.py:4102: in __getitem__
+    indexer = self.columns.get_loc(key)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/indexes/base.py:3812: in get_loc
+    raise KeyError(key) from err
+E   KeyError: 0
+________________ test_target_plot_uses_each_feature[columns1-2] ________________
+/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py:94: in test_target_plot_uses_each_feature
+    np.testing.assert_array_equal(ax.collections[0].get_offsets()[:,0], frame[column])
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError: 
+E   Arrays are not equal
+E   
+E   Mismatched elements: 12 / 12 (100%)
+E   Max absolute difference among violations: 2.
+E   Max relative difference among violations: 1.
+E    ACTUAL: MaskedArray([ 0.,  4.,  8., 12., 16., 20., 24., 28., 32., 36., 40., 44.])
+E    DESIRED: array([ 2,  6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46])
+________________ test_target_plot_uses_each_feature[columns2-1] ________________
+/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py:91: in test_target_plot_uses_each_feature
+    fig = u.plot_y_vs_X(frame, np.arange(12), ncols=ncols)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:672: in plot_y_vs_X
+    axs[row, col].scatter(X[col], y, alpha=0.1)
+E   TypeError: 'Axes' object is not subscriptable
+________________ test_target_plot_uses_each_feature[columns3-2] ________________
+/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py:91: in test_target_plot_uses_each_feature
+    fig = u.plot_y_vs_X(frame, np.arange(12), ncols=ncols)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:672: in plot_y_vs_X
+    axs[row, col].scatter(X[col], y, alpha=0.1)
+E   IndexError: too many indices for array: array is 1-dimensional, but 2 were indexed
+_____________________ test_leshy_plot_colors_match_support _____________________
+/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py:110: in test_leshy_plot_colors_match_support
+    assert colors['steady_selected'] == to_rgba(BLUE)
+E   assert (0.5019607843...43137255, 1.0) == (0.1450980392...68627451, 1.0)
+E     
+E     At index 0 diff: 0.5019607843137255 != 0.1450980392156863
+E     Use -v to get more diff
+____________________ test_importance_plot_at_threshold_one _____________________
+/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py:116: in test_importance_plot_at_threshold_one
+    fig = importance(threshold=1).plot_importance(log=False, figsize=(8, 4))
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py:266: in plot_importance
+    importance_index = np.min(
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/numpy/_core/fromnumeric.py:3042: in min
+    return _wrapreduction(a, np.minimum, 'min', axis, None, out,
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/numpy/_core/fromnumeric.py:86: in _wrapreduction
+    return ufunc.reduce(obj, axis, dtype, out, **passkwargs)
+E   ValueError: zero-size array to reduction operation minimum which has no identity
+_____________________ test_importance_plot_respects_limit ______________________
+/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py:124: in test_importance_plot_respects_limit
+    assert len(fig.axes[0].collections[0].get_offsets()) == 2
+E   assert 3 == 2
+E    +  where 3 = len(masked_array(\n  data=[[0.6, 0.0],\n        [0.3, 1.0],\n        [0.1, 2.0]],\n  mask=[[False, False],\n        [False, False],\n        [False, False]],\n  fill_value=1e+20))
+E    +    where masked_array(\n  data=[[0.6, 0.0],\n        [0.3, 1.0],\n        [0.1, 2.0]],\n  mask=[[False, False],\n        [False, False],\n        [False, False]],\n  fill_value=1e+20) = get_offsets()
+E    +      where get_offsets = <matplotlib.collections.PathCollection object at 0x7355187865a0>.get_offsets
+____________ test_importance_cumulative_plot_includes_first_feature ____________
+/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py:135: in test_importance_cumulative_plot_includes_first_feature
+    assert ax.get_xlim()[0] <= first[0] <= ax.get_xlim()[1]
+E   assert np.float64(0.5590160374920531) <= np.float64(0.0)
+______________________ test_one_feature_association_plot _______________________
+/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py:146: in test_one_feature_association_plot
+    fig, ax = plot_association_matrix(pd.DataFrame([[1.]], columns=['a'], index=['a']), show=False)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:2321: in plot_association_matrix
+    assoc_mat = cluster_sq_matrix(assoc_mat)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:2120: in cluster_sq_matrix
+    L = sch.linkage(d, method=method)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/scipy/cluster/hierarchy.py:1033: in linkage
+    n = int(distance.num_obs_y(y))
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/scipy/spatial/distance.py:2605: in num_obs_y
+    raise ValueError("The number of observations cannot be determined on "
+E   ValueError: The number of observations cannot be determined on an empty distance matrix.
+___ test_generator_does_not_reset_global_rng[_make_corr_dataset_regression] ____
+/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py:219: in test_generator_does_not_reset_global_rng
+    assert not np.array_equal(after19, after83)
+E   assert not True
+E    +  where True = <function array_equal at 0x7355337af4b0>(array([0.32866455, 0.67251846, 0.75237453, 0.79157904, 0.78961814]), array([0.32866455, 0.67251846, 0.75237453, 0.79157904, 0.78961814]))
+E    +    where <function array_equal at 0x7355337af4b0> = np.array_equal
+_ test_generator_does_not_reset_global_rng[_make_corr_dataset_classification] __
+/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py:219: in test_generator_does_not_reset_global_rng
+    assert not np.array_equal(after19, after83)
+E   assert not True
+E    +  where True = <function array_equal at 0x7355337af4b0>(array([0.67716834, 0.57336704, 0.12850035, 0.81120418, 0.82063948]), array([0.67716834, 0.57336704, 0.12850035, 0.81120418, 0.82063948]))
+E    +    where <function array_equal at 0x7355337af4b0> = np.array_equal
+___________________________ test_odd_size_regression ___________________________
+/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py:242: in test_odd_size_regression
+    x,y,w = u._make_corr_dataset_regression(size=11)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:755: in _make_corr_dataset_regression
+    X = pd.DataFrame(
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/frame.py:778: in __init__
+    mgr = dict_to_mgr(data, index, columns, dtype=dtype, copy=copy, typ=manager)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/internals/construction.py:503: in dict_to_mgr
+    return arrays_to_mgr(arrays, columns, index, dtype=dtype, typ=typ, consolidate=copy)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/internals/construction.py:114: in arrays_to_mgr
+    index = _extract_index(arrays)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/internals/construction.py:677: in _extract_index
+    raise ValueError("All arrays must be of the same length")
+E   ValueError: All arrays must be of the same length
+___________________ test_validate_pandas_input_accepts_array ___________________
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:285: in validate_pandas_input
+    return arg.values
+E   AttributeError: 'numpy.ndarray' object has no attribute 'values'
+
+During handling of the above exception, another exception occurred:
+/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py:249: in test_validate_pandas_input_accepts_array
+    np.testing.assert_array_equal(u.validate_pandas_input(x),x)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:287: in validate_pandas_input
+    raise TypeError("input needs to be a numpy array or pandas data frame.")
+E   TypeError: input needs to be a numpy array or pandas data frame.
+=============================== warnings summary ===============================
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+    from pkg_resources import resource_filename
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_encoding_preserves_distinct_values[values0]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_encoding_preserves_distinct_values[values1]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_encoding_preserves_distinct_values[values2]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_target_plot_uses_each_feature[columns0-2]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_target_plot_uses_each_feature[columns1-2]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_target_plot_uses_each_feature[columns2-1]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_target_plot_uses_each_feature[columns3-2]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_leshy_plot_colors_match_support
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_importance_plot_at_threshold_one
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_importance_plot_respects_limit
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_importance_cumulative_plot_includes_first_feature
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_one_feature_association_plot
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_generator_does_not_reset_global_rng[_make_corr_dataset_regression]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_generator_does_not_reset_global_rng[_make_corr_dataset_classification]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_odd_size_regression
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_validate_pandas_input_accepts_array
+16 failed, 9 passed, 1 warning in 8.07s

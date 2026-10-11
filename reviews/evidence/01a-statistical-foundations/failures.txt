@@ -1,0 +1,348 @@
+...........FFFFFFFFFFFFFFFFFFFFFFFFF......                               [100%]
+=================================== FAILURES ===================================
+______________ test_mixed_singletons_can_be_selected[regression] _______________
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:133: in test_mixed_singletons_can_be_selected
+    model = MRMR(1, task=task, show_progress=False).fit(X, y)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:209: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+____________ test_mixed_singletons_can_be_selected[classification] _____________
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:133: in test_mixed_singletons_can_be_selected
+    model = MRMR(1, task=task, show_progress=False).fit(X, y)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:209: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+_____________ test_equal_perfect_predictors_do_not_empty_selection _____________
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:140: in test_equal_perfect_predictors_do_not_empty_selection
+    assert len(MRMR(1, show_progress=False).fit(X, pd.Series(np.arange(6.))).selected_features_) == 1
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:209: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+____________________ test_default_relevance_is_nonnegative _____________________
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:148: in test_default_relevance_is_nonnegative
+    assert result.notna().all() and (result >= 0).all(), result
+E   AssertionError: num     0.707107
+E     num2   -0.707107
+E     cat          NaN
+E     dtype: float64
+E   assert (np.False_)
+E    +  where np.False_ = all()
+E    +    where all = num      True\nnum2     True\ncat     False\ndtype: bool.all
+E    +      where num      True\nnum2     True\ncat     False\ndtype: bool = notna()
+E    +        where notna = num     0.707107\nnum2   -0.707107\ncat          NaN\ndtype: float64.notna
+______________ test_mrmr_does_not_prefer_exact_negative_duplicate ______________
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:157: in test_mrmr_does_not_prefer_exact_negative_duplicate
+    assert model.selected_features_ == ["a", "b"], model.selected_features_
+E   AssertionError: ['a', 'neg']
+E   assert ['a', 'neg'] == ['a', 'b']
+E     
+E     At index 1 diff: 'neg' != 'b'
+E     Use -v to get more diff
+_______________________ test_numeric_f_linear_reference ________________________
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:164: in test_numeric_f_linear_reference
+    assert_allclose(a.f_cont_regression_parallel(X, y, n_jobs=1)["x"], f_regression(X, y)[0][0])
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError: 
+E   Not equal to tolerance rtol=1e-07, atol=0
+E   
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 1.79769313e+308
+E   Max relative difference among violations: 5.24327164e+306
+E    ACTUAL: array(1.797693e+308)
+E    DESIRED: array(34.285714)
+___________________ test_numeric_f_drop_equals_manual_filter ___________________
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:173: in test_numeric_f_drop_equals_manual_filter
+    assert_allclose(actual, reference)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError: 
+E   Not equal to tolerance rtol=1e-07, atol=0
+E   
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 4.26315789
+E   Max relative difference among violations: 0.33333333
+E    ACTUAL: array([17.052632])
+E    DESIRED: array([12.789474])
+___________________ test_constant_categorical_relevance_zero ___________________
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:179: in test_constant_categorical_relevance_zero
+    assert a.f_cat_classification_parallel(X, y, n_jobs=1)["constant"] == 0
+E   assert np.float64(1.7976931348623157e+308) == 0
+___________________ test_mrmr_rejects_constant_before_signal ___________________
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:185: in test_mrmr_rejects_constant_before_signal
+    assert MRMR(1, task="classification", show_progress=False).fit(X, y).selected_features_ == ["signal"]
+E   AssertionError: assert ['constant'] == ['signal']
+E     
+E     At index 0 diff: 'constant' != 'signal'
+E     Use -v to get more diff
+______________ test_constant_categorical_matrix_and_collinearity _______________
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:191: in test_constant_categorical_matrix_and_collinearity
+    matrix = a.association_matrix(X)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:1249: in association_matrix
+    w_nom_nom = _callable_association_matrix_fn(
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:1398: in _callable_association_matrix_fn
+    return parallel_matrix_entries(
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/parallel.py:47: in parallel_matrix_entries
+    return pd.concat(lst, ignore_index=True).sort_values("val", ascending=False)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/reshape/concat.py:382: in concat
+    op = _Concatenator(
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/reshape/concat.py:448: in __init__
+    ndims = self._get_ndims(objs)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/reshape/concat.py:489: in _get_ndims
+    raise TypeError(msg)
+E   TypeError: cannot concatenate object of type '<class 'float'>'; only Series and DataFrame objs are valid
+_________________ test_normalized_pearson_matrix_matches_pair __________________
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:202: in test_normalized_pearson_matrix_matches_pair
+    assert_allclose(result.loc[(result.row == "y") & (result.col == "x"), "val"], [expected])
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError: 
+E   Not equal to tolerance rtol=1e-07, atol=0
+E   
+E   (shapes (0,), (1,) mismatch)
+E    ACTUAL: array([], dtype=float64)
+E    DESIRED: array([0.748331])
+_______________ test_fractional_weights_do_not_return_negative_f _______________
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:213: in test_fractional_weights_do_not_return_negative_f
+    assert result >= 0, result
+E   AssertionError: np.float64(-6.050000000000021)
+E   assert np.float64(-6.050000000000021) >= 0
+_____________________ test_numeric_f_frequency_replication _____________________
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:224: in test_numeric_f_frequency_replication
+    assert_allclose(actual, expected)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError: 
+E   Not equal to tolerance rtol=1e-07, atol=0
+E   
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 7.11111111
+E   Max relative difference among violations: 0.66666667
+E    ACTUAL: array(3.555556)
+E    DESIRED: array(10.666667)
+_____________________ test_invalid_weights_rejected[zero] ______________________
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:230: in test_invalid_weights_rejected
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+___________________ test_invalid_weights_rejected[negative] ____________________
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:230: in test_invalid_weights_rejected
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_________________________ test_list_weights_supported __________________________
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:236: in test_list_weights_supported
+    result = a.association_series(numeric_pair(), "y", sample_weight=[1., 1., 1., 1.])
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:1135: in association_series
+    X, sample_weight = _check_association_input(X, sample_weight, handle_na)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:2018: in _check_association_input
+    X, sample_weight = X.loc[na_mask, :], sample_weight[na_mask]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+______ test_zero_weight_category_equivalent_to_removal[correlation_ratio] ______
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:248: in test_zero_weight_category_equivalent_to_removal
+    assert_allclose(statistic(x, y, weights), statistic(x.iloc[:4], y.iloc[:4], weights[:4]))
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError: 
+E   Not equal to tolerance rtol=1e-07, atol=0
+E   
+E   nan location mismatch:
+E    ACTUAL: array(nan)
+E    DESIRED: array(0.911322)
+______ test_zero_weight_category_equivalent_to_removal[f_cat_regression] _______
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:248: in test_zero_weight_category_equivalent_to_removal
+    assert_allclose(statistic(x, y, weights), statistic(x.iloc[:4], y.iloc[:4], weights[:4]))
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError: 
+E   Not equal to tolerance rtol=1e-07, atol=0
+E   
+E   nan location mismatch:
+E    ACTUAL: array(nan)
+E    DESIRED: array(9.8)
+__________ test_zero_weight_category_equivalent_to_removal[cramer_v] ___________
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:248: in test_zero_weight_category_equivalent_to_removal
+    assert_allclose(statistic(x, y, weights), statistic(x.iloc[:4], y.iloc[:4], weights[:4]))
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:389: in cramer_v
+    chi2 = ss.chi2_contingency(weighted_tab, correction=False)[0]
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/scipy/stats/contingency.py:340: in chi2_contingency
+    raise ValueError("The internally computed table of expected "
+E   ValueError: The internally computed table of expected frequencies has a zero element at (np.int64(0), np.int64(0)).
+________________________ test_no_complete_rows_rejected ________________________
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:254: in test_no_complete_rows_rejected
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+__________ test_handle_na_none_passes_target_missingness_to_callable ___________
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:266: in test_handle_na_none_passes_target_missingness_to_callable
+    assert any(seen), seen
+E   AssertionError: [np.False_, np.False_]
+E   assert False
+E    +  where False = any([np.False_, np.False_])
+_______ test_grouped_statistics_translation_invariant[correlation_ratio] _______
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:273: in test_grouped_statistics_translation_invariant
+    assert_allclose(statistic(x, y + 1e10, w), statistic(x, y, w), rtol=1e-5)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError: 
+E   Not equal to tolerance rtol=1e-05, atol=0
+E   
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 0.92636711
+E   Max relative difference among violations: 1.
+E    ACTUAL: array(0.)
+E    DESIRED: array(0.926367)
+_______ test_grouped_statistics_translation_invariant[f_cat_regression] ________
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:273: in test_grouped_statistics_translation_invariant
+    assert_allclose(statistic(x, y + 1e10, w), statistic(x, y, w), rtol=1e-5)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError: 
+E   Not equal to tolerance rtol=1e-05, atol=0
+E   
+E   nan location mismatch:
+E    ACTUAL: array(nan)
+E    DESIRED: array(24.2)
+______________________ test_feature_named_target_retained ______________________
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:282: in test_feature_named_target_retained
+    assert set(model.selected_features_) == set(X.columns), model.selected_features_
+E   AssertionError: ['other', 'third']
+E   assert {'other', 'third'} == {'other', 'target', 'third'}
+E     
+E     Extra items in the right set:
+E     'target'
+E     Use -v to get more diff
+________________ test_boolean_series_matches_categorical_matrix ________________
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:288: in test_boolean_series_matches_categorical_matrix
+    assert_allclose(a.association_series(X, "b1")["b2"], 0.)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:1178: in association_series
+    return assoc_series.sort_values(ascending=False)
+E   AttributeError: 'NoneType' object has no attribute 'sort_values'
+=============================== warnings summary ===============================
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+    from pkg_resources import resource_filename
+
+checks.py::test_theils_direction_hand_reference
+checks.py::test_parallel_mixed_matrix_and_series_agree
+checks.py::test_parallel_mixed_matrix_and_series_agree
+checks.py::test_mixed_singletons_can_be_selected[classification]
+checks.py::test_constant_categorical_relevance_zero
+checks.py::test_mrmr_rejects_constant_before_signal
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:225: RuntimeWarning: Rounded U = 1.0 to 1. This is probably due to floating point precision issues.
+    warnings.warn(
+
+checks.py::test_cramer_hand_reference
+checks.py::test_zero_weight_category_equivalent_to_removal[cramer_v]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:388: FutureWarning: The provided callable <built-in function sum> is currently using DataFrameGroupBy.sum. In a future version of pandas, the provided callable will be used directly. To keep current behavior pass the string "sum" instead.
+    weighted_tab = pd.crosstab(x, y, sample_weight, aggfunc=sum).fillna(0)
+
+checks.py: 11 warnings
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:1461: DeprecationWarning: Calling nonzero on 0d arrays is deprecated, as it behaves surprisingly. Use `atleast_1d(cond).nonzero()` if the old behavior was intended. If the context of this warning is of the form `arr[nonzero(cond)]`, just use `arr[cond]`.
+    constant_features_idx = np.where(msw == 0.0)[0]
+
+checks.py: 11 warnings
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/numpy/_core/fromnumeric.py:57: DeprecationWarning: Calling nonzero on 0d arrays is deprecated, as it behaves surprisingly. Use `atleast_1d(arr).nonzero()` if the old behavior was intended.
+    return bound(*args, **kwds)
+
+checks.py::test_mixed_singletons_can_be_selected[classification]
+checks.py::test_constant_categorical_matrix_and_collinearity
+checks.py::test_constant_categorical_matrix_and_collinearity
+checks.py::test_constant_categorical_matrix_and_collinearity
+checks.py::test_constant_categorical_matrix_and_collinearity
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:225: RuntimeWarning: Rounded U = 0.0 to 0. This is probably due to floating point precision issues.
+    warnings.warn(
+
+checks.py::test_equal_perfect_predictors_do_not_empty_selection
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/numpy/_core/_methods.py:52: RuntimeWarning: overflow encountered in reduce
+    return umr_sum(a, axis, dtype, out, keepdims, initial, where)
+
+checks.py::test_constant_categorical_relevance_zero
+checks.py::test_mrmr_rejects_constant_before_signal
+checks.py::test_mrmr_rejects_constant_before_signal
+checks.py::test_constant_categorical_matrix_and_collinearity
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:2007: UserWarning: {'constant'} columns have been removed (single unique values)
+    warnings.warn(
+
+checks.py::test_mrmr_rejects_constant_before_signal
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/nanops.py:1016: RuntimeWarning: overflow encountered in square
+    sqr = _ensure_numeric((avg - values) ** 2)
+
+checks.py::test_normalized_pearson_matrix_matches_pair
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:1047: RuntimeWarning: divide by zero encountered in divide
+    weighted_std = np.sqrt(sum_of_squares / (sum_weights - ddof))
+
+checks.py::test_normalized_pearson_matrix_matches_pair
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:1049: RuntimeWarning: divide by zero encountered in divide
+    weighted_cov /= sum_weights - ddof
+
+checks.py::test_normalized_pearson_matrix_matches_pair
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:1051: RuntimeWarning: invalid value encountered in divide
+    weighted_cov / weighted_std / weighted_std[:, None],
+
+checks.py::test_invalid_weights_rejected[zero]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:762: RuntimeWarning: invalid value encountered in scalar divide
+    return np.sum(x * w) / np.sum(w)
+
+checks.py::test_zero_weight_category_equivalent_to_removal[correlation_ratio]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:553: RuntimeWarning: invalid value encountered in scalar divide
+    ssbn = sum(np.square(s) / w for s, w in zip(sums_args, weight_per_class))
+
+checks.py::test_zero_weight_category_equivalent_to_removal[f_cat_regression]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:1454: RuntimeWarning: invalid value encountered in scalar divide
+    ssbn += square_of_sums_args[k] / weight_per_class[k]
+
+checks.py::test_no_complete_rows_rejected
+checks.py::test_no_complete_rows_rejected
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:2007: UserWarning: {'y'} columns have been removed (single unique values)
+    warnings.warn(
+
+checks.py::test_no_complete_rows_rejected
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:802: RuntimeWarning: invalid value encountered in scalar divide
+    return wcov(x, y, w) / np.sqrt(wcov(x, x, w) * wcov(y, y, w))
+
+checks.py::test_grouped_statistics_translation_invariant[f_cat_regression]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:1463: UserWarning: Features [0] are constant.
+    warnings.warn("Features %s are constant." % constant_features_idx, UserWarning)
+
+checks.py::test_grouped_statistics_translation_invariant[f_cat_regression]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:1464: RuntimeWarning: invalid value encountered in scalar divide
+    f = msb / msw
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_mixed_singletons_can_be_selected[regression]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_mixed_singletons_can_be_selected[classification]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_equal_perfect_predictors_do_not_empty_selection
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_default_relevance_is_nonnegative
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_mrmr_does_not_prefer_exact_negative_duplicate
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_numeric_f_linear_reference
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_numeric_f_drop_equals_manual_filter
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_constant_categorical_relevance_zero
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_mrmr_rejects_constant_before_signal
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_constant_categorical_matrix_and_collinearity
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_normalized_pearson_matrix_matches_pair
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_fractional_weights_do_not_return_negative_f
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_numeric_f_frequency_replication
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_invalid_weights_rejected[zero]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_invalid_weights_rejected[negative]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_list_weights_supported
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_zero_weight_category_equivalent_to_removal[correlation_ratio]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_zero_weight_category_equivalent_to_removal[f_cat_regression]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_zero_weight_category_equivalent_to_removal[cramer_v]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_no_complete_rows_rejected
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_handle_na_none_passes_target_missingness_to_callable
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_grouped_statistics_translation_invariant[correlation_ratio]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_grouped_statistics_translation_invariant[f_cat_regression]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_feature_named_target_retained
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_boolean_series_matches_categorical_matrix
+25 failed, 17 passed, 53 warnings in 7.54s

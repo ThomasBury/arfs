@@ -1,0 +1,3 @@
+/home/bsatom/Documents/arfs/src/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import resource_filename
+{"module": "/home/bsatom/Documents/arfs/src/arfs/utils.py", "as_frame_shape": [20640, 9], "bunch_shape": [20640, 8], "columns": ["MedInc", "HouseAge", "AveRooms", "AveBedrms", "Population", "AveOccup", "Latitude", "Longitude", "target"], "description_length": 1360, "target_min": 0.14999, "target_max": 5.00001}

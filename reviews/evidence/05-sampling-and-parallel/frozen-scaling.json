@@ -1,0 +1,35 @@
+{
+  "measurements": [
+    {
+      "rows": 100,
+      "seconds": 0.044668034999631345,
+      "matrix_bytes": 40000,
+      "tracemalloc_peak_bytes": 89543
+    },
+    {
+      "rows": 200,
+      "seconds": 0.12765953701455146,
+      "matrix_bytes": 160000,
+      "tracemalloc_peak_bytes": 232903
+    },
+    {
+      "rows": 400,
+      "seconds": 0.46098929800791666,
+      "matrix_bytes": 640000,
+      "tracemalloc_peak_bytes": 781823
+    }
+  ],
+  "limits": "Single measurements, no throughput claim; tracemalloc is not process RSS; clustering not timed",
+  "projected_matrix_bytes_only_not_allocated": {
+    "10000": 400000000,
+    "20640": 1704038400,
+    "100000": 40000000000
+  },
+  "notebook_cells": {
+    "0": "# ARFS - How to use with large data? \n\nIt might be than the data set is too large for All Relevant Feature Selection to run in a reasonable time. Usually random sampling (stratified, grouped, etc) solves this issues. If extreme sampling is needed, ARFS provide two methods for decreasing drastically the number of rows. The sampling methods and outcomes are illustrated below.\n",
+    "14": "## Sampling by clustering the rows\nUsing the Gower distance (handling mixed-type data), the rows are clustered and the average/mode for each column is returned. The larger the number of clusters, the closer to the original data. As it requires the computation of a distance matrix, you might need to use random sampling first to avoid a computational bottleneck. ",
+    "15": "%%time\ndata_dum = data.sample(n=10_000)\ndata_dum = data.copy()\n# Compute a distance matrix, 10_000x10_000 and use it for clustering (1_000 clusters)\ndata_g_samp = sample(df=data_dum, n=1_000, sample_weight=None, method=\"gower\")\nprint(f\"The sampled dataset shape is {data_g_samp.shape}\")",
+    "16": "## Sampling by removing outliers\n\nThis method is adapted from BorutaShap. It uses `IsolationForest` to remove the less similar samples and iterates till the 2-sample KS statistics is > $95\\%$ (for having a similar distribution than the original data). There is no guarantee of the output size.",
+    "17": "%%time\ndata_isof_samp = sample(df=data, sample_weight=None, method=\"isoforest\")\nprint(f\"The sampled dataset shape is {data_isof_samp.shape}\")"
+  }
+}

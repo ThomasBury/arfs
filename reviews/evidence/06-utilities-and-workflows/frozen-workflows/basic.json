@@ -1,0 +1,261 @@
+{
+  "workflow": "basic",
+  "notebook": "basic_feature_selection",
+  "cell_numbering": "zero-based JSON index",
+  "records": [
+    {
+      "cell": 2,
+      "source": "# Settings and libraries\nfrom __future__ import print_function\n\nimport pandas as pd\nimport numpy as np\nimport seaborn as sns\nfrom matplotlib import pyplot as plt\nimport gc\n\nimport arfs\nimport arfs.preprocessing as arfspp\nimport arfs.feature_selection as arfsfs\nfrom arfs.utils import (\n    _make_corr_dataset_regression,\n    _make_corr_dataset_classification,\n)",
+      "changes": [],
+      "sha256": "1f77ca3b97427e8ef47ba0b92e127e8529b7b6df2c32d53f563193f1b4f735f1",
+      "status": "passed",
+      "output_tail": [
+        "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.",
+        "  from pkg_resources import resource_filename"
+      ]
+    },
+    {
+      "cell": 6,
+      "source": "X, y, w = _make_corr_dataset_regression()\ndata = X.copy()\ndata[\"target\"] = y",
+      "changes": [],
+      "sha256": "5a9364b6ed596f1fd302927720f17c0705331104eee96260fbece404ccfef823",
+      "status": "passed",
+      "input_shape": [
+        1000,
+        14
+      ],
+      "output_tail": []
+    },
+    {
+      "cell": 11,
+      "source": "y = pd.Series(y)\ny.name = \"target\"",
+      "changes": [],
+      "sha256": "61ab809db299e2af63cf9a091332643642b346f8aaa982514b7da3d308b9b070",
+      "status": "passed",
+      "input_shape": [
+        1000,
+        14
+      ],
+      "output_tail": []
+    },
+    {
+      "cell": 13,
+      "source": "# X is the predictor DF (e.g: df[predictor_list]), at this stage you don't need to\n# specify the target and weights (only for identifying zero and low importance)\n\n# unsupervised learning, doesn't need a target\nselector = arfsfs.MissingValueThreshold(0.05)\nX_trans = selector.fit_transform(X)\nprint(f\"The features going in the selector are : {selector.feature_names_in_}\")\nprint(f\"The support is : {selector.support_}\")\nprint(f\"The selected features are : {selector.get_feature_names_out()}\")",
+      "changes": [],
+      "sha256": "00eb9f6f9c786c5c1613c8074dcfb13c7c0d3040aa411a227195afed706f5199",
+      "status": "passed",
+      "input_shape": [
+        1000,
+        14
+      ],
+      "transformed_shape": [
+        1000,
+        13
+      ],
+      "output_tail": [
+        "The features going in the selector are : ['var0' 'var1' 'var2' 'var3' 'var4' 'var5' 'var6' 'var7' 'var8' 'var9'",
+        " 'var10' 'var11' 'var12' 'nice_guys']",
+        "The support is : [ True  True  True  True  True  True  True  True  True  True  True  True",
+        " False  True]",
+        "The selected features are : ['var0' 'var1' 'var2' 'var3' 'var4' 'var5' 'var6' 'var7' 'var8' 'var9'",
+        " 'var10' 'var11' 'nice_guys']"
+      ]
+    },
+    {
+      "cell": 17,
+      "source": "# single unique value(s) columns\n# here rejecting columns with (or less than) 2 unique values\n# unsupervised learning, doesn't need a target\nselector = arfsfs.UniqueValuesThreshold(threshold=2)\nX_trans = selector.fit_transform(X)\nprint(f\"The features going in the selector are : {selector.feature_names_in_}\")\nprint(f\"The support is : {selector.support_}\")\nprint(f\"The selected features are : {selector.get_feature_names_out()}\")",
+      "changes": [],
+      "sha256": "15e34fe4ab9f46ec58d0da08a0b2344902e6b472b1dd4b1d67f758ee1640cf35",
+      "status": "passed",
+      "input_shape": [
+        1000,
+        14
+      ],
+      "transformed_shape": [
+        1000,
+        12
+      ],
+      "output_tail": [
+        "The features going in the selector are : ['var0' 'var1' 'var2' 'var3' 'var4' 'var5' 'var6' 'var7' 'var8' 'var9'",
+        " 'var10' 'var11' 'var12' 'nice_guys']",
+        "The support is : [ True  True  True  True  True  True  True False  True  True False  True",
+        "  True  True]",
+        "The selected features are : ['var0' 'var1' 'var2' 'var3' 'var4' 'var5' 'var6' 'var8' 'var9' 'var11'",
+        " 'var12' 'nice_guys']"
+      ]
+    },
+    {
+      "cell": 21,
+      "source": "# high cardinality for categoricals predictors\n# unsupervised learning, doesn't need a target\nselector = arfsfs.CardinalityThreshold(threshold=100)\nX_trans = selector.fit_transform(X)\nprint(f\"The features going in the selector are : {selector.feature_names_in_}\")\nprint(f\"The support is : {selector.support_}\")\nprint(f\"The selected features are : {selector.get_feature_names_out()}\")",
+      "changes": [],
+      "sha256": "de9df8c96d22dd7bad24cbfe930e0c26d04268f1ccad18a855f79e68504cb9b3",
+      "status": "passed",
+      "input_shape": [
+        1000,
+        14
+      ],
+      "transformed_shape": [
+        1000,
+        13
+      ],
+      "output_tail": [
+        "The features going in the selector are : ['var0' 'var1' 'var2' 'var3' 'var4' 'var5' 'var6' 'var7' 'var8' 'var9'",
+        " 'var10' 'var11' 'var12' 'nice_guys']",
+        "The support is : [ True  True  True  True  True  True  True  True  True  True  True False",
+        "  True  True]",
+        "The selected features are : ['var0' 'var1' 'var2' 'var3' 'var4' 'var5' 'var6' 'var7' 'var8' 'var9'",
+        " 'var10' 'var12' 'nice_guys']"
+      ]
+    },
+    {
+      "cell": 25,
+      "source": "# unsupervised learning, doesn't need a target\nselector = arfsfs.CollinearityThreshold(threshold=0.85, n_jobs=1)\nX_trans = selector.fit_transform(X)\nprint(f\"The features going in the selector are : {selector.feature_names_in_}\")\nprint(f\"The support is : {selector.support_}\")\nprint(f\"The selected features are : {selector.get_feature_names_out()}\")",
+      "changes": [],
+      "sha256": "97b989d076ecb9b048a430d0bc7db2a926dd09ef2e1baf46648f9376d5fc4d0f",
+      "status": "passed",
+      "input_shape": [
+        1000,
+        14
+      ],
+      "transformed_shape": [
+        1000,
+        13
+      ],
+      "output_tail": [
+        "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:2007: UserWarning: {'var10'} columns have been removed (single unique values)",
+        "  warnings.warn(",
+        "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:802: RuntimeWarning: invalid value encountered in scalar divide",
+        "  return wcov(x, y, w) / np.sqrt(wcov(x, x, w) * wcov(y, y, w))",
+        "The features going in the selector are : ['var0' 'var1' 'var2' 'var3' 'var4' 'var5' 'var6' 'var7' 'var8' 'var9'",
+        " 'var10' 'var11' 'var12' 'nice_guys']",
+        "The support is : [ True  True  True  True  True  True  True  True  True  True  True False",
+        "  True  True]",
+        "The selected features are : ['var0' 'var1' 'var2' 'var3' 'var4' 'var5' 'var6' 'var7' 'var8' 'var9'",
+        " 'var10' 'var12' 'nice_guys']"
+      ]
+    },
+    {
+      "cell": 27,
+      "source": "f = selector.plot_association()",
+      "changes": [],
+      "sha256": "c1034f9510b71a59f7e8f0b8b553de893ad6b470d9a3a0a7731cc877c7834274",
+      "status": "passed",
+      "input_shape": [
+        1000,
+        14
+      ],
+      "transformed_shape": [
+        1000,
+        13
+      ],
+      "output_tail": [
+        "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:2353: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown",
+        "  plt.show()"
+      ]
+    },
+    {
+      "cell": 32,
+      "source": "lgb_kwargs = {\"objective\": \"rmse\", \"zero_as_missing\": False}\nselector = arfsfs.VariableImportance(\n    verbose=2, threshold=0.99, lgb_kwargs=lgb_kwargs, fastshap=False\n)\nX_trans = selector.fit_transform(X=X, y=y, sample_weight=w)\nprint(f\"The features going in the selector are : {selector.feature_names_in_}\")\nprint(f\"The support is : {selector.support_}\")\nprint(f\"The selected features are : {selector.get_feature_names_out()}\")",
+      "changes": [],
+      "sha256": "8d81c902b90a3561a71887de2c77cea3b5a3349586667999e78e007559db341e",
+      "status": "passed",
+      "input_shape": [
+        1000,
+        14
+      ],
+      "transformed_shape": [
+        1000,
+        9
+      ],
+      "output_tail": [
+        "No 'metric' provided, using objective 'rmse' as metric.",
+        "Training up to 10000 boosting rounds.",
+        "",
+        "Iteration nb: 8  :  90%|######### | 9/10 [00:05<00:00,  1.74it/s]",
+        "Iteration nb: 9  :  90%|######### | 9/10 [00:05<00:00,  1.74it/s]Data split: Train=800 samples, Validation=200 samples.",
+        "No 'metric' provided, using objective 'rmse' as metric.",
+        "Training up to 10000 boosting rounds.",
+        "",
+        "Iteration nb: 9  : 100%|##########| 10/10 [00:05<00:00,  1.75it/s]",
+        "Iteration nb: 9  : 100%|##########| 10/10 [00:05<00:00,  1.72it/s]",
+        "The features going in the selector are : ['var0' 'var1' 'var2' 'var3' 'var4' 'var5' 'var6' 'var7' 'var8' 'var9'",
+        " 'var10' 'var11' 'var12' 'nice_guys']",
+        "The support is : [ True  True  True  True  True  True False False  True False False  True",
+        "  True False]",
+        "The selected features are : ['var0' 'var1' 'var2' 'var3' 'var4' 'var5' 'var8' 'var11' 'var12']"
+      ]
+    },
+    {
+      "cell": 33,
+      "source": "selector.plot_importance(log=False, style=None)",
+      "changes": [],
+      "sha256": "667b043cb02978839a8878cc9393c8bbc5ba068f539bc273f5bba9b2298769b2",
+      "status": "passed",
+      "input_shape": [
+        1000,
+        14
+      ],
+      "transformed_shape": [
+        1000,
+        9
+      ],
+      "output_tail": []
+    },
+    {
+      "cell": 39,
+      "source": "from sklearn.pipeline import Pipeline\nfrom arfs.preprocessing import OrdinalEncoderPandas\n\nencoder = Pipeline(\n    [\n        (\"zero_variance\", arfsfs.UniqueValuesThreshold()),\n        (\"collinearity\", arfsfs.CollinearityThreshold(threshold=0.75)),\n        (\"encoder\", OrdinalEncoderPandas()),\n    ]\n)\nX_encoded = encoder.fit(X).transform(X)",
+      "changes": [],
+      "sha256": "af618c2589fcf12bd4f804543c40f1cfbf5f41a950c216972d89b35164e6e40b",
+      "status": "passed",
+      "input_shape": [
+        1000,
+        14
+      ],
+      "transformed_shape": [
+        1000,
+        9
+      ],
+      "encoded_shape": [
+        1000,
+        11
+      ],
+      "output_tail": []
+    },
+    {
+      "cell": 42,
+      "source": "basic_fs_pipeline = Pipeline(\n    [\n        (\"missing\", arfsfs.MissingValueThreshold(threshold=0.05)),\n        (\"unique\", arfsfs.UniqueValuesThreshold(threshold=1)),\n        (\"cardinality\", arfsfs.CardinalityThreshold(threshold=10)),\n        (\"collinearity\", arfsfs.CollinearityThreshold(threshold=0.75)),\n        (\"encoder\", OrdinalEncoderPandas()),\n        (\n            \"lowimp\",\n            arfsfs.VariableImportance(\n                verbose=2, threshold=0.99, lgb_kwargs=lgb_kwargs, encode=False\n            ),\n        ),\n    ]\n)\n\nX_trans = basic_fs_pipeline.fit_transform(\n    X=X, y=y, collinearity__sample_weight=w, lowimp__sample_weight=w\n)",
+      "changes": [],
+      "sha256": "b515f79bcbd49c7d89c4cc350e0f9f5a2785bd08bdb56ba9b9bc2a45aa9d2f90",
+      "status": "passed",
+      "input_shape": [
+        1000,
+        14
+      ],
+      "transformed_shape": [
+        1000,
+        6
+      ],
+      "encoded_shape": [
+        1000,
+        11
+      ],
+      "output_tail": [
+        "No 'metric' provided, using objective 'rmse' as metric.",
+        "Training up to 10000 boosting rounds.",
+        "",
+        "Iteration nb: 7  :  80%|########  | 8/10 [00:03<00:00,  2.50it/s]",
+        "Iteration nb: 8  :  80%|########  | 8/10 [00:03<00:00,  2.50it/s]Data split: Train=800 samples, Validation=200 samples.",
+        "No 'metric' provided, using objective 'rmse' as metric.",
+        "Training up to 10000 boosting rounds.",
+        "",
+        "Iteration nb: 8  :  90%|######### | 9/10 [00:03<00:00,  2.57it/s]",
+        "Iteration nb: 9  :  90%|######### | 9/10 [00:03<00:00,  2.57it/s]Data split: Train=800 samples, Validation=200 samples.",
+        "No 'metric' provided, using objective 'rmse' as metric.",
+        "Training up to 10000 boosting rounds.",
+        "",
+        "Iteration nb: 9  : 100%|##########| 10/10 [00:03<00:00,  2.59it/s]",
+        "Iteration nb: 9  : 100%|##########| 10/10 [00:03<00:00,  2.58it/s]"
+      ]
+    }
+  ]
+}
