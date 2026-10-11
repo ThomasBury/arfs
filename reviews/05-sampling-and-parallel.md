@@ -414,20 +414,26 @@ rare-group preservation, and downstream feature-selection validity remain unmeas
 
 **Reproduction and handoff**
 
-From any directory, run the existing installed-wheel interpreters:
+From the checkout, set `review_repo` once with the command below. Then run the
+existing installed-wheel interpreters from any directory. The saved interpreter
+paths below are disposable; recreate them if needed as described below.
 
 ```sh
+review_repo=$(git rev-parse --show-toplevel)
 /tmp/arfs-review-03f67d0/locked-env/bin/python \
-  /home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/run.py frozen
+  "$review_repo/reviews/evidence/05-sampling-and-parallel/run.py" frozen
 /tmp/arfs-review-03f67d0/wheel-env/bin/python \
-  /home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/run.py current
+  "$review_repo/reviews/evidence/05-sampling-and-parallel/run.py" current
 ```
 
 [run.py](evidence/05-sampling-and-parallel/run.py) creates a temporary working
 directory, limits native threads, checks installed/source identity, runs strict
 and unmasked pytest with repository configuration/cache disabled, and measures
-bounded allocations. Each subprocess has a 60-second limit. The isolation retry
-probe separately stops after 45 KS calls. An unmasked pytest exit of 1 is
+bounded allocations. Rerun output goes to a new persistent temporary directory, printed by
+the runner. An optional second argument chooses an output directory outside the
+checkout; saved evidence is never overwritten by the reproduction commands.
+Each subprocess has a 60-second limit. The isolation retry probe separately
+stops after 45 KS calls. An unmasked pytest exit of 1 is
 expected. Exact commands, working directories, and exit codes are in
 [frozen runs](evidence/05-sampling-and-parallel/frozen-runs.json) and
 [newer runs](evidence/05-sampling-and-parallel/current-runs.json).
