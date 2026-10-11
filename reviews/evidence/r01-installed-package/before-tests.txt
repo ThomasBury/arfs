@@ -1,0 +1,461 @@
+.FFFFFFFFFFF.FFFFFFFFF                                                   [100%]
+=================================== FAILURES ===================================
+____________________ test_module_imports[arfs.association] _____________________
+tests/test_installed_package.py:36: in test_module_imports
+    importlib.import_module(module_name)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:995: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+../before-env/lib/python3.12/site-packages/arfs/association.py:36: in <module>
+    from .utils import create_dtype_dict
+../before-env/lib/python3.12/site-packages/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+_____________________ test_module_imports[arfs.benchmark] ______________________
+tests/test_installed_package.py:36: in test_module_imports
+    importlib.import_module(module_name)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:995: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+../before-env/lib/python3.12/site-packages/arfs/benchmark.py:21: in <module>
+    from .preprocessing import OrdinalEncoderPandas
+../before-env/lib/python3.12/site-packages/arfs/preprocessing.py:38: in <module>
+    from .gbm import GradientBoosting
+../before-env/lib/python3.12/site-packages/arfs/gbm.py:40: in <module>
+    from arfs.utils import create_dtype_dict
+../before-env/lib/python3.12/site-packages/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+_________________ test_module_imports[arfs.feature_selection] __________________
+tests/test_installed_package.py:36: in test_module_imports
+    importlib.import_module(module_name)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:995: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+../before-env/lib/python3.12/site-packages/arfs/feature_selection/__init__.py:1: in <module>
+    from .allrelevant import Leshy, BoostAGroota, GrootCV
+../before-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:72: in <module>
+    from ..utils import (
+../before-env/lib/python3.12/site-packages/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+___________ test_module_imports[arfs.feature_selection.allrelevant] ____________
+tests/test_installed_package.py:36: in test_module_imports
+    importlib.import_module(module_name)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1310: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:995: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+../before-env/lib/python3.12/site-packages/arfs/feature_selection/__init__.py:1: in <module>
+    from .allrelevant import Leshy, BoostAGroota, GrootCV
+../before-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:72: in <module>
+    from ..utils import (
+../before-env/lib/python3.12/site-packages/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+_______________ test_module_imports[arfs.feature_selection.base] _______________
+tests/test_installed_package.py:36: in test_module_imports
+    importlib.import_module(module_name)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1310: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:995: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+../before-env/lib/python3.12/site-packages/arfs/feature_selection/__init__.py:1: in <module>
+    from .allrelevant import Leshy, BoostAGroota, GrootCV
+../before-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:72: in <module>
+    from ..utils import (
+../before-env/lib/python3.12/site-packages/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+______________ test_module_imports[arfs.feature_selection.lasso] _______________
+tests/test_installed_package.py:36: in test_module_imports
+    importlib.import_module(module_name)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1310: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:995: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+../before-env/lib/python3.12/site-packages/arfs/feature_selection/__init__.py:1: in <module>
+    from .allrelevant import Leshy, BoostAGroota, GrootCV
+../before-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:72: in <module>
+    from ..utils import (
+../before-env/lib/python3.12/site-packages/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+_______________ test_module_imports[arfs.feature_selection.mrmr] _______________
+tests/test_installed_package.py:36: in test_module_imports
+    importlib.import_module(module_name)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1310: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:995: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+../before-env/lib/python3.12/site-packages/arfs/feature_selection/__init__.py:1: in <module>
+    from .allrelevant import Leshy, BoostAGroota, GrootCV
+../before-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:72: in <module>
+    from ..utils import (
+../before-env/lib/python3.12/site-packages/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+_____________ test_module_imports[arfs.feature_selection.summary] ______________
+tests/test_installed_package.py:36: in test_module_imports
+    importlib.import_module(module_name)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1310: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:995: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+../before-env/lib/python3.12/site-packages/arfs/feature_selection/__init__.py:1: in <module>
+    from .allrelevant import Leshy, BoostAGroota, GrootCV
+../before-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:72: in <module>
+    from ..utils import (
+../before-env/lib/python3.12/site-packages/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+___________ test_module_imports[arfs.feature_selection.unsupervised] ___________
+tests/test_installed_package.py:36: in test_module_imports
+    importlib.import_module(module_name)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1310: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:995: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+../before-env/lib/python3.12/site-packages/arfs/feature_selection/__init__.py:1: in <module>
+    from .allrelevant import Leshy, BoostAGroota, GrootCV
+../before-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:72: in <module>
+    from ..utils import (
+../before-env/lib/python3.12/site-packages/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+_______ test_module_imports[arfs.feature_selection.variable_importance] ________
+tests/test_installed_package.py:36: in test_module_imports
+    importlib.import_module(module_name)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1310: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:995: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+../before-env/lib/python3.12/site-packages/arfs/feature_selection/__init__.py:1: in <module>
+    from .allrelevant import Leshy, BoostAGroota, GrootCV
+../before-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:72: in <module>
+    from ..utils import (
+../before-env/lib/python3.12/site-packages/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+________________________ test_module_imports[arfs.gbm] _________________________
+tests/test_installed_package.py:36: in test_module_imports
+    importlib.import_module(module_name)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:995: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+../before-env/lib/python3.12/site-packages/arfs/gbm.py:40: in <module>
+    from arfs.utils import create_dtype_dict
+../before-env/lib/python3.12/site-packages/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+___________________ test_module_imports[arfs.preprocessing] ____________________
+tests/test_installed_package.py:36: in test_module_imports
+    importlib.import_module(module_name)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:995: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+../before-env/lib/python3.12/site-packages/arfs/preprocessing.py:38: in <module>
+    from .gbm import GradientBoosting
+../before-env/lib/python3.12/site-packages/arfs/gbm.py:40: in <module>
+    from arfs.utils import create_dtype_dict
+../before-env/lib/python3.12/site-packages/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+______________________ test_module_imports[arfs.sampling] ______________________
+tests/test_installed_package.py:36: in test_module_imports
+    importlib.import_module(module_name)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:995: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+../before-env/lib/python3.12/site-packages/arfs/sampling.py:10: in <module>
+    from .utils import is_list_of_str, is_list_of_bool, is_list_of_int
+../before-env/lib/python3.12/site-packages/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+_______________________ test_module_imports[arfs.utils] ________________________
+tests/test_installed_package.py:36: in test_module_imports
+    importlib.import_module(module_name)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:995: in exec_module
+    ???
+<frozen importlib._bootstrap>:488: in _call_with_frames_removed
+    ???
+../before-env/lib/python3.12/site-packages/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+_________________________ test_declared_exports_exist __________________________
+tests/test_installed_package.py:40: in test_declared_exports_exist
+    import arfs.feature_selection as selection
+../before-env/lib/python3.12/site-packages/arfs/feature_selection/__init__.py:1: in <module>
+    from .allrelevant import Leshy, BoostAGroota, GrootCV
+../before-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:72: in <module>
+    from ..utils import (
+../before-env/lib/python3.12/site-packages/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+______________________ test_local_datasets[Boston-shape0] ______________________
+tests/test_installed_package.py:53: in test_local_datasets
+    from arfs.utils import load_data
+../before-env/lib/python3.12/site-packages/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+______________________ test_local_datasets[cancer-shape1] ______________________
+tests/test_installed_package.py:53: in test_local_datasets
+    from arfs.utils import load_data
+../before-env/lib/python3.12/site-packages/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+_____________________ test_local_datasets[housing-shape2] ______________________
+tests/test_installed_package.py:53: in test_local_datasets
+    from arfs.utils import load_data
+../before-env/lib/python3.12/site-packages/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+________________ test_styling_dependency_is_declared_and_usable ________________
+tests/test_installed_package.py:66: in test_styling_dependency_is_declared_and_usable
+    assert any(re.match(r"(?i)^jinja2\b", requirement) for requirement in requirements)
+E   assert False
+E    +  where False = any(<generator object test_styling_dependency_is_declared_and_usable.<locals>.<genexpr> at 0x78e656f397e0>)
+________________________ test_dataset_streams_from_zip _________________________
+tests/test_installed_package.py:71: in test_dataset_streams_from_zip
+    from arfs import utils
+../before-env/lib/python3.12/site-packages/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+=========================== short test summary info ============================
+FAILED tests/test_installed_package.py::test_module_imports[arfs.association]
+FAILED tests/test_installed_package.py::test_module_imports[arfs.benchmark]
+FAILED tests/test_installed_package.py::test_module_imports[arfs.feature_selection]
+FAILED tests/test_installed_package.py::test_module_imports[arfs.feature_selection.allrelevant]
+FAILED tests/test_installed_package.py::test_module_imports[arfs.feature_selection.base]
+FAILED tests/test_installed_package.py::test_module_imports[arfs.feature_selection.lasso]
+FAILED tests/test_installed_package.py::test_module_imports[arfs.feature_selection.mrmr]
+FAILED tests/test_installed_package.py::test_module_imports[arfs.feature_selection.summary]
+FAILED tests/test_installed_package.py::test_module_imports[arfs.feature_selection.unsupervised]
+FAILED tests/test_installed_package.py::test_module_imports[arfs.feature_selection.variable_importance]
+FAILED tests/test_installed_package.py::test_module_imports[arfs.gbm] - Modul...
+FAILED tests/test_installed_package.py::test_module_imports[arfs.preprocessing]
+FAILED tests/test_installed_package.py::test_module_imports[arfs.sampling] - ...
+FAILED tests/test_installed_package.py::test_module_imports[arfs.utils] - Mod...
+FAILED tests/test_installed_package.py::test_declared_exports_exist - ModuleN...
+FAILED tests/test_installed_package.py::test_local_datasets[Boston-shape0] - ...
+FAILED tests/test_installed_package.py::test_local_datasets[cancer-shape1] - ...
+FAILED tests/test_installed_package.py::test_local_datasets[housing-shape2]
+FAILED tests/test_installed_package.py::test_styling_dependency_is_declared_and_usable
+FAILED tests/test_installed_package.py::test_dataset_streams_from_zip - Modul...
+20 failed, 2 passed in 7.77s

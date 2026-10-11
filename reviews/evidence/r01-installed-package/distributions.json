@@ -1,0 +1,17 @@
+{
+  "sha256": {
+    "arfs-3.0.0-py3-none-any.whl": "08f7eef2a1aef3e9c384da57c7470074ff339eaa3382d90b95f7804d50587fb1",
+    "arfs-3.0.0.tar.gz": "227f0e44276b80e201ad45b018ef96bd273c5931d9ae5719df81bded08ec8e2a"
+  },
+  "wheel_generator": "Wheel-Version: 1.0\nGenerator: setuptools (84.0.0)\nRoot-Is-Purelib: true\nTag: py3-none-any\n\n",
+  "bundled_resources": [
+    "dataset/data/boston_bunch.joblib",
+    "dataset/data/housing.zip",
+    "dataset/descr/housing.rst"
+  ],
+  "installed_payload_matches_final_wheel": [
+    "frozen",
+    "newer",
+    "base"
+  ]
+}

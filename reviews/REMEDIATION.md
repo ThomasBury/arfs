@@ -1,10 +1,12 @@
 # ARFS remediation handoff
 
-**Status: proposed; no repairs implemented. Next implementation phase: R01.**
+**Status: R01 complete; R02–R33 pending. Next implementation phase: R02.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
-a separate repair backlog. A request to implement the next phase authorizes one
-phase, its affected callers and regression checks, then a stop for review.
+a separate repair backlog. By default, a request to implement the next phase
+authorizes one phase, its affected callers and regression checks, then a stop
+for review. A larger batch or concurrent work requires an explicit request;
+the guidance below does not authorize implementation.
 
 Keep one distribution. Preserve unrelated changes and historical review
 evidence. Prefer existing helpers and supported native APIs; no compatibility
@@ -31,14 +33,70 @@ Names below are phase IDs, not commit promises or a release schedule.
    “Green phase” means its own regression checks pass. It never implies that the
    whole package is green while other listed release blockers remain.
 
+## Session batching and handoffs
+
+Keep one phase per session by default. If the user requests a batch, combine at
+most two small, related phases, complete and validate each sequentially, and
+record each outcome separately. Stop at a phase boundary if a new API or
+statistical decision, unresolved failure, or wider scope makes the batch too
+large. Session boundaries and repair phases are not published releases.
+
+R01 is complete. Start with R02 alone; if requested, batch R02/R03 sequentially,
+then run R04 alone. All remaining phases default to separate sessions.
+
+| Phases | Session recommendation | Reason |
+| --- | --- | --- |
+| R01 | Complete; do not repeat | Installed-package checks are recorded in the R01 handoff |
+| R02 + R03 | Optional two-phase batch, sequentially, after R01 | Both repair dependency compatibility; inspect shared files and callers before combining |
+| R04 | Alone | Establish the test baseline, dependency lock, and runtime CI |
+| R05 | Alone | Shared observation and weight validation affects many callers |
+| R06 | Alone | Shared categorical identity and dtype rules affect several algorithms |
+| R08 and R09 | Separate sessions | Statistical arithmetic and ranking decisions need independent evidence |
+
+When concurrent work is explicitly requested, these tracks are candidates for
+separate branches/worktrees and sessions after their prerequisites pass. Complete
+one phase per session within each track; do not treat a whole track as one batch.
+
+| Track | Internal order | Prerequisites outside the track |
+| --- | --- | --- |
+| GLM | R13 → R14 → R15 | R03, R05 |
+| Preprocessing | R18 → R19 → R20 | R02, R05, R06 |
+| Sampling | R24 → R25 → R26; R24 → R27 | R05, R06 |
+| Training and persistence | R21 → R22 | R05, R06 |
+
+These candidates follow the phase dependencies, not a completed file-overlap
+audit. Before concurrent edits, trace callers and agree which branch owns each
+affected file. Keep shared validation, dtype, weight, and association helpers
+under one owner; settle their contracts before dependent work. If tracks need
+the same helper or file, serialize that work and recheck callers after integration.
+Separate branches do not eliminate shared behavioural dependencies.
+
+At every phase boundary, add a short result entry to this handoff containing:
+
+- Phase status, branch, and commit (or an explicit note that changes are uncommitted).
+- What changed and any API or statistical decisions made.
+- Exact validation commands, environment versions, results, and checks skipped.
+- Remaining blockers, the next phase, and the files/evidence needed to resume.
+
+A fresh session should read this handoff, check Git status and the recorded
+commit, then inspect only the relevant findings, callers, and checks. Verify or
+recreate disposable environments rather than assuming earlier `/tmp` paths still
+exist. Preserve historical review evidence and stop for review at the requested
+phase or batch boundary.
+
 ## Ordered phases
 
-All phases are **Pending**. An ID such as `1A F3` means finding 3 in the linked
-original report. The complete ID-to-phase mapping follows the table.
+R01 is **Complete**; R02–R33 are **Pending**. The
+[R01 handoff](R01-installed-package.md) records changes, decisions, exact checks,
+environment identities, inherited failures, and the resume point. Changes are
+committed as `6b675fd` on `fix/r01-installed-package` at checkpoint base `0270aca`;
+no next phase started. The user subsequently authorized PR delivery.
+An ID such as `1A F3` means finding 3 in the linked original report. The complete
+ID-to-phase mapping follows the table.
 
 | Phase | Smallest complete outcome | Depends on | Required validation |
 | --- | --- | --- | --- |
-| **R01 — Usable installed package** | Replace `pkg_resources` resource access with the standard library, include the housing description in distributions, bind the existing missing export. Decide whether the unconditional Styler return remains supported; if so, declare Jinja2. Sources: [00 F1/F3/F4](00-baseline.md), [03 F14](03-selector-contracts.md) | None | Build sdist then wheel from clean source; clean install with no historical setuptools; import all 16 modules, bind every `__all__` name, load bundled Boston/cancer/housing outside checkout; summary reaches its styling path. Verify resource lifetime when an API needs a real path |
+| **R01 — Usable installed package (Complete)** | Replace `pkg_resources` resource access with the standard library, include the housing description in distributions, bind the existing missing export. Decide whether the unconditional Styler return remains supported; if so, declare Jinja2. Sources: [00 F1/F3/F4](00-baseline.md), [03 F14](03-selector-contracts.md) | None | Build sdist then wheel from clean source; clean install with no historical setuptools; import all 16 modules, bind every `__all__` name, load bundled Boston/cancer/housing outside checkout; summary reaches its styling path. Verify resource lifetime when an API needs a real path |
 | **R02 — Owned pandas column writes** | Replace read-only shadow-array mutation and dtype-incompatible midpoint assignment, preserving values, dtypes, index and caller input. [00 F2](00-baseline.md), [02 F3](02-preprocessing.md) | R01 | Frozen with Copy-on-Write both off/on, newer pandas; numeric/category shadow values and real/shadow shape; interval helper/estimator and tree-to-midpoint pipeline |
 | **R03 — Supported dependency APIs** | Use the current sklearn keyword, Styler map, boxplot keyword, documented SciPy distance namespace, and scalar NumPy conditions. Avoid wrappers because supported minima already have the replacements. [1C F1](01c-weighted-glm-lasso.md), [03 F10](03-selector-contracts.md), [04 F13](04-training-and-benchmarks.md), [05 C2](05-sampling-and-parallel.md), [06 F11](06-utilities-and-workflows.md) | R01 | Small GLM entry fit; real summary HTML; real permutation plot; association clustering; scalar constant/nonconstant ANOVA in both snapshots. Numerical defects left to R08/R13 must not be mistaken for compatibility success |
 | **R04 — Reproducible baseline and runtime gate** | Correct the constant-test threshold/comparison and missing synthetic `nice_guys` column; add checks that cannot pass by selecting everything. Choose supported Python/dependency cells, regenerate/review the matching lock, and add installed-wheel import/resource/export/tests to CI. [00 F5–F8](00-baseline.md) | R01–R03 | Existing suite passes in chosen baseline cells; fixture asserts its intended signal/noise/category schema. A deliberately select-all implementation fails a meaningful selection test. Lock check succeeds; CI runs from installed artifacts. Begin with Linux/Python 3.12 frozen/newer and add an actual oldest-supported interpreter check before claiming the full range |
@@ -75,7 +133,7 @@ original report. The complete ID-to-phase mapping follows the table.
 R21's group/schema safeguards can be advanced immediately after R05/R06 if
 training-wrapper users are the priority; its dependencies do not require waiting
 for the intervening algorithm phases. Similarly independent R24–R28 work need
-not await GLM repairs. The default next phase remains R01. Do not parallelize
+not await GLM repairs. The default next phase is now R02. Do not parallelize
 edits to shared dtype/weight helpers without agreeing their contract first.
 
 ## Complete finding-to-phase map
@@ -135,4 +193,5 @@ to support every possible configuration. Specifically:
   for ordinary examples without an explicit reason.
 
 No implementation, split, dependency migration, commit, push, or release is
-authorized merely by this handoff. All demonstrated defects remain open.
+authorized merely by this handoff. Findings assigned to pending phases remain open;
+the historical review reports retain their original observations.
