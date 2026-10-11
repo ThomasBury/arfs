@@ -1,0 +1,52 @@
+.........................FF...........................                   [100%]
+=================================== FAILURES ===================================
+____ TestFeatSelectZeroVariance.test_identify_single_unique_classification _____
+tests/test_featselect.py:45: in test_identify_single_unique_classification
+    assert fs.not_selected_features_ == ["var10"], message
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+_ TestFeatSelectHighCardinality.test_identify_high_cardinality_classification __
+tests/test_featselect.py:61: in test_identify_high_cardinality_classification
+    assert actual == expected, message
+E   AssertionError: Expected: ['dummy', 'nice_guys'], Actual: ['dummy']
+E   assert ['dummy'] == ['dummy', 'nice_guys']
+E     
+E     Right contains one more item: 'nice_guys'
+E     Use -v to get more diff
+=============================== warnings summary ===============================
+arfs-r02-r03/run/tests/test_allrelevant.py: 19 warnings
+  /tmp/arfs-r02-r03/newer-env/lib/python3.12/site-packages/arfs/utils.py:155: Pandas4Warning: For backward compatibility, 'str' dtypes are included by select_dtypes when 'object' dtype is specified. This behavior is deprecated and will be removed in a future version. Explicitly pass 'str' to `include` to select them, or to `exclude` to remove them and silence this warning.
+  See https://pandas.pydata.org/docs/user_guide/migration-3-strings.html#string-migration-select-dtypes for details on how to write code that works with pandas 2 and 3.
+    categorical_cols = df.select_dtypes(include=["object", "category", "bool"]).columns
+
+arfs-r02-r03/run/tests/test_allrelevant.py: 35 warnings
+  /tmp/arfs-r02-r03/newer-env/lib/python3.12/site-packages/shap/explainers/_tree.py:579: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+    warnings.warn(
+
+arfs-r02-r03/run/tests/test_dependency_apis.py::test_public_lasso_selector_fits
+  /tmp/arfs-r02-r03/newer-env/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:195: ConvergenceWarning: Regularized fitting did not converge
+    self.result = self.model.fit_regularized(
+
+arfs-r02-r03/run/tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /tmp/arfs-r02-r03/newer-env/lib/python3.12/site-packages/arfs/benchmark.py:94: MatplotlibDeprecationWarning: vert: bool was deprecated in Matplotlib 3.11 and will be removed in 3.13. Use orientation: {'vertical', 'horizontal'} instead.
+    ax.boxplot(
+
+arfs-r02-r03/run/tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /tmp/arfs-r02-r03/newer-env/lib/python3.12/site-packages/arfs/benchmark.py:99: UserWarning: Tight layout not applied. The bottom and top margins cannot be made large enough to accommodate all Axes decorations.
+    fig.tight_layout()
+
+arfs-r02-r03/run/tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /tmp/arfs-r02-r03/newer-env/lib/python3.12/site-packages/arfs/benchmark.py:104: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+    plt.show()
+
+arfs-r02-r03/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+arfs-r02-r03/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+arfs-r02-r03/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+arfs-r02-r03/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+  /tmp/arfs-r02-r03/newer-env/lib/python3.12/site-packages/arfs/gbm.py:348: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_featselect.py::TestFeatSelectZeroVariance::test_identify_single_unique_classification
+FAILED tests/test_featselect.py::TestFeatSelectHighCardinality::test_identify_high_cardinality_classification
+2 failed, 52 passed, 62 warnings in 80.10s (0:01:20)

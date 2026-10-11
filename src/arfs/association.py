@@ -25,6 +25,7 @@ from multiprocessing import cpu_count
 from itertools import combinations, permutations, product
 from pandas.api.types import is_numeric_dtype
 from scipy.stats import rankdata
+from scipy.spatial.distance import pdist
 from functools import partial
 
 from .parallel import (
@@ -1458,9 +1459,8 @@ def f_oneway_weighted(*args):
     dfwn = tot_weight - n_classes
     msb = ssbn / float(dfbn)
     msw = sswn / float(dfwn)
-    constant_features_idx = np.where(msw == 0.0)[0]
-    if np.nonzero(msb)[0].size != msb.size and constant_features_idx.size:
-        warnings.warn("Features %s are constant." % constant_features_idx, UserWarning)
+    if msw == 0.0 and msb == 0.0:
+        warnings.warn("Features [0] are constant.", UserWarning)
     f = msb / msw
     # flatten matrix to vector in sparse case
     f = np.asarray(f).ravel()
@@ -2116,7 +2116,7 @@ def cluster_sq_matrix(sq_matrix, method="ward"):
     >>> assoc = association_matrix(iris_df, plot=False)
     >>> assoc_clustered = cluster_sq_matrix(assoc, method="complete")
     """
-    d = sch.distance.pdist(sq_matrix.values)
+    d = pdist(sq_matrix.values)
     L = sch.linkage(d, method=method)
     ind = sch.fcluster(L, 0.5 * d.max(), "distance")
     columns = [sq_matrix.columns.tolist()[i] for i in list((np.argsort(ind)))]

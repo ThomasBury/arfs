@@ -445,8 +445,8 @@ def grid_search_cv(
     )
 
     # Check if X and y are pandas DataFrames/Series and convert them to numpy arrays if necessary
-    # X = check_array(X, accept_sparse=True, force_all_finite=False)
-    y = check_array(y, ensure_2d=False, force_all_finite=False)
+    # X = check_array(X, accept_sparse=True, ensure_all_finite=False)
+    y = check_array(y, ensure_2d=False, ensure_all_finite=False)
 
     if score not in ["bic", "deviance"]:
         raise ValueError("Invalid score value. Options are: 'bic' or 'deviance'.")

@@ -790,8 +790,7 @@ class IntervalToMidpoint(BaseEstimator, TransformerMixin):
         """
         X = X.copy()
         for c in self.columns_to_transform_:
-            X.loc[:, c] = find_interval_midpoint(X[c])
-            X.loc[:, c] = X[c].astype(float)
+            X[c] = find_interval_midpoint(X[c])
         return X
 
     def inverse_transform(self, X: pd.DataFrame):
@@ -847,7 +846,7 @@ def transform_interval_to_midpoint(
     float_interval_cols_ = create_dtype_dict(X, dic_keys="dtypes")["num_interval"]
     columns_to_transform_ = list(set(cols).intersection(set(float_interval_cols_)))
     for c in columns_to_transform_:
-        X.loc[:, c] = find_interval_midpoint(X[c])
+        X[c] = find_interval_midpoint(X[c])
     return X
 
 

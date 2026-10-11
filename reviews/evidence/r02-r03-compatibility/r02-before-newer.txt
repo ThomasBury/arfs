@@ -1,0 +1,206 @@
+FFF.F                                                                    [100%]
+=================================== FAILURES ===================================
+__________ test_shadow_preserves_values_dtypes_index_and_input[True] ___________
+tests/test_pandas_writes.py:49: in test_shadow_preserves_values_dtypes_index_and_input
+    augmented, names = _create_shadow(X)
+                       ^^^^^^^^^^^^^^^^^
+src/arfs/feature_selection/allrelevant.py:1693: in _create_shadow
+    np.random.shuffle(X_shadow[c].values)
+numpy/random/mtrand.pyx:4620: in numpy.random.mtrand.RandomState.shuffle
+    ???
+E   ValueError: array is read-only
+________________ test_interval_public_midpoints[True-estimator] ________________
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/arrays/interval.py:1269: in _validate_listlike
+    array = IntervalArray(value)
+            ^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/arrays/interval.py:292: in __new__
+    left, right, infer_closed = intervals_to_interval_bounds(
+pandas/_libs/interval.pyx:668: in pandas._libs.interval.intervals_to_interval_bounds
+    ???
+E   TypeError: type <class 'numpy.float64'> with value 2.0 is not an interval
+
+The above exception was the direct cause of the following exception:
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/indexing.py:2144: in _setitem_single_column
+    self.obj._mgr.column_setitem(
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/internals/managers.py:1539: in column_setitem
+    col_mgr.setitem_inplace(idx, value)
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/internals/managers.py:2247: in setitem_inplace
+    arr[indexer] = value
+    ^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/arrays/interval.py:857: in __setitem__
+    value_left, value_right = self._validate_setitem_value(value)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/arrays/interval.py:1321: in _validate_setitem_value
+    return self._validate_listlike(value)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/arrays/interval.py:1275: in _validate_listlike
+    raise TypeError(msg) from err
+E   TypeError: 'value' should be an interval type, got <class 'numpy.ndarray'> instead.
+
+The above exception was the direct cause of the following exception:
+tests/test_pandas_writes.py:84: in test_interval_public_midpoints
+    IntervalToMidpoint().fit_transform(X)
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/sklearn/utils/_set_output.py:327: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/sklearn/base.py:969: in fit_transform
+    return self.fit(X, **fit_params).transform(X)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/sklearn/utils/_set_output.py:327: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/preprocessing.py:793: in transform
+    X.loc[:, c] = find_interval_midpoint(X[c])
+    ^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/indexing.py:938: in __setitem__
+    iloc._setitem_with_indexer(indexer, value, self.name)
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/indexing.py:1953: in _setitem_with_indexer
+    self._setitem_with_indexer_split_path(indexer, value, name)
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/indexing.py:1997: in _setitem_with_indexer_split_path
+    self._setitem_single_column(ilocs[0], value, pi)
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/indexing.py:2163: in _setitem_single_column
+    raise TypeError(
+E   TypeError: Invalid value '[ 2.  4.  6. nan]' for dtype 'interval[float64, right]'
+________________ test_interval_public_midpoints[True-function] _________________
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/arrays/interval.py:1269: in _validate_listlike
+    array = IntervalArray(value)
+            ^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/arrays/interval.py:292: in __new__
+    left, right, infer_closed = intervals_to_interval_bounds(
+pandas/_libs/interval.pyx:668: in pandas._libs.interval.intervals_to_interval_bounds
+    ???
+E   TypeError: type <class 'numpy.float64'> with value 2.0 is not an interval
+
+The above exception was the direct cause of the following exception:
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/indexing.py:2144: in _setitem_single_column
+    self.obj._mgr.column_setitem(
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/internals/managers.py:1539: in column_setitem
+    col_mgr.setitem_inplace(idx, value)
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/internals/managers.py:2247: in setitem_inplace
+    arr[indexer] = value
+    ^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/arrays/interval.py:857: in __setitem__
+    value_left, value_right = self._validate_setitem_value(value)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/arrays/interval.py:1321: in _validate_setitem_value
+    return self._validate_listlike(value)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/arrays/interval.py:1275: in _validate_listlike
+    raise TypeError(msg) from err
+E   TypeError: 'value' should be an interval type, got <class 'numpy.ndarray'> instead.
+
+The above exception was the direct cause of the following exception:
+tests/test_pandas_writes.py:86: in test_interval_public_midpoints
+    else transform_interval_to_midpoint(X)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/preprocessing.py:850: in transform_interval_to_midpoint
+    X.loc[:, c] = find_interval_midpoint(X[c])
+    ^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/indexing.py:938: in __setitem__
+    iloc._setitem_with_indexer(indexer, value, self.name)
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/indexing.py:1953: in _setitem_with_indexer
+    self._setitem_with_indexer_split_path(indexer, value, name)
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/indexing.py:1997: in _setitem_with_indexer_split_path
+    self._setitem_single_column(ilocs[0], value, pi)
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/indexing.py:2163: in _setitem_single_column
+    raise TypeError(
+E   TypeError: Invalid value '[ 2.  4.  6. nan]' for dtype 'interval[float64, right]'
+______________________ test_tree_midpoint_pipeline[True] _______________________
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/arrays/interval.py:1269: in _validate_listlike
+    array = IntervalArray(value)
+            ^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/arrays/interval.py:292: in __new__
+    left, right, infer_closed = intervals_to_interval_bounds(
+pandas/_libs/interval.pyx:668: in pandas._libs.interval.intervals_to_interval_bounds
+    ???
+E   TypeError: type <class 'numpy.float64'> with value 79.0 is not an interval
+
+The above exception was the direct cause of the following exception:
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/indexing.py:2144: in _setitem_single_column
+    self.obj._mgr.column_setitem(
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/internals/managers.py:1539: in column_setitem
+    col_mgr.setitem_inplace(idx, value)
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/internals/managers.py:2247: in setitem_inplace
+    arr[indexer] = value
+    ^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/arrays/interval.py:857: in __setitem__
+    value_left, value_right = self._validate_setitem_value(value)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/arrays/interval.py:1321: in _validate_setitem_value
+    return self._validate_listlike(value)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/arrays/interval.py:1275: in _validate_listlike
+    raise TypeError(msg) from err
+E   TypeError: 'value' should be an interval type, got <class 'numpy.ndarray'> instead.
+
+The above exception was the direct cause of the following exception:
+tests/test_pandas_writes.py:115: in test_tree_midpoint_pipeline
+    actual = Pipeline([("tree", tree), ("midpoint", IntervalToMidpoint())]).fit_transform(X, y)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/sklearn/base.py:1403: in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/sklearn/pipeline.py:730: in fit_transform
+    Xt = last_step.fit_transform(
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/sklearn/utils/_set_output.py:327: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/sklearn/base.py:972: in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/sklearn/utils/_set_output.py:327: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/preprocessing.py:793: in transform
+    X.loc[:, c] = find_interval_midpoint(X[c])
+    ^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/indexing.py:938: in __setitem__
+    iloc._setitem_with_indexer(indexer, value, self.name)
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/indexing.py:1953: in _setitem_with_indexer
+    self._setitem_with_indexer_split_path(indexer, value, name)
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/indexing.py:1997: in _setitem_with_indexer_split_path
+    self._setitem_single_column(ilocs[0], value, pi)
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/indexing.py:2163: in _setitem_single_column
+    raise TypeError(
+E   TypeError: Invalid value '[ 79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.
+E     79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.
+E     79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.
+E     79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.
+E     79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.
+E     79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.
+E     79.   79.   79.   79.   79.   79.   79.   79.   99.5  99.5  99.5  99.5
+E     99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5
+E     99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5
+E     99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5
+E     99.5 140.  140.  140.  140.  140.  140.  140.  140.  140.  140.  140.
+E    140.  140.  140.  140.  140.  140.  140.  140.  140.  140.  140.  140.
+E    140.  140.  140.  140.  140.  140.  140.  140.  140.  140.  140.  140.
+E    140.  140.  140.  140.  140.  179.  179.  179.  179.  179.  179.  179.
+E    179.  179.  179.  179.  179.  179.  179.  179.  179.  179.  179.  179.
+E    179.  179.  179.  179.  179.  179.  179.  179.  179.  179.  179.  179.
+E    179.  179.  179.  179.  179.  179.  179.  198.  198.  198.  198.  198.
+E    198.  198.  198.  198.  198.  198.  198.  198.  198.  198.  198.  198.
+E    198.  198.  198.  198.  198.  198.  198.  198.  198.  198.  198.  198.
+E    198.  198.  198.  198.  198.  198.  198.  198.  198.  198.  198.  198. ]' for dtype 'interval[float64, right]'
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+=============================== warnings summary ===============================
+tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+  /home/bsatom/Documents/arfs/src/arfs/gbm.py:348: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_pandas_writes.py::test_shadow_preserves_values_dtypes_index_and_input[True]
+FAILED tests/test_pandas_writes.py::test_interval_public_midpoints[True-estimator]
+FAILED tests/test_pandas_writes.py::test_interval_public_midpoints[True-function]
+FAILED tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True] - TypeE...
+4 failed, 1 passed, 4 warnings in 5.22s

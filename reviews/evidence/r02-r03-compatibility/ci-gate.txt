@@ -1,0 +1,8 @@
+uvx --offline --from ruff==0.17.0 python .github/scripts/check_ruff_baseline.py
+Ruff: 431 total diagnostics; 0 new
+Exit status: 0
+
+python -m unittest discover -s .github/scripts -p 'test_*.py'
+Ran 2 tests
+OK
+Exit status: 0

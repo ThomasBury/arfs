@@ -1,0 +1,69 @@
+.........................FF...............................               [100%]
+=================================== FAILURES ===================================
+____ TestFeatSelectZeroVariance.test_identify_single_unique_classification _____
+tests/test_featselect.py:45: in test_identify_single_unique_classification
+    assert fs.not_selected_features_ == ["var10"], message
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+_ TestFeatSelectHighCardinality.test_identify_high_cardinality_classification __
+tests/test_featselect.py:61: in test_identify_high_cardinality_classification
+    assert actual == expected, message
+E   AssertionError: Expected: ['dummy', 'nice_guys'], Actual: ['dummy']
+E   assert ['dummy'] == ['dummy', 'nice_guys']
+E     
+E     Right contains one more item: 'nice_guys'
+E     Use -v to get more diff
+=============================== warnings summary ===============================
+arfs-r02-r03/run/tests/test_allrelevant.py: 35 warnings
+  /tmp/arfs-r02-r03/frozen-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+    warnings.warn(
+
+arfs-r02-r03/run/tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight
+arfs-r02-r03/run/tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight
+arfs-r02-r03/run/tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight
+arfs-r02-r03/run/tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight
+arfs-r02-r03/run/tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight
+arfs-r02-r03/run/tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+arfs-r02-r03/run/tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /tmp/arfs-r02-r03/frozen-env/lib/python3.12/site-packages/joblib/externals/loky/backend/fork_exec.py:38: DeprecationWarning: This process (pid=3928185) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    pid = os.fork()
+
+arfs-r02-r03/run/tests/test_dependency_apis.py::test_public_lasso_selector_fits
+  /tmp/arfs-r02-r03/frozen-env/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1464: UserWarning: Elastic net fitting did not converge
+    warnings.warn("Elastic net fitting did not converge")
+
+arfs-r02-r03/run/tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+arfs-r02-r03/run/tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+  /tmp/arfs-r02-r03/frozen-env/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The MissingValueThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+arfs-r02-r03/run/tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+arfs-r02-r03/run/tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+arfs-r02-r03/run/tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+arfs-r02-r03/run/tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+  /tmp/arfs-r02-r03/frozen-env/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The UniqueValuesThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+arfs-r02-r03/run/tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /tmp/arfs-r02-r03/frozen-env/lib/python3.12/site-packages/arfs/benchmark.py:99: UserWarning: Tight layout not applied. The bottom and top margins cannot be made large enough to accommodate all Axes decorations.
+    fig.tight_layout()
+
+arfs-r02-r03/run/tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /tmp/arfs-r02-r03/frozen-env/lib/python3.12/site-packages/arfs/benchmark.py:104: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+    plt.show()
+
+arfs-r02-r03/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[False]
+arfs-r02-r03/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[False]
+arfs-r02-r03/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[False]
+arfs-r02-r03/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[False]
+arfs-r02-r03/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+arfs-r02-r03/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+arfs-r02-r03/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+arfs-r02-r03/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+  /tmp/arfs-r02-r03/frozen-env/lib/python3.12/site-packages/arfs/gbm.py:348: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_featselect.py::TestFeatSelectZeroVariance::test_identify_single_unique_classification
+FAILED tests/test_featselect.py::TestFeatSelectHighCardinality::test_identify_high_cardinality_classification
+2 failed, 56 passed, 59 warnings in 73.19s (0:01:13)

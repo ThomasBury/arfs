@@ -1,6 +1,6 @@
 # ARFS remediation handoff
 
-**Status: R01 complete; R02–R33 pending. Next implementation phase: R02.**
+**Status: R01–R03 complete; R04–R33 pending. Next implementation phase: R04.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
 a separate repair backlog. By default, a request to implement the next phase
@@ -41,13 +41,14 @@ record each outcome separately. Stop at a phase boundary if a new API or
 statistical decision, unresolved failure, or wider scope makes the batch too
 large. Session boundaries and repair phases are not published releases.
 
-R01 is complete. Start with R02 alone; if requested, batch R02/R03 sequentially,
-then run R04 alone. All remaining phases default to separate sessions.
+R01–R03 are complete. The explicitly requested R02/R03 batch was implemented
+and validated sequentially. Run R04 alone next. All remaining phases default to
+separate sessions.
 
 | Phases | Session recommendation | Reason |
 | --- | --- | --- |
 | R01 | Complete; do not repeat | Installed-package checks are recorded in the R01 handoff |
-| R02 + R03 | Optional two-phase batch, sequentially, after R01 | Both repair dependency compatibility; inspect shared files and callers before combining |
+| R02 + R03 | Complete sequential batch; do not repeat | Results and checks are recorded in the [compatibility handoff](R02-R03-compatibility.md) |
 | R04 | Alone | Establish the test baseline, dependency lock, and runtime CI |
 | R05 | Alone | Shared observation and weight validation affects many callers |
 | R06 | Alone | Shared categorical identity and dtype rules affect several algorithms |
@@ -86,19 +87,23 @@ phase or batch boundary.
 
 ## Ordered phases
 
-R01 is **Complete**; R02–R33 are **Pending**. The
+R01–R03 are **Complete**; R04–R33 are **Pending**. The
 [R01 handoff](R01-installed-package.md) records changes, decisions, exact checks,
 environment identities, inherited failures, and the resume point. Changes are
 committed as `6b675fd` on `fix/r01-installed-package` at checkpoint base `0270aca`;
-no next phase started. The user subsequently authorized PR delivery.
+at that handoff no next phase had started. The user subsequently authorized PR delivery.
+The [R02/R03 handoff](R02-R03-compatibility.md) records the completed compatibility
+batch, based on `a4b7ff6` on `fix/r02-r03-dependency-compatibility`. Its source
+repairs are committed as `36f1ee6` (R02) and `65f894a` (R03). A version bump and
+GitHub release are deferred until the remaining release blockers satisfy R33.
 An ID such as `1A F3` means finding 3 in the linked original report. The complete
 ID-to-phase mapping follows the table.
 
 | Phase | Smallest complete outcome | Depends on | Required validation |
 | --- | --- | --- | --- |
 | **R01 — Usable installed package (Complete)** | Replace `pkg_resources` resource access with the standard library, include the housing description in distributions, bind the existing missing export. Decide whether the unconditional Styler return remains supported; if so, declare Jinja2. Sources: [00 F1/F3/F4](00-baseline.md), [03 F14](03-selector-contracts.md) | None | Build sdist then wheel from clean source; clean install with no historical setuptools; import all 16 modules, bind every `__all__` name, load bundled Boston/cancer/housing outside checkout; summary reaches its styling path. Verify resource lifetime when an API needs a real path |
-| **R02 — Owned pandas column writes** | Replace read-only shadow-array mutation and dtype-incompatible midpoint assignment, preserving values, dtypes, index and caller input. [00 F2](00-baseline.md), [02 F3](02-preprocessing.md) | R01 | Frozen with Copy-on-Write both off/on, newer pandas; numeric/category shadow values and real/shadow shape; interval helper/estimator and tree-to-midpoint pipeline |
-| **R03 — Supported dependency APIs** | Use the current sklearn keyword, Styler map, boxplot keyword, documented SciPy distance namespace, and scalar NumPy conditions. Avoid wrappers because supported minima already have the replacements. [1C F1](01c-weighted-glm-lasso.md), [03 F10](03-selector-contracts.md), [04 F13](04-training-and-benchmarks.md), [05 C2](05-sampling-and-parallel.md), [06 F11](06-utilities-and-workflows.md) | R01 | Small GLM entry fit; real summary HTML; real permutation plot; association clustering; scalar constant/nonconstant ANOVA in both snapshots. Numerical defects left to R08/R13 must not be mistaken for compatibility success |
+| **R02 — Owned pandas column writes (Complete)** | Replace read-only shadow-array mutation and dtype-incompatible midpoint assignment, preserving values, dtypes, index and caller input. [00 F2](00-baseline.md), [02 F3](02-preprocessing.md) | R01 | Frozen with Copy-on-Write both off/on, newer pandas; numeric/category shadow values and real/shadow shape; interval helper/estimator and tree-to-midpoint pipeline |
+| **R03 — Supported dependency APIs (Complete)** | Use the current sklearn keyword, Styler map, boxplot keyword, documented SciPy distance namespace, and scalar NumPy conditions. Avoid wrappers because supported minima already have the replacements. [1C F1](01c-weighted-glm-lasso.md), [03 F10](03-selector-contracts.md), [04 F13](04-training-and-benchmarks.md), [05 C2](05-sampling-and-parallel.md), [06 F11](06-utilities-and-workflows.md) | R01 | Small GLM entry fit; real summary HTML; real permutation plot; association clustering; scalar constant/nonconstant ANOVA in both snapshots. Numerical defects left to R08/R13 must not be mistaken for compatibility success |
 | **R04 — Reproducible baseline and runtime gate** | Correct the constant-test threshold/comparison and missing synthetic `nice_guys` column; add checks that cannot pass by selecting everything. Choose supported Python/dependency cells, regenerate/review the matching lock, and add installed-wheel import/resource/export/tests to CI. [00 F5–F8](00-baseline.md) | R01–R03 | Existing suite passes in chosen baseline cells; fixture asserts its intended signal/noise/category schema. A deliberately select-all implementation fails a meaningful selection test. Lock check succeeds; CI runs from installed artifacts. Begin with Linux/Python 3.12 frozen/newer and add an actual oldest-supported interpreter check before claiming the full range |
 | **R05 — Valid observations at boundaries** | Validate one-dimensional finite targets and aligned, finite nonnegative weights with positive retained/split mass. Do not invent missing responses. Apply empty-sample and zero-mass-group handling consistently through statistics and training; remove the overwritten duplicate converter. [1A F8–F10](01a-statistical-foundations.md), [1B F11](01b-all-relevant.md), [04 F6/F7](04-training-and-benchmarks.md) | R01 | Lists/arrays/Series, wrong lengths/dimensions, negative/nonfinite/all-zero weights, no complete rows, zero-weight added category, and custom `handle_na=None`; unchanged data and aligned rows. This does not choose frequency versus relative weighting |
 | **R06 — Category identity and dtype agreement** | Reuse one pandas-aware dtype rule and encode distinct original values without string collisions. Cover boolean, object/category, explicit strings and inferred strings. [1A F13](01a-statistical-foundations.md), [03 F4](03-selector-contracts.md), [05 C1](05-sampling-and-parallel.md), [06 F1](06-utilities-and-workflows.md) | R01/R05 | Distinguish `1` from `'1'`, missing values from literal `'nan'`/`'None'`; series/matrix and worker agreement; nullable-string cardinality; all shared encoder callers |
@@ -133,7 +138,7 @@ ID-to-phase mapping follows the table.
 R21's group/schema safeguards can be advanced immediately after R05/R06 if
 training-wrapper users are the priority; its dependencies do not require waiting
 for the intervening algorithm phases. Similarly independent R24–R28 work need
-not await GLM repairs. The default next phase is now R02. Do not parallelize
+not await GLM repairs. The default next phase is now R04. Do not parallelize
 edits to shared dtype/weight helpers without agreeing their contract first.
 
 ## Complete finding-to-phase map
