@@ -1,0 +1,72 @@
+.F.......                                                                [100%]
+=================================== FAILURES ===================================
+__________ test_shadow_preserves_values_dtypes_index_and_input[True] ___________
+tests/test_pandas_writes.py:49: in test_shadow_preserves_values_dtypes_index_and_input
+    augmented, names = _create_shadow(X)
+src/arfs/feature_selection/allrelevant.py:1693: in _create_shadow
+    np.random.shuffle(X_shadow[c].values)
+numpy/random/mtrand.pyx:4626: in numpy.random.mtrand.RandomState.shuffle
+    ???
+E   ValueError: array is read-only
+=============================== warnings summary ===============================
+tests/test_pandas_writes.py::test_shadow_preserves_values_dtypes_index_and_input[False]
+  /home/bsatom/Documents/arfs/src/arfs/feature_selection/allrelevant.py:1693: UserWarning: you are shuffling a 'Categorical' object which is not a subclass of 'Sequence'; `shuffle` is not guaranteed to behave correctly. E.g., non-numpy array/tensor objects with view semantics may contain duplicates after shuffling.
+    np.random.shuffle(X_shadow[c].values)
+
+tests/test_pandas_writes.py::test_shadow_preserves_values_dtypes_index_and_input[False]
+  /home/bsatom/Documents/arfs/src/arfs/feature_selection/allrelevant.py:1693: UserWarning: you are shuffling a 'StringArray' object which is not a subclass of 'Sequence'; `shuffle` is not guaranteed to behave correctly. E.g., non-numpy array/tensor objects with view semantics may contain duplicates after shuffling.
+    np.random.shuffle(X_shadow[c].values)
+
+tests/test_pandas_writes.py::test_shadow_preserves_values_dtypes_index_and_input[False]
+  /home/bsatom/Documents/arfs/src/arfs/feature_selection/allrelevant.py:1693: UserWarning: you are shuffling a 'IntegerArray' object which is not a subclass of 'Sequence'; `shuffle` is not guaranteed to behave correctly. E.g., non-numpy array/tensor objects with view semantics may contain duplicates after shuffling.
+    np.random.shuffle(X_shadow[c].values)
+
+tests/test_pandas_writes.py::test_interval_public_midpoints[False-estimator]
+tests/test_pandas_writes.py::test_interval_public_midpoints[True-estimator]
+  /home/bsatom/Documents/arfs/src/arfs/preprocessing.py:793: FutureWarning: Setting an item of incompatible dtype is deprecated and will raise in a future error of pandas. Value '[ 2.  4.  6. nan]' has dtype incompatible with interval[float64, right], please explicitly cast to a compatible dtype first.
+    X.loc[:, c] = find_interval_midpoint(X[c])
+
+tests/test_pandas_writes.py::test_interval_public_midpoints[False-function]
+tests/test_pandas_writes.py::test_interval_public_midpoints[True-function]
+  /home/bsatom/Documents/arfs/src/arfs/preprocessing.py:850: FutureWarning: Setting an item of incompatible dtype is deprecated and will raise in a future error of pandas. Value '[ 2.  4.  6. nan]' has dtype incompatible with interval[float64, right], please explicitly cast to a compatible dtype first.
+    X.loc[:, c] = find_interval_midpoint(X[c])
+
+tests/test_pandas_writes.py::test_tree_midpoint_pipeline[False]
+tests/test_pandas_writes.py::test_tree_midpoint_pipeline[False]
+tests/test_pandas_writes.py::test_tree_midpoint_pipeline[False]
+tests/test_pandas_writes.py::test_tree_midpoint_pipeline[False]
+tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+  /home/bsatom/Documents/arfs/src/arfs/gbm.py:348: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.
+    warnings.warn(
+
+tests/test_pandas_writes.py::test_tree_midpoint_pipeline[False]
+tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+  /home/bsatom/Documents/arfs/src/arfs/preprocessing.py:793: FutureWarning: Setting an item of incompatible dtype is deprecated and will raise in a future error of pandas. Value '[ 79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.
+    79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.
+    79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.
+    79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.
+    79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.
+    79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.
+    79.   79.   79.   79.   79.   79.   79.   79.   99.5  99.5  99.5  99.5
+    99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5
+    99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5
+    99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5
+    99.5 140.  140.  140.  140.  140.  140.  140.  140.  140.  140.  140.
+   140.  140.  140.  140.  140.  140.  140.  140.  140.  140.  140.  140.
+   140.  140.  140.  140.  140.  140.  140.  140.  140.  140.  140.  140.
+   140.  140.  140.  140.  140.  179.  179.  179.  179.  179.  179.  179.
+   179.  179.  179.  179.  179.  179.  179.  179.  179.  179.  179.  179.
+   179.  179.  179.  179.  179.  179.  179.  179.  179.  179.  179.  179.
+   179.  179.  179.  179.  179.  179.  179.  198.  198.  198.  198.  198.
+   198.  198.  198.  198.  198.  198.  198.  198.  198.  198.  198.  198.
+   198.  198.  198.  198.  198.  198.  198.  198.  198.  198.  198.  198.
+   198.  198.  198.  198.  198.  198.  198.  198.  198.  198.  198.  198. ]' has dtype incompatible with interval[float64, right], please explicitly cast to a compatible dtype first.
+    X.loc[:, c] = find_interval_midpoint(X[c])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_pandas_writes.py::test_shadow_preserves_values_dtypes_index_and_input[True]
+1 failed, 8 passed, 17 warnings in 3.59s

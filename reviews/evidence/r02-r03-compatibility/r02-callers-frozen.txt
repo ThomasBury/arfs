@@ -1,0 +1,16 @@
+......                                                                   [100%]
+=============================== warnings summary ===============================
+tests/test_allrelevant.py: 15 warnings
+  /tmp/arfs-r01.7gLmPw/frozen-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+    warnings.warn(
+
+tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight
+tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight
+tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight
+tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight
+tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight
+  /tmp/arfs-r01.7gLmPw/frozen-env/lib/python3.12/site-packages/joblib/externals/loky/backend/fork_exec.py:38: DeprecationWarning: This process (pid=3923971) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    pid = os.fork()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+6 passed, 6 deselected, 20 warnings in 18.60s

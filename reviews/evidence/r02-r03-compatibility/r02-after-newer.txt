@@ -1,0 +1,11 @@
+.....                                                                    [100%]
+=============================== warnings summary ===============================
+tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+  /home/bsatom/Documents/arfs/src/arfs/gbm.py:348: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+5 passed, 4 warnings in 3.85s

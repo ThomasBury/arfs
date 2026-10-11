@@ -1,0 +1,15 @@
+......                                                                   [100%]
+=============================== warnings summary ===============================
+tests/test_allrelevant.py: 15 warnings
+  /tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/shap/explainers/_tree.py:579: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+    warnings.warn(
+
+tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_rgr_with_lgb_and_shap_feature_importance_and_sample_weight
+tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_regr_with_lgb_and_pimp_feature_importance_and_sample_weight
+tests/test_allrelevant.py::TestGrootCV::test_grootcv_regression_with_and_sample_weight
+  /home/bsatom/Documents/arfs/src/arfs/utils.py:155: Pandas4Warning: For backward compatibility, 'str' dtypes are included by select_dtypes when 'object' dtype is specified. This behavior is deprecated and will be removed in a future version. Explicitly pass 'str' to `include` to select them, or to `exclude` to remove them and silence this warning.
+  See https://pandas.pydata.org/docs/user_guide/migration-3-strings.html#string-migration-select-dtypes for details on how to write code that works with pandas 2 and 3.
+    categorical_cols = df.select_dtypes(include=["object", "category", "bool"]).columns
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+6 passed, 6 deselected, 18 warnings in 21.06s
