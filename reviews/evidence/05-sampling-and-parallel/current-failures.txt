@@ -1,0 +1,839 @@
+......FFFF.FFFFF.FFFFFF.FFF.F..FFFF...FFFFF....FF...FFFF.F...FFFFFFFF... [ 91%]
+.......                                                                  [100%]
+=================================== FAILURES ===================================
+_________________ test_numeric_translation_invariance[values0] _________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:88: in test_numeric_translation_invariance
+    assert_allclose(sampling.gower_matrix(X), [[0., 1.], [1., 0.]])
+E   AssertionError: 
+E   Not equal to tolerance rtol=1e-07, atol=0
+E   
+E   Mismatched elements: 2 / 4 (50%)
+E   Mismatch at indices:
+E    [0, 1]: -1.0 (ACTUAL), 1.0 (DESIRED)
+E    [1, 0]: -1.0 (ACTUAL), 1.0 (DESIRED)
+E   Max absolute difference among violations: 2.
+E   Max relative difference among violations: 2.
+E    ACTUAL: array([[ 0., -1.],
+E          [-1.,  0.]], dtype=float32)
+E    DESIRED: array([[0., 1.],
+E          [1., 0.]])
+_________________ test_numeric_translation_invariance[values1] _________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:88: in test_numeric_translation_invariance
+    assert_allclose(sampling.gower_matrix(X), [[0., 1.], [1., 0.]])
+E   AssertionError: 
+E   Not equal to tolerance rtol=1e-07, atol=0
+E   
+E   Mismatched elements: 2 / 4 (50%)
+E   Mismatch at indices:
+E    [0, 1]: 0.0 (ACTUAL), 1.0 (DESIRED)
+E    [1, 0]: 0.0 (ACTUAL), 1.0 (DESIRED)
+E   Max absolute difference among violations: 1.
+E   Max relative difference among violations: 1.
+E    ACTUAL: array([[0., 0.],
+E          [0., 0.]], dtype=float32)
+E    DESIRED: array([[0., 1.],
+E          [1., 0.]])
+_________________ test_numeric_translation_invariance[values2] _________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:88: in test_numeric_translation_invariance
+    assert_allclose(sampling.gower_matrix(X), [[0., 1.], [1., 0.]])
+E   AssertionError: 
+E   Not equal to tolerance rtol=1e-07, atol=0
+E   
+E   Mismatched elements: 2 / 4 (50%)
+E   Mismatch at indices:
+E    [0, 1]: 0.0 (ACTUAL), 1.0 (DESIRED)
+E    [1, 0]: 0.0 (ACTUAL), 1.0 (DESIRED)
+E   Max absolute difference among violations: 1.
+E   Max relative difference among violations: 1.
+E    ACTUAL: array([[0., 0.],
+E          [0., 0.]], dtype=float32)
+E    DESIRED: array([[0., 1.],
+E          [1., 0.]])
+_________________________ test_equal_size_cross_matrix _________________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:95: in test_equal_size_cross_matrix
+    assert_allclose(sampling.gower_matrix(X, Y), reference_gower(X, Y))
+E   AssertionError: 
+E   Not equal to tolerance rtol=1e-07, atol=0
+E   
+E   Mismatched elements: 1 / 4 (25%)
+E   Mismatch at index:
+E    [1, 0]: 0.30000001192092896 (ACTUAL), 0.9 (DESIRED)
+E   Max absolute difference among violations: 0.59999999
+E   Max relative difference among violations: 0.66666665
+E    ACTUAL: array([[0.1, 0.3],
+E          [0.3, 0.7]], dtype=float32)
+E    DESIRED: array([[0.1, 0.3],
+E          [0.9, 0.7]])
+_____________________ test_pairwise_missing_gower[numeric] _____________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:113: in test_pairwise_missing_gower
+    assert_allclose(sampling.gower_matrix(X), reference_gower(X, categorical=["c"]), equal_nan=True)
+E   AssertionError: 
+E   Not equal to tolerance rtol=1e-07, atol=0
+E   
+E   nan location mismatch:
+E    ACTUAL: array([[ 0., nan,  1.],
+E          [nan, nan, nan],
+E          [ 1., nan,  0.]], dtype=float32)
+E    DESIRED: array([[0., 0., 1.],
+E          [0., 0., 1.],
+E          [1., 1., 0.]])
+___________________ test_pairwise_missing_gower[categorical] ___________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:113: in test_pairwise_missing_gower
+    assert_allclose(sampling.gower_matrix(X), reference_gower(X, categorical=["c"]), equal_nan=True)
+E   AssertionError: 
+E   Not equal to tolerance rtol=1e-07, atol=0
+E   
+E   Mismatched elements: 5 / 9 (55.6%)
+E   Mismatch at indices:
+E    [0, 1]: 0.75 (ACTUAL), 0.5 (DESIRED)
+E    [1, 0]: 0.75 (ACTUAL), 0.5 (DESIRED)
+E    [1, 1]: 0.5 (ACTUAL), 0.0 (DESIRED)
+E    [1, 2]: 0.75 (ACTUAL), 0.5 (DESIRED)
+E    [2, 1]: 0.75 (ACTUAL), 0.5 (DESIRED)
+E   Max absolute difference among violations: 0.5
+E   Max relative difference among violations: 0.5
+E    ACTUAL: array([[0.  , 0.75, 1.  ],
+E          [0.75, 0.5 , 0.75],
+E          [1.  , 0.75, 0.  ]], dtype=float32)
+E    DESIRED: array([[0. , 0.5, 1. ],
+E          [0.5, 0. , 0.5],
+E          [1. , 0.5, 0. ]])
+___________________ test_pairwise_missing_gower[all-missing] ___________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:113: in test_pairwise_missing_gower
+    assert_allclose(sampling.gower_matrix(X), reference_gower(X, categorical=["c"]), equal_nan=True)
+E   AssertionError: 
+E   Not equal to tolerance rtol=1e-07, atol=0
+E   
+E   Mismatched elements: 4 / 9 (44.4%)
+E   Mismatch at indices:
+E    [0, 2]: 0.5 (ACTUAL), 1.0 (DESIRED)
+E    [1, 2]: 0.5 (ACTUAL), 1.0 (DESIRED)
+E    [2, 0]: 0.5 (ACTUAL), 1.0 (DESIRED)
+E    [2, 1]: 0.5 (ACTUAL), 1.0 (DESIRED)
+E   Max absolute difference among violations: 0.5
+E   Max relative difference among violations: 0.5
+E    ACTUAL: array([[0. , 0. , 0.5],
+E          [0. , 0. , 0.5],
+E          [0.5, 0.5, 0. ]], dtype=float32)
+E    DESIRED: array([[0., 0., 1.],
+E          [0., 0., 1.],
+E          [1., 1., 0.]])
+____________________ test_array_category_index_masks[mask0] ____________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:120: in test_array_category_index_masks
+    assert_allclose(sampling.gower_matrix(X, cat_features=mask), [[0., 1.], [1., 0.]])
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:165: in gower_matrix
+    True if c in cat_features else False for c in range(len(X.columns))
+                                                            ^^^^^^^^^
+E   AttributeError: 'numpy.ndarray' object has no attribute 'columns'
+____________________ test_array_category_index_masks[mask1] ____________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:120: in test_array_category_index_masks
+    assert_allclose(sampling.gower_matrix(X, cat_features=mask), [[0., 1.], [1., 0.]])
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:159: in gower_matrix
+    cat_feat = [True if c in cat_features else False for c in X.columns]
+                                                              ^^^^^^^^^
+E   AttributeError: 'numpy.ndarray' object has no attribute 'columns'
+__________________ test_pandas_extension_dtype_auto[category] __________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:132: in test_pandas_extension_dtype_auto
+    assert_allclose(sampling.gower_matrix(X), [[0., 1.], [1., 0.]])
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:150: in gower_matrix
+    cat_features = is_number(X.dtypes)
+                   ^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2530: in __call__
+    return self._call_as_normal(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2523: in _call_as_normal
+    return self._vectorize_call(func=func, args=vargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2608: in _vectorize_call
+    ufunc, otypes = self._get_ufunc_and_otypes(func=func, args=args)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2568: in _get_ufunc_and_otypes
+    outputs = func(*inputs)
+              ^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:149: in <lambda>
+    is_number = np.vectorize(lambda x: not np.issubdtype(x, np.number))
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/numpy/_core/numerictypes.py:477: in issubdtype
+    arg1 = dtype(arg1).type
+           ^^^^^^^^^^^
+E   TypeError: Cannot interpret 'CategoricalDtype(categories=[1, 2], ordered=False, categories_dtype=int64)' as a data type
+___________________ test_pandas_extension_dtype_auto[Int64] ____________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:132: in test_pandas_extension_dtype_auto
+    assert_allclose(sampling.gower_matrix(X), [[0., 1.], [1., 0.]])
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:150: in gower_matrix
+    cat_features = is_number(X.dtypes)
+                   ^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2530: in __call__
+    return self._call_as_normal(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2523: in _call_as_normal
+    return self._vectorize_call(func=func, args=vargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2608: in _vectorize_call
+    ufunc, otypes = self._get_ufunc_and_otypes(func=func, args=args)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2568: in _get_ufunc_and_otypes
+    outputs = func(*inputs)
+              ^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:149: in <lambda>
+    is_number = np.vectorize(lambda x: not np.issubdtype(x, np.number))
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/numpy/_core/numerictypes.py:477: in issubdtype
+    arg1 = dtype(arg1).type
+           ^^^^^^^^^^^
+E   TypeError: Cannot interpret 'Int64Dtype()' as a data type
+___________________ test_pandas_extension_dtype_auto[string] ___________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:132: in test_pandas_extension_dtype_auto
+    assert_allclose(sampling.gower_matrix(X), [[0., 1.], [1., 0.]])
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:150: in gower_matrix
+    cat_features = is_number(X.dtypes)
+                   ^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2530: in __call__
+    return self._call_as_normal(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2523: in _call_as_normal
+    return self._vectorize_call(func=func, args=vargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2608: in _vectorize_call
+    ufunc, otypes = self._get_ufunc_and_otypes(func=func, args=args)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2568: in _get_ufunc_and_otypes
+    outputs = func(*inputs)
+              ^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:149: in <lambda>
+    is_number = np.vectorize(lambda x: not np.issubdtype(x, np.number))
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/numpy/_core/numerictypes.py:477: in issubdtype
+    arg1 = dtype(arg1).type
+           ^^^^^^^^^^^
+E   TypeError: Cannot interpret '<StringDtype(storage='python', na_value=<NA>)>' as a data type
+_______________________ test_inferred_string_gower_auto ________________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:139: in test_inferred_string_gower_auto
+    assert_allclose(sampling.gower_matrix(X), [[0., 1.], [1., 0.]])
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:150: in gower_matrix
+    cat_features = is_number(X.dtypes)
+                   ^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2530: in __call__
+    return self._call_as_normal(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2523: in _call_as_normal
+    return self._vectorize_call(func=func, args=vargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2608: in _vectorize_call
+    ufunc, otypes = self._get_ufunc_and_otypes(func=func, args=args)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2568: in _get_ufunc_and_otypes
+    outputs = func(*inputs)
+              ^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:149: in <lambda>
+    is_number = np.vectorize(lambda x: not np.issubdtype(x, np.number))
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/numpy/_core/numerictypes.py:477: in issubdtype
+    arg1 = dtype(arg1).type
+           ^^^^^^^^^^^
+E   TypeError: Cannot interpret '<StringDtype(storage='python', na_value=nan)>' as a data type
+_________________________ test_gower_reference_series __________________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:145: in test_gower_reference_series
+    assert_allclose(sampling.gower_matrix(X, X.iloc[0]),
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:145: in gower_matrix
+    y_n_rows, y_n_cols = Y.shape
+    ^^^^^^^^^^^^^^^^^^
+E   ValueError: not enough values to unpack (expected 2, got 1)
+_______________________ test_sparse_has_documented_error _______________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:152: in test_sparse_has_documented_error
+    sampling.gower_matrix(csr_matrix([[0., 1.], [1., 0.]]))
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:135: in gower_matrix
+    y_col = Y.columns if isinstance(Y, pd.DataFrame) else Y.index
+                                                          ^^^^^^^
+E   AttributeError: 'csr_matrix' object has no attribute 'index'
+_______________ test_invalid_feature_weights_rejected[weights0] ________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:164: in test_invalid_feature_weights_rejected
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+_______________ test_invalid_feature_weights_rejected[weights1] ________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:164: in test_invalid_feature_weights_rejected
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+_______________ test_invalid_feature_weights_rejected[weights2] ________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:164: in test_invalid_feature_weights_rejected
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+____________________ test_gower_sample_accepts_row_weights _____________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:176: in test_gower_sample_accepts_row_weights
+    result = sampling.sample(X, n=1, sample_weight=np.array([1., 2., 3.]))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:55: in sample
+    gd = gower_matrix(X, cat_features=non_num_cols, weight=sample_weight)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:217: in gower_matrix
+    weight_cat = weight[cat_features]
+                 ^^^^^^^^^^^^^^^^^^^^
+E   IndexError: boolean index did not match indexed array along axis 0; size of axis is 3 but size of corresponding boolean axis is 2
+_____________________ test_gower_sample_imputes_per_column _____________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:209: in test_gower_sample_imputes_per_column
+    assert_allclose(result.b, [150.])
+E   AssertionError: 
+E   Not equal to tolerance rtol=1e-07, atol=0
+E   
+E   Mismatched elements: 1 / 1 (100%)
+E   Mismatch at index:
+E    [0]: 100.66666666666667 (ACTUAL), 150.0 (DESIRED)
+E   Max absolute difference among violations: 49.33333333
+E   Max relative difference among violations: 0.32888889
+E    ACTUAL: array([100.666667])
+E    DESIRED: array([150.])
+_______________ test_gower_sample_preserves_feature_schema[None] _______________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:219: in test_gower_sample_preserves_feature_schema
+    assert list(result.columns) == list(X.columns)
+E   AssertionError: assert ['x', 'label'] == ['x']
+E     
+E     Left contains one more item: 'label'
+E     Use -v to get more diff
+_____________ test_gower_sample_preserves_feature_schema[numeric] ______________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:218: in test_gower_sample_preserves_feature_schema
+    result = sampling.sample(X, n=1)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:62: in sample
+    X_num = X.groupby("label")[num_cols].agg("mean")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/groupby/generic.py:2291: in aggregate
+    result = op.agg()
+             ^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/apply.py:291: in agg
+    return self.apply_str()
+           ^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/apply.py:701: in apply_str
+    return self._apply_str(obj, func, *self.args, **self.kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/apply.py:792: in _apply_str
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/groupby/groupby.py:2285: in mean
+    result = self._cython_agg_general(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/groupby/groupby.py:1808: in _cython_agg_general
+    new_mgr = data.grouped_reduce(array_func)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/internals/managers.py:1667: in grouped_reduce
+    applied = blk.apply(func)
+              ^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/internals/blocks.py:347: in apply
+    result = func(self.values, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/groupby/groupby.py:1783: in array_func
+    result = self._grouper._cython_operation(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/groupby/ops.py:963: in _cython_operation
+    return cy_op.cython_operation(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/groupby/ops.py:553: in cython_operation
+    return values._groupby_op(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/arrays/base.py:2808: in _groupby_op
+    raise TypeError(
+E   TypeError: dtype 'str' does not support operation 'mean'
+_____________ test_gower_sample_preserves_feature_schema[category] _____________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:221: in test_gower_sample_preserves_feature_schema
+    assert result.label.iloc[0] in {"a", "b"}
+E   AssertionError: assert 'clus_0' in {'a', 'b'}
+____________________ test_unknown_sampling_method_rejected _____________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:239: in test_unknown_sampling_method_rejected
+    with pytest.raises((ValueError, NotImplementedError)):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE any of (ValueError, NotImplementedError)
+_________________ test_isolation_retry_is_bounded_and_advances _________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:259: in test_isolation_retry_is_bounded_and_advances
+    assert len(set(sizes)) > 1, f"45 rejected draws all used sizes {sizes}"
+E   AssertionError: 45 rejected draws all used sizes [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10]
+E   assert 1 > 1
+E    +  where 1 = len({10})
+E    +    where {10} = set([10, 10, 10, 10, 10, 10, ...])
+___________________ test_tiny_split_has_no_zero_division[0] ____________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:267: in test_tiny_split_has_no_zero_division
+    sampling.get_5_percent_splits(length)
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:425: in get_5_percent_splits
+    return np.arange(five_percent, length, five_percent)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ZeroDivisionError: division by zero
+___________________ test_tiny_split_has_no_zero_division[1] ____________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:269: in test_tiny_split_has_no_zero_division
+    sizes = sampling.get_5_percent_splits(length)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:425: in get_5_percent_splits
+    return np.arange(five_percent, length, five_percent)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ZeroDivisionError: division by zero
+___________________ test_tiny_split_has_no_zero_division[10] ___________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:269: in test_tiny_split_has_no_zero_division
+    sizes = sampling.get_5_percent_splits(length)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:425: in get_5_percent_splits
+    return np.arange(five_percent, length, five_percent)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ZeroDivisionError: division by zero
+____________________ test_isoforest_sample_forwards_weights ____________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:303: in test_isoforest_sample_forwards_weights
+    assert_array_equal(seen["weights"], w)
+E   AssertionError: 
+E   Arrays are not equal
+E   
+E   Mismatched elements: 3 / 3 (100%)
+E   Mismatch at indices:
+E    [0]: None (ACTUAL), 1.0 (DESIRED)
+E    [1]: None (ACTUAL), 2.0 (DESIRED)
+E    [2]: None (ACTUAL), 3.0 (DESIRED)
+E    ACTUAL: array(None, dtype=object)
+E    DESIRED: array([1., 2., 3.])
+_________________ test_isoforest_sample_returns_original_rows __________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:310: in test_isoforest_sample_returns_original_rows
+    assert_frame_equal(sampling.sample(X, method="isoforest"), X.iloc[[2, 0]])
+E   AssertionError: Attributes of DataFrame.iloc[:, 1] (column name="c") are different
+E   
+E   Attribute "dtype" are different
+E   [left]:  int8
+E   [right]: object
+_____________ test_topn_key_uses_query_and_excludes_query_identity _____________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:356: in test_topn_key_uses_query_and_excludes_query_identity
+    assert_array_equal(result["index"], [1, 0])
+E   AssertionError: 
+E   Arrays are not equal
+E   
+E   Mismatched elements: 2 / 2 (100%)
+E   Mismatch at indices:
+E    [0]: 0 (ACTUAL), 1 (DESIRED)
+E    [1]: 1 (ACTUAL), 0 (DESIRED)
+E   Max absolute difference among violations: 1
+E   Max relative difference among violations: 1.
+E    ACTUAL: array([0, 1])
+E    DESIRED: array([1, 0])
+________________ test_topn_duplicate_ids_with_enough_candidates ________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:364: in test_topn_duplicate_ids_with_enough_candidates
+    result = sampling.gower_topn(X, query, key="id", n=3)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:390: in gower_topn
+    idx = smallest_indices(np.nan_to_num(dm[0], nan=1), mul * n)["index"]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:327: in smallest_indices
+    indices = np.argpartition(-flat, -n)[-n:]
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/numpy/_core/fromnumeric.py:932: in argpartition
+    return _wrapfunc(a, 'argpartition', kth, axis=axis, kind=kind, order=order)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/numpy/_core/fromnumeric.py:54: in _wrapfunc
+    return bound(*args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^
+E   ValueError: kth(=-1) out of bounds (5)
+____________________ test_smallest_indices_nonpositive_n[0] ____________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:377: in test_smallest_indices_nonpositive_n
+    assert sampling.smallest_indices(values, n)["index"].size == 0
+E   assert 3 == 0
+E    +  where 3 = array([1, 2, 0]).size
+___________________ test_smallest_indices_nonpositive_n[-1] ____________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:374: in test_smallest_indices_nonpositive_n
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+_________________________ test_topn_optional_reference _________________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:393: in test_topn_optional_reference
+    result = sampling.gower_topn(pd.DataFrame({"x": [0., 1.]}), n=1)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:372: in gower_topn
+    if data_y.shape[0] >= 2:
+       ^^^^^^^^^^^^
+E   AttributeError: 'NoneType' object has no attribute 'shape'
+_______________ test_parallel_relevance_agrees[regression-False] _______________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:441: in test_parallel_relevance_agrees
+    assert_series_equal(fn(X, y, sample_weight=w, n_jobs=1), fn(X, y, sample_weight=w, n_jobs=2))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py:1561: in f_cat_regression_parallel
+    return parallel_df(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py:87: in parallel_df
+    lst = func(df, series, sample_weight).sort_values(ascending=False)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py:137: in _compute_series
+    return X.apply(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/frame.py:12437: in apply
+    return op.apply().__finalize__(self, method="apply")
+           ^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/apply.py:1015: in apply
+    return self.apply_standard()
+           ^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/apply.py:1167: in apply_standard
+    results, res_index = self.apply_series_generator()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/apply.py:1183: in apply_series_generator
+    results[i] = self.func(v, *self.args, **self.kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py:138: in <lambda>
+    lambda col: _closure_compute_series(x=col, y=y, sample_weight=sample_weight)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py:130: in _closure_compute_series
+    return func_xyw(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py:1510: in f_cat_regression
+    return f_oneway_weighted(*args)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py:1461: in f_oneway_weighted
+    constant_features_idx = np.where(msw == 0.0)[0]
+                            ^^^^^^^^^^^^^^^^^^^^
+E   ValueError: Calling nonzero on 0d arrays is not allowed. Use np.atleast_1d(scalar).nonzero() instead. If the context of this error is of the form `arr[nonzero(cond)]`, just use `arr[cond]`.
+_______________ test_parallel_relevance_agrees[regression-True] ________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:441: in test_parallel_relevance_agrees
+    assert_series_equal(fn(X, y, sample_weight=w, n_jobs=1), fn(X, y, sample_weight=w, n_jobs=2))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py:1561: in f_cat_regression_parallel
+    return parallel_df(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py:87: in parallel_df
+    lst = func(df, series, sample_weight).sort_values(ascending=False)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py:137: in _compute_series
+    return X.apply(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/frame.py:12437: in apply
+    return op.apply().__finalize__(self, method="apply")
+           ^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/apply.py:1015: in apply
+    return self.apply_standard()
+           ^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/apply.py:1167: in apply_standard
+    results, res_index = self.apply_series_generator()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/apply.py:1183: in apply_series_generator
+    results[i] = self.func(v, *self.args, **self.kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py:138: in <lambda>
+    lambda col: _closure_compute_series(x=col, y=y, sample_weight=sample_weight)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py:130: in _closure_compute_series
+    return func_xyw(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py:1510: in f_cat_regression
+    return f_oneway_weighted(*args)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py:1461: in f_oneway_weighted
+    constant_features_idx = np.where(msw == 0.0)[0]
+                            ^^^^^^^^^^^^^^^^^^^^
+E   ValueError: Calling nonzero on 0d arrays is not allowed. Use np.atleast_1d(scalar).nonzero() instead. If the context of this error is of the form `arr[nonzero(cond)]`, just use `arr[cond]`.
+_____________ test_parallel_relevance_agrees[classification-False] _____________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:441: in test_parallel_relevance_agrees
+    assert_series_equal(fn(X, y, sample_weight=w, n_jobs=1), fn(X, y, sample_weight=w, n_jobs=2))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py:1803: in f_cont_classification_parallel
+    return parallel_df(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py:87: in parallel_df
+    lst = func(df, series, sample_weight).sort_values(ascending=False)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py:137: in _compute_series
+    return X.apply(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/frame.py:12437: in apply
+    return op.apply().__finalize__(self, method="apply")
+           ^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/apply.py:1015: in apply
+    return self.apply_standard()
+           ^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/apply.py:1167: in apply_standard
+    results, res_index = self.apply_series_generator()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/apply.py:1183: in apply_series_generator
+    results[i] = self.func(v, *self.args, **self.kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py:138: in <lambda>
+    lambda col: _closure_compute_series(x=col, y=y, sample_weight=sample_weight)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py:130: in _closure_compute_series
+    return func_xyw(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py:1754: in f_cont_classification
+    return f_oneway_weighted(*args)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py:1461: in f_oneway_weighted
+    constant_features_idx = np.where(msw == 0.0)[0]
+                            ^^^^^^^^^^^^^^^^^^^^
+E   ValueError: Calling nonzero on 0d arrays is not allowed. Use np.atleast_1d(scalar).nonzero() instead. If the context of this error is of the form `arr[nonzero(cond)]`, just use `arr[cond]`.
+_____________ test_parallel_relevance_agrees[classification-True] ______________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:441: in test_parallel_relevance_agrees
+    assert_series_equal(fn(X, y, sample_weight=w, n_jobs=1), fn(X, y, sample_weight=w, n_jobs=2))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py:1803: in f_cont_classification_parallel
+    return parallel_df(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py:87: in parallel_df
+    lst = func(df, series, sample_weight).sort_values(ascending=False)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py:137: in _compute_series
+    return X.apply(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/frame.py:12437: in apply
+    return op.apply().__finalize__(self, method="apply")
+           ^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/apply.py:1015: in apply
+    return self.apply_standard()
+           ^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/apply.py:1167: in apply_standard
+    results, res_index = self.apply_series_generator()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/apply.py:1183: in apply_series_generator
+    results[i] = self.func(v, *self.args, **self.kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py:138: in <lambda>
+    lambda col: _closure_compute_series(x=col, y=y, sample_weight=sample_weight)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py:130: in _closure_compute_series
+    return func_xyw(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py:1754: in f_cont_classification
+    return f_oneway_weighted(*args)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py:1461: in f_oneway_weighted
+    constant_features_idx = np.where(msw == 0.0)[0]
+                            ^^^^^^^^^^^^^^^^^^^^
+E   ValueError: Calling nonzero on 0d arrays is not allowed. Use np.atleast_1d(scalar).nonzero() instead. If the context of this error is of the form `arr[nonzero(cond)]`, just use `arr[cond]`.
+_________________ test_inferred_strings_association_matrix[1] __________________
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:450: in test_inferred_strings_association_matrix
+    result = association.association_matrix(X, n_jobs=jobs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py:1238: in association_matrix
+    w_nom_num = _callable_association_matrix_fn(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py:1398: in _callable_association_matrix_fn
+    return parallel_matrix_entries(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py:46: in parallel_matrix_entries
+    lst = func(X=df, sample_weight=sample_weight, comb_list=comb_list)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py:170: in _compute_matrix_entries
+    func_xyw(x=X[comb[0]], y=X[comb[1]], sample_weight=sample_weight, as_frame=True)
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py:605: in correlation_ratio
+    raise TypeError(
+E   TypeError: One of the series must be categorical and the other numerical.
+_________________ test_inferred_strings_association_matrix[2] __________________
+joblib.externals.loky.process_executor._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/externals/loky/process_executor.py", line 490, in _process_worker
+    r = call_item()
+        ^^^^^^^^^^^
+  File "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/externals/loky/process_executor.py", line 291, in __call__
+    return self.fn(*self.args, **self.kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/parallel.py", line 607, in __call__
+    return [func(*args, **kwargs) for func, args, kwargs in self.items]
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py", line 170, in _compute_matrix_entries
+    func_xyw(x=X[comb[0]], y=X[comb[1]], sample_weight=sample_weight, as_frame=True)
+  File "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py", line 605, in correlation_ratio
+    raise TypeError(
+TypeError: One of the series must be categorical and the other numerical.
+"""
+
+The above exception was the direct cause of the following exception:
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:450: in test_inferred_strings_association_matrix
+    result = association.association_matrix(X, n_jobs=jobs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py:1238: in association_matrix
+    w_nom_num = _callable_association_matrix_fn(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py:1398: in _callable_association_matrix_fn
+    return parallel_matrix_entries(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py:50: in parallel_matrix_entries
+    lst = Parallel(n_jobs=n_jobs)(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/parallel.py:2098: in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/parallel.py:1704: in _get_outputs
+    yield from self._retrieve()
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/parallel.py:1806: in _retrieve
+    self._raise_error_fast()
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/parallel.py:1885: in _raise_error_fast
+    error_job.get_result(self.timeout)
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/parallel.py:780: in get_result
+    return self._return_or_raise()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/parallel.py:795: in _return_or_raise
+    raise self._result
+E   TypeError: One of the series must be categorical and the other numerical.
+______________________ test_parallel_mixed_column_labels _______________________
+joblib.externals.loky.process_executor._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/indexes/base.py", line 3641, in get_loc
+    return self._engine.get_loc(casted_key)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "pandas/_libs/index.pyx", line 168, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/index.pyx", line 197, in pandas._libs.index.IndexEngine.get_loc
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7668, in pandas._libs.hashtable.PyObjectHashTable.get_item
+  File "pandas/_libs/hashtable_class_helper.pxi", line 7676, in pandas._libs.hashtable.PyObjectHashTable.get_item
+KeyError: np.str_('0')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/externals/loky/process_executor.py", line 490, in _process_worker
+    r = call_item()
+        ^^^^^^^^^^^
+  File "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/externals/loky/process_executor.py", line 291, in __call__
+    return self.fn(*self.args, **self.kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/parallel.py", line 607, in __call__
+    return [func(*args, **kwargs) for func, args, kwargs in self.items]
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py", line 170, in _compute_matrix_entries
+    func_xyw(x=X[comb[0]], y=X[comb[1]], sample_weight=sample_weight, as_frame=True)
+               ~^^^^^^^^^
+  File "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/indexes/base.py", line 3648, in get_loc
+    raise KeyError(key) from err
+KeyError: np.str_('0')
+"""
+
+The above exception was the direct cause of the following exception:
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:458: in test_parallel_mixed_column_labels
+    two = association.wcorr_matrix(X, n_jobs=2)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py:991: in wcorr_matrix
+    lst = parallel_matrix_entries(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py:50: in parallel_matrix_entries
+    lst = Parallel(n_jobs=n_jobs)(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/parallel.py:2098: in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/parallel.py:1704: in _get_outputs
+    yield from self._retrieve()
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/parallel.py:1806: in _retrieve
+    self._raise_error_fast()
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/parallel.py:1885: in _raise_error_fast
+    error_job.get_result(self.timeout)
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/parallel.py:780: in get_result
+    return self._return_or_raise()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/parallel.py:795: in _return_or_raise
+    raise self._result
+E   KeyError: np.str_('0')
+----------------------------- Captured stderr call -----------------------------
+/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import resource_filename
+/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import resource_filename
+______________________ test_parallel_tuple_column_labels _______________________
+joblib.externals.loky.process_executor._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/externals/loky/process_executor.py", line 490, in _process_worker
+    r = call_item()
+        ^^^^^^^^^^^
+  File "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/externals/loky/process_executor.py", line 291, in __call__
+    return self.fn(*self.args, **self.kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/parallel.py", line 607, in __call__
+    return [func(*args, **kwargs) for func, args, kwargs in self.items]
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py", line 170, in _compute_matrix_entries
+    func_xyw(x=X[comb[0]], y=X[comb[1]], sample_weight=sample_weight, as_frame=True)
+               ~^^^^^^^^^
+  File "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/frame.py", line 4384, in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/indexes/multi.py", line 3239, in _get_indexer_strict
+    self._raise_if_missing(key, indexer, axis_name)
+  File "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/indexes/multi.py", line 3257, in _raise_if_missing
+    raise KeyError(f"{keyarr[cmask]} not in index")
+KeyError: "['1'] not in index"
+"""
+
+The above exception was the direct cause of the following exception:
+/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py:466: in test_parallel_tuple_column_labels
+    two = association.wcorr_matrix(X, n_jobs=2)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py:991: in wcorr_matrix
+    lst = parallel_matrix_entries(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py:50: in parallel_matrix_entries
+    lst = Parallel(n_jobs=n_jobs)(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/parallel.py:2098: in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/parallel.py:1704: in _get_outputs
+    yield from self._retrieve()
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/parallel.py:1806: in _retrieve
+    self._raise_error_fast()
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/parallel.py:1885: in _raise_error_fast
+    error_job.get_result(self.timeout)
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/parallel.py:780: in get_result
+    return self._return_or_raise()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/joblib/parallel.py:795: in _return_or_raise
+    raise self._result
+E   KeyError: "['1'] not in index"
+----------------------------- Captured stderr call -----------------------------
+/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import resource_filename
+=============================== warnings summary ===============================
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:10
+  /tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+    from pkg_resources import resource_filename
+
+checks.py::test_pairwise_missing_gower[all-missing]
+  /tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:193: RuntimeWarning: All-NaN slice encountered
+    max_ = np.nanmax(col_array)
+
+checks.py::test_pairwise_missing_gower[all-missing]
+  /tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:194: RuntimeWarning: All-NaN slice encountered
+    min_ = np.nanmin(col_array)
+
+checks.py::test_invalid_feature_weights_rejected[weights1]
+  /tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py:305: RuntimeWarning: invalid value encountered in divide
+    sum_sij = np.divide(sums, feature_weight_sum)
+
+checks.py::test_inferred_strings_association_matrix[1]
+checks.py::test_inferred_strings_association_matrix[1]
+checks.py::test_inferred_strings_association_matrix[1]
+checks.py::test_inferred_strings_association_matrix[2]
+checks.py::test_inferred_strings_association_matrix[2]
+checks.py::test_inferred_strings_association_matrix[2]
+  /tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:154: Pandas4Warning: For backward compatibility, 'str' dtypes are included by select_dtypes when 'object' dtype is specified. This behavior is deprecated and will be removed in a future version. Explicitly pass 'str' to `include` to select them, or to `exclude` to remove them and silence this warning.
+  See https://pandas.pydata.org/docs/user_guide/migration-3-strings.html#string-migration-select-dtypes for details on how to write code that works with pandas 2 and 3.
+    categorical_cols = df.select_dtypes(include=["object", "category", "bool"]).columns
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_numeric_translation_invariance[values0]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_numeric_translation_invariance[values1]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_numeric_translation_invariance[values2]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_equal_size_cross_matrix
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_pairwise_missing_gower[numeric]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_pairwise_missing_gower[categorical]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_pairwise_missing_gower[all-missing]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_array_category_index_masks[mask0]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_array_category_index_masks[mask1]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_pandas_extension_dtype_auto[category]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_pandas_extension_dtype_auto[Int64]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_pandas_extension_dtype_auto[string]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_inferred_string_gower_auto
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_gower_reference_series
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_sparse_has_documented_error
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_invalid_feature_weights_rejected[weights0]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_invalid_feature_weights_rejected[weights1]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_invalid_feature_weights_rejected[weights2]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_gower_sample_accepts_row_weights
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_gower_sample_imputes_per_column
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_gower_sample_preserves_feature_schema[None]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_gower_sample_preserves_feature_schema[numeric]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_gower_sample_preserves_feature_schema[category]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_unknown_sampling_method_rejected
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_isolation_retry_is_bounded_and_advances
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_tiny_split_has_no_zero_division[0]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_tiny_split_has_no_zero_division[1]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_tiny_split_has_no_zero_division[10]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_isoforest_sample_forwards_weights
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_isoforest_sample_returns_original_rows
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_topn_key_uses_query_and_excludes_query_identity
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_topn_duplicate_ids_with_enough_candidates
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_smallest_indices_nonpositive_n[0]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_smallest_indices_nonpositive_n[-1]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_topn_optional_reference
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_parallel_relevance_agrees[regression-False]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_parallel_relevance_agrees[regression-True]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_parallel_relevance_agrees[classification-False]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_parallel_relevance_agrees[classification-True]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_inferred_strings_association_matrix[1]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_inferred_strings_association_matrix[2]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_parallel_mixed_column_labels
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_parallel_tuple_column_labels
+43 failed, 36 passed, 10 warnings in 39.66s

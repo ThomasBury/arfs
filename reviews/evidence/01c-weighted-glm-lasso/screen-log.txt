@@ -1,0 +1,62 @@
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  from pkg_resources import resource_filename
+0 gaussian True bic ['x0', 'x1', 'x2']
+0 gaussian True deviance ['x0', 'x1', 'x2']
+0 gaussian False bic []
+0 gaussian False deviance []
+0 poisson True bic ['x0', 'x1', 'x2']
+0 poisson True deviance []
+0 poisson False bic []
+0 poisson False deviance []
+0 binomial True bic ['x0']
+0 binomial True deviance TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'
+0 binomial False bic []
+0 binomial False deviance TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'
+1 gaussian True bic ['x0', 'x1', 'x4']
+1 gaussian True deviance ['x0', 'x1', 'x4']
+1 gaussian False bic []
+1 gaussian False deviance []
+1 poisson True bic ['x0', 'x1']
+1 poisson True deviance []
+1 poisson False bic []
+1 poisson False deviance []
+1 binomial True bic ['x0']
+1 binomial True deviance TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'
+1 binomial False bic []
+1 binomial False deviance TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'
+2 gaussian True bic ['x0', 'x1', 'x3']
+2 gaussian True deviance ['x0', 'x1', 'x3']
+2 gaussian False bic []
+2 gaussian False deviance []
+2 poisson True bic ['x0', 'x1']
+2 poisson True deviance []
+2 poisson False bic ['x0', 'x4']
+2 poisson False deviance []
+2 binomial True bic ['x0']
+2 binomial True deviance TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'
+2 binomial False bic []
+2 binomial False deviance TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'
+3 gaussian True bic ['x0', 'x1']
+3 gaussian True deviance ['x0', 'x1']
+3 gaussian False bic []
+3 gaussian False deviance []
+3 poisson True bic ['x0', 'x1']
+3 poisson True deviance []
+3 poisson False bic ['x0', 'x1']
+3 poisson False deviance []
+3 binomial True bic ['x0', 'x1']
+3 binomial True deviance TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'
+3 binomial False bic []
+3 binomial False deviance TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'
+4 gaussian True bic ['x0', 'x1', 'x4']
+4 gaussian True deviance ['x0', 'x1', 'x4']
+4 gaussian False bic []
+4 gaussian False deviance []
+4 poisson True bic ['x0', 'x1']
+4 poisson True deviance []
+4 poisson False bic ['x2', 'x3']
+4 poisson False deviance []
+4 binomial True bic ['x0', 'x1']
+4 binomial True deviance TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'
+4 binomial False bic []
+4 binomial False deviance TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'

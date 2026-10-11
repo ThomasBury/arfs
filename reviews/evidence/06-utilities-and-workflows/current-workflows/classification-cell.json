@@ -1,0 +1,59 @@
+{
+  "workflow": "classification-cell",
+  "notebook": "arfs_classification",
+  "cell_numbering": "zero-based JSON index",
+  "records": [
+    {
+      "cell": 1,
+      "source": "# from IPython.core.display import display, HTML\n# display(HTML(\"<style>.container { width:95% !important; }</style>\"))\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport gc\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.base import clone\nfrom sklearn.ensemble import RandomForestClassifier\nfrom lightgbm import LGBMClassifier\n\nimport arfs\nimport arfs.feature_selection.allrelevant as arfsgroot\nfrom arfs.feature_selection import (\n    MissingValueThreshold,\n    UniqueValuesThreshold,\n    CollinearityThreshold,\n)\nfrom arfs.utils import LightForestClassifier\nfrom arfs.benchmark import highlight_tick, compare_varimp, sklearn_pimp_bench\nfrom arfs.utils import load_data\n\nplt.style.use(\"fivethirtyeight\")\nrng = np.random.RandomState(seed=42)\n\n# import warnings\n# warnings.filterwarnings('ignore')",
+      "changes": [
+        "Omitted optional XGBoost/CatBoost imports; all other statements retained"
+      ],
+      "sha256": "a938cd586d64e855be11a709ac7dcce0a5cd93860e34bc936a8dbdfaea901f54",
+      "status": "passed",
+      "output_tail": [
+        "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.",
+        "  from pkg_resources import resource_filename"
+      ]
+    },
+    {
+      "cell": "local-data-substitution",
+      "source": "from arfs.utils import load_data\ncancer = load_data('cancer')\nX, y = cancer.data, cancer.target\n",
+      "changes": [
+        "Local 569-row cancer data replaces remote Titanic; cell 7 not executed"
+      ],
+      "sha256": "f532357a78b33add973b4e3e80c14d6ad13ce42559c5e88526c4c26ba585139d",
+      "status": "passed",
+      "input_shape": [
+        569,
+        33
+      ],
+      "output_tail": []
+    },
+    {
+      "cell": 9,
+      "source": "# Let's use lightgbm as booster, see below for using more models\nmodel = LGBMClassifier(random_state=42, verbose=-1)\n# model = CatBoostClassifier(random_state=42, verbose=0)\n# model = XGBClassifier(random_state=42, verbosity=0)",
+      "changes": [],
+      "sha256": "1a0bf28a8688f9cd28b951590e58d50fbd6a6d6828c95d9e8783b999111aa1f8",
+      "status": "passed",
+      "input_shape": [
+        569,
+        33
+      ],
+      "output_tail": []
+    },
+    {
+      "cell": 11,
+      "source": "# Leshy\nfeat_selector = arfsgroot.Leshy(\n    model, n_estimators=20, verbose=1, max_iter=10, random_state=42, importance=\"native\"\n)\nfeat_selector.fit(X_encoded, y, sample_weight=None)\nprint(f\"The selected features: {feat_selector.get_feature_names_out()}\")\nprint(f\"The agnostic ranking: {feat_selector.ranking_}\")\nprint(f\"The naive ranking: {feat_selector.ranking_absolutes_}\")\nfig = feat_selector.plot_importance(n_feat_per_inch=5)\n\n# highlight synthetic random variable\nfig = highlight_tick(figure=fig, str_match=\"random\")\nfig = highlight_tick(figure=fig, str_match=\"genuine\", color=\"green\")\nplt.show()",
+      "changes": [
+        "Removed timing-only %%time magic"
+      ],
+      "sha256": "554181f35ea0f2f0bd98f8aa6f1a0cb4498ca723b6bf4d18a9b0e1efb4bff9bd",
+      "status": "failed",
+      "exception": "NameError",
+      "message": "name 'X_encoded' is not defined",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/workflows.py\", line 38, in execute\n    exec(compile(source,f'{notebook}:cell-{cell}','exec'),ns)\n  File \"arfs_classification:cell-11\", line 5, in <module>\nNameError: name 'X_encoded' is not defined\n",
+      "output_tail": []
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+......xxxx.xxxxx.xxx.xx.xxx.x..xxxx...xxxxx....xx...xxxx.x.........xx... [ 91%]
+.......                                                                  [100%]
+=============================== warnings summary ===============================
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+    from pkg_resources import resource_filename
+
+checks.py::test_pairwise_missing_gower[all-missing]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/sampling.py:193: RuntimeWarning: All-NaN slice encountered
+    max_ = np.nanmax(col_array)
+
+checks.py::test_pairwise_missing_gower[all-missing]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/sampling.py:194: RuntimeWarning: All-NaN slice encountered
+    min_ = np.nanmin(col_array)
+
+checks.py::test_invalid_feature_weights_rejected[weights1]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/sampling.py:305: RuntimeWarning: invalid value encountered in divide
+    sum_sij = np.divide(sums, feature_weight_sum)
+
+checks.py::test_parallel_relevance_agrees[regression-False]
+checks.py::test_parallel_relevance_agrees[regression-True]
+checks.py::test_parallel_relevance_agrees[classification-False]
+checks.py::test_parallel_relevance_agrees[classification-False]
+checks.py::test_parallel_relevance_agrees[classification-False]
+checks.py::test_parallel_relevance_agrees[classification-True]
+checks.py::test_parallel_relevance_agrees[classification-True]
+checks.py::test_parallel_relevance_agrees[classification-True]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:1461: DeprecationWarning: Calling nonzero on 0d arrays is deprecated, as it behaves surprisingly. Use `atleast_1d(cond).nonzero()` if the old behavior was intended. If the context of this warning is of the form `arr[nonzero(cond)]`, just use `arr[cond]`.
+    constant_features_idx = np.where(msw == 0.0)[0]
+
+checks.py::test_parallel_relevance_agrees[regression-False]
+checks.py::test_parallel_relevance_agrees[regression-True]
+checks.py::test_parallel_relevance_agrees[classification-False]
+checks.py::test_parallel_relevance_agrees[classification-False]
+checks.py::test_parallel_relevance_agrees[classification-False]
+checks.py::test_parallel_relevance_agrees[classification-True]
+checks.py::test_parallel_relevance_agrees[classification-True]
+checks.py::test_parallel_relevance_agrees[classification-True]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/numpy/_core/fromnumeric.py:57: DeprecationWarning: Calling nonzero on 0d arrays is deprecated, as it behaves surprisingly. Use `atleast_1d(arr).nonzero()` if the old behavior was intended.
+    return bound(*args, **kwds)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_numeric_translation_invariance[values0] - F1: maximum-based scaling gives negative/zero distances or loses distinct floats
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_numeric_translation_invariance[values1] - F1: maximum-based scaling gives negative/zero distances or loses distinct floats
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_numeric_translation_invariance[values2] - F1: maximum-based scaling gives negative/zero distances or loses distinct floats
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_equal_size_cross_matrix - F2: equal row counts incorrectly trigger self-matrix symmetry
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_pairwise_missing_gower[numeric] - F3: missing features are not excluded from each pair's numerator and denominator
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_pairwise_missing_gower[categorical] - F3: missing features are not excluded from each pair's numerator and denominator
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_pairwise_missing_gower[all-missing] - F3: missing features are not excluded from each pair's numerator and denominator
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_array_category_index_masks[mask0] - F4: documented array integer/empty category masks access .columns
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_array_category_index_masks[mask1] - F4: documented array integer/empty category masks access .columns
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_pandas_extension_dtype_auto[category] - F4: NumPy dtype inference cannot interpret pandas extension dtypes
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_pandas_extension_dtype_auto[Int64] - F4: NumPy dtype inference cannot interpret pandas extension dtypes
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_pandas_extension_dtype_auto[string] - F4: NumPy dtype inference cannot interpret pandas extension dtypes
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_gower_reference_series - F4: documented reference Series is unpacked as a two-dimensional frame
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_sparse_has_documented_error - F4: sparse input is inspected as a frame before the deliberate rejection
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_invalid_feature_weights_rejected[weights0] - F5: feature weights have no nonnegative/finite/positive-mass validation
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_invalid_feature_weights_rejected[weights1] - F5: feature weights have no nonnegative/finite/positive-mass validation
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_invalid_feature_weights_rejected[weights2] - F5: feature weights have no nonnegative/finite/positive-mass validation
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_gower_sample_accepts_row_weights - F6: sample_weight is passed as column weights, rejecting ordinary row weights
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_gower_sample_imputes_per_column - F7: numeric missing values are filled using only the first numeric column's mean
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_gower_sample_preserves_feature_schema[None] - F8: temporary label leaks into results or overwrites an existing feature
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_gower_sample_preserves_feature_schema[numeric] - F8: temporary label leaks into results or overwrites an existing feature
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_gower_sample_preserves_feature_schema[category] - F8: temporary label leaks into results or overwrites an existing feature
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_unknown_sampling_method_rejected - F8: unknown sampling method constructs but never raises NotImplementedError
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_isolation_retry_is_bounded_and_advances - F9: retry counter never advances; size never increases
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_tiny_split_has_no_zero_division[0] - F9: rounding the five-percent step to zero breaks small datasets
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_tiny_split_has_no_zero_division[1] - F9: rounding the five-percent step to zero breaks small datasets
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_tiny_split_has_no_zero_division[10] - F9: rounding the five-percent step to zero breaks small datasets
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_isoforest_sample_forwards_weights - F6: public isolation sampler discards supplied sample weights
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_isoforest_sample_returns_original_rows - F10: isolation sample returns encoded categories instead of original observations
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_topn_key_uses_query_and_excludes_query_identity - F11: key path ignores data_y and measures from the first data_x row
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_topn_duplicate_ids_with_enough_candidates - F11: key path can overshoot available rows despite sufficient distinct IDs
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_smallest_indices_nonpositive_n[0] - F12: n=0 returns every entry; negative n silently returns a subset
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_smallest_indices_nonpositive_n[-1] - F12: n=0 returns every entry; negative n silently returns a subset
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_topn_optional_reference - F12: optional data_y is unconditionally dereferenced
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_parallel_mixed_column_labels - F13: NumPy splitting coerces mixed column labels to strings
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_parallel_tuple_column_labels - F13: NumPy splitting expands tuple labels into arrays, breaking column lookup
+43 passed, 36 xfailed, 20 warnings in 28.50s

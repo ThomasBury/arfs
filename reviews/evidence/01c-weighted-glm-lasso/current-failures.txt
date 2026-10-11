@@ -1,0 +1,21 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_____________ test_public_selector_fits_with_current_dependencies ______________
+/home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/current_checks.py:11: in test_public_selector_fits_with_current_dependencies
+    model = LassoFeatureSelection(n_iterations=3).fit(pd.DataFrame({"x": x}), x + np.sin(x))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:597: in fit
+    self.best_estimator_ = grid_search_cv(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:449: in grid_search_cv
+    y = check_array(y, ensure_2d=False, force_all_finite=False)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: check_array() got an unexpected keyword argument 'force_all_finite'
+=============================== warnings summary ===============================
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:10
+  /tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+    from pkg_resources import resource_filename
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/current_checks.py::test_public_selector_fits_with_current_dependencies
+1 failed, 1 warning in 4.99s

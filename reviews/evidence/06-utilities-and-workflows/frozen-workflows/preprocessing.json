@@ -1,0 +1,180 @@
+{
+  "workflow": "preprocessing",
+  "notebook": "preprocessing",
+  "cell_numbering": "zero-based JSON index",
+  "records": [
+    {
+      "cell": 2,
+      "source": "# Settings and libraries\nfrom __future__ import print_function\n\nimport pandas as pd\nimport lightgbm\nimport numpy as np\nimport seaborn as sns\nfrom matplotlib import pyplot as plt\nimport gc\n\nimport arfs\nimport arfs.preprocessing as arfspp\nfrom arfs.utils import (\n    _make_corr_dataset_regression,\n    _make_corr_dataset_classification,\n)",
+      "changes": [],
+      "sha256": "447ad1fd72e7fc08ab9d3f32ac76111e47288ab65028987acc7ef0e7feea2799",
+      "status": "passed",
+      "output_tail": [
+        "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.",
+        "  from pkg_resources import resource_filename"
+      ]
+    },
+    {
+      "cell": 5,
+      "source": "X, y, w = _make_corr_dataset_regression()\ndata = X.copy()\ndata[\"target\"] = y",
+      "changes": [],
+      "sha256": "5a9364b6ed596f1fd302927720f17c0705331104eee96260fbece404ccfef823",
+      "status": "passed",
+      "input_shape": [
+        1000,
+        14
+      ],
+      "output_tail": []
+    },
+    {
+      "cell": 10,
+      "source": "from arfs.preprocessing import dtype_column_selector\n\ncat_features_selector = dtype_column_selector(\n    dtype_include=[\"category\", \"object\", \"bool\"],\n    dtype_exclude=[np.number],\n    pattern=None,\n    exclude_cols=None,\n)\n\ncat_features_selector(X)",
+      "changes": [],
+      "sha256": "b90b45884266d823e921458c34362c097d1cb6c31de502d14eb2c6ebd8430af0",
+      "status": "passed",
+      "input_shape": [
+        1000,
+        14
+      ],
+      "output_tail": []
+    },
+    {
+      "cell": 12,
+      "source": "from arfs.preprocessing import OrdinalEncoderPandas\n\nencoder = OrdinalEncoderPandas(exclude_cols=[\"nice_guys\"]).fit(X)\nX_encoded = encoder.transform(X)",
+      "changes": [],
+      "sha256": "8aed47226a407f8c5a7b6e045b82f4dd4958fc9b6d24bf71d989d1e79650f6ab",
+      "status": "passed",
+      "input_shape": [
+        1000,
+        14
+      ],
+      "encoded_shape": [
+        1000,
+        14
+      ],
+      "output_tail": []
+    },
+    {
+      "cell": 14,
+      "source": "encoder.inverse_transform(X_encoded)",
+      "changes": [],
+      "sha256": "ddf62005e502188b131285017aa23f626bb8054c54a373e9f55901b40fd8099e",
+      "status": "passed",
+      "input_shape": [
+        1000,
+        14
+      ],
+      "encoded_shape": [
+        1000,
+        14
+      ],
+      "output_tail": []
+    },
+    {
+      "cell": 18,
+      "source": "from arfs.preprocessing import TreeDiscretizer\n\n# main parameter controlling how agressive will be the auto-grouping\nlgb_params = {\"min_split_gain\": 0.05}\n# instanciate the discretizer\ndisc = TreeDiscretizer(bin_features=\"all\", n_bins=10, boost_params=lgb_params)\n\ndisc.fit(X=X, y=y, sample_weight=w)",
+      "changes": [],
+      "sha256": "1fa89c0aac7496448a9ada26478155ed6b6c924cf4496ac095e8f47f914c38eb",
+      "status": "passed",
+      "input_shape": [
+        1000,
+        14
+      ],
+      "encoded_shape": [
+        1000,
+        14
+      ],
+      "output_tail": [
+        "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/gbm.py:348: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.",
+        "  warnings.warn(",
+        "Data split: Train=800 samples, Validation=200 samples.",
+        "No 'metric' provided, using objective 'rmse' as metric.",
+        "Training up to 1 boosting rounds.",
+        "Data split: Train=800 samples, Validation=200 samples.",
+        "No 'metric' provided, using objective 'rmse' as metric.",
+        "Training up to 1 boosting rounds.",
+        "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/gbm.py:348: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.",
+        "  warnings.warn(",
+        "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/gbm.py:348: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.",
+        "  warnings.warn(",
+        "Data split: Train=800 samples, Validation=200 samples.",
+        "No 'metric' provided, using objective 'rmse' as metric.",
+        "Training up to 1 boosting rounds."
+      ]
+    },
+    {
+      "cell": 20,
+      "source": "X_trans = disc.transform(X)\nX_trans",
+      "changes": [],
+      "sha256": "48c4e4803f9c83bc758e216bbb92b7fad02b329d21c6af2a400df5abccc817bd",
+      "status": "passed",
+      "input_shape": [
+        1000,
+        14
+      ],
+      "transformed_shape": [
+        1000,
+        14
+      ],
+      "encoded_shape": [
+        1000,
+        14
+      ],
+      "output_tail": [
+        "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/gbm.py:348: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.",
+        "  warnings.warn(",
+        "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/gbm.py:348: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.",
+        "  warnings.warn("
+      ]
+    },
+    {
+      "cell": 22,
+      "source": "from sklearn.pipeline import Pipeline\nfrom arfs.preprocessing import OrdinalEncoderPandas\nfrom arfs.feature_selection import (\n    CollinearityThreshold,\n    UniqueValuesThreshold,\n    MissingValueThreshold,\n)\n\nencoder = Pipeline(\n    [\n        (\"zero_variance\", UniqueValuesThreshold()),\n        (\"collinearity\", CollinearityThreshold(threshold=0.75)),\n        (\n            \"disctretizer\",\n            TreeDiscretizer(bin_features=\"all\", n_bins=10, boost_params=lgb_params),\n        ),\n        # the treediscretization might introduce NaN for pure noise columns\n        (\"zero_variance_disc\", UniqueValuesThreshold()),\n        (\"encoder\", OrdinalEncoderPandas()),\n    ]\n)\n\nX_encoded = encoder.fit(X, y).transform(X)\nX_encoded.head()",
+      "changes": [],
+      "sha256": "e123056bd84039122cd570c2dd3bb0bf6a27d4d467359c63c6005653ef452b62",
+      "status": "passed",
+      "input_shape": [
+        1000,
+        14
+      ],
+      "transformed_shape": [
+        1000,
+        14
+      ],
+      "encoded_shape": [
+        1000,
+        9
+      ],
+      "output_tail": [
+        "  warnings.warn(",
+        "Data split: Train=800 samples, Validation=200 samples.",
+        "No 'metric' provided, using objective 'rmse' as metric.",
+        "Training up to 1 boosting rounds.",
+        "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/gbm.py:348: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.",
+        "  warnings.warn(",
+        "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/gbm.py:348: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.",
+        "  warnings.warn(",
+        "Data split: Train=800 samples, Validation=200 samples.",
+        "No 'metric' provided, using objective 'rmse' as metric.",
+        "Training up to 1 boosting rounds.",
+        "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/gbm.py:348: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.",
+        "  warnings.warn(",
+        "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/gbm.py:348: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.",
+        "  warnings.warn("
+      ]
+    },
+    {
+      "cell": "integration-added",
+      "source": "from lightgbm import LGBMRegressor\nmodel = LGBMRegressor(n_estimators=5, n_jobs=1, verbose=-1)\nmodel.fit(X_encoded, y, sample_weight=w)\nprediction = model.predict(X_encoded)\nassert len(prediction) == len(y) and np.isfinite(prediction).all()\n",
+      "changes": [
+        "Added five-tree weighted model smoke check on notebook output; training predictions only"
+      ],
+      "sha256": "30d5364d5f062de4ecacdd4da80d5f06ca3cd2fa1ccfe8198032573954b26c97",
+      "status": "failed",
+      "exception": "ValueError",
+      "message": "pandas dtypes must be int, float or bool.\nFields with bad pandas dtypes: var1: interval[float64, right], var2: interval[float64, right], var3: interval[float64, right], var4: interval[float64, right], var5: interval[float64, right], var6: interval[float64, right], var8: interval[float64, right], var12: interval[float64, right]",
+      "traceback": "Traceback (most recent call last):\n  File \"/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/workflows.py\", line 38, in execute\n    exec(compile(source,f'{notebook}:cell-{cell}','exec'),ns)\n  File \"preprocessing:cell-integration-added\", line 3, in <module>\n  File \"/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/lightgbm/sklearn.py\", line 1398, in fit\n    super().fit(\n  File \"/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/lightgbm/sklearn.py\", line 1049, in fit\n    self._Booster = train(\n                    ^^^^^^\n  File \"/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/lightgbm/engine.py\", line 297, in train\n    booster = Booster(params=params, train_set=train_set)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/lightgbm/basic.py\", line 3656, in __init__\n    train_set.construct()\n  File \"/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/lightgbm/basic.py\", line 2590, in construct\n    self._lazy_init(\n  File \"/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/lightgbm/basic.py\", line 2123, in _lazy_init\n    data, feature_name, categorical_feature, self.pandas_categorical = _data_from_pandas(\n                                                                       ^^^^^^^^^^^^^^^^^^\n  File \"/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/lightgbm/basic.py\", line 868, in _data_from_pandas\n    _pandas_to_numpy(data, target_dtype=target_dtype),\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/lightgbm/basic.py\", line 814, in _pandas_to_numpy\n    _check_for_bad_pandas_dtypes(data.dtypes)\n  File \"/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/lightgbm/basic.py\", line 805, in _check_for_bad_pandas_dtypes\n    raise ValueError(\nValueError: pandas dtypes must be int, float or bool.\nFields with bad pandas dtypes: var1: interval[float64, right], var2: interval[float64, right], var3: interval[float64, right], var4: interval[float64, right], var5: interval[float64, right], var6: interval[float64, right], var8: interval[float64, right], var12: interval[float64, right]\n",
+      "output_tail": []
+    }
+  ]
+}

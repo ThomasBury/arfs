@@ -1,0 +1,87 @@
+[
+  {
+    "name": "environment",
+    "command": [
+      "/tmp/arfs-review-03f67d0/wheel-env/bin/python",
+      "/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/environment.py",
+      "/home/bsatom/Documents/arfs",
+      "/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/current-environment.json"
+    ],
+    "cwd": "/tmp/arfs-review05-current-68s52r4p",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "tail": [
+      "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.",
+      "  from pkg_resources import resource_filename"
+    ]
+  },
+  {
+    "name": "checks",
+    "command": [
+      "/tmp/arfs-review-03f67d0/wheel-env/bin/python",
+      "-m",
+      "pytest",
+      "/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py",
+      "-q",
+      "-rx",
+      "--tb=short",
+      "-c",
+      "/dev/null",
+      "--rootdir=/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "cwd": "/tmp/arfs-review05-current-68s52r4p",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "tail": [
+      "XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_inferred_strings_association_matrix[1] - C1: inferred strings pass dtype dispatch but fail correlation_ratio",
+      "XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_inferred_strings_association_matrix[2] - C1: inferred strings pass dtype dispatch but fail correlation_ratio",
+      "XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_parallel_mixed_column_labels - F13: NumPy splitting coerces mixed column labels to strings",
+      "XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_parallel_tuple_column_labels - F13: NumPy splitting expands tuple labels into arrays, breaking column lookup",
+      "36 passed, 43 xfailed, 10 warnings in 25.20s"
+    ]
+  },
+  {
+    "name": "failures",
+    "command": [
+      "/tmp/arfs-review-03f67d0/wheel-env/bin/python",
+      "-m",
+      "pytest",
+      "/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py",
+      "-q",
+      "--runxfail",
+      "--tb=short",
+      "-c",
+      "/dev/null",
+      "--rootdir=/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "cwd": "/tmp/arfs-review05-current-68s52r4p",
+    "exit_code": 1,
+    "expected_exit_code": 1,
+    "tail": [
+      "FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_inferred_strings_association_matrix[1]",
+      "FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_inferred_strings_association_matrix[2]",
+      "FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_parallel_mixed_column_labels",
+      "FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/checks.py::test_parallel_tuple_column_labels",
+      "43 failed, 36 passed, 10 warnings in 39.66s"
+    ]
+  },
+  {
+    "name": "scaling",
+    "command": [
+      "/tmp/arfs-review-03f67d0/wheel-env/bin/python",
+      "/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/scaling.py",
+      "/home/bsatom/Documents/arfs/reviews/evidence/05-sampling-and-parallel/current-scaling.json"
+    ],
+    "cwd": "/tmp/arfs-review05-current-68s52r4p",
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "tail": [
+      "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.",
+      "  from pkg_resources import resource_filename"
+    ]
+  }
+]

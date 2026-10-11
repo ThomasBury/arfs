@@ -1,0 +1,272 @@
+............FFFFFFFFFFFFFFFFFFF..                                        [100%]
+=================================== FAILURES ===================================
+______________ test_score_equals_response_scale_deviance[poisson] ______________
+/home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py:132: in test_score_equals_response_scale_deviance
+    assert_allclose(model.score(X, y, w), expected)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError: 
+E   Not equal to tolerance rtol=1e-07, atol=0
+E   
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 5506413.9175094
+E   Max relative difference among violations: 35906.71394554
+E    ACTUAL: array(5506567.270833)
+E    DESIRED: array(153.353323)
+_____________ test_score_equals_response_scale_deviance[binomial] ______________
+/home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py:132: in test_score_equals_response_scale_deviance
+    assert_allclose(model.score(X, y, w), expected)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError: 
+E   Not equal to tolerance rtol=1e-07, atol=0
+E   
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 67.44507509
+E   Max relative difference among violations: 0.44510482
+E    ACTUAL: array(218.971349)
+E    DESIRED: array(151.526274)
+_______________ test_score_equals_response_scale_deviance[gamma] _______________
+/home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py:132: in test_score_equals_response_scale_deviance
+    assert_allclose(model.score(X, y, w), expected)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError: 
+E   Not equal to tolerance rtol=1e-07, atol=0
+E   
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 643.48823121
+E   Max relative difference among violations: 8.29711445
+E    ACTUAL: array(721.043897)
+E    DESIRED: array(77.555665)
+_______________ test_poisson_cv_chooses_minimum_actual_deviance ________________
+/home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py:150: in test_poisson_cv_chooses_minimum_actual_deviance
+    assert actual.alpha == grid[np.argmin(scores)], {
+E   AssertionError: {'minimum_true_mean_deviance': np.float64(31.702425794074184), 'selected_coefficients': [0.0, 0.0, 0.0, 0.0], 'selected_true_mean_deviance': np.float64(236.73104086386076)}
+E   assert np.float64(10.0) == np.float64(1.0)
+E    +  where np.float64(10.0) = EnetGLM(L1_wt=1.0, alpha=np.float64(10.0), family='poisson').alpha
+______________________ test_binary_deviance_selector_runs ______________________
+/home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py:161: in test_binary_deviance_selector_runs
+    selector.fit(X, (y > 2).astype(int), w)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:597: in fit
+    self.best_estimator_ = grid_search_cv(
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:472: in grid_search_cv
+    scores = weighted_cross_val_score(
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:335: in weighted_cross_val_score
+    for train_index, test_index in splitter.split(X)
+E   TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'
+______________________ test_array_cv_matches_dataframe_cv ______________________
+/home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py:170: in test_array_cv_matches_dataframe_cv
+    assert_allclose(weighted_cross_val_score(estimator, X.to_numpy(), y, w, n_jobs=1), expected)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:331: in weighted_cross_val_score
+    scores = parallel(
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/joblib/parallel.py:1918: in __call__
+    return output if self.return_generator else list(output)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/joblib/parallel.py:1847: in _get_sequential_output
+    res = func(*args, **kwargs)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:380: in _fit_and_score
+    X_train, X_test = X.iloc[train_index, :], X.iloc[test_index, :]
+E   AttributeError: 'numpy.ndarray' object has no attribute 'iloc'
+___________________ test_single_row_prediction_matches_batch ___________________
+/home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py:178: in test_single_row_prediction_matches_batch
+    assert_allclose(model.predict(X.iloc[[0]]), model.predict(X).iloc[[0]])
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:239: in predict
+    return self.result.predict(X)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/statsmodels/base/model.py:1174: in predict
+    predict_results = self.model.predict(self.params, exog, *args,
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1012: in predict
+    linpred = np.dot(exog, params) + offset + exposure
+E   ValueError: shapes (1,3) and (4,) not aligned: 3 (dim 1) != 4 (dim 0)
+___________________ test_single_row_transform_matches_batch ____________________
+/home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py:185: in test_single_row_transform_matches_batch
+    assert_frame_equal(selector.transform(X.iloc[[0]]), selector.transform(X).iloc[[0]])
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:638: in transform
+    return X[self.selected_features_]
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/frame.py:4108: in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/indexes/base.py:6200: in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/indexes/base.py:6252: in _raise_if_missing
+    raise KeyError(f"{not_found} not in index")
+E   KeyError: "['Intercept'] not in index"
+_____ test_existing_constant_preserves_design_and_support_alignment[const] _____
+/home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py:193: in test_existing_constant_preserves_design_and_support_alignment
+    selector = LassoFeatureSelection(n_iterations=3).fit(X, y, w)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:609: in fit
+    self.selected_features_ = self.feature_names_in_[self.support_]
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/indexes/base.py:5416: in __getitem__
+    result = getitem(key)
+E   IndexError: boolean index did not match indexed array along axis 0; size of axis is 5 but size of corresponding boolean axis is 4
+___ test_existing_constant_preserves_design_and_support_alignment[constant] ____
+/home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py:193: in test_existing_constant_preserves_design_and_support_alignment
+    selector = LassoFeatureSelection(n_iterations=3).fit(X, y, w)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:609: in fit
+    self.selected_features_ = self.feature_names_in_[self.support_]
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/indexes/base.py:5416: in __getitem__
+    result = getitem(key)
+E   IndexError: boolean index did not match indexed array along axis 0; size of axis is 5 but size of corresponding boolean axis is 4
+______________ test_no_intercept_predict_uses_same_columns_as_fit ______________
+/home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py:203: in test_no_intercept_predict_uses_same_columns_as_fit
+    assert np.isfinite(model.predict(X)).all()
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:239: in predict
+    return self.result.predict(X)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/statsmodels/base/model.py:1174: in predict
+    predict_results = self.model.predict(self.params, exog, *args,
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1012: in predict
+    linpred = np.dot(exog, params) + offset + exposure
+E   ValueError: shapes (150,4) and (3,) not aligned: 4 (dim 1) != 3 (dim 0)
+____________ test_zero_weights_are_excluded_or_rejected_explicitly _____________
+/home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py:216: in test_zero_weights_are_excluded_or_rejected_explicitly
+    assert np.isfinite(selector.best_estimator_.bic_)
+E   AssertionError: assert np.False_
+E    +  where np.False_ = <ufunc 'isfinite'>(np.float64(inf))
+E    +    where <ufunc 'isfinite'> = np.isfinite
+E    +    and   np.float64(inf) = EnetGLM(L1_wt=1.0, alpha=np.float64(0.001)).bic_
+E    +      where EnetGLM(L1_wt=1.0, alpha=np.float64(0.001)) = LassoFeatureSelection(n_iterations=4).best_estimator_
+______________ test_set_params_rebuilds_model_objective[params0] _______________
+/home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py:227: in test_set_params_rebuilds_model_objective
+    assert type(model.objective) is type(fresh.objective)
+E   AssertionError: assert <class 'statsmodels.genmod.families.family.Gaussian'> is <class 'statsmodels.genmod.families.family.Poisson'>
+E    +  where <class 'statsmodels.genmod.families.family.Gaussian'> = type(<statsmodels.genmod.families.family.Gaussian object at 0x7cc73e42be30>)
+E    +    where <statsmodels.genmod.families.family.Gaussian object at 0x7cc73e42be30> = EnetGLM(L1_wt=1, alpha=0.001, family='poisson').objective
+E    +  and   <class 'statsmodels.genmod.families.family.Poisson'> = type(<statsmodels.genmod.families.family.Poisson object at 0x7cc73e429f40>)
+E    +    where <statsmodels.genmod.families.family.Poisson object at 0x7cc73e429f40> = EnetGLM(L1_wt=1, alpha=0.001, family='poisson').objective
+______________ test_set_params_rebuilds_model_objective[params1] _______________
+/home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py:228: in test_set_params_rebuilds_model_objective
+    assert type(model.objective.link) is type(fresh.objective.link)
+E   AssertionError: assert <class 'statsmodels.genmod.families.links.Identity'> is <class 'statsmodels.genmod.families.links.Log'>
+E    +  where <class 'statsmodels.genmod.families.links.Identity'> = type(<statsmodels.genmod.families.links.Identity object at 0x7cc73e434770>)
+E    +    where <statsmodels.genmod.families.links.Identity object at 0x7cc73e434770> = <statsmodels.genmod.families.family.Gaussian object at 0x7cc73e437ce0>.link
+E    +      where <statsmodels.genmod.families.family.Gaussian object at 0x7cc73e437ce0> = EnetGLM(L1_wt=1, alpha=0.001, link='log').objective
+E    +  and   <class 'statsmodels.genmod.families.links.Log'> = type(<statsmodels.genmod.families.links.Log object at 0x7cc73e4345c0>)
+E    +    where <statsmodels.genmod.families.links.Log object at 0x7cc73e4345c0> = <statsmodels.genmod.families.family.Gaussian object at 0x7cc73e435eb0>.link
+E    +      where <statsmodels.genmod.families.family.Gaussian object at 0x7cc73e435eb0> = EnetGLM(L1_wt=1, alpha=0.001, link='log').objective
+__________ test_reordered_prediction_columns_are_aligned_or_rejected ___________
+/home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py:241: in test_reordered_prediction_columns_are_aligned_or_rejected
+    assert_allclose(actual, model.predict(X))
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError: 
+E   Not equal to tolerance rtol=1e-07, atol=0
+E   
+E   Mismatched elements: 150 / 150 (100%)
+E   Max absolute difference among violations: 11.31634719
+E   Max relative difference among violations: 23.22408468
+E    ACTUAL: array([ 3.910788,  2.884641,  5.60514 ,  5.919602,  3.453191,  0.281395,
+E           0.614827, -2.820351, -2.069243,  4.044077, -0.624998,  2.145942,
+E           6.670404,  1.203863,  3.259277, -0.326931, -0.15624 ,  1.988432,...
+E    DESIRED: array([ 0.788055, -0.938345,  4.424405, -0.747306,  0.1987  , -3.333332,
+E           1.169546,  2.260129,  1.052376,  0.998038,  0.068911,  2.534373,
+E           4.1427  , -4.429137,  3.915826, -1.750465,  4.686518,  2.490159,...
+___________ test_sklearn_search_prefers_better_gaussian_predictions ____________
+/home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py:248: in test_sklearn_search_prefers_better_gaussian_predictions
+    assert search.best_params_["alpha"] == .001
+E   assert 1000 == 0.001
+_______________________ test_estimator_fit_returns_self ________________________
+/home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py:255: in test_estimator_fit_returns_self
+    assert model.fit(X, y, w) is model
+E   assert None is EnetGLM(alpha=1e-09)
+E    +  where None = fit(            a         b         c\n0   -0.395301  0.263915  0.607128\n1   -0.972160  0.767664  0.255058\n2    0.782980  0....387618  0.526513 -1.008304\n148 -0.462584 -1.052812  0.343507\n149 -1.283641  1.236605  0.863167\n\n[150 rows x 3 columns], array([ 0.68763241, -3.05333689,  4.92127174, -1.7006048 ,  1.95776893,\n       -3.52692966,  3.5149915 ,  2.87141506, ...838576,  5.81255617,  7.31857835,  5.83337227,\n        3.33820459,  3.64921024,  6.37075375,  0.03688831, -1.76638988]), array([1.71884518, 0.79207215, 0.40356442, 1.75358968, 1.44593544,\n       0.39451232, 0.76369801, 1.62021627, 0.862768...42, 1.60729541, 1.60588001, 0.56239318, 0.73035468,\n       1.14809348, 0.43480234, 1.55258712, 1.01332225, 1.83384778]))
+E    +    where fit = EnetGLM(alpha=1e-09).fit
+_______________ test_documented_near_ridge_matches_penalized_fit _______________
+/home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py:266: in test_documented_near_ridge_matches_penalized_fit
+    assert_allclose(model.coef_, penalized.params, atol=1e-5)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError: 
+E   Not equal to tolerance rtol=1e-07, atol=1e-05
+E   
+E   Mismatched elements: 4 / 4 (100%)
+E   Max absolute difference among violations: 2.77088705
+E   Max relative difference among violations: 8.65256035
+E    ACTUAL: array([ 1.996622,  3.094933,  0.102861, -0.020231])
+E    DESIRED: array([0.206849, 0.324046, 0.051253, 0.003278])
+__________ test_cv_folds_are_independent_and_leave_estimator_unfitted __________
+/home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py:284: in test_cv_folds_are_independent_and_leave_estimator_unfitted
+    assert_array_equal(scores, [1, 1, 1])
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError: 
+E   Arrays are not equal
+E   
+E   Mismatched elements: 2 / 3 (66.7%)
+E   Max absolute difference among violations: 2
+E   Max relative difference among violations: 2.
+E    ACTUAL: array([1, 2, 3])
+E    DESIRED: array([1, 1, 1])
+=============================== warnings summary ===============================
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+    from pkg_resources import resource_filename
+
+checks.py::test_bic_grid_matches_direct_statsmodels_search
+checks.py::test_numpy_bic_selector_transform_and_names_agree
+checks.py::test_poisson_cv_chooses_minimum_actual_deviance
+checks.py::test_binary_deviance_selector_runs
+checks.py::test_single_row_transform_matches_batch
+checks.py::test_existing_constant_preserves_design_and_support_alignment[const]
+checks.py::test_existing_constant_preserves_design_and_support_alignment[constant]
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_missing_target_does_not_silently_fit
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/sklearn/utils/deprecation.py:151: FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.
+    warnings.warn(
+
+checks.py::test_supported_family_predict_matches_direct_response_mean[negativebinomial-None]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:1367: ValueWarning: Negative binomial dispersion parameter alpha not set. Using default value alpha=1.0.
+    warnings.warn("Negative binomial dispersion parameter alpha not "
+
+checks.py: 10 warnings
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:648: RuntimeWarning: divide by zero encountered in divide
+    ll_obs += -np.log(scale / var_weights) - np.log(2 * np.pi)
+
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:578: RuntimeWarning: invalid value encountered in divide
+    tmp /= self.iweights * self.n_trials
+
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_set_params_rebuilds_model_objective[params1]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1464: UserWarning: Elastic net fitting did not converge
+    warnings.warn("Elastic net fitting did not converge")
+
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1891: RuntimeWarning: invalid value encountered in scalar subtract
+    prsq = 1 - np.exp((self.llnull - self.llf) * (2 / self.nobs))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_score_equals_response_scale_deviance[poisson]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_score_equals_response_scale_deviance[binomial]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_score_equals_response_scale_deviance[gamma]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_poisson_cv_chooses_minimum_actual_deviance
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_binary_deviance_selector_runs
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_array_cv_matches_dataframe_cv
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_single_row_prediction_matches_batch
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_single_row_transform_matches_batch
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_existing_constant_preserves_design_and_support_alignment[const]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_existing_constant_preserves_design_and_support_alignment[constant]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_no_intercept_predict_uses_same_columns_as_fit
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_set_params_rebuilds_model_objective[params0]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_set_params_rebuilds_model_objective[params1]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_reordered_prediction_columns_are_aligned_or_rejected
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_sklearn_search_prefers_better_gaussian_predictions
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_estimator_fit_returns_self
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_documented_near_ridge_matches_penalized_fit
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py::test_cv_folds_are_independent_and_leave_estimator_unfitted
+19 failed, 14 passed, 37 warnings in 8.89s

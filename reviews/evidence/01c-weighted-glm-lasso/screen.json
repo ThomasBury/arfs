@@ -1,0 +1,2897 @@
+[
+  {
+    "seed": 0,
+    "family": "gaussian",
+    "signal": true,
+    "score": "bic",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.8785221224798162
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.9543581608005574
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.8857507978845052
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.8857507978845052
+      }
+    },
+    "features": [
+      "x0",
+      "x1",
+      "x2"
+    ],
+    "alpha": 0.1,
+    "intercept_selected": true,
+    "true_selected": 2,
+    "false_selected": 1,
+    "test_deviance_per_weight": 0.8804664760750712,
+    "wrapper_test_deviance_per_weight": 0.8804664760750712,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 0,
+    "family": "gaussian",
+    "signal": true,
+    "score": "deviance",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.8785221224798162
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.9543581608005574
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.8857507978845052
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.8857507978845052
+      }
+    },
+    "features": [
+      "x0",
+      "x1",
+      "x2"
+    ],
+    "alpha": 0.1,
+    "intercept_selected": true,
+    "true_selected": 2,
+    "false_selected": 1,
+    "test_deviance_per_weight": 0.8804664760750712,
+    "wrapper_test_deviance_per_weight": 0.8804664760750712,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 0,
+    "family": "gaussian",
+    "signal": false,
+    "score": "bic",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.8785221224798164
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 0.8773898284124076
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 0.8773898284124076
+      },
+      "univariate_top2": {
+        "features": [
+          "x2",
+          "x4"
+        ],
+        "test_deviance_per_weight": 0.8741965447482566
+      }
+    },
+    "features": [],
+    "alpha": 1.0,
+    "intercept_selected": true,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 0.8773898284124076,
+    "wrapper_test_deviance_per_weight": 0.8773898284124076,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 0,
+    "family": "gaussian",
+    "signal": false,
+    "score": "deviance",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.8785221224798164
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 0.8773898284124076
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 0.8773898284124076
+      },
+      "univariate_top2": {
+        "features": [
+          "x2",
+          "x4"
+        ],
+        "test_deviance_per_weight": 0.8741965447482566
+      }
+    },
+    "features": [],
+    "alpha": 1.0,
+    "intercept_selected": true,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 0.8773898284124076,
+    "wrapper_test_deviance_per_weight": 0.8773898284124076,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 0,
+    "family": "poisson",
+    "signal": true,
+    "score": "bic",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.9551500407105854
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 3.779994977347786
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9297827233083801
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9297827233083801
+      }
+    },
+    "features": [
+      "x0",
+      "x1",
+      "x2"
+    ],
+    "alpha": 0.1,
+    "intercept_selected": true,
+    "true_selected": 2,
+    "false_selected": 1,
+    "test_deviance_per_weight": 0.9537764503869438,
+    "wrapper_test_deviance_per_weight": 0.953776450386944,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 0,
+    "family": "poisson",
+    "signal": true,
+    "score": "deviance",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.9551500407105854
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 3.779994977347786
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9297827233083801
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9297827233083801
+      }
+    },
+    "features": [],
+    "alpha": 10.0,
+    "intercept_selected": false,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 3.779994977347786,
+    "wrapper_test_deviance_per_weight": 5.965576265241126,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 0,
+    "family": "poisson",
+    "signal": false,
+    "score": "bic",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.0347417768168514
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 0.9980347008118788
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 0.9980347008118788
+      },
+      "univariate_top2": {
+        "features": [
+          "x1",
+          "x0"
+        ],
+        "test_deviance_per_weight": 1.018669478313616
+      }
+    },
+    "features": [],
+    "alpha": 1.0,
+    "intercept_selected": true,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 0.9980347008118788,
+    "wrapper_test_deviance_per_weight": 0.9980347008118788,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 0,
+    "family": "poisson",
+    "signal": false,
+    "score": "deviance",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.0347417768168514
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 0.9980347008118788
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 0.9980347008118788
+      },
+      "univariate_top2": {
+        "features": [
+          "x1",
+          "x0"
+        ],
+        "test_deviance_per_weight": 1.018669478313616
+      }
+    },
+    "features": [],
+    "alpha": 10.0,
+    "intercept_selected": false,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 0.9980347008118788,
+    "wrapper_test_deviance_per_weight": 1.5576215681844203,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 0,
+    "family": "binomial",
+    "signal": true,
+    "score": "bic",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.9863647512136279
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.378151754215636
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9779631023142608
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9779631023142608
+      }
+    },
+    "features": [
+      "x0"
+    ],
+    "alpha": 0.1,
+    "intercept_selected": false,
+    "true_selected": 1,
+    "false_selected": 0,
+    "test_deviance_per_weight": 1.0816098148731452,
+    "wrapper_test_deviance_per_weight": 1.094510325538161,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 0,
+    "family": "binomial",
+    "signal": true,
+    "score": "deviance",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.9863647512136279
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.378151754215636
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9779631023142608
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9779631023142608
+      }
+    },
+    "error": "TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'",
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 0,
+    "family": "binomial",
+    "signal": false,
+    "score": "bic",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.421081559156367
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.3746122263274796
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 1.3746122263274796
+      },
+      "univariate_top2": {
+        "features": [
+          "x4",
+          "x0"
+        ],
+        "test_deviance_per_weight": 1.4117119741690383
+      }
+    },
+    "features": [],
+    "alpha": 0.1,
+    "intercept_selected": true,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 1.3746122263274796,
+    "wrapper_test_deviance_per_weight": 1.3746122263274796,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 0,
+    "family": "binomial",
+    "signal": false,
+    "score": "deviance",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.421081559156367
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.3746122263274796
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 1.3746122263274796
+      },
+      "univariate_top2": {
+        "features": [
+          "x4",
+          "x0"
+        ],
+        "test_deviance_per_weight": 1.4117119741690383
+      }
+    },
+    "error": "TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'",
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 1,
+    "family": "gaussian",
+    "signal": true,
+    "score": "bic",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.9563439312344116
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.8694187698171512
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9587249651187089
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9587249651187089
+      }
+    },
+    "features": [
+      "x0",
+      "x1",
+      "x4"
+    ],
+    "alpha": 0.1,
+    "intercept_selected": true,
+    "true_selected": 2,
+    "false_selected": 1,
+    "test_deviance_per_weight": 0.9573971327503005,
+    "wrapper_test_deviance_per_weight": 0.9573971327503006,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 1,
+    "family": "gaussian",
+    "signal": true,
+    "score": "deviance",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.9563439312344116
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.8694187698171512
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9587249651187089
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9587249651187089
+      }
+    },
+    "features": [
+      "x0",
+      "x1",
+      "x4"
+    ],
+    "alpha": 0.1,
+    "intercept_selected": true,
+    "true_selected": 2,
+    "false_selected": 1,
+    "test_deviance_per_weight": 0.9573971327503005,
+    "wrapper_test_deviance_per_weight": 0.9573971327503006,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 1,
+    "family": "gaussian",
+    "signal": false,
+    "score": "bic",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.9563439312344116
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 0.9553044317334124
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 0.9553044317334124
+      },
+      "univariate_top2": {
+        "features": [
+          "x4",
+          "x3"
+        ],
+        "test_deviance_per_weight": 0.9597666174565708
+      }
+    },
+    "features": [],
+    "alpha": 1.0,
+    "intercept_selected": true,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 0.9553044317334124,
+    "wrapper_test_deviance_per_weight": 0.9553044317334124,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 1,
+    "family": "gaussian",
+    "signal": false,
+    "score": "deviance",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.9563439312344116
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 0.9553044317334124
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 0.9553044317334124
+      },
+      "univariate_top2": {
+        "features": [
+          "x4",
+          "x3"
+        ],
+        "test_deviance_per_weight": 0.9597666174565708
+      }
+    },
+    "features": [],
+    "alpha": 1.0,
+    "intercept_selected": true,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 0.9553044317334124,
+    "wrapper_test_deviance_per_weight": 0.9553044317334124,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 1,
+    "family": "poisson",
+    "signal": true,
+    "score": "bic",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.0159555003025815
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 3.4573748649453178
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9789074932059421
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9789074932059421
+      }
+    },
+    "features": [
+      "x0",
+      "x1"
+    ],
+    "alpha": 1.0,
+    "intercept_selected": true,
+    "true_selected": 2,
+    "false_selected": 0,
+    "test_deviance_per_weight": 0.9789074932059421,
+    "wrapper_test_deviance_per_weight": 0.978907493205943,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 1,
+    "family": "poisson",
+    "signal": true,
+    "score": "deviance",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.0159555003025815
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 3.4573748649453178
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9789074932059421
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9789074932059421
+      }
+    },
+    "features": [],
+    "alpha": 10.0,
+    "intercept_selected": false,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 3.4573748649453178,
+    "wrapper_test_deviance_per_weight": 5.697928719941544,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 1,
+    "family": "poisson",
+    "signal": false,
+    "score": "bic",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.0462790433483546
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.0304636837514274
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 1.0304636837514274
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 1.0376345862895757
+      }
+    },
+    "features": [],
+    "alpha": 1.0,
+    "intercept_selected": true,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 1.0304636837514274,
+    "wrapper_test_deviance_per_weight": 1.0304636837514274,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 1,
+    "family": "poisson",
+    "signal": false,
+    "score": "deviance",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.0462790433483546
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.0304636837514274
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 1.0304636837514274
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 1.0376345862895757
+      }
+    },
+    "features": [],
+    "alpha": 10.0,
+    "intercept_selected": false,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 1.0304636837514274,
+    "wrapper_test_deviance_per_weight": 1.5329524544448063,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 1,
+    "family": "binomial",
+    "signal": true,
+    "score": "bic",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.0452318790166473
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.4147039495290072
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 1.0360496703512954
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 1.0360496703512954
+      }
+    },
+    "features": [
+      "x0"
+    ],
+    "alpha": 0.1,
+    "intercept_selected": true,
+    "true_selected": 1,
+    "false_selected": 0,
+    "test_deviance_per_weight": 1.1352009094892384,
+    "wrapper_test_deviance_per_weight": 1.1352009094892384,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 1,
+    "family": "binomial",
+    "signal": true,
+    "score": "deviance",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.0452318790166473
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.4147039495290072
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 1.0360496703512954
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 1.0360496703512954
+      }
+    },
+    "error": "TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'",
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 1,
+    "family": "binomial",
+    "signal": false,
+    "score": "bic",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.3792743168115322
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.3609211817495754
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 1.3609211817495754
+      },
+      "univariate_top2": {
+        "features": [
+          "x1",
+          "x4"
+        ],
+        "test_deviance_per_weight": 1.3715077997257101
+      }
+    },
+    "features": [],
+    "alpha": 0.1,
+    "intercept_selected": true,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 1.3609211817495754,
+    "wrapper_test_deviance_per_weight": 1.3609211817495754,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 1,
+    "family": "binomial",
+    "signal": false,
+    "score": "deviance",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.3792743168115322
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.3609211817495754
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 1.3609211817495754
+      },
+      "univariate_top2": {
+        "features": [
+          "x1",
+          "x4"
+        ],
+        "test_deviance_per_weight": 1.3715077997257101
+      }
+    },
+    "error": "TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'",
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 2,
+    "family": "gaussian",
+    "signal": true,
+    "score": "bic",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.0461835035595217
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.9248181339934907
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 1.002775770239567
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 1.002775770239567
+      }
+    },
+    "features": [
+      "x0",
+      "x1",
+      "x3"
+    ],
+    "alpha": 0.1,
+    "intercept_selected": true,
+    "true_selected": 2,
+    "false_selected": 1,
+    "test_deviance_per_weight": 1.035338177670877,
+    "wrapper_test_deviance_per_weight": 1.035338177670877,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 2,
+    "family": "gaussian",
+    "signal": true,
+    "score": "deviance",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.0461835035595217
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.9248181339934907
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 1.002775770239567
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 1.002775770239567
+      }
+    },
+    "features": [
+      "x0",
+      "x1",
+      "x3"
+    ],
+    "alpha": 0.1,
+    "intercept_selected": true,
+    "true_selected": 2,
+    "false_selected": 1,
+    "test_deviance_per_weight": 1.035338177670877,
+    "wrapper_test_deviance_per_weight": 1.035338177670877,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 2,
+    "family": "gaussian",
+    "signal": false,
+    "score": "bic",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.0461835035595217
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 0.9945294926367007
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 0.9945294926367007
+      },
+      "univariate_top2": {
+        "features": [
+          "x3",
+          "x0"
+        ],
+        "test_deviance_per_weight": 1.035050138153787
+      }
+    },
+    "features": [],
+    "alpha": 1.0,
+    "intercept_selected": true,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 0.9945294926367007,
+    "wrapper_test_deviance_per_weight": 0.9945294926367007,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 2,
+    "family": "gaussian",
+    "signal": false,
+    "score": "deviance",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.0461835035595217
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 0.9945294926367007
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 0.9945294926367007
+      },
+      "univariate_top2": {
+        "features": [
+          "x3",
+          "x0"
+        ],
+        "test_deviance_per_weight": 1.035050138153787
+      }
+    },
+    "features": [],
+    "alpha": 1.0,
+    "intercept_selected": true,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 0.9945294926367007,
+    "wrapper_test_deviance_per_weight": 0.9945294926367007,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 2,
+    "family": "poisson",
+    "signal": true,
+    "score": "bic",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.0135451523569197
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 3.149081971799556
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9922463755002257
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9922463755002257
+      }
+    },
+    "features": [
+      "x0",
+      "x1"
+    ],
+    "alpha": 1.0,
+    "intercept_selected": true,
+    "true_selected": 2,
+    "false_selected": 0,
+    "test_deviance_per_weight": 0.9922463755002257,
+    "wrapper_test_deviance_per_weight": 0.9922463755002261,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 2,
+    "family": "poisson",
+    "signal": true,
+    "score": "deviance",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.0135451523569197
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 3.149081971799556
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9922463755002257
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9922463755002257
+      }
+    },
+    "features": [],
+    "alpha": 10.0,
+    "intercept_selected": false,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 3.149081971799556,
+    "wrapper_test_deviance_per_weight": 5.175213790779258,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 2,
+    "family": "poisson",
+    "signal": false,
+    "score": "bic",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.0999770728461824
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.0624752899656795
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 1.0624752899656795
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x4"
+        ],
+        "test_deviance_per_weight": 1.0925997926069553
+      }
+    },
+    "features": [
+      "x0",
+      "x4"
+    ],
+    "alpha": 0.1,
+    "intercept_selected": true,
+    "true_selected": 0,
+    "false_selected": 2,
+    "test_deviance_per_weight": 1.0925997926069553,
+    "wrapper_test_deviance_per_weight": 1.0925997926069553,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 2,
+    "family": "poisson",
+    "signal": false,
+    "score": "deviance",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.0999770728461824
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.0624752899656795
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 1.0624752899656795
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x4"
+        ],
+        "test_deviance_per_weight": 1.0925997926069553
+      }
+    },
+    "features": [],
+    "alpha": 1.0,
+    "intercept_selected": false,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 1.0624752899656795,
+    "wrapper_test_deviance_per_weight": 1.4919337864505644,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 2,
+    "family": "binomial",
+    "signal": true,
+    "score": "bic",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.0511292002396473
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.383976193351573
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9907714313442522
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9907714313442522
+      }
+    },
+    "features": [
+      "x0"
+    ],
+    "alpha": 0.1,
+    "intercept_selected": false,
+    "true_selected": 1,
+    "false_selected": 0,
+    "test_deviance_per_weight": 1.0854507117945136,
+    "wrapper_test_deviance_per_weight": 1.0925468841181842,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 2,
+    "family": "binomial",
+    "signal": true,
+    "score": "deviance",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.0511292002396473
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.383976193351573
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9907714313442522
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9907714313442522
+      }
+    },
+    "error": "TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'",
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 2,
+    "family": "binomial",
+    "signal": false,
+    "score": "bic",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.3823442508657016
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.352602706111255
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 1.352602706111255
+      },
+      "univariate_top2": {
+        "features": [
+          "x1",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.3831788943198333
+      }
+    },
+    "features": [],
+    "alpha": 0.1,
+    "intercept_selected": false,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 1.352602706111255,
+    "wrapper_test_deviance_per_weight": 1.3862943611198904,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 2,
+    "family": "binomial",
+    "signal": false,
+    "score": "deviance",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.3823442508657016
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.352602706111255
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 1.352602706111255
+      },
+      "univariate_top2": {
+        "features": [
+          "x1",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.3831788943198333
+      }
+    },
+    "error": "TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'",
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 3,
+    "family": "gaussian",
+    "signal": true,
+    "score": "bic",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.91601381399413
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.9773361529687157
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9148946122866696
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9148946122866696
+      }
+    },
+    "features": [
+      "x0",
+      "x1"
+    ],
+    "alpha": 0.1,
+    "intercept_selected": true,
+    "true_selected": 2,
+    "false_selected": 0,
+    "test_deviance_per_weight": 0.9148946122866696,
+    "wrapper_test_deviance_per_weight": 0.9148946122866696,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 3,
+    "family": "gaussian",
+    "signal": true,
+    "score": "deviance",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.91601381399413
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.9773361529687157
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9148946122866696
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9148946122866696
+      }
+    },
+    "features": [
+      "x0",
+      "x1"
+    ],
+    "alpha": 0.1,
+    "intercept_selected": true,
+    "true_selected": 2,
+    "false_selected": 0,
+    "test_deviance_per_weight": 0.9148946122866696,
+    "wrapper_test_deviance_per_weight": 0.9148946122866696,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 3,
+    "family": "gaussian",
+    "signal": false,
+    "score": "bic",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.9160138139941294
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 0.9088266943624902
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 0.9088266943624902
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.913606032652788
+      }
+    },
+    "features": [],
+    "alpha": 0.1,
+    "intercept_selected": true,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 0.9088266943624902,
+    "wrapper_test_deviance_per_weight": 0.9088266943624902,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 3,
+    "family": "gaussian",
+    "signal": false,
+    "score": "deviance",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.9160138139941294
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 0.9088266943624902
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 0.9088266943624902
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.913606032652788
+      }
+    },
+    "features": [],
+    "alpha": 0.1,
+    "intercept_selected": true,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 0.9088266943624902,
+    "wrapper_test_deviance_per_weight": 0.9088266943624902,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 3,
+    "family": "poisson",
+    "signal": true,
+    "score": "bic",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.9381091320496501
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 4.41106347047501
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9217942973876737
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9217942973876737
+      }
+    },
+    "features": [
+      "x0",
+      "x1"
+    ],
+    "alpha": 1.0,
+    "intercept_selected": true,
+    "true_selected": 2,
+    "false_selected": 0,
+    "test_deviance_per_weight": 0.9217942973876737,
+    "wrapper_test_deviance_per_weight": 0.9217942973876737,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 3,
+    "family": "poisson",
+    "signal": true,
+    "score": "deviance",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.9381091320496501
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 4.41106347047501
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9217942973876737
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9217942973876737
+      }
+    },
+    "features": [],
+    "alpha": 10.0,
+    "intercept_selected": false,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 4.41106347047501,
+    "wrapper_test_deviance_per_weight": 7.1929554287487925,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 3,
+    "family": "poisson",
+    "signal": false,
+    "score": "bic",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.0463583703882198
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.0146164854579682
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 1.0146164854579682
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 1.0276342702266397
+      }
+    },
+    "features": [
+      "x0",
+      "x1"
+    ],
+    "alpha": 0.1,
+    "intercept_selected": true,
+    "true_selected": 0,
+    "false_selected": 2,
+    "test_deviance_per_weight": 1.0276342702266397,
+    "wrapper_test_deviance_per_weight": 1.0276342702266397,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 3,
+    "family": "poisson",
+    "signal": false,
+    "score": "deviance",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.0463583703882198
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.0146164854579682
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 1.0146164854579682
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 1.0276342702266397
+      }
+    },
+    "features": [],
+    "alpha": 1.0,
+    "intercept_selected": false,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 1.0146164854579682,
+    "wrapper_test_deviance_per_weight": 1.536692625306947,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 3,
+    "family": "binomial",
+    "signal": true,
+    "score": "bic",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.9886215016110442
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.4092519056216881
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9525887250364119
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9525887250364119
+      }
+    },
+    "features": [
+      "x0",
+      "x1"
+    ],
+    "alpha": 0.1,
+    "intercept_selected": false,
+    "true_selected": 2,
+    "false_selected": 0,
+    "test_deviance_per_weight": 0.9525887250364119,
+    "wrapper_test_deviance_per_weight": 0.9417549967858195,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 3,
+    "family": "binomial",
+    "signal": true,
+    "score": "deviance",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.9886215016110442
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.4092519056216881
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9525887250364119
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9525887250364119
+      }
+    },
+    "error": "TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'",
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 3,
+    "family": "binomial",
+    "signal": false,
+    "score": "bic",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.3765378660635195
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.375391097586311
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 1.375391097586311
+      },
+      "univariate_top2": {
+        "features": [
+          "x4",
+          "x2"
+        ],
+        "test_deviance_per_weight": 1.3765167497318698
+      }
+    },
+    "features": [],
+    "alpha": 0.1,
+    "intercept_selected": true,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 1.375391097586311,
+    "wrapper_test_deviance_per_weight": 1.375391097586311,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 3,
+    "family": "binomial",
+    "signal": false,
+    "score": "deviance",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.3765378660635195
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.375391097586311
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 1.375391097586311
+      },
+      "univariate_top2": {
+        "features": [
+          "x4",
+          "x2"
+        ],
+        "test_deviance_per_weight": 1.3765167497318698
+      }
+    },
+    "error": "TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'",
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 4,
+    "family": "gaussian",
+    "signal": true,
+    "score": "bic",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.9110466778218265
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.82958936493115
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.8965884870659973
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.8965884870659973
+      }
+    },
+    "features": [
+      "x0",
+      "x1",
+      "x4"
+    ],
+    "alpha": 0.1,
+    "intercept_selected": true,
+    "true_selected": 2,
+    "false_selected": 1,
+    "test_deviance_per_weight": 0.9064376095753444,
+    "wrapper_test_deviance_per_weight": 0.9064376095753444,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 4,
+    "family": "gaussian",
+    "signal": true,
+    "score": "deviance",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.9110466778218265
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.82958936493115
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.8965884870659973
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.8965884870659973
+      }
+    },
+    "features": [
+      "x0",
+      "x1",
+      "x4"
+    ],
+    "alpha": 0.1,
+    "intercept_selected": true,
+    "true_selected": 2,
+    "false_selected": 1,
+    "test_deviance_per_weight": 0.9064376095753444,
+    "wrapper_test_deviance_per_weight": 0.9064376095753444,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 4,
+    "family": "gaussian",
+    "signal": false,
+    "score": "bic",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.9110466778218265
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 0.8895582747001318
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 0.8895582747001318
+      },
+      "univariate_top2": {
+        "features": [
+          "x4",
+          "x0"
+        ],
+        "test_deviance_per_weight": 0.9032260886999707
+      }
+    },
+    "features": [],
+    "alpha": 1.0,
+    "intercept_selected": true,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 0.8895582747001318,
+    "wrapper_test_deviance_per_weight": 0.8895582747001318,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 4,
+    "family": "gaussian",
+    "signal": false,
+    "score": "deviance",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.9110466778218265
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 0.8895582747001318
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 0.8895582747001318
+      },
+      "univariate_top2": {
+        "features": [
+          "x4",
+          "x0"
+        ],
+        "test_deviance_per_weight": 0.9032260886999707
+      }
+    },
+    "features": [],
+    "alpha": 1.0,
+    "intercept_selected": true,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 0.8895582747001318,
+    "wrapper_test_deviance_per_weight": 0.8895582747001318,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 4,
+    "family": "poisson",
+    "signal": true,
+    "score": "bic",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.028414453986861
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 3.4736275577622546
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 1.0093402675929377
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 1.0093402675929377
+      }
+    },
+    "features": [
+      "x0",
+      "x1"
+    ],
+    "alpha": 1.0,
+    "intercept_selected": true,
+    "true_selected": 2,
+    "false_selected": 0,
+    "test_deviance_per_weight": 1.0093402675929377,
+    "wrapper_test_deviance_per_weight": 1.0093402675929382,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 4,
+    "family": "poisson",
+    "signal": true,
+    "score": "deviance",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.028414453986861
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 3.4736275577622546
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 1.0093402675929377
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 1.0093402675929377
+      }
+    },
+    "features": [],
+    "alpha": 10.0,
+    "intercept_selected": false,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 3.4736275577622546,
+    "wrapper_test_deviance_per_weight": 5.934680451373944,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 4,
+    "family": "poisson",
+    "signal": false,
+    "score": "bic",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.0493179058657696
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.0306052142291762
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 1.0306052142291762
+      },
+      "univariate_top2": {
+        "features": [
+          "x2",
+          "x3"
+        ],
+        "test_deviance_per_weight": 1.0498125108752023
+      }
+    },
+    "features": [
+      "x2",
+      "x3"
+    ],
+    "alpha": 0.1,
+    "intercept_selected": true,
+    "true_selected": 0,
+    "false_selected": 2,
+    "test_deviance_per_weight": 1.0498125108752023,
+    "wrapper_test_deviance_per_weight": 1.0498125108752023,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 4,
+    "family": "poisson",
+    "signal": false,
+    "score": "deviance",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.0493179058657696
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.0306052142291762
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 1.0306052142291762
+      },
+      "univariate_top2": {
+        "features": [
+          "x2",
+          "x3"
+        ],
+        "test_deviance_per_weight": 1.0498125108752023
+      }
+    },
+    "features": [],
+    "alpha": 1.0,
+    "intercept_selected": false,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 1.0306052142291762,
+    "wrapper_test_deviance_per_weight": 1.55923124169743,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 4,
+    "family": "binomial",
+    "signal": true,
+    "score": "bic",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.9769099902187247
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.3805013262404984
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9485884656655268
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9485884656655268
+      }
+    },
+    "features": [
+      "x0",
+      "x1"
+    ],
+    "alpha": 0.1,
+    "intercept_selected": false,
+    "true_selected": 2,
+    "false_selected": 0,
+    "test_deviance_per_weight": 0.9485884656655268,
+    "wrapper_test_deviance_per_weight": 0.9695196853323994,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 4,
+    "family": "binomial",
+    "signal": true,
+    "score": "deviance",
+    "truth": [
+      "x0",
+      "x1"
+    ],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 0.9769099902187247
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.3805013262404984
+      },
+      "oracle": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9485884656655268
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x1"
+        ],
+        "test_deviance_per_weight": 0.9485884656655268
+      }
+    },
+    "error": "TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'",
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 4,
+    "family": "binomial",
+    "signal": false,
+    "score": "bic",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.3699762558131727
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.3560085767905419
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 1.3560085767905419
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x4"
+        ],
+        "test_deviance_per_weight": 1.3701932126130785
+      }
+    },
+    "features": [],
+    "alpha": 0.1,
+    "intercept_selected": false,
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_deviance_per_weight": 1.3560085767905419,
+    "wrapper_test_deviance_per_weight": 1.3862943611198904,
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  },
+  {
+    "seed": 4,
+    "family": "binomial",
+    "signal": false,
+    "score": "deviance",
+    "truth": [],
+    "baselines": {
+      "all": {
+        "features": [
+          "x0",
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "test_deviance_per_weight": 1.3699762558131727
+      },
+      "dummy": {
+        "features": [],
+        "test_deviance_per_weight": 1.3560085767905419
+      },
+      "oracle": {
+        "features": [],
+        "test_deviance_per_weight": 1.3560085767905419
+      },
+      "univariate_top2": {
+        "features": [
+          "x0",
+          "x4"
+        ],
+        "test_deviance_per_weight": 1.3701932126130785
+      }
+    },
+    "error": "TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'",
+    "warnings": {
+      "FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.": 1
+    }
+  }
+]

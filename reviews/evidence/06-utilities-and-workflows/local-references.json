@@ -1,0 +1,282 @@
+[
+  {
+    "from": "README.md",
+    "target": "./docs/notebooks/preprocessingipynb",
+    "exists": false
+  },
+  {
+    "from": "README.md",
+    "target": "./docs/notebooks/basic_feature_selection.ipynb",
+    "exists": true
+  },
+  {
+    "from": "README.md",
+    "target": "./docs/notebooks/arfs_regression.ipynb",
+    "exists": true
+  },
+  {
+    "from": "README.md",
+    "target": "./docs/notebooks/arfs_classification.ipynb",
+    "exists": true
+  },
+  {
+    "from": "README.md",
+    "target": "./docs/notebooks/lasso_feature_selection.ipynb",
+    "exists": true
+  },
+  {
+    "from": "README.md",
+    "target": "./docs/notebooks/arfs_grootcv_custom_params.ipynb",
+    "exists": true
+  },
+  {
+    "from": "README.md",
+    "target": "./docs/notebooks/arfs_non_normal_loss_and_sample_weight.ipynb",
+    "exists": true
+  },
+  {
+    "from": "README.md",
+    "target": "./docs/notebooks/arfs_on_GPU.ipynb",
+    "exists": true
+  },
+  {
+    "from": "README.md",
+    "target": "./docs/notebooks/arfs_shap_vs_fastshap.ipynb",
+    "exists": true
+  },
+  {
+    "from": "README.md",
+    "target": "./docs/notebooks/issue_categoricals.ipynb",
+    "exists": true
+  },
+  {
+    "from": "README.md",
+    "target": "./docs/notebooks/issue_collinearity.ipynb",
+    "exists": true
+  },
+  {
+    "from": "README.md",
+    "target": "./docs/notebooks/arfs_large_data_sampling.ipynb",
+    "exists": true
+  },
+  {
+    "from": "README.md",
+    "target": "./docs/notebooks/arfs_boruta_borutaShap_comparison.ipynb",
+    "exists": true
+  },
+  {
+    "from": "README.md",
+    "target": "./docs/notebooks/mrmr_feature_selection.ipynb",
+    "exists": true
+  },
+  {
+    "from": "README.md",
+    "target": "./docs/notebooks/mrmr_fs_VS_arfs.ipynb",
+    "exists": true
+  },
+  {
+    "from": "README.md",
+    "target": "logo.png",
+    "exists": true
+  },
+  {
+    "from": "README.md",
+    "target": "./docs/boruta.png",
+    "exists": true
+  },
+  {
+    "from": "README.md",
+    "target": "./docs/boostaroota.png",
+    "exists": true
+  },
+  {
+    "from": "README.md",
+    "target": "./docs/grootcv.png",
+    "exists": true
+  },
+  {
+    "from": "docs/index.rst",
+    "target": "Introduction",
+    "exists": true
+  },
+  {
+    "from": "docs/index.rst",
+    "target": "modules",
+    "exists": true
+  },
+  {
+    "from": "docs/index.rst",
+    "target": "notebooks/preprocessing.ipynb",
+    "exists": true
+  },
+  {
+    "from": "docs/index.rst",
+    "target": "notebooks/basic_feature_selection.ipynb",
+    "exists": true
+  },
+  {
+    "from": "docs/index.rst",
+    "target": "notebooks/association_and_feature_selection.ipynb",
+    "exists": true
+  },
+  {
+    "from": "docs/index.rst",
+    "target": "notebooks/arfs_classification.ipynb",
+    "exists": true
+  },
+  {
+    "from": "docs/index.rst",
+    "target": "notebooks/arfs_regression.ipynb",
+    "exists": true
+  },
+  {
+    "from": "docs/index.rst",
+    "target": "notebooks/arfs_timeseries.ipynb",
+    "exists": true
+  },
+  {
+    "from": "docs/index.rst",
+    "target": "notebooks/arfs_large_data_sampling.ipynb",
+    "exists": true
+  },
+  {
+    "from": "docs/index.rst",
+    "target": "notebooks/arfs_on_GPU.ipynb",
+    "exists": true
+  },
+  {
+    "from": "docs/index.rst",
+    "target": "notebooks/arfs_shap_vs_fastshap.ipynb",
+    "exists": true
+  },
+  {
+    "from": "docs/index.rst",
+    "target": "notebooks/arfs_grootcv_custom_params.ipynb",
+    "exists": true
+  },
+  {
+    "from": "docs/index.rst",
+    "target": "notebooks/arfs_boruta_borutaShap_comparison.ipynb",
+    "exists": true
+  },
+  {
+    "from": "docs/index.rst",
+    "target": "notebooks/arfs_non_normal_loss_and_sample_weight.ipynb",
+    "exists": true
+  },
+  {
+    "from": "docs/index.rst",
+    "target": "notebooks/mrmr_feature_selection.ipynb",
+    "exists": true
+  },
+  {
+    "from": "docs/index.rst",
+    "target": "notebooks/mrmr_fs_VS_arfs.ipynb",
+    "exists": true
+  },
+  {
+    "from": "docs/index.rst",
+    "target": "notebooks/lasso_feature_selection.ipynb",
+    "exists": true
+  },
+  {
+    "from": "docs/index.rst",
+    "target": "notebooks/issue_categoricals.ipynb",
+    "exists": true
+  },
+  {
+    "from": "docs/index.rst",
+    "target": "notebooks/issue_collinearity.ipynb",
+    "exists": true
+  },
+  {
+    "from": "docs/modules.rst",
+    "target": "arfs",
+    "exists": true
+  },
+  {
+    "from": "docs/Makefile and docs/make.bat",
+    "target": "docs/source/conf.py",
+    "exists": false
+  },
+  {
+    "from": "docs/arfs.rst",
+    "module": "arfs.association",
+    "exists": true
+  },
+  {
+    "from": "docs/arfs.rst",
+    "module": "arfs.benchmark",
+    "exists": true
+  },
+  {
+    "from": "docs/arfs.rst",
+    "module": "arfs.gbm",
+    "exists": true
+  },
+  {
+    "from": "docs/arfs.rst",
+    "module": "arfs.parallel",
+    "exists": true
+  },
+  {
+    "from": "docs/arfs.rst",
+    "module": "arfs.preprocessing",
+    "exists": true
+  },
+  {
+    "from": "docs/arfs.rst",
+    "module": "arfs.sampling",
+    "exists": true
+  },
+  {
+    "from": "docs/arfs.rst",
+    "module": "arfs.utils",
+    "exists": true
+  },
+  {
+    "from": "docs/arfs.rst",
+    "module": "arfs",
+    "exists": true
+  },
+  {
+    "from": "docs/arfs.feature_selection.rst",
+    "module": "arfs.feature_selection.allrelevant",
+    "exists": true
+  },
+  {
+    "from": "docs/arfs.feature_selection.rst",
+    "module": "arfs.feature_selection.base",
+    "exists": true
+  },
+  {
+    "from": "docs/arfs.feature_selection.rst",
+    "module": "arfs.feature_selection.lasso",
+    "exists": true
+  },
+  {
+    "from": "docs/arfs.feature_selection.rst",
+    "module": "arfs.feature_selection.mrmr",
+    "exists": true
+  },
+  {
+    "from": "docs/arfs.feature_selection.rst",
+    "module": "arfs.feature_selection.summary",
+    "exists": true
+  },
+  {
+    "from": "docs/arfs.feature_selection.rst",
+    "module": "arfs.feature_selection.unsupervised",
+    "exists": true
+  },
+  {
+    "from": "docs/arfs.feature_selection.rst",
+    "module": "arfs.feature_selection.variable_importance",
+    "exists": true
+  },
+  {
+    "from": "docs/arfs.feature_selection.rst",
+    "module": "arfs.feature_selection",
+    "exists": true
+  }
+]

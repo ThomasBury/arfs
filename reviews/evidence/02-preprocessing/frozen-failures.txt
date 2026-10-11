@@ -1,0 +1,397 @@
+....FFFF..FFFFFFFFFFFFF....FFF..FFFFFF.F                                 [100%]
+=================================== FAILURES ===================================
+_______________ test_ordinal_feature_names_describe_full_output ________________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:95: in test_ordinal_feature_names_describe_full_output
+    assert_array_equal(encoder.get_feature_names_out(), encoder.transform(X).columns)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError: 
+E   Arrays are not equal
+E   
+E   (shapes (1,), (2,) mismatch)
+E    ACTUAL: array(['cat'], dtype=object)
+E    DESIRED: array(['cat', 'num'], dtype=object)
+_______________________ test_ordinal_pandas_output_mode ________________________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:101: in test_ordinal_pandas_output_mode
+    actual = OrdinalEncoderPandas().set_output(transform='pandas').fit_transform(X)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/preprocessing.py:211: in fit_transform
+    return self.transform(X)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/sklearn/utils/_set_output.py:332: in wrapped
+    return _wrap_data_with_container(method, data_to_wrap, X, self)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/sklearn/utils/_set_output.py:307: in _wrap_data_with_container
+    return adapter.create_container(
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/sklearn/utils/_set_output.py:140: in create_container
+    return self.rename_columns(X_output, columns)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/sklearn/utils/_set_output.py:150: in rename_columns
+    X.columns = columns
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/generic.py:6313: in __setattr__
+    return object.__setattr__(self, name, value)
+properties.pyx:69: in pandas._libs.properties.AxisProperty.__set__
+    ???
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/generic.py:814: in _set_axis
+    self._mgr.set_axis(axis, labels)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/internals/managers.py:238: in set_axis
+    self._validate_set_axis(axis, new_labels)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/internals/base.py:98: in _validate_set_axis
+    raise ValueError(
+E   ValueError: Length mismatch: Expected axis has 2 elements, new values have 1 elements
+_____________________ test_ordinal_inverse_preserves_input _____________________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:112: in test_ordinal_inverse_preserves_input
+    assert_frame_equal(encoded, before)
+E   AssertionError: Attributes of DataFrame.iloc[:, 0] (column name="cat") are different
+E   
+E   Attribute "dtype" are different
+E   [left]:  object
+E   [right]: float64
+________________________ test_ordinal_set_params_dtype _________________________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:119: in test_ordinal_set_params_dtype
+    assert actual.cat.dtype == np.dtype('float32')
+E   AssertionError: assert dtype('float64') == dtype('float32')
+E    +  where dtype('float64') = 0      0.0\n1      1.0\n2      2.0\n3      3.0\n4      0.0\n      ... \n235    3.0\n236    0.0\n237    1.0\n238    2.0\n239    3.0\nName: cat, Length: 240, dtype: float64.dtype
+E    +    where 0      0.0\n1      1.0\n2      2.0\n3      3.0\n4      0.0\n      ... \n235    3.0\n236    0.0\n237    1.0\n238    2.0\n239    3.0\nName: cat, Length: 240, dtype: float64 =      cat\n0    0.0\n1    1.0\n2    2.0\n3    3.0\n4    0.0\n..   ...\n235  3.0\n236  0.0\n237  1.0\n238  2.0\n239  3.0\n\n[240 rows x 1 columns].cat
+E    +  and   dtype('float32') = <class 'numpy.dtype'>('float32')
+E    +    where <class 'numpy.dtype'> = np.dtype
+__________ test_tree_bins_preserve_fitted_leaf_partition[regression] ___________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:161: in test_tree_bins_preserve_fitted_leaf_partition
+    assert_array_equal(leaves[:, None] == leaves[None, :], bins[:, None] == bins[None, :])
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError: 
+E   Arrays are not equal
+E   
+E   Mismatched elements: 3198 / 57600 (5.55%)
+E    ACTUAL: array([[ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],...
+E    DESIRED: array([[ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],...
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+________ test_tree_bins_preserve_fitted_leaf_partition[classification] _________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:161: in test_tree_bins_preserve_fitted_leaf_partition
+    assert_array_equal(leaves[:, None] == leaves[None, :], bins[:, None] == bins[None, :])
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError: 
+E   Arrays are not equal
+E   
+E   Mismatched elements: 26034 / 57600 (45.2%)
+E    ACTUAL: array([[ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],...
+E    DESIRED: array([[ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],...
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'binary' as metric.
+Training up to 1 boosting rounds.
+_____________ test_tree_bins_preserve_leaf_between_observed_values _____________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:172: in test_tree_bins_preserve_leaf_between_observed_values
+    assert result.x.iloc[0] == result.x.iloc[1]
+E   AssertionError: assert Interval(79.0, 120.0, closed='right') == Interval(120.0, 160.0, closed='right')
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+______ test_tree_generated_column_name_cannot_change_another_feature_fit _______
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:181: in test_tree_generated_column_name_cannot_change_another_feature_fit
+    assert_allclose(together.tree_dic['x_g'].model.predict(X[['x_g']]),
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError: 
+E   Not equal to tolerance rtol=1e-07, atol=1e-12
+E   
+E   Mismatched elements: 240 / 240 (100%)
+E   Max absolute difference among violations: 2.30909086
+E   Max relative difference among violations: 3.84848472
+E    ACTUAL: array([-3.973643e-08,  1.937500e+00,  1.944444e+00,  2.909091e+00,
+E           2.909091e+00,  2.909091e+00,  2.909091e+00,  2.909091e+00,
+E           2.909091e+00,  2.909091e+00,  2.909091e+00,  2.909091e+00,...
+E    DESIRED: array([0.925   , 0.925   , 0.925   , 0.925   , 0.925   , 0.925   ,
+E          0.925   , 0.925   , 1.220339, 1.220339, 1.220339, 1.220339,
+E          1.220339, 1.220339, 1.220339, 1.220339, 1.220339, 1.220339,...
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+___________________ test_tree_updated_bin_limit_is_respected ___________________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:189: in test_tree_updated_bin_limit_is_respected
+    assert model.tree_dic['x'].model.dump_model()['tree_info'][0]['num_leaves'] <= 2
+E   assert 6 <= 2
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_____________________ test_tree_updated_task_is_respected ______________________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:196: in test_tree_updated_task_is_respected
+    assert model.tree_dic['x'].model.params['objective'] == 'binary'
+E   AssertionError: assert 'rmse' == 'binary'
+E     
+E     - binary
+E     + rmse
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_____________ test_tree_single_tree_contract_survives_boost_params _____________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:203: in test_tree_single_tree_contract_survives_boost_params
+    assert model.tree_dic['x'].model.num_trees() == 1
+E   AssertionError: assert 2 == 1
+E    +  where 2 = num_trees()
+E    +    where num_trees = <lightgbm.basic.Booster object at 0x743debaa1d00>.num_trees
+E    +      where <lightgbm.basic.Booster object at 0x743debaa1d00> = GradientBoosting(cat_feat=None, params={'num_threads': 1, 'min_data_in_leaf': 5, 'learning_rate': 1, 'verbosity': -1, ...t_round': 1, 'max_leaf': 6}, stratified=False, show_learning_curve=False, verbose_eval=50, return_valid_features=False).model
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 3 boosting rounds.
+_____________ test_tree_constructor_preserves_parameter_dictionary _____________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:210: in test_tree_constructor_preserves_parameter_dictionary
+    assert params == PARAMS
+E   AssertionError: assert {'learning_ra...ound': 1, ...} == {'learning_ra...seed': 8, ...}
+E     
+E     Omitting 5 identical items, use -vv to show
+E     Left contains 3 more items:
+E     {'max_leaf': 10, 'num_boost_round': 1, 'objective': 'rmse'}
+E     Use -v to get more diff
+_____________________ test_tree_refit_rediscovers_columns ______________________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:218: in test_tree_refit_rediscovers_columns
+    model.fit(new, y)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/preprocessing.py:525: in fit
+    self.bin_features, self.cat_features = self._determine_bin_and_cat_features(
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/preprocessing.py:566: in _determine_bin_and_cat_features
+    - set(list(X[bin_features].select_dtypes("number").columns))
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/frame.py:4108: in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/indexes/base.py:6200: in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/indexes/base.py:6249: in _raise_if_missing
+    raise KeyError(f"None of [{key}] are in the [{axis_name}]")
+E   KeyError: "None of [Index(['x'], dtype='object')] are in the [columns]"
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+________________________ test_tree_array_fit_transform _________________________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:225: in test_tree_array_fit_transform
+    result = discretizer().fit_transform(X.to_numpy(), y)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/sklearn/base.py:921: in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/preprocessing.py:684: in transform
+    X[col] = X[col].fillna(self.tree_imputer[col])
+E   IndexError: only integers, slices (`:`), ellipsis (`...`), numpy.newaxis (`None`) and integer or boolean arrays are valid indices
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_____________________ test_tree_raw_categorical_transform ______________________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:233: in test_tree_raw_categorical_transform
+    assert np.isfinite(model.transform(X).cat).all()
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/preprocessing.py:667: in transform
+    X[col] = self.tree_dic[col].predict(X[[col]])
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/gbm.py:362: in predict
+    y_pred_raw = self.model.predict(X)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/lightgbm/basic.py:4767: in predict
+    return predictor.predict(
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/lightgbm/basic.py:1158: in predict
+    data = _data_from_pandas(
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/lightgbm/basic.py:868: in _data_from_pandas
+    _pandas_to_numpy(data, target_dtype=target_dtype),
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/lightgbm/basic.py:814: in _pandas_to_numpy
+    _check_for_bad_pandas_dtypes(data.dtypes)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/lightgbm/basic.py:805: in _check_for_bad_pandas_dtypes
+    raise ValueError(
+E   ValueError: pandas dtypes must be int, float or bool.
+E   Fields with bad pandas dtypes: cat: object
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_________________ test_tree_existing_missing_sentinel_category _________________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:240: in test_tree_existing_missing_sentinel_category
+    assert discretizer().fit_transform(X, y).cat.notna().all()
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/sklearn/base.py:921: in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/preprocessing.py:532: in fit
+    X, self.ordinal_encoder_dic = self._encode_categorical_features(
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/preprocessing.py:588: in _encode_categorical_features
+    .cat.add_categories("missing_added")
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/accessor.py:112: in f
+    return self._delegate_method(name, *args, **kwargs)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/arrays/categorical.py:2941: in _delegate_method
+    res = method(*args, **kwargs)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/arrays/categorical.py:1330: in add_categories
+    raise ValueError(
+E   ValueError: new categories must not include old categories: {'missing_added'}
+____________________ test_tree_all_missing_numeric_feature _____________________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:247: in test_tree_all_missing_numeric_feature
+    assert discretizer().fit_transform(X, y).shape == X.shape
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/sklearn/base.py:921: in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/preprocessing.py:540: in fit
+    self._fit_tree_and_create_bins(X, col, y, sample_weight, is_categorical)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/preprocessing.py:640: in _fit_tree_and_create_bins
+    pred_values = tree.predict(np.expand_dims(non_nan_values, axis=1))
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/gbm.py:362: in predict
+    y_pred_raw = self.model.predict(X)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/lightgbm/basic.py:4767: in predict
+    return predictor.predict(
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/lightgbm/basic.py:1158: in predict
+    data = _data_from_pandas(
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/lightgbm/basic.py:834: in _data_from_pandas
+    raise ValueError("Input data must be 2 dimensional and non empty.")
+E   ValueError: Input data must be 2 dimensional and non empty.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+________________ test_interval_single_string_column[estimator] _________________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:280: in test_interval_single_string_column
+    assert pd.api.types.is_float_dtype(actual.interval)
+E   AssertionError: assert False
+E    +  where False = <function is_float_dtype at 0x743de044c220>(10    (0.0, 2.0]\n20    (2.0, 4.0]\nName: interval, dtype: interval)
+E    +    where <function is_float_dtype at 0x743de044c220> = <module 'pandas.api.types' from '/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/api/types/__init__.py'>.is_float_dtype
+E    +      where <module 'pandas.api.types' from '/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/api/types/__init__.py'> = <module 'pandas.api' from '/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/api/__init__.py'>.types
+E    +        where <module 'pandas.api' from '/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/api/__init__.py'> = pd.api
+E    +    and   10    (0.0, 2.0]\n20    (2.0, 4.0]\nName: interval, dtype: interval =       interval  num\n10  (0.0, 2.0]    1\n20  (2.0, 4.0]    2.interval
+_________________ test_interval_single_string_column[function] _________________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:280: in test_interval_single_string_column
+    assert pd.api.types.is_float_dtype(actual.interval)
+E   AssertionError: assert False
+E    +  where False = <function is_float_dtype at 0x743de044c220>(10    (0.0, 2.0]\n20    (2.0, 4.0]\nName: interval, dtype: interval)
+E    +    where <function is_float_dtype at 0x743de044c220> = <module 'pandas.api.types' from '/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/api/types/__init__.py'>.is_float_dtype
+E    +      where <module 'pandas.api.types' from '/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/api/types/__init__.py'> = <module 'pandas.api' from '/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/api/__init__.py'>.types
+E    +        where <module 'pandas.api' from '/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/api/__init__.py'> = pd.api
+E    +    and   10    (0.0, 2.0]\n20    (2.0, 4.0]\nName: interval, dtype: interval =       interval  num\n10  (0.0, 2.0]    1\n20  (2.0, 4.0]    2.interval
+_____________________________ test_interval_refit ______________________________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:287: in test_interval_refit
+    model.fit(X)
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/preprocessing.py:766: in fit
+    if self.cols == "all":
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+_______ test_patsy_raise_policy_also_applies_during_transform[dataframe] _______
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:313: in test_patsy_raise_policy_also_applies_during_transform
+    with pytest.raises(PatsyError, match='missing'):
+E   Failed: DID NOT RAISE <class 'patsy.PatsyError'>
+________ test_patsy_raise_policy_also_applies_during_transform[ndarray] ________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:313: in test_patsy_raise_policy_also_applies_during_transform
+    with pytest.raises(PatsyError, match='missing'):
+E   Failed: DID NOT RAISE <class 'patsy.PatsyError'>
+________________________ test_patsy_add_intercept_false ________________________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:320: in test_patsy_add_intercept_false
+    assert list(result.columns) == ['x']
+E   AssertionError: assert ['Intercept', 'x'] == ['x']
+E     
+E     At index 0 diff: 'Intercept' != 'x'
+E     Left contains one more item: 'x'
+E     Use -v to get more diff
+_________________________ test_patsy_named_dictionary __________________________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:325: in test_patsy_named_dictionary
+    result = without_patsy_error(lambda: PatsyTransformer('x').fit_transform({'x': [1., 2.]}))
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:58: in without_patsy_error
+    assert error is None, error
+E   AssertionError: Error evaluating factor: NameError: name 'x' is not defined
+E         x
+E         ^
+E   assert "Error evaluating factor: NameError: name 'x' is not defined\n    x\n    ^" is None
+__________________________ test_patsy_array_transform __________________________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:333: in test_patsy_array_transform
+    assert without_patsy_error(lambda: model.transform(X)).shape[0] == len(X)
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:58: in without_patsy_error
+    assert error is None, error
+E   AssertionError: Error evaluating factor: IndexError: only integers, slices (`:`), ellipsis (`...`), numpy.newaxis (`None`) and integer or boolean arrays are valid indices
+E         pred_0 + pred_1
+E         ^^^^^^
+E   assert 'Error evaluating factor: IndexError: only integers, slices (`:`), ellipsis (`...`), numpy.newaxis (`None`) and integer or boolean arrays are valid indices\n    pred_0 + pred_1\n    ^^^^^^' is None
+________________ test_patsy_refit_rediscovers_automatic_formula ________________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:339: in test_patsy_refit_rediscovers_automatic_formula
+    result = without_patsy_error(lambda: model.fit_transform(pd.DataFrame({'z': [3., 4.]})))
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:58: in without_patsy_error
+    assert error is None, error
+E   AssertionError: Error evaluating factor: NameError: name 'x' is not defined
+E         x
+E         ^
+E   assert "Error evaluating factor: NameError: name 'x' is not defined\n    x\n    ^" is None
+___________ test_cat_var_missing_is_distinct_from_observed_category ____________
+/home/bsatom/Documents/arfs/reviews/evidence/02-preprocessing/checks.py:353: in test_cat_var_missing_is_distinct_from_observed_category
+    assert result.cat.iloc[0] != result.cat.iloc[1]
+E   assert 0 != 0
+----------------------------- Captured stderr call -----------------------------
+
+  0%|          | 0/1 [00:00<?, ?it/s]
+Processing cat                           :   0%|          | 0/1 [00:00<?, ?it/s]
+Processing cat                           : 100%|██████████| 1/1 [00:00<00:00, 703.86it/s]
+=============================== warnings summary ===============================
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+    from pkg_resources import resource_filename
+
+checks.py: 31 warnings
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/gbm.py:348: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.
+    warnings.warn(
+
+checks.py::test_tree_categorical_missing_unknown_and_input_preservation
+checks.py::test_tree_raw_categorical_transform
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/preprocessing.py:621: DeprecationWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+    .apply(
+
+checks.py::test_interval_public_midpoints[estimator]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/preprocessing.py:793: FutureWarning: Setting an item of incompatible dtype is deprecated and will raise in a future error of pandas. Value '[1. 3.]' has dtype incompatible with interval[float64, right], please explicitly cast to a compatible dtype first.
+    X.loc[:, c] = find_interval_midpoint(X[c])
+
+checks.py::test_interval_public_midpoints[function]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/preprocessing.py:850: FutureWarning: Setting an item of incompatible dtype is deprecated and will raise in a future error of pandas. Value '[1. 3.]' has dtype incompatible with interval[float64, right], please explicitly cast to a compatible dtype first.
+    X.loc[:, c] = find_interval_midpoint(X[c])
+
+checks.py::test_tree_midpoint_pipeline
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/preprocessing.py:793: FutureWarning: Setting an item of incompatible dtype is deprecated and will raise in a future error of pandas. Value '[ 79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.
+    79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.
+    79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.
+    79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.
+    79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.
+    79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.   79.
+    79.   79.   79.   79.   79.   79.   79.   79.   99.5  99.5  99.5  99.5
+    99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5
+    99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5
+    99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5  99.5
+    99.5 140.  140.  140.  140.  140.  140.  140.  140.  140.  140.  140.
+   140.  140.  140.  140.  140.  140.  140.  140.  140.  140.  140.  140.
+   140.  140.  140.  140.  140.  140.  140.  140.  140.  140.  140.  140.
+   140.  140.  140.  140.  140.  179.  179.  179.  179.  179.  179.  179.
+   179.  179.  179.  179.  179.  179.  179.  179.  179.  179.  179.  179.
+   179.  179.  179.  179.  179.  179.  179.  179.  179.  179.  179.  179.
+   179.  179.  179.  179.  179.  179.  179.  198.  198.  198.  198.  198.
+   198.  198.  198.  198.  198.  198.  198.  198.  198.  198.  198.  198.
+   198.  198.  198.  198.  198.  198.  198.  198.  198.  198.  198.  198.
+   198.  198.  198.  198.  198.  198.  198.  198.  198.  198.  198.  198. ]' has dtype incompatible with interval[float64, right], please explicitly cast to a compatible dtype first.
+    X.loc[:, c] = find_interval_midpoint(X[c])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+27 failed, 13 passed, 37 warnings in 5.48s

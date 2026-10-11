@@ -1,0 +1,94 @@
+{
+  "review_date": "2026-10-11",
+  "commit": "03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2",
+  "python": "3.12.7 (main, Oct  8 2024, 00:20:25) [Clang 18.1.8 ]",
+  "executable": "/tmp/arfs-review-03f67d0/wheel-env/bin/python",
+  "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+  "versions": {
+    "arfs": "3.0.0",
+    "autocommand": "2.2.2",
+    "backports.tarfile": "1.2.0",
+    "cloudpickle": "3.1.2",
+    "contourpy": "1.4.0",
+    "coverage": "7.16.2",
+    "cycler": "0.12.1",
+    "fonttools": "4.66.1",
+    "formulaic": "1.2.2",
+    "importlib_metadata": "8.0.0",
+    "inflect": "7.3.1",
+    "iniconfig": "2.3.1",
+    "interface_meta": "2.0.1",
+    "jaraco.collections": "5.1.0",
+    "jaraco.context": "5.3.0",
+    "jaraco.functools": "4.0.1",
+    "jaraco.text": "3.12.1",
+    "joblib": "1.6.0",
+    "kiwisolver": "1.5.1",
+    "lightgbm": "4.7.0",
+    "matplotlib": "3.11.2",
+    "more-itertools": "10.3.0",
+    "narwhals": "2.27.1",
+    "numpy": "2.5.4",
+    "packaging": "26.3",
+    "pandas": "3.0.6",
+    "patsy": "1.0.3",
+    "pillow": "12.3.0",
+    "platformdirs": "4.2.2",
+    "pluggy": "1.6.0",
+    "pygments": "2.21.0",
+    "pyparsing": "3.3.3",
+    "pytest": "9.1.1",
+    "pytest-cov": "7.1.0",
+    "python-dateutil": "2.9.0.post0",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1",
+    "seaborn": "0.13.2",
+    "setuptools": "80.9.0",
+    "shap": "0.53.0",
+    "six": "1.17.0",
+    "slicer": "0.0.8",
+    "statsmodels": "0.15.0",
+    "threadpoolctl": "3.7.0",
+    "tomli": "2.0.1",
+    "tqdm": "4.70.1",
+    "typeguard": "4.3.0",
+    "typing_extensions": "4.16.0",
+    "wheel": "0.45.1",
+    "wrapt": "2.5.0",
+    "zipp": "3.19.2"
+  },
+  "modules": {
+    "arfs.sampling": {
+      "installed_path": "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py",
+      "matches_checkout": true,
+      "sha256": "3cc49b8433a4be4851cbe21d3a4f996f89bef52a20ab4f3720ecba45cb0c09af"
+    },
+    "arfs.parallel": {
+      "installed_path": "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py",
+      "matches_checkout": true,
+      "sha256": "8338ff10d235b6ef6e79b5882f2bb5cb26ff624bec41b6fa0728e8d0809fbae4"
+    },
+    "arfs.association": {
+      "installed_path": "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py",
+      "matches_checkout": true,
+      "sha256": "46e5a5f8757fa8f3f810fc34a90723887d3693f455ca0ff66b6f8425c80bcc23"
+    },
+    "arfs.utils": {
+      "installed_path": "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py",
+      "matches_checkout": true,
+      "sha256": "4dcae037cea59e68884fc44d1be37b840c444ec4813c9cb39bc69ffebbaf38e4"
+    }
+  },
+  "notebook_sha256": "d3212b081aded2de959f8f3e1c22e3680cda45b262f7d248414e86417031b414",
+  "cpu_counts": {
+    "multiprocessing": 4,
+    "joblib": 4
+  },
+  "thread_settings": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "NUMBA_NUM_THREADS": "1"
+  },
+  "workaround": "Unit 0 setuptools==80.9.0 retained; no installs or ARFS patches in this unit"
+}

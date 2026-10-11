@@ -1,0 +1,934 @@
+Leshy iteration:   0%|          | 0/20 [00:00<?, ?it/s]Leshy iteration:  25%|██▌       | 5/20 [00:00<00:00, 43.98it/s]Leshy iteration:  50%|█████     | 10/20 [00:00<00:00, 47.03it/s]Leshy iteration:  80%|████████  | 16/20 [00:00<00:00, 49.67it/s]Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 48.86it/s]
+All relevant predictors selected in 00:00:00.42
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00, 16.30it/s]BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00, 11.32it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00, 13.34it/s]BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00,  9.01it/s]
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[32]	training's l2: 1.04141	valid_1's l2: 1.62331
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[73]	training's l2: 0.518983	valid_1's l2: 1.6019
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[137]	training's l2: 0.181907	valid_1's l2: 2.10825
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 18.67it/s]Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 18.64it/s]
+Leshy iteration:   0%|          | 0/20 [00:00<?, ?it/s]Leshy iteration:  25%|██▌       | 5/20 [00:00<00:00, 47.55it/s]Leshy iteration:  50%|█████     | 10/20 [00:00<00:00, 41.11it/s]Leshy iteration:  75%|███████▌  | 15/20 [00:00<00:00, 42.97it/s]Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 44.05it/s]Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 43.70it/s]
+All relevant predictors selected in 00:00:00.46
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00,  7.85it/s]BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00,  6.05it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:  33%|███▎      | 1/3 [00:00<00:00,  6.86it/s]
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[31]	training's l2: 1.12906	valid_1's l2: 1.59837
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[84]	training's l2: 0.428423	valid_1's l2: 2.17094
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[74]	training's l2: 0.485092	valid_1's l2: 2.29143
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 21.41it/s]Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 21.38it/s]
+Leshy iteration:   0%|          | 0/20 [00:00<?, ?it/s]Leshy iteration:  25%|██▌       | 5/20 [00:00<00:00, 48.28it/s]Leshy iteration:  50%|█████     | 10/20 [00:00<00:00, 47.77it/s]Leshy iteration:  75%|███████▌  | 15/20 [00:00<00:00, 48.38it/s]Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 48.22it/s]Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 48.16it/s]
+All relevant predictors selected in 00:00:00.42
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00, 13.23it/s]BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00,  9.59it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00, 14.98it/s]BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00, 10.19it/s]
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[49]	training's l2: 0.712417	valid_1's l2: 2.22468
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[45]	training's l2: 0.856849	valid_1's l2: 1.50589
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[66]	training's l2: 0.452008	valid_1's l2: 2.50097
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 26.44it/s]Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 26.39it/s]
+Leshy iteration:   0%|          | 0/20 [00:00<?, ?it/s]Leshy iteration:  25%|██▌       | 5/20 [00:00<00:00, 48.42it/s]Leshy iteration:  50%|█████     | 10/20 [00:00<00:00, 46.66it/s]Leshy iteration:  80%|████████  | 16/20 [00:00<00:00, 49.13it/s]Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 49.18it/s]
+All relevant predictors selected in 00:00:00.41
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00, 15.23it/s]BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00, 10.85it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00,  9.75it/s]BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00,  7.40it/s]
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[62]	training's l2: 0.517372	valid_1's l2: 1.59898
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[74]	training's l2: 0.385057	valid_1's l2: 2.47259
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[41]	training's l2: 0.749449	valid_1's l2: 1.78601
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 21.02it/s]Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 20.98it/s]
+Leshy iteration:   0%|          | 0/20 [00:00<?, ?it/s]Leshy iteration:  25%|██▌       | 5/20 [00:00<00:00, 48.77it/s]Leshy iteration:  50%|█████     | 10/20 [00:00<00:00, 49.09it/s]Leshy iteration:  75%|███████▌  | 15/20 [00:00<00:00, 48.27it/s]Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 47.47it/s]Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 47.88it/s]
+All relevant predictors selected in 00:00:00.42
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:  33%|███▎      | 1/3 [00:00<00:00,  8.00it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00, 14.96it/s]BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00, 10.50it/s]
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[52]	training's l2: 0.498212	valid_1's l2: 2.21657
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[37]	training's l2: 0.772518	valid_1's l2: 1.49648
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[44]	training's l2: 0.679904	valid_1's l2: 1.03898
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 29.94it/s]Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 29.87it/s]
+Leshy iteration:   0%|          | 0/20 [00:00<?, ?it/s]Leshy iteration:  25%|██▌       | 5/20 [00:00<00:00, 46.73it/s]Leshy iteration:  50%|█████     | 10/20 [00:00<00:00, 46.90it/s]Leshy iteration:  75%|███████▌  | 15/20 [00:00<00:00, 47.33it/s]Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 47.95it/s]Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 47.59it/s]
+All relevant predictors selected in 00:00:00.43
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:  33%|███▎      | 1/3 [00:00<00:00,  7.70it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:  33%|███▎      | 1/3 [00:00<00:00,  7.64it/s]
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's l2: 1.01	valid_1's l2: 1.21912
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[2]	training's l2: 1.13123	valid_1's l2: 0.943146
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[2]	training's l2: 1.00791	valid_1's l2: 1.14686
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 59.34it/s]
+Leshy iteration:   0%|          | 0/20 [00:00<?, ?it/s]Leshy iteration:  25%|██▌       | 5/20 [00:00<00:00, 44.09it/s]Leshy iteration:  50%|█████     | 10/20 [00:00<00:00, 42.39it/s]Leshy iteration:  75%|███████▌  | 15/20 [00:00<00:00, 44.51it/s]Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 46.23it/s]Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 45.23it/s]
+All relevant predictors selected in 00:00:00.45
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00, 16.49it/s]BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00, 11.07it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[13]	training's l2: 0.743045	valid_1's l2: 1.04521
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[4]	training's l2: 0.933995	valid_1's l2: 1.07744
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[3]	training's l2: 0.984307	valid_1's l2: 1.10359
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 55.77it/s]
+Leshy iteration:   0%|          | 0/20 [00:00<?, ?it/s]Leshy iteration:  30%|███       | 6/20 [00:00<00:00, 55.08it/s]Leshy iteration:  60%|██████    | 12/20 [00:00<00:00, 55.26it/s]Leshy iteration:  80%|████████  | 16/20 [00:00<00:00, 55.45it/s]
+All relevant predictors selected in 00:00:00.29
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00, 18.73it/s]BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00, 12.97it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[7]	training's l2: 0.818189	valid_1's l2: 1.06523
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's l2: 0.946456	valid_1's l2: 1.0941
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[4]	training's l2: 0.947421	valid_1's l2: 0.875334
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 64.81it/s]
+Leshy iteration:   0%|          | 0/20 [00:00<?, ?it/s]Leshy iteration:  30%|███       | 6/20 [00:00<00:00, 53.36it/s]Leshy iteration:  60%|██████    | 12/20 [00:00<00:00, 53.06it/s]Leshy iteration:  90%|█████████ | 18/20 [00:00<00:00, 53.69it/s]Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 53.37it/s]
+All relevant predictors selected in 00:00:00.38
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:  33%|███▎      | 1/3 [00:00<00:00,  8.87it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's l2: 1.11683	valid_1's l2: 0.793624
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's l2: 0.935057	valid_1's l2: 1.19014
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's l2: 0.935368	valid_1's l2: 1.15998
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 55.34it/s]
+Leshy iteration:   0%|          | 0/20 [00:00<?, ?it/s]Leshy iteration:  30%|███       | 6/20 [00:00<00:00, 51.05it/s]Leshy iteration:  60%|██████    | 12/20 [00:00<00:00, 53.62it/s]Leshy iteration:  90%|█████████ | 18/20 [00:00<00:00, 50.14it/s]Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 51.14it/s]
+All relevant predictors selected in 00:00:00.40
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:  33%|███▎      | 1/3 [00:00<00:00,  9.21it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:  33%|███▎      | 1/3 [00:00<00:00,  8.48it/s]
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[10]	training's l2: 0.63105	valid_1's l2: 1.07287
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's l2: 0.918315	valid_1's l2: 0.82295
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[2]	training's l2: 0.880145	valid_1's l2: 0.813515
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 60.63it/s]
+Leshy iteration:   0%|          | 0/20 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  25%|██▌       | 5/20 [00:00<00:00, 44.31it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  50%|█████     | 10/20 [00:00<00:00, 45.39it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  75%|███████▌  | 15/20 [00:00<00:00, 46.65it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  80%|████████  | 16/20 [00:00<00:00, 45.87it/s]
+All relevant predictors selected in 00:00:00.35
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+BoostaGRoota round:  33%|███▎      | 1/3 [00:00<00:00,  6.57it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+BoostaGRoota round:  33%|███▎      | 1/3 [00:00<00:00,  5.47it/s]
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[66]	training's binary_logloss: 0.0496872	valid_1's binary_logloss: 0.231282
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[69]	training's binary_logloss: 0.0529046	valid_1's binary_logloss: 0.196342
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Cross Validation:  67%|██████▋   | 2/3 [00:00<00:00, 17.57it/s]Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[77]	training's binary_logloss: 0.0380736	valid_1's binary_logloss: 0.20083
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 18.45it/s]
+Leshy iteration:   0%|          | 0/20 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  25%|██▌       | 5/20 [00:00<00:00, 40.67it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  50%|█████     | 10/20 [00:00<00:00, 43.18it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  75%|███████▌  | 15/20 [00:00<00:00, 44.58it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 44.26it/s]Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 43.86it/s]
+All relevant predictors selected in 00:00:00.46
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+BoostaGRoota round:  33%|███▎      | 1/3 [00:00<00:00,  7.17it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[73]	training's binary_logloss: 0.0513184	valid_1's binary_logloss: 0.198175
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[31]	training's binary_logloss: 0.128644	valid_1's binary_logloss: 0.358413
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[49]	training's binary_logloss: 0.0934822	valid_1's binary_logloss: 0.25671
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 22.91it/s]Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 22.87it/s]
+Leshy iteration:   0%|          | 0/20 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  25%|██▌       | 5/20 [00:00<00:00, 43.82it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  50%|█████     | 10/20 [00:00<00:00, 28.84it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  75%|███████▌  | 15/20 [00:00<00:00, 34.44it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 38.61it/s]Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 36.61it/s]
+All relevant predictors selected in 00:00:00.55
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+BoostaGRoota round:  33%|███▎      | 1/3 [00:00<00:00,  7.98it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00, 14.75it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00,  9.84it/s]
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[35]	training's binary_logloss: 0.124823	valid_1's binary_logloss: 0.224965
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[46]	training's binary_logloss: 0.0935948	valid_1's binary_logloss: 0.263205
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[130]	training's binary_logloss: 0.0125679	valid_1's binary_logloss: 0.174299
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 18.81it/s]Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 18.79it/s]
+Leshy iteration:   0%|          | 0/20 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  20%|██        | 4/20 [00:00<00:00, 36.50it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  45%|████▌     | 9/20 [00:00<00:00, 41.36it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  70%|███████   | 14/20 [00:00<00:00, 42.92it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  80%|████████  | 16/20 [00:00<00:00, 41.98it/s]
+All relevant predictors selected in 00:00:00.39
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+BoostaGRoota round:  33%|███▎      | 1/3 [00:00<00:00,  7.40it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+BoostaGRoota round:  33%|███▎      | 1/3 [00:00<00:00,  6.50it/s]
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[42]	training's binary_logloss: 0.096605	valid_1's binary_logloss: 0.31323
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[41]	training's binary_logloss: 0.111603	valid_1's binary_logloss: 0.241734
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[55]	training's binary_logloss: 0.0787059	valid_1's binary_logloss: 0.261337
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 25.34it/s]Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 25.29it/s]
+Leshy iteration:   0%|          | 0/20 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  25%|██▌       | 5/20 [00:00<00:00, 44.92it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  50%|█████     | 10/20 [00:00<00:00, 44.08it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  75%|███████▌  | 15/20 [00:00<00:00, 44.95it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 45.56it/s]Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 45.20it/s]
+All relevant predictors selected in 00:00:00.45
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+BoostaGRoota round:  33%|███▎      | 1/3 [00:00<00:00,  7.57it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+BoostaGRoota round:  33%|███▎      | 1/3 [00:00<00:00,  7.14it/s]
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[50]	training's binary_logloss: 0.0818335	valid_1's binary_logloss: 0.277502
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[48]	training's binary_logloss: 0.0922461	valid_1's binary_logloss: 0.248558
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[22]	training's binary_logloss: 0.164167	valid_1's binary_logloss: 0.341326
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 31.57it/s]
+Leshy iteration:   0%|          | 0/20 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  25%|██▌       | 5/20 [00:00<00:00, 46.58it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  50%|█████     | 10/20 [00:00<00:00, 35.61it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  75%|███████▌  | 15/20 [00:00<00:00, 39.52it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  80%|████████  | 16/20 [00:00<00:00, 39.84it/s]
+All relevant predictors selected in 00:00:00.41
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+BoostaGRoota round:  33%|███▎      | 1/3 [00:00<00:00,  8.04it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+BoostaGRoota round:  33%|███▎      | 1/3 [00:00<00:00,  7.54it/s]
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's binary_logloss: 0.677053	valid_1's binary_logloss: 0.701189
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's binary_logloss: 0.67732	valid_1's binary_logloss: 0.695688
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[3]	training's binary_logloss: 0.640034	valid_1's binary_logloss: 0.685119
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 64.23it/s]
+Leshy iteration:   0%|          | 0/20 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  25%|██▌       | 5/20 [00:00<00:00, 47.38it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  50%|█████     | 10/20 [00:00<00:00, 47.76it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  75%|███████▌  | 15/20 [00:00<00:00, 48.37it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 48.31it/s]Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 48.15it/s]
+All relevant predictors selected in 00:00:00.42
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+BoostaGRoota round:  33%|███▎      | 1/3 [00:00<00:00,  7.90it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[2]	training's binary_logloss: 0.661998	valid_1's binary_logloss: 0.692293
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[5]	training's binary_logloss: 0.628119	valid_1's binary_logloss: 0.696598
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[6]	training's binary_logloss: 0.61918	valid_1's binary_logloss: 0.676534
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 61.90it/s]
+Leshy iteration:   0%|          | 0/20 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  25%|██▌       | 5/20 [00:00<00:00, 48.80it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  50%|█████     | 10/20 [00:00<00:00, 48.96it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  60%|██████    | 12/20 [00:00<00:00, 49.14it/s]
+All relevant predictors selected in 00:00:00.25
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+BoostaGRoota round:  33%|███▎      | 1/3 [00:00<00:00,  8.24it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's binary_logloss: 0.663755	valid_1's binary_logloss: 0.697991
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[2]	training's binary_logloss: 0.652368	valid_1's binary_logloss: 0.689562
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[8]	training's binary_logloss: 0.565	valid_1's binary_logloss: 0.659262
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 60.19it/s]
+Leshy iteration:   0%|          | 0/20 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  25%|██▌       | 5/20 [00:00<00:00, 46.34it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  50%|█████     | 10/20 [00:00<00:00, 47.05it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  75%|███████▌  | 15/20 [00:00<00:00, 47.15it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 47.98it/s]Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 47.56it/s]
+All relevant predictors selected in 00:00:00.43
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+BoostaGRoota round:  33%|███▎      | 1/3 [00:00<00:00,  7.97it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+BoostaGRoota round:  33%|███▎      | 1/3 [00:00<00:00,  7.25it/s]
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's binary_logloss: 0.674847	valid_1's binary_logloss: 0.694062
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's binary_logloss: 0.672891	valid_1's binary_logloss: 0.693451
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's binary_logloss: 0.677742	valid_1's binary_logloss: 0.702149
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 58.57it/s]
+Leshy iteration:   0%|          | 0/20 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  25%|██▌       | 5/20 [00:00<00:00, 42.30it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  50%|█████     | 10/20 [00:00<00:00, 46.40it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration:  75%|███████▌  | 15/20 [00:00<00:00, 47.36it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Leshy iteration: 100%|██████████| 20/20 [00:00<00:00, 48.11it/s]
+All relevant predictors selected in 00:00:00.42
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00, 16.40it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+BoostaGRoota round:  67%|██████▋   | 2/3 [00:00<00:00, 11.31it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+BoostaGRoota round:  33%|███▎      | 1/3 [00:00<00:00,  7.73it/s]
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[4]	training's binary_logloss: 0.639303	valid_1's binary_logloss: 0.69566
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's binary_logloss: 0.675443	valid_1's binary_logloss: 0.688007
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's binary_logloss: 0.672775	valid_1's binary_logloss: 0.687476
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+  warnings.warn(
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 65.68it/s]

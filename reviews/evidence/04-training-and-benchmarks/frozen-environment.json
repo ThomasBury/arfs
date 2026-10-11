@@ -1,0 +1,92 @@
+{
+  "review_date": "2026-10-11",
+  "commit": "03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2",
+  "python": "3.12.7 (main, Oct  8 2024, 00:20:25) [Clang 18.1.8 ]",
+  "executable": "/tmp/arfs-review-03f67d0/locked-env/bin/python",
+  "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+  "versions": {
+    "arfs": "3.0.0",
+    "autocommand": "2.2.2",
+    "backports.tarfile": "1.2.0",
+    "cloudpickle": "3.1.1",
+    "contourpy": "1.3.0",
+    "coverage": "7.8.0",
+    "cycler": "0.12.1",
+    "fonttools": "4.56.0",
+    "importlib_metadata": "8.0.0",
+    "inflect": "7.3.1",
+    "iniconfig": "2.1.0",
+    "jaraco.collections": "5.1.0",
+    "jaraco.context": "5.3.0",
+    "jaraco.functools": "4.0.1",
+    "jaraco.text": "3.12.1",
+    "joblib": "1.4.2",
+    "kiwisolver": "1.4.7",
+    "lightgbm": "4.6.0",
+    "llvmlite": "0.43.0",
+    "matplotlib": "3.9.4",
+    "more-itertools": "10.3.0",
+    "numba": "0.60.0",
+    "numpy": "2.0.2",
+    "packaging": "24.2",
+    "pandas": "2.2.3",
+    "patsy": "1.0.1",
+    "pillow": "11.1.0",
+    "platformdirs": "4.2.2",
+    "pluggy": "1.5.0",
+    "pyparsing": "3.2.3",
+    "pytest": "8.3.5",
+    "pytest-cov": "6.0.0",
+    "python-dateutil": "2.9.0.post0",
+    "pytz": "2025.2",
+    "scikit-learn": "1.6.1",
+    "scipy": "1.13.1",
+    "seaborn": "0.13.2",
+    "setuptools": "80.9.0",
+    "shap": "0.47.1",
+    "six": "1.17.0",
+    "slicer": "0.0.8",
+    "statsmodels": "0.14.4",
+    "threadpoolctl": "3.6.0",
+    "tomli": "2.0.1",
+    "tqdm": "4.67.1",
+    "typeguard": "4.3.0",
+    "typing_extensions": "4.13.0",
+    "tzdata": "2025.2",
+    "wheel": "0.45.1",
+    "zipp": "3.19.2"
+  },
+  "modules": {
+    "arfs.gbm": {
+      "installed_path": "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/gbm.py",
+      "matches_checkout": true,
+      "sha256": "1aebbc71aa6873ab6ac23a69684a8311761dde88b6d66a5e90e3d9b3644bea62"
+    },
+    "arfs.benchmark": {
+      "installed_path": "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/benchmark.py",
+      "matches_checkout": true,
+      "sha256": "c596f7c220bc5d9ce3bc7c613e69cde43e3b5202f0c9a47f591630c0395ab8b4"
+    },
+    "arfs.utils": {
+      "installed_path": "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py",
+      "matches_checkout": true,
+      "sha256": "4dcae037cea59e68884fc44d1be37b840c444ec4813c9cb39bc69ffebbaf38e4"
+    },
+    "arfs.preprocessing": {
+      "installed_path": "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/preprocessing.py",
+      "matches_checkout": true,
+      "sha256": "b8ef4df216724173daaaf14afda273ec586572437f86defcbfb12ebafc643790"
+    },
+    "arfs.feature_selection.variable_importance": {
+      "installed_path": "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py",
+      "matches_checkout": true,
+      "sha256": "3370955a62c8fd057a5f5b547d1798ad57dd0f53ded8a509a0d0690166faeb03"
+    },
+    "arfs.feature_selection.allrelevant": {
+      "installed_path": "/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py",
+      "matches_checkout": true,
+      "sha256": "86c1be444b09ec1278f1685acaaee849a84642f5b3a207ab1126ba3051261c7c"
+    }
+  },
+  "workaround": "Unit 0 setuptools==80.9.0 retained; no installs or ARFS patches in this unit"
+}

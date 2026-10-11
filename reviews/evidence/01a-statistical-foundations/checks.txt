@@ -1,0 +1,120 @@
+...........xxxxxxxxxxxxxxxxxxxxxxxxx......                               [100%]
+=============================== warnings summary ===============================
+../arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+    from pkg_resources import resource_filename
+
+checks.py::test_theils_direction_hand_reference
+checks.py::test_parallel_mixed_matrix_and_series_agree
+checks.py::test_parallel_mixed_matrix_and_series_agree
+checks.py::test_mixed_singletons_can_be_selected[classification]
+checks.py::test_constant_categorical_relevance_zero
+checks.py::test_mrmr_rejects_constant_before_signal
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:225: RuntimeWarning: Rounded U = 1.0 to 1. This is probably due to floating point precision issues.
+    warnings.warn(
+
+checks.py::test_cramer_hand_reference
+checks.py::test_zero_weight_category_equivalent_to_removal[cramer_v]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:388: FutureWarning: The provided callable <built-in function sum> is currently using DataFrameGroupBy.sum. In a future version of pandas, the provided callable will be used directly. To keep current behavior pass the string "sum" instead.
+    weighted_tab = pd.crosstab(x, y, sample_weight, aggfunc=sum).fillna(0)
+
+checks.py: 11 warnings
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:1461: DeprecationWarning: Calling nonzero on 0d arrays is deprecated, as it behaves surprisingly. Use `atleast_1d(cond).nonzero()` if the old behavior was intended. If the context of this warning is of the form `arr[nonzero(cond)]`, just use `arr[cond]`.
+    constant_features_idx = np.where(msw == 0.0)[0]
+
+checks.py: 11 warnings
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/numpy/_core/fromnumeric.py:57: DeprecationWarning: Calling nonzero on 0d arrays is deprecated, as it behaves surprisingly. Use `atleast_1d(arr).nonzero()` if the old behavior was intended.
+    return bound(*args, **kwds)
+
+checks.py::test_mixed_singletons_can_be_selected[classification]
+checks.py::test_constant_categorical_matrix_and_collinearity
+checks.py::test_constant_categorical_matrix_and_collinearity
+checks.py::test_constant_categorical_matrix_and_collinearity
+checks.py::test_constant_categorical_matrix_and_collinearity
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:225: RuntimeWarning: Rounded U = 0.0 to 0. This is probably due to floating point precision issues.
+    warnings.warn(
+
+checks.py::test_equal_perfect_predictors_do_not_empty_selection
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/numpy/_core/_methods.py:52: RuntimeWarning: overflow encountered in reduce
+    return umr_sum(a, axis, dtype, out, keepdims, initial, where)
+
+checks.py::test_constant_categorical_relevance_zero
+checks.py::test_mrmr_rejects_constant_before_signal
+checks.py::test_mrmr_rejects_constant_before_signal
+checks.py::test_constant_categorical_matrix_and_collinearity
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:2007: UserWarning: {'constant'} columns have been removed (single unique values)
+    warnings.warn(
+
+checks.py::test_mrmr_rejects_constant_before_signal
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/pandas/core/nanops.py:1016: RuntimeWarning: overflow encountered in square
+    sqr = _ensure_numeric((avg - values) ** 2)
+
+checks.py::test_normalized_pearson_matrix_matches_pair
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:1047: RuntimeWarning: divide by zero encountered in divide
+    weighted_std = np.sqrt(sum_of_squares / (sum_weights - ddof))
+
+checks.py::test_normalized_pearson_matrix_matches_pair
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:1049: RuntimeWarning: divide by zero encountered in divide
+    weighted_cov /= sum_weights - ddof
+
+checks.py::test_normalized_pearson_matrix_matches_pair
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:1051: RuntimeWarning: invalid value encountered in divide
+    weighted_cov / weighted_std / weighted_std[:, None],
+
+checks.py::test_invalid_weights_rejected[zero]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:762: RuntimeWarning: invalid value encountered in scalar divide
+    return np.sum(x * w) / np.sum(w)
+
+checks.py::test_zero_weight_category_equivalent_to_removal[correlation_ratio]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:553: RuntimeWarning: invalid value encountered in scalar divide
+    ssbn = sum(np.square(s) / w for s, w in zip(sums_args, weight_per_class))
+
+checks.py::test_zero_weight_category_equivalent_to_removal[f_cat_regression]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:1454: RuntimeWarning: invalid value encountered in scalar divide
+    ssbn += square_of_sums_args[k] / weight_per_class[k]
+
+checks.py::test_no_complete_rows_rejected
+checks.py::test_no_complete_rows_rejected
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:2007: UserWarning: {'y'} columns have been removed (single unique values)
+    warnings.warn(
+
+checks.py::test_no_complete_rows_rejected
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:802: RuntimeWarning: invalid value encountered in scalar divide
+    return wcov(x, y, w) / np.sqrt(wcov(x, x, w) * wcov(y, y, w))
+
+checks.py::test_grouped_statistics_translation_invariant[f_cat_regression]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:1463: UserWarning: Features [0] are constant.
+    warnings.warn("Features %s are constant." % constant_features_idx, UserWarning)
+
+checks.py::test_grouped_statistics_translation_invariant[f_cat_regression]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py:1464: RuntimeWarning: invalid value encountered in scalar divide
+    f = msb / msw
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_mixed_singletons_can_be_selected[regression] - F1: separate z-scores erase singleton predictor types
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_mixed_singletons_can_be_selected[classification] - F1: separate z-scores erase singleton predictor types
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_equal_perfect_predictors_do_not_empty_selection - F1: perfect equal relevances become NaN and disappear
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_default_relevance_is_nonnegative - F1: negative relevance reverses the redundancy penalty
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_mrmr_does_not_prefer_exact_negative_duplicate - F2: min-max normalization erases perfect negative redundancy
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_numeric_f_linear_reference - F3: linear regression F uses Spearman instead of Pearson
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_numeric_f_drop_equals_manual_filter - F3: regression degrees of freedom count dropped rows
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_constant_categorical_relevance_zero - F4: a constant categorical predictor gets maximum relevance
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_mrmr_rejects_constant_before_signal - F4: default MRMR can select the constant first
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_constant_categorical_matrix_and_collinearity - F5: constant Theil U returns scalar despite as_frame=True
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_normalized_pearson_matrix_matches_pair - F6: sum(weights)-1 breaks Pearson with normalized weights
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_fractional_weights_do_not_return_negative_f - F7: grouped F can be negative for positive fractional weights
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_numeric_f_frequency_replication - F7: numeric relevance violates frequency replication unlike ANOVA
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_invalid_weights_rejected[zero] - F8: input boundary accepts invalid weights
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_invalid_weights_rejected[negative] - F8: input boundary accepts invalid weights
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_list_weights_supported - F8: documented array-like list weights cannot be masked
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_zero_weight_category_equivalent_to_removal[correlation_ratio] - F9: a zero-weight category changes grouped statistics
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_zero_weight_category_equivalent_to_removal[f_cat_regression] - F9: a zero-weight category changes grouped statistics
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_zero_weight_category_equivalent_to_removal[cramer_v] - F9: a zero-weight category changes grouped statistics
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_no_complete_rows_rejected - F10: no complete rows are retained and reported as zero association
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_handle_na_none_passes_target_missingness_to_callable - F10: inner series helper ignores handle_na=None
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_grouped_statistics_translation_invariant[correlation_ratio] - F11: subtracting large uncentered squares destroys variation
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_grouped_statistics_translation_invariant[f_cat_regression] - F11: subtracting large uncentered squares destroys variation
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_feature_named_target_retained - F12: temporary target column overwrites a real predictor
+XFAIL ../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_boolean_series_matches_categorical_matrix - F13: boolean routing disagrees with shared dtype classifier
+17 passed, 25 xfailed, 53 warnings in 10.07s

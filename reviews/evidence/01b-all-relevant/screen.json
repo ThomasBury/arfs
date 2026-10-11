@@ -1,0 +1,1676 @@
+[
+  {
+    "task": "regression",
+    "scenario": "signal",
+    "seed": 0,
+    "selector": "Leshy",
+    "selected": [
+      "x0",
+      "x1"
+    ],
+    "true_selected": 2,
+    "false_selected": 0,
+    "test_score": 0.8716806636460948,
+    "baselines": {
+      "dummy": -0.0057474520789502215,
+      "all": 0.8693428548031914,
+      "univariate_top2": 0.8716806636460948,
+      "oracle": 0.8716806636460948
+    },
+    "selection_and_evaluation_seconds": 0.4285153460223228
+  },
+  {
+    "task": "regression",
+    "scenario": "signal",
+    "seed": 0,
+    "selector": "BoostAGroota_cutoff1",
+    "selected": [
+      "x0",
+      "x1"
+    ],
+    "true_selected": 2,
+    "false_selected": 0,
+    "test_score": 0.8716806636460948,
+    "baselines": {
+      "dummy": -0.0057474520789502215,
+      "all": 0.8693428548031914,
+      "univariate_top2": 0.8716806636460948,
+      "oracle": 0.8716806636460948
+    },
+    "selection_and_evaluation_seconds": 0.18872537097195163
+  },
+  {
+    "task": "regression",
+    "scenario": "signal",
+    "seed": 0,
+    "selector": "BoostAGroota_cutoff4",
+    "selected": [
+      "x0",
+      "x1",
+      "x3",
+      "x7"
+    ],
+    "true_selected": 2,
+    "false_selected": 2,
+    "test_score": 0.8693363124129629,
+    "baselines": {
+      "dummy": -0.0057474520789502215,
+      "all": 0.8693428548031914,
+      "univariate_top2": 0.8716806636460948,
+      "oracle": 0.8716806636460948
+    },
+    "selection_and_evaluation_seconds": 0.2346584009937942
+  },
+  {
+    "task": "regression",
+    "scenario": "signal",
+    "seed": 0,
+    "selector": "GrootCV",
+    "selected": [
+      "x0",
+      "x1"
+    ],
+    "true_selected": 2,
+    "false_selected": 0,
+    "test_score": 0.8716806636460948,
+    "baselines": {
+      "dummy": -0.0057474520789502215,
+      "all": 0.8693428548031914,
+      "univariate_top2": 0.8716806636460948,
+      "oracle": 0.8716806636460948
+    },
+    "selection_and_evaluation_seconds": 0.18286495003849268
+  },
+  {
+    "task": "regression",
+    "scenario": "signal",
+    "seed": 1,
+    "selector": "Leshy",
+    "selected": [
+      "x0",
+      "x1",
+      "x4",
+      "x6",
+      "x7"
+    ],
+    "true_selected": 2,
+    "false_selected": 3,
+    "test_score": 0.8730072353902087,
+    "baselines": {
+      "dummy": -0.0028064212993679227,
+      "all": 0.8730644338453115,
+      "univariate_top2": 0.8766530393529075,
+      "oracle": 0.8766530393529075
+    },
+    "selection_and_evaluation_seconds": 0.4750209149788134
+  },
+  {
+    "task": "regression",
+    "scenario": "signal",
+    "seed": 1,
+    "selector": "BoostAGroota_cutoff1",
+    "selected": [
+      "x0",
+      "x1",
+      "x6"
+    ],
+    "true_selected": 2,
+    "false_selected": 1,
+    "test_score": 0.8750317799017715,
+    "baselines": {
+      "dummy": -0.0028064212993679227,
+      "all": 0.8730644338453115,
+      "univariate_top2": 0.8766530393529075,
+      "oracle": 0.8766530393529075
+    },
+    "selection_and_evaluation_seconds": 0.3448188049951568
+  },
+  {
+    "task": "regression",
+    "scenario": "signal",
+    "seed": 1,
+    "selector": "BoostAGroota_cutoff4",
+    "selected": [
+      "x0",
+      "x1",
+      "x2",
+      "x4",
+      "x5",
+      "x6",
+      "x7"
+    ],
+    "true_selected": 2,
+    "false_selected": 5,
+    "test_score": 0.8730644338453115,
+    "baselines": {
+      "dummy": -0.0028064212993679227,
+      "all": 0.8730644338453115,
+      "univariate_top2": 0.8766530393529075,
+      "oracle": 0.8766530393529075
+    },
+    "selection_and_evaluation_seconds": 0.16039742500288412
+  },
+  {
+    "task": "regression",
+    "scenario": "signal",
+    "seed": 1,
+    "selector": "GrootCV",
+    "selected": [
+      "x0",
+      "x1",
+      "x6"
+    ],
+    "true_selected": 2,
+    "false_selected": 1,
+    "test_score": 0.8750317799017715,
+    "baselines": {
+      "dummy": -0.0028064212993679227,
+      "all": 0.8730644338453115,
+      "univariate_top2": 0.8766530393529075,
+      "oracle": 0.8766530393529075
+    },
+    "selection_and_evaluation_seconds": 0.163209630001802
+  },
+  {
+    "task": "regression",
+    "scenario": "signal",
+    "seed": 2,
+    "selector": "Leshy",
+    "selected": [
+      "x0",
+      "x1",
+      "x7"
+    ],
+    "true_selected": 2,
+    "false_selected": 1,
+    "test_score": 0.8907907672905111,
+    "baselines": {
+      "dummy": -0.001617032587926115,
+      "all": 0.8895660491395101,
+      "univariate_top2": 0.8917251074653019,
+      "oracle": 0.8917251074653019
+    },
+    "selection_and_evaluation_seconds": 0.43230728298658505
+  },
+  {
+    "task": "regression",
+    "scenario": "signal",
+    "seed": 2,
+    "selector": "BoostAGroota_cutoff1",
+    "selected": [
+      "x0",
+      "x1",
+      "x7"
+    ],
+    "true_selected": 2,
+    "false_selected": 1,
+    "test_score": 0.8907907672905111,
+    "baselines": {
+      "dummy": -0.001617032587926115,
+      "all": 0.8895660491395101,
+      "univariate_top2": 0.8917251074653019,
+      "oracle": 0.8917251074653019
+    },
+    "selection_and_evaluation_seconds": 0.22177886602003127
+  },
+  {
+    "task": "regression",
+    "scenario": "signal",
+    "seed": 2,
+    "selector": "BoostAGroota_cutoff4",
+    "selected": [
+      "x0",
+      "x1",
+      "x2",
+      "x4",
+      "x5",
+      "x7"
+    ],
+    "true_selected": 2,
+    "false_selected": 4,
+    "test_score": 0.889587456285555,
+    "baselines": {
+      "dummy": -0.001617032587926115,
+      "all": 0.8895660491395101,
+      "univariate_top2": 0.8917251074653019,
+      "oracle": 0.8917251074653019
+    },
+    "selection_and_evaluation_seconds": 0.2132891439832747
+  },
+  {
+    "task": "regression",
+    "scenario": "signal",
+    "seed": 2,
+    "selector": "GrootCV",
+    "selected": [
+      "x0",
+      "x1"
+    ],
+    "true_selected": 2,
+    "false_selected": 0,
+    "test_score": 0.8917251074653019,
+    "baselines": {
+      "dummy": -0.001617032587926115,
+      "all": 0.8895660491395101,
+      "univariate_top2": 0.8917251074653019,
+      "oracle": 0.8917251074653019
+    },
+    "selection_and_evaluation_seconds": 0.1349514839821495
+  },
+  {
+    "task": "regression",
+    "scenario": "signal",
+    "seed": 3,
+    "selector": "Leshy",
+    "selected": [
+      "x0",
+      "x1"
+    ],
+    "true_selected": 2,
+    "false_selected": 0,
+    "test_score": 0.8772579349700841,
+    "baselines": {
+      "dummy": -0.00973272290155447,
+      "all": 0.872750975665368,
+      "univariate_top2": 0.8772579349700841,
+      "oracle": 0.8772579349700841
+    },
+    "selection_and_evaluation_seconds": 0.42322845198214054
+  },
+  {
+    "task": "regression",
+    "scenario": "signal",
+    "seed": 3,
+    "selector": "BoostAGroota_cutoff1",
+    "selected": [
+      "x0",
+      "x1"
+    ],
+    "true_selected": 2,
+    "false_selected": 0,
+    "test_score": 0.8772579349700841,
+    "baselines": {
+      "dummy": -0.00973272290155447,
+      "all": 0.872750975665368,
+      "univariate_top2": 0.8772579349700841,
+      "oracle": 0.8772579349700841
+    },
+    "selection_and_evaluation_seconds": 0.1972165460465476
+  },
+  {
+    "task": "regression",
+    "scenario": "signal",
+    "seed": 3,
+    "selector": "BoostAGroota_cutoff4",
+    "selected": [
+      "x0",
+      "x1",
+      "x3",
+      "x5"
+    ],
+    "true_selected": 2,
+    "false_selected": 2,
+    "test_score": 0.8717874737484488,
+    "baselines": {
+      "dummy": -0.00973272290155447,
+      "all": 0.872750975665368,
+      "univariate_top2": 0.8772579349700841,
+      "oracle": 0.8772579349700841
+    },
+    "selection_and_evaluation_seconds": 0.2846327350125648
+  },
+  {
+    "task": "regression",
+    "scenario": "signal",
+    "seed": 3,
+    "selector": "GrootCV",
+    "selected": [
+      "x0",
+      "x1"
+    ],
+    "true_selected": 2,
+    "false_selected": 0,
+    "test_score": 0.8772579349700841,
+    "baselines": {
+      "dummy": -0.00973272290155447,
+      "all": 0.872750975665368,
+      "univariate_top2": 0.8772579349700841,
+      "oracle": 0.8772579349700841
+    },
+    "selection_and_evaluation_seconds": 0.16522737900959328
+  },
+  {
+    "task": "regression",
+    "scenario": "signal",
+    "seed": 4,
+    "selector": "Leshy",
+    "selected": [
+      "x0",
+      "x1"
+    ],
+    "true_selected": 2,
+    "false_selected": 0,
+    "test_score": 0.8638268116530607,
+    "baselines": {
+      "dummy": -0.0033638772885260515,
+      "all": 0.8582092237490991,
+      "univariate_top2": 0.8638268116530607,
+      "oracle": 0.8638268116530607
+    },
+    "selection_and_evaluation_seconds": 0.43315538502065465
+  },
+  {
+    "task": "regression",
+    "scenario": "signal",
+    "seed": 4,
+    "selector": "BoostAGroota_cutoff1",
+    "selected": [
+      "x0",
+      "x1",
+      "x7"
+    ],
+    "true_selected": 2,
+    "false_selected": 1,
+    "test_score": 0.8605518443357407,
+    "baselines": {
+      "dummy": -0.0033638772885260515,
+      "all": 0.8582092237490991,
+      "univariate_top2": 0.8638268116530607,
+      "oracle": 0.8638268116530607
+    },
+    "selection_and_evaluation_seconds": 0.13809296500403434
+  },
+  {
+    "task": "regression",
+    "scenario": "signal",
+    "seed": 4,
+    "selector": "BoostAGroota_cutoff4",
+    "selected": [
+      "x0",
+      "x1",
+      "x2",
+      "x3",
+      "x7"
+    ],
+    "true_selected": 2,
+    "false_selected": 3,
+    "test_score": 0.8591246930735911,
+    "baselines": {
+      "dummy": -0.0033638772885260515,
+      "all": 0.8582092237490991,
+      "univariate_top2": 0.8638268116530607,
+      "oracle": 0.8638268116530607
+    },
+    "selection_and_evaluation_seconds": 0.20350576704367995
+  },
+  {
+    "task": "regression",
+    "scenario": "signal",
+    "seed": 4,
+    "selector": "GrootCV",
+    "selected": [
+      "x0",
+      "x1",
+      "x7"
+    ],
+    "true_selected": 2,
+    "false_selected": 1,
+    "test_score": 0.8605518443357407,
+    "baselines": {
+      "dummy": -0.0033638772885260515,
+      "all": 0.8582092237490991,
+      "univariate_top2": 0.8638268116530607,
+      "oracle": 0.8638268116530607
+    },
+    "selection_and_evaluation_seconds": 0.12092306901467964
+  },
+  {
+    "task": "regression",
+    "scenario": "null",
+    "seed": 0,
+    "selector": "Leshy",
+    "selected": [],
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_score": -0.0005726603236000383,
+    "baselines": {
+      "dummy": -0.0005726603236000383,
+      "all": -0.06228381764579738,
+      "univariate_top2": -0.05322112661649214,
+      "oracle": -0.0005726603236000383
+    },
+    "selection_and_evaluation_seconds": 0.4296802610042505
+  },
+  {
+    "task": "regression",
+    "scenario": "null",
+    "seed": 0,
+    "selector": "BoostAGroota_cutoff1",
+    "selected": [],
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_score": -0.0005726603236000383,
+    "baselines": {
+      "dummy": -0.0005726603236000383,
+      "all": -0.06228381764579738,
+      "univariate_top2": -0.05322112661649214,
+      "oracle": -0.0005726603236000383
+    },
+    "selection_and_evaluation_seconds": 0.13264356000581756
+  },
+  {
+    "task": "regression",
+    "scenario": "null",
+    "seed": 0,
+    "selector": "BoostAGroota_cutoff4",
+    "selected": [
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "x5",
+      "x7"
+    ],
+    "true_selected": 0,
+    "false_selected": 6,
+    "test_score": -0.060716402784465995,
+    "baselines": {
+      "dummy": -0.0005726603236000383,
+      "all": -0.06228381764579738,
+      "univariate_top2": -0.05322112661649214,
+      "oracle": -0.0005726603236000383
+    },
+    "selection_and_evaluation_seconds": 0.1448879530071281
+  },
+  {
+    "task": "regression",
+    "scenario": "null",
+    "seed": 0,
+    "selector": "GrootCV",
+    "selected": [],
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_score": -0.0005726603236000383,
+    "baselines": {
+      "dummy": -0.0005726603236000383,
+      "all": -0.06228381764579738,
+      "univariate_top2": -0.05322112661649214,
+      "oracle": -0.0005726603236000383
+    },
+    "selection_and_evaluation_seconds": 0.06233328900998458
+  },
+  {
+    "task": "regression",
+    "scenario": "null",
+    "seed": 1,
+    "selector": "Leshy",
+    "selected": [
+      "x5",
+      "x6"
+    ],
+    "true_selected": 0,
+    "false_selected": 2,
+    "test_score": -0.1322007002252037,
+    "baselines": {
+      "dummy": -0.005671860941849349,
+      "all": -0.12803568891278716,
+      "univariate_top2": -0.10246677925832137,
+      "oracle": -0.005671860941849349
+    },
+    "selection_and_evaluation_seconds": 0.4585332379792817
+  },
+  {
+    "task": "regression",
+    "scenario": "null",
+    "seed": 1,
+    "selector": "BoostAGroota_cutoff1",
+    "selected": [
+      "x1",
+      "x4",
+      "x5",
+      "x6"
+    ],
+    "true_selected": 0,
+    "false_selected": 4,
+    "test_score": -0.13940387825449196,
+    "baselines": {
+      "dummy": -0.005671860941849349,
+      "all": -0.12803568891278716,
+      "univariate_top2": -0.10246677925832137,
+      "oracle": -0.005671860941849349
+    },
+    "selection_and_evaluation_seconds": 0.195409253006801
+  },
+  {
+    "task": "regression",
+    "scenario": "null",
+    "seed": 1,
+    "selector": "BoostAGroota_cutoff4",
+    "selected": [
+      "x0",
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "x5",
+      "x6",
+      "x7"
+    ],
+    "true_selected": 0,
+    "false_selected": 8,
+    "test_score": -0.12803568891278716,
+    "baselines": {
+      "dummy": -0.005671860941849349,
+      "all": -0.12803568891278716,
+      "univariate_top2": -0.10246677925832137,
+      "oracle": -0.005671860941849349
+    },
+    "selection_and_evaluation_seconds": 0.07806039601564407
+  },
+  {
+    "task": "regression",
+    "scenario": "null",
+    "seed": 1,
+    "selector": "GrootCV",
+    "selected": [
+      "x1",
+      "x5"
+    ],
+    "true_selected": 0,
+    "false_selected": 2,
+    "test_score": -0.11383755077773539,
+    "baselines": {
+      "dummy": -0.005671860941849349,
+      "all": -0.12803568891278716,
+      "univariate_top2": -0.10246677925832137,
+      "oracle": -0.005671860941849349
+    },
+    "selection_and_evaluation_seconds": 0.0731717090238817
+  },
+  {
+    "task": "regression",
+    "scenario": "null",
+    "seed": 2,
+    "selector": "Leshy",
+    "selected": [
+      "x0"
+    ],
+    "true_selected": 0,
+    "false_selected": 1,
+    "test_score": -0.060476493209637106,
+    "baselines": {
+      "dummy": -0.007031113422323765,
+      "all": -0.10653611986005229,
+      "univariate_top2": -0.05318618164649025,
+      "oracle": -0.007031113422323765
+    },
+    "selection_and_evaluation_seconds": 0.3033205950050615
+  },
+  {
+    "task": "regression",
+    "scenario": "null",
+    "seed": 2,
+    "selector": "BoostAGroota_cutoff1",
+    "selected": [
+      "x0"
+    ],
+    "true_selected": 0,
+    "false_selected": 1,
+    "test_score": -0.060476493209637106,
+    "baselines": {
+      "dummy": -0.007031113422323765,
+      "all": -0.10653611986005229,
+      "univariate_top2": -0.05318618164649025,
+      "oracle": -0.007031113422323765
+    },
+    "selection_and_evaluation_seconds": 0.16491760197095573
+  },
+  {
+    "task": "regression",
+    "scenario": "null",
+    "seed": 2,
+    "selector": "BoostAGroota_cutoff4",
+    "selected": [
+      "x0",
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "x5",
+      "x6",
+      "x7"
+    ],
+    "true_selected": 0,
+    "false_selected": 8,
+    "test_score": -0.10653611986005229,
+    "baselines": {
+      "dummy": -0.007031113422323765,
+      "all": -0.10653611986005229,
+      "univariate_top2": -0.05318618164649025,
+      "oracle": -0.007031113422323765
+    },
+    "selection_and_evaluation_seconds": 0.07025879697175696
+  },
+  {
+    "task": "regression",
+    "scenario": "null",
+    "seed": 2,
+    "selector": "GrootCV",
+    "selected": [
+      "x0",
+      "x3",
+      "x4",
+      "x6"
+    ],
+    "true_selected": 0,
+    "false_selected": 4,
+    "test_score": -0.06855564655683422,
+    "baselines": {
+      "dummy": -0.007031113422323765,
+      "all": -0.10653611986005229,
+      "univariate_top2": -0.05318618164649025,
+      "oracle": -0.007031113422323765
+    },
+    "selection_and_evaluation_seconds": 0.06646677298704162
+  },
+  {
+    "task": "regression",
+    "scenario": "null",
+    "seed": 3,
+    "selector": "Leshy",
+    "selected": [],
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_score": -0.0023116111789469596,
+    "baselines": {
+      "dummy": -0.0023116111789469596,
+      "all": -0.09129910325104174,
+      "univariate_top2": -0.09900565297252895,
+      "oracle": -0.0023116111789469596
+    },
+    "selection_and_evaluation_seconds": 0.3805527689983137
+  },
+  {
+    "task": "regression",
+    "scenario": "null",
+    "seed": 3,
+    "selector": "BoostAGroota_cutoff1",
+    "selected": [
+      "x1",
+      "x4",
+      "x5"
+    ],
+    "true_selected": 0,
+    "false_selected": 3,
+    "test_score": -0.07282941045062818,
+    "baselines": {
+      "dummy": -0.0023116111789469596,
+      "all": -0.09129910325104174,
+      "univariate_top2": -0.09900565297252895,
+      "oracle": -0.0023116111789469596
+    },
+    "selection_and_evaluation_seconds": 0.12627044098917395
+  },
+  {
+    "task": "regression",
+    "scenario": "null",
+    "seed": 3,
+    "selector": "BoostAGroota_cutoff4",
+    "selected": [
+      "x0",
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "x5",
+      "x6",
+      "x7"
+    ],
+    "true_selected": 0,
+    "false_selected": 8,
+    "test_score": -0.09129910325104174,
+    "baselines": {
+      "dummy": -0.0023116111789469596,
+      "all": -0.09129910325104174,
+      "univariate_top2": -0.09900565297252895,
+      "oracle": -0.0023116111789469596
+    },
+    "selection_and_evaluation_seconds": 0.07629815099062398
+  },
+  {
+    "task": "regression",
+    "scenario": "null",
+    "seed": 3,
+    "selector": "GrootCV",
+    "selected": [],
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_score": -0.0023116111789469596,
+    "baselines": {
+      "dummy": -0.0023116111789469596,
+      "all": -0.09129910325104174,
+      "univariate_top2": -0.09900565297252895,
+      "oracle": -0.0023116111789469596
+    },
+    "selection_and_evaluation_seconds": 0.0679108290350996
+  },
+  {
+    "task": "regression",
+    "scenario": "null",
+    "seed": 4,
+    "selector": "Leshy",
+    "selected": [
+      "x4"
+    ],
+    "true_selected": 0,
+    "false_selected": 1,
+    "test_score": -0.03305327138376568,
+    "baselines": {
+      "dummy": -0.004824070752083243,
+      "all": -0.06445975901907519,
+      "univariate_top2": -0.05805250177337573,
+      "oracle": -0.004824070752083243
+    },
+    "selection_and_evaluation_seconds": 0.407446788973175
+  },
+  {
+    "task": "regression",
+    "scenario": "null",
+    "seed": 4,
+    "selector": "BoostAGroota_cutoff1",
+    "selected": [
+      "x4"
+    ],
+    "true_selected": 0,
+    "false_selected": 1,
+    "test_score": -0.03305327138376568,
+    "baselines": {
+      "dummy": -0.004824070752083243,
+      "all": -0.06445975901907519,
+      "univariate_top2": -0.05805250177337573,
+      "oracle": -0.004824070752083243
+    },
+    "selection_and_evaluation_seconds": 0.12103006296092644
+  },
+  {
+    "task": "regression",
+    "scenario": "null",
+    "seed": 4,
+    "selector": "BoostAGroota_cutoff4",
+    "selected": [
+      "x0",
+      "x1",
+      "x2",
+      "x4",
+      "x5",
+      "x7"
+    ],
+    "true_selected": 0,
+    "false_selected": 6,
+    "test_score": -0.07052751632046217,
+    "baselines": {
+      "dummy": -0.004824070752083243,
+      "all": -0.06445975901907519,
+      "univariate_top2": -0.05805250177337573,
+      "oracle": -0.004824070752083243
+    },
+    "selection_and_evaluation_seconds": 0.13054168602684513
+  },
+  {
+    "task": "regression",
+    "scenario": "null",
+    "seed": 4,
+    "selector": "GrootCV",
+    "selected": [],
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_score": -0.004824070752083243,
+    "baselines": {
+      "dummy": -0.004824070752083243,
+      "all": -0.06445975901907519,
+      "univariate_top2": -0.05805250177337573,
+      "oracle": -0.004824070752083243
+    },
+    "selection_and_evaluation_seconds": 0.05987817799905315
+  },
+  {
+    "task": "classification",
+    "scenario": "signal",
+    "seed": 0,
+    "selector": "Leshy",
+    "selected": [
+      "x0",
+      "x1",
+      "x2",
+      "x5"
+    ],
+    "true_selected": 2,
+    "false_selected": 2,
+    "test_score": 0.895,
+    "baselines": {
+      "dummy": 0.5008333333333334,
+      "all": 0.8958333333333334,
+      "univariate_top2": 0.8966666666666666,
+      "oracle": 0.8966666666666666
+    },
+    "selection_and_evaluation_seconds": 0.3659370800014585
+  },
+  {
+    "task": "classification",
+    "scenario": "signal",
+    "seed": 0,
+    "selector": "BoostAGroota_cutoff1",
+    "selected": [
+      "x0",
+      "x1",
+      "x2",
+      "x5"
+    ],
+    "true_selected": 2,
+    "false_selected": 2,
+    "test_score": 0.895,
+    "baselines": {
+      "dummy": 0.5008333333333334,
+      "all": 0.8958333333333334,
+      "univariate_top2": 0.8966666666666666,
+      "oracle": 0.8966666666666666
+    },
+    "selection_and_evaluation_seconds": 0.16663929697824642
+  },
+  {
+    "task": "classification",
+    "scenario": "signal",
+    "seed": 0,
+    "selector": "BoostAGroota_cutoff4",
+    "selected": [
+      "x0",
+      "x1",
+      "x2",
+      "x3",
+      "x5",
+      "x6"
+    ],
+    "true_selected": 2,
+    "false_selected": 4,
+    "test_score": 0.8975,
+    "baselines": {
+      "dummy": 0.5008333333333334,
+      "all": 0.8958333333333334,
+      "univariate_top2": 0.8966666666666666,
+      "oracle": 0.8966666666666666
+    },
+    "selection_and_evaluation_seconds": 0.20210932998452336
+  },
+  {
+    "task": "classification",
+    "scenario": "signal",
+    "seed": 0,
+    "selector": "GrootCV",
+    "selected": [
+      "x0",
+      "x1",
+      "x5"
+    ],
+    "true_selected": 2,
+    "false_selected": 1,
+    "test_score": 0.8966666666666666,
+    "baselines": {
+      "dummy": 0.5008333333333334,
+      "all": 0.8958333333333334,
+      "univariate_top2": 0.8966666666666666,
+      "oracle": 0.8966666666666666
+    },
+    "selection_and_evaluation_seconds": 0.18420431797858328
+  },
+  {
+    "task": "classification",
+    "scenario": "signal",
+    "seed": 1,
+    "selector": "Leshy",
+    "selected": [
+      "x0",
+      "x1"
+    ],
+    "true_selected": 2,
+    "false_selected": 0,
+    "test_score": 0.8958333333333334,
+    "baselines": {
+      "dummy": 0.5008333333333334,
+      "all": 0.89,
+      "univariate_top2": 0.8958333333333334,
+      "oracle": 0.8958333333333334
+    },
+    "selection_and_evaluation_seconds": 0.4721610840060748
+  },
+  {
+    "task": "classification",
+    "scenario": "signal",
+    "seed": 1,
+    "selector": "BoostAGroota_cutoff1",
+    "selected": [
+      "x0",
+      "x1",
+      "x3"
+    ],
+    "true_selected": 2,
+    "false_selected": 1,
+    "test_score": 0.89,
+    "baselines": {
+      "dummy": 0.5008333333333334,
+      "all": 0.89,
+      "univariate_top2": 0.8958333333333334,
+      "oracle": 0.8958333333333334
+    },
+    "selection_and_evaluation_seconds": 0.15341408795211464
+  },
+  {
+    "task": "classification",
+    "scenario": "signal",
+    "seed": 1,
+    "selector": "BoostAGroota_cutoff4",
+    "selected": [
+      "x0",
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "x5",
+      "x6",
+      "x7"
+    ],
+    "true_selected": 2,
+    "false_selected": 6,
+    "test_score": 0.89,
+    "baselines": {
+      "dummy": 0.5008333333333334,
+      "all": 0.89,
+      "univariate_top2": 0.8958333333333334,
+      "oracle": 0.8958333333333334
+    },
+    "selection_and_evaluation_seconds": 0.0861565470113419
+  },
+  {
+    "task": "classification",
+    "scenario": "signal",
+    "seed": 1,
+    "selector": "GrootCV",
+    "selected": [
+      "x0",
+      "x1",
+      "x3"
+    ],
+    "true_selected": 2,
+    "false_selected": 1,
+    "test_score": 0.89,
+    "baselines": {
+      "dummy": 0.5008333333333334,
+      "all": 0.89,
+      "univariate_top2": 0.8958333333333334,
+      "oracle": 0.8958333333333334
+    },
+    "selection_and_evaluation_seconds": 0.152729436988011
+  },
+  {
+    "task": "classification",
+    "scenario": "signal",
+    "seed": 2,
+    "selector": "Leshy",
+    "selected": [
+      "x0",
+      "x1"
+    ],
+    "true_selected": 2,
+    "false_selected": 0,
+    "test_score": 0.8933333333333333,
+    "baselines": {
+      "dummy": 0.5158333333333334,
+      "all": 0.89,
+      "univariate_top2": 0.8933333333333333,
+      "oracle": 0.8933333333333333
+    },
+    "selection_and_evaluation_seconds": 0.5626676619867794
+  },
+  {
+    "task": "classification",
+    "scenario": "signal",
+    "seed": 2,
+    "selector": "BoostAGroota_cutoff1",
+    "selected": [
+      "x0",
+      "x1",
+      "x3"
+    ],
+    "true_selected": 2,
+    "false_selected": 1,
+    "test_score": 0.895,
+    "baselines": {
+      "dummy": 0.5158333333333334,
+      "all": 0.89,
+      "univariate_top2": 0.8933333333333333,
+      "oracle": 0.8933333333333333
+    },
+    "selection_and_evaluation_seconds": 0.1398384150234051
+  },
+  {
+    "task": "classification",
+    "scenario": "signal",
+    "seed": 2,
+    "selector": "BoostAGroota_cutoff4",
+    "selected": [
+      "x0",
+      "x1",
+      "x3",
+      "x4",
+      "x5",
+      "x7"
+    ],
+    "true_selected": 2,
+    "false_selected": 4,
+    "test_score": 0.89,
+    "baselines": {
+      "dummy": 0.5158333333333334,
+      "all": 0.89,
+      "univariate_top2": 0.8933333333333333,
+      "oracle": 0.8933333333333333
+    },
+    "selection_and_evaluation_seconds": 0.22021720494376495
+  },
+  {
+    "task": "classification",
+    "scenario": "signal",
+    "seed": 2,
+    "selector": "GrootCV",
+    "selected": [
+      "x0",
+      "x1",
+      "x4"
+    ],
+    "true_selected": 2,
+    "false_selected": 1,
+    "test_score": 0.8933333333333333,
+    "baselines": {
+      "dummy": 0.5158333333333334,
+      "all": 0.89,
+      "univariate_top2": 0.8933333333333333,
+      "oracle": 0.8933333333333333
+    },
+    "selection_and_evaluation_seconds": 0.18466445105150342
+  },
+  {
+    "task": "classification",
+    "scenario": "signal",
+    "seed": 3,
+    "selector": "Leshy",
+    "selected": [
+      "x0",
+      "x1"
+    ],
+    "true_selected": 2,
+    "false_selected": 0,
+    "test_score": 0.88,
+    "baselines": {
+      "dummy": 0.5058333333333334,
+      "all": 0.8791666666666667,
+      "univariate_top2": 0.88,
+      "oracle": 0.88
+    },
+    "selection_and_evaluation_seconds": 0.39930021605687216
+  },
+  {
+    "task": "classification",
+    "scenario": "signal",
+    "seed": 3,
+    "selector": "BoostAGroota_cutoff1",
+    "selected": [
+      "x0",
+      "x1"
+    ],
+    "true_selected": 2,
+    "false_selected": 0,
+    "test_score": 0.88,
+    "baselines": {
+      "dummy": 0.5058333333333334,
+      "all": 0.8791666666666667,
+      "univariate_top2": 0.88,
+      "oracle": 0.88
+    },
+    "selection_and_evaluation_seconds": 0.1481810679542832
+  },
+  {
+    "task": "classification",
+    "scenario": "signal",
+    "seed": 3,
+    "selector": "BoostAGroota_cutoff4",
+    "selected": [
+      "x0",
+      "x1",
+      "x3",
+      "x7"
+    ],
+    "true_selected": 2,
+    "false_selected": 2,
+    "test_score": 0.8816666666666667,
+    "baselines": {
+      "dummy": 0.5058333333333334,
+      "all": 0.8791666666666667,
+      "univariate_top2": 0.88,
+      "oracle": 0.88
+    },
+    "selection_and_evaluation_seconds": 0.16902741900412366
+  },
+  {
+    "task": "classification",
+    "scenario": "signal",
+    "seed": 3,
+    "selector": "GrootCV",
+    "selected": [
+      "x0",
+      "x1"
+    ],
+    "true_selected": 2,
+    "false_selected": 0,
+    "test_score": 0.88,
+    "baselines": {
+      "dummy": 0.5058333333333334,
+      "all": 0.8791666666666667,
+      "univariate_top2": 0.88,
+      "oracle": 0.88
+    },
+    "selection_and_evaluation_seconds": 0.14437779202125967
+  },
+  {
+    "task": "classification",
+    "scenario": "signal",
+    "seed": 4,
+    "selector": "Leshy",
+    "selected": [
+      "x0",
+      "x1"
+    ],
+    "true_selected": 2,
+    "false_selected": 0,
+    "test_score": 0.8925,
+    "baselines": {
+      "dummy": 0.4975,
+      "all": 0.89,
+      "univariate_top2": 0.8925,
+      "oracle": 0.8925
+    },
+    "selection_and_evaluation_seconds": 0.45948399195913225
+  },
+  {
+    "task": "classification",
+    "scenario": "signal",
+    "seed": 4,
+    "selector": "BoostAGroota_cutoff1",
+    "selected": [
+      "x0",
+      "x1"
+    ],
+    "true_selected": 2,
+    "false_selected": 0,
+    "test_score": 0.8925,
+    "baselines": {
+      "dummy": 0.4975,
+      "all": 0.89,
+      "univariate_top2": 0.8925,
+      "oracle": 0.8925
+    },
+    "selection_and_evaluation_seconds": 0.14491684001404792
+  },
+  {
+    "task": "classification",
+    "scenario": "signal",
+    "seed": 4,
+    "selector": "BoostAGroota_cutoff4",
+    "selected": [
+      "x0",
+      "x1",
+      "x3",
+      "x4",
+      "x6",
+      "x7"
+    ],
+    "true_selected": 2,
+    "false_selected": 4,
+    "test_score": 0.8925,
+    "baselines": {
+      "dummy": 0.4975,
+      "all": 0.89,
+      "univariate_top2": 0.8925,
+      "oracle": 0.8925
+    },
+    "selection_and_evaluation_seconds": 0.15443274000426754
+  },
+  {
+    "task": "classification",
+    "scenario": "signal",
+    "seed": 4,
+    "selector": "GrootCV",
+    "selected": [
+      "x0",
+      "x1",
+      "x2",
+      "x6",
+      "x7"
+    ],
+    "true_selected": 2,
+    "false_selected": 3,
+    "test_score": 0.8916666666666667,
+    "baselines": {
+      "dummy": 0.4975,
+      "all": 0.89,
+      "univariate_top2": 0.8925,
+      "oracle": 0.8925
+    },
+    "selection_and_evaluation_seconds": 0.12325818999670446
+  },
+  {
+    "task": "classification",
+    "scenario": "null",
+    "seed": 0,
+    "selector": "Leshy",
+    "selected": [
+      "x4"
+    ],
+    "true_selected": 0,
+    "false_selected": 1,
+    "test_score": 0.5175,
+    "baselines": {
+      "dummy": 0.5308333333333334,
+      "all": 0.5375,
+      "univariate_top2": 0.54,
+      "oracle": 0.5308333333333334
+    },
+    "selection_and_evaluation_seconds": 0.41799302404979244
+  },
+  {
+    "task": "classification",
+    "scenario": "null",
+    "seed": 0,
+    "selector": "BoostAGroota_cutoff1",
+    "selected": [
+      "x4"
+    ],
+    "true_selected": 0,
+    "false_selected": 1,
+    "test_score": 0.5175,
+    "baselines": {
+      "dummy": 0.5308333333333334,
+      "all": 0.5375,
+      "univariate_top2": 0.54,
+      "oracle": 0.5308333333333334
+    },
+    "selection_and_evaluation_seconds": 0.13891826599137858
+  },
+  {
+    "task": "classification",
+    "scenario": "null",
+    "seed": 0,
+    "selector": "BoostAGroota_cutoff4",
+    "selected": [
+      "x0",
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "x5",
+      "x7"
+    ],
+    "true_selected": 0,
+    "false_selected": 7,
+    "test_score": 0.5516666666666666,
+    "baselines": {
+      "dummy": 0.5308333333333334,
+      "all": 0.5375,
+      "univariate_top2": 0.54,
+      "oracle": 0.5308333333333334
+    },
+    "selection_and_evaluation_seconds": 0.1469122319831513
+  },
+  {
+    "task": "classification",
+    "scenario": "null",
+    "seed": 0,
+    "selector": "GrootCV",
+    "selected": [],
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_score": 0.5308333333333334,
+    "baselines": {
+      "dummy": 0.5308333333333334,
+      "all": 0.5375,
+      "univariate_top2": 0.54,
+      "oracle": 0.5308333333333334
+    },
+    "selection_and_evaluation_seconds": 0.058890387997962534
+  },
+  {
+    "task": "classification",
+    "scenario": "null",
+    "seed": 1,
+    "selector": "Leshy",
+    "selected": [
+      "x6"
+    ],
+    "true_selected": 0,
+    "false_selected": 1,
+    "test_score": 0.5025,
+    "baselines": {
+      "dummy": 0.49916666666666665,
+      "all": 0.5025,
+      "univariate_top2": 0.5008333333333334,
+      "oracle": 0.49916666666666665
+    },
+    "selection_and_evaluation_seconds": 0.43173171195667237
+  },
+  {
+    "task": "classification",
+    "scenario": "null",
+    "seed": 1,
+    "selector": "BoostAGroota_cutoff1",
+    "selected": [
+      "x2",
+      "x6"
+    ],
+    "true_selected": 0,
+    "false_selected": 2,
+    "test_score": 0.5158333333333334,
+    "baselines": {
+      "dummy": 0.49916666666666665,
+      "all": 0.5025,
+      "univariate_top2": 0.5008333333333334,
+      "oracle": 0.49916666666666665
+    },
+    "selection_and_evaluation_seconds": 0.14061209099600092
+  },
+  {
+    "task": "classification",
+    "scenario": "null",
+    "seed": 1,
+    "selector": "BoostAGroota_cutoff4",
+    "selected": [
+      "x0",
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "x5",
+      "x6",
+      "x7"
+    ],
+    "true_selected": 0,
+    "false_selected": 8,
+    "test_score": 0.5025,
+    "baselines": {
+      "dummy": 0.49916666666666665,
+      "all": 0.5025,
+      "univariate_top2": 0.5008333333333334,
+      "oracle": 0.49916666666666665
+    },
+    "selection_and_evaluation_seconds": 0.07835653598885983
+  },
+  {
+    "task": "classification",
+    "scenario": "null",
+    "seed": 1,
+    "selector": "GrootCV",
+    "selected": [
+      "x1",
+      "x6"
+    ],
+    "true_selected": 0,
+    "false_selected": 2,
+    "test_score": 0.49833333333333335,
+    "baselines": {
+      "dummy": 0.49916666666666665,
+      "all": 0.5025,
+      "univariate_top2": 0.5008333333333334,
+      "oracle": 0.49916666666666665
+    },
+    "selection_and_evaluation_seconds": 0.07174731796840206
+  },
+  {
+    "task": "classification",
+    "scenario": "null",
+    "seed": 2,
+    "selector": "Leshy",
+    "selected": [
+      "x0"
+    ],
+    "true_selected": 0,
+    "false_selected": 1,
+    "test_score": 0.505,
+    "baselines": {
+      "dummy": 0.5216666666666666,
+      "all": 0.5266666666666666,
+      "univariate_top2": 0.4891666666666667,
+      "oracle": 0.5216666666666666
+    },
+    "selection_and_evaluation_seconds": 0.25835524301510304
+  },
+  {
+    "task": "classification",
+    "scenario": "null",
+    "seed": 2,
+    "selector": "BoostAGroota_cutoff1",
+    "selected": [
+      "x0"
+    ],
+    "true_selected": 0,
+    "false_selected": 1,
+    "test_score": 0.505,
+    "baselines": {
+      "dummy": 0.5216666666666666,
+      "all": 0.5266666666666666,
+      "univariate_top2": 0.4891666666666667,
+      "oracle": 0.5216666666666666
+    },
+    "selection_and_evaluation_seconds": 0.13345583603950217
+  },
+  {
+    "task": "classification",
+    "scenario": "null",
+    "seed": 2,
+    "selector": "BoostAGroota_cutoff4",
+    "selected": [
+      "x0",
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "x5",
+      "x6",
+      "x7"
+    ],
+    "true_selected": 0,
+    "false_selected": 8,
+    "test_score": 0.5266666666666666,
+    "baselines": {
+      "dummy": 0.5216666666666666,
+      "all": 0.5266666666666666,
+      "univariate_top2": 0.4891666666666667,
+      "oracle": 0.5216666666666666
+    },
+    "selection_and_evaluation_seconds": 0.08456411299994215
+  },
+  {
+    "task": "classification",
+    "scenario": "null",
+    "seed": 2,
+    "selector": "GrootCV",
+    "selected": [
+      "x0"
+    ],
+    "true_selected": 0,
+    "false_selected": 1,
+    "test_score": 0.505,
+    "baselines": {
+      "dummy": 0.5216666666666666,
+      "all": 0.5266666666666666,
+      "univariate_top2": 0.4891666666666667,
+      "oracle": 0.5216666666666666
+    },
+    "selection_and_evaluation_seconds": 0.07027503103017807
+  },
+  {
+    "task": "classification",
+    "scenario": "null",
+    "seed": 3,
+    "selector": "Leshy",
+    "selected": [
+      "x0",
+      "x1"
+    ],
+    "true_selected": 0,
+    "false_selected": 2,
+    "test_score": 0.5075,
+    "baselines": {
+      "dummy": 0.515,
+      "all": 0.4875,
+      "univariate_top2": 0.5075,
+      "oracle": 0.515
+    },
+    "selection_and_evaluation_seconds": 0.43680187995778397
+  },
+  {
+    "task": "classification",
+    "scenario": "null",
+    "seed": 3,
+    "selector": "BoostAGroota_cutoff1",
+    "selected": [
+      "x0",
+      "x1",
+      "x7"
+    ],
+    "true_selected": 0,
+    "false_selected": 3,
+    "test_score": 0.48083333333333333,
+    "baselines": {
+      "dummy": 0.515,
+      "all": 0.4875,
+      "univariate_top2": 0.5075,
+      "oracle": 0.515
+    },
+    "selection_and_evaluation_seconds": 0.13867941801436245
+  },
+  {
+    "task": "classification",
+    "scenario": "null",
+    "seed": 3,
+    "selector": "BoostAGroota_cutoff4",
+    "selected": [
+      "x0",
+      "x1",
+      "x2",
+      "x3",
+      "x4",
+      "x5",
+      "x7"
+    ],
+    "true_selected": 0,
+    "false_selected": 7,
+    "test_score": 0.49083333333333334,
+    "baselines": {
+      "dummy": 0.515,
+      "all": 0.4875,
+      "univariate_top2": 0.5075,
+      "oracle": 0.515
+    },
+    "selection_and_evaluation_seconds": 0.15233029797673225
+  },
+  {
+    "task": "classification",
+    "scenario": "null",
+    "seed": 3,
+    "selector": "GrootCV",
+    "selected": [
+      "x1"
+    ],
+    "true_selected": 0,
+    "false_selected": 1,
+    "test_score": 0.5225,
+    "baselines": {
+      "dummy": 0.515,
+      "all": 0.4875,
+      "univariate_top2": 0.5075,
+      "oracle": 0.515
+    },
+    "selection_and_evaluation_seconds": 0.07246691500768065
+  },
+  {
+    "task": "classification",
+    "scenario": "null",
+    "seed": 4,
+    "selector": "Leshy",
+    "selected": [],
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_score": 0.5116666666666667,
+    "baselines": {
+      "dummy": 0.5116666666666667,
+      "all": 0.5066666666666667,
+      "univariate_top2": 0.515,
+      "oracle": 0.5116666666666667
+    },
+    "selection_and_evaluation_seconds": 0.4221587299834937
+  },
+  {
+    "task": "classification",
+    "scenario": "null",
+    "seed": 4,
+    "selector": "BoostAGroota_cutoff1",
+    "selected": [],
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_score": 0.5116666666666667,
+    "baselines": {
+      "dummy": 0.5116666666666667,
+      "all": 0.5066666666666667,
+      "univariate_top2": 0.515,
+      "oracle": 0.5116666666666667
+    },
+    "selection_and_evaluation_seconds": 0.179622481984552
+  },
+  {
+    "task": "classification",
+    "scenario": "null",
+    "seed": 4,
+    "selector": "BoostAGroota_cutoff4",
+    "selected": [
+      "x0",
+      "x2",
+      "x3",
+      "x4",
+      "x6",
+      "x7"
+    ],
+    "true_selected": 0,
+    "false_selected": 6,
+    "test_score": 0.5125,
+    "baselines": {
+      "dummy": 0.5116666666666667,
+      "all": 0.5066666666666667,
+      "univariate_top2": 0.515,
+      "oracle": 0.5116666666666667
+    },
+    "selection_and_evaluation_seconds": 0.1442378560313955
+  },
+  {
+    "task": "classification",
+    "scenario": "null",
+    "seed": 4,
+    "selector": "GrootCV",
+    "selected": [],
+    "true_selected": 0,
+    "false_selected": 0,
+    "test_score": 0.5116666666666667,
+    "baselines": {
+      "dummy": 0.5116666666666667,
+      "all": 0.5066666666666667,
+      "univariate_top2": 0.515,
+      "oracle": 0.5116666666666667
+    },
+    "selection_and_evaluation_seconds": 0.0562676609843038
+  }
+]

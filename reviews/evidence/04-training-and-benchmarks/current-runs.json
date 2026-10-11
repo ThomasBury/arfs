@@ -1,0 +1,65 @@
+{
+  "finished_utc": "2026-10-11T14:36:41.425275+00:00",
+  "identity_command": [
+    "/tmp/arfs-review-03f67d0/wheel-env/bin/python",
+    "/home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/environment.py",
+    "/home/bsatom/Documents/arfs",
+    "/home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/current-environment.json"
+  ],
+  "environment": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "MPLBACKEND": "Agg",
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "NUMBA_NUM_THREADS": "1",
+    "MPLCONFIGDIR": "/tmp/arfs-review04-current-kh3rop37/mpl"
+  },
+  "evidence_sha256": {
+    "run.py": "9a3880b00d27329b150ec59160aaf761ecf6b8ea81366360ced143e4d39acbd9",
+    "reload.py": "a004d8f493f3ce520f26dd31819c9360d18c53997b45c379ac039a613c97b9d3",
+    "environment.py": "447587aca6def762dc70f20934b7d80df99df88989f101b97da911cfc3b9f92f",
+    "checks.py": "c1f94e27381c495c7614bd3a45e208455d9134636368c40a3791d921137e09ab"
+  },
+  "runs": [
+    {
+      "command": [
+        "/tmp/arfs-review-03f67d0/wheel-env/bin/python",
+        "-m",
+        "pytest",
+        "/home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py",
+        "-q",
+        "-rx",
+        "--tb=short",
+        "-c",
+        "/dev/null",
+        "--rootdir=/home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks",
+        "-p",
+        "no:cacheprovider"
+      ],
+      "cwd": "/tmp/arfs-review04-current-kh3rop37",
+      "exit_code": 0,
+      "elapsed_seconds": 67.011
+    },
+    {
+      "command": [
+        "/tmp/arfs-review-03f67d0/wheel-env/bin/python",
+        "-m",
+        "pytest",
+        "/home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py",
+        "-q",
+        "-rx",
+        "--tb=short",
+        "-c",
+        "/dev/null",
+        "--rootdir=/home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks",
+        "-p",
+        "no:cacheprovider",
+        "--runxfail"
+      ],
+      "cwd": "/tmp/arfs-review04-current-kh3rop37",
+      "exit_code": 1,
+      "elapsed_seconds": 55.836
+    }
+  ]
+}

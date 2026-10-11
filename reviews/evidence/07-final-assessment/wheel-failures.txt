@@ -1,0 +1,18 @@
+....F                                                                    [100%]
+=================================== FAILURES ===================================
+___________ test_timeseries_postselection_plot_uses_reduced_features ___________
+/home/bsatom/Documents/arfs/reviews/evidence/07-final-assessment/checks.py:59: in test_timeseries_postselection_plot_uses_reduced_features
+    assert seen == [["signal"], ["signal"]]
+E   AssertionError: assert [['signal', '...', 'holiday']] == [['signal'], ['signal']]
+E     
+E     At index 0 diff: ['signal', 'random_num', 'holiday'] != ['signal']
+E     Use -v to get more diff
+=============================== warnings summary ===============================
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:10
+  /tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+    from pkg_resources import resource_filename
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/07-final-assessment/checks.py::test_timeseries_postselection_plot_uses_reduced_features
+1 failed, 4 passed, 1 warning in 4.34s

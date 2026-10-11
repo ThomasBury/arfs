@@ -1,0 +1,29 @@
+....xxxxxxxxxxx.xxxx...x                                                 [100%]
+=============================== warnings summary ===============================
+../../../../tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+    from pkg_resources import resource_filename
+
+checks.py::test_shadow_preserves_values_index_and_input
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1693: UserWarning: you are shuffling a 'Categorical' object which is not a subclass of 'Sequence'; `shuffle` is not guaranteed to behave correctly. E.g., non-numpy array/tensor objects with view semantics may contain duplicates after shuffling.
+    np.random.shuffle(X_shadow[c].values)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+XFAIL reviews/evidence/01b-all-relevant/checks.py::test_leshy_does_not_select_only_tentative_features - F1: ranking promotes every tentative feature despite keep_weak=False
+XFAIL reviews/evidence/01b-all-relevant/checks.py::test_tentative_rule_uses_all_recorded_iterations - F2: real first iteration is discarded as an obsolete zero row
+XFAIL reviews/evidence/01b-all-relevant/checks.py::test_permutation_importance_matches_weighted_reference - F3: held-out weights are omitted from permutation scoring
+XFAIL reviews/evidence/01b-all-relevant/checks.py::test_boost_negative_importances_do_not_select_worst_feature - F4: dividing signed importances by a negative total reverses their order
+XFAIL reviews/evidence/01b-all-relevant/checks.py::test_fit_preserves_categorical_input[boost] - F5: fit overwrites the caller's categorical values with integer codes
+XFAIL reviews/evidence/01b-all-relevant/checks.py::test_fit_preserves_categorical_input[groot] - F5: fit overwrites the caller's categorical values with integer codes
+XFAIL reviews/evidence/01b-all-relevant/checks.py::test_boost_preserves_categorical_roles_across_rounds - F6: Boost categorical metadata omits shadows and disappears after reduction
+XFAIL reviews/evidence/01b-all-relevant/checks.py::test_groot_preserves_categorical_roles - F6: Groot loses categorical metadata before fitting every fold
+XFAIL reviews/evidence/01b-all-relevant/checks.py::test_leshy_numeric_category_shadow_matches_original_role - F6: Leshy converts numeric categorical shadows to numeric dtype
+XFAIL reviews/evidence/01b-all-relevant/checks.py::test_groot_multiclass_objective_aliases[binary] - F7: auto-resolved multiclass objective is not used in SHAP aggregation
+XFAIL reviews/evidence/01b-all-relevant/checks.py::test_groot_multiclass_objective_aliases[multiclass] - F7: auto-resolved multiclass objective is not used in SHAP aggregation
+XFAIL reviews/evidence/01b-all-relevant/checks.py::test_groot_documented_max_of_shadow_medians - F8: Groot averages fold values and includes their mean in threshold
+XFAIL reviews/evidence/01b-all-relevant/checks.py::test_boost_documented_max_shadow_cutoff - F9: Boost averages maxima over iterations along the wrong axis
+XFAIL reviews/evidence/01b-all-relevant/checks.py::test_shadow_names_do_not_change_real_feature_identity[ShadowVar1] - F10: user column names collide with the generated shadow namespace
+XFAIL reviews/evidence/01b-all-relevant/checks.py::test_shadow_names_do_not_change_real_feature_identity[ShadowVar2] - F10: user column names collide with the generated shadow namespace
+XFAIL reviews/evidence/01b-all-relevant/checks.py::test_leshy_rejects_missing_response - F11: missing target values are silently changed into class or response zero
+8 passed, 16 xfailed, 2 warnings in 4.66s

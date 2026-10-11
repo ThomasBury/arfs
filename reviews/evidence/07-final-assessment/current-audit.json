@@ -1,0 +1,2997 @@
+{
+  "commit": "03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2",
+  "python": "3.12.7 (main, Oct  8 2024, 00:20:25) [Clang 18.1.8 ]",
+  "executable": "/tmp/arfs-review-03f67d0/wheel-env/bin/python",
+  "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+  "workaround": "setuptools==80.9.0 remains installed from unit 00; no clean-install claim",
+  "modules": {
+    "__init__.py": {
+      "owners": [
+        "00"
+      ],
+      "installed_path": "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/__init__.py",
+      "sha256": "d40991357507192d34389e64815bea5e481d8ae6b91c2ca5bd6ac08c16dd52de",
+      "public_definitions": [],
+      "duplicate_definitions": [],
+      "imports": []
+    },
+    "association.py": {
+      "owners": [
+        "01a",
+        "05",
+        "06",
+        "07"
+      ],
+      "installed_path": "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py",
+      "sha256": "46e5a5f8757fa8f3f810fc34a90723887d3693f455ca0ff66b6f8425c80bcc23",
+      "public_definitions": [
+        {
+          "name": "symmetric_function",
+          "line": 59
+        },
+        {
+          "name": "asymmetric_function",
+          "line": 64
+        },
+        {
+          "name": "create_col_combinations",
+          "line": 69
+        },
+        {
+          "name": "weighted_conditional_entropy",
+          "line": 104
+        },
+        {
+          "name": "weighted_theils_u",
+          "line": 167
+        },
+        {
+          "name": "theils_u_matrix",
+          "line": 238
+        },
+        {
+          "name": "theils_u_series",
+          "line": 299
+        },
+        {
+          "name": "cramer_v",
+          "line": 360
+        },
+        {
+          "name": "cramer_v_matrix",
+          "line": 408
+        },
+        {
+          "name": "cramer_v_series",
+          "line": 463
+        },
+        {
+          "name": "correlation_ratio",
+          "line": 571
+        },
+        {
+          "name": "correlation_ratio_matrix",
+          "line": 630
+        },
+        {
+          "name": "correlation_ratio_series",
+          "line": 688
+        },
+        {
+          "name": "wm",
+          "line": 747
+        },
+        {
+          "name": "wcov",
+          "line": 765
+        },
+        {
+          "name": "wcorr",
+          "line": 785
+        },
+        {
+          "name": "wrank",
+          "line": 805
+        },
+        {
+          "name": "wspearman",
+          "line": 827
+        },
+        {
+          "name": "weighted_corr",
+          "line": 848
+        },
+        {
+          "name": "wcorr_series",
+          "line": 887
+        },
+        {
+          "name": "wcorr_matrix",
+          "line": 943
+        },
+        {
+          "name": "weighted_correlation_1cpu",
+          "line": 1010
+        },
+        {
+          "name": "association_series",
+          "line": 1066
+        },
+        {
+          "name": "association_matrix",
+          "line": 1181
+        },
+        {
+          "name": "f_oneway_weighted",
+          "line": 1412
+        },
+        {
+          "name": "f_cat_regression",
+          "line": 1470
+        },
+        {
+          "name": "f_cat_regression_parallel",
+          "line": 1513
+        },
+        {
+          "name": "f_cont_regression_parallel",
+          "line": 1570
+        },
+        {
+          "name": "f_stat_regression_parallel",
+          "line": 1648
+        },
+        {
+          "name": "f_cont_classification",
+          "line": 1714
+        },
+        {
+          "name": "f_cont_classification_parallel",
+          "line": 1757
+        },
+        {
+          "name": "f_cat_classification_parallel",
+          "line": 1812
+        },
+        {
+          "name": "f_stat_classification_parallel",
+          "line": 1892
+        },
+        {
+          "name": "is_list_of_str",
+          "line": 2024
+        },
+        {
+          "name": "matrix_to_xy",
+          "line": 2045
+        },
+        {
+          "name": "xy_to_matrix",
+          "line": 2073
+        },
+        {
+          "name": "cluster_sq_matrix",
+          "line": 2096
+        },
+        {
+          "name": "heatmap",
+          "line": 2128
+        },
+        {
+          "name": "annotate_heatmap",
+          "line": 2197
+        },
+        {
+          "name": "plot_association_matrix",
+          "line": 2262
+        },
+        {
+          "name": "plot_association_matrix_int",
+          "line": 2357
+        }
+      ],
+      "duplicate_definitions": [],
+      "imports": [
+        {
+          "line": 9,
+          "statement": "import math",
+          "top_level": true
+        },
+        {
+          "line": 10,
+          "statement": "import warnings",
+          "top_level": true
+        },
+        {
+          "line": 11,
+          "statement": "import matplotlib",
+          "top_level": true
+        },
+        {
+          "line": 12,
+          "statement": "import numpy as np",
+          "top_level": true
+        },
+        {
+          "line": 13,
+          "statement": "import gc",
+          "top_level": true
+        },
+        {
+          "line": 14,
+          "statement": "import pandas as pd",
+          "top_level": true
+        },
+        {
+          "line": 15,
+          "statement": "import scipy.stats as ss",
+          "top_level": true
+        },
+        {
+          "line": 16,
+          "statement": "import matplotlib.pyplot as plt",
+          "top_level": true
+        },
+        {
+          "line": 17,
+          "statement": "import scipy.cluster.hierarchy as sch",
+          "top_level": true
+        },
+        {
+          "line": 18,
+          "statement": "import scipy.stats as ss",
+          "top_level": true
+        },
+        {
+          "line": 21,
+          "statement": "from mpl_toolkits.axes_grid1 import make_axes_locatable",
+          "top_level": true
+        },
+        {
+          "line": 22,
+          "statement": "from sklearn.utils import as_float_array, safe_sqr, safe_mask",
+          "top_level": true
+        },
+        {
+          "line": 24,
+          "statement": "from multiprocessing import cpu_count",
+          "top_level": true
+        },
+        {
+          "line": 25,
+          "statement": "from itertools import combinations, permutations, product",
+          "top_level": true
+        },
+        {
+          "line": 26,
+          "statement": "from pandas.api.types import is_numeric_dtype",
+          "top_level": true
+        },
+        {
+          "line": 27,
+          "statement": "from scipy.stats import rankdata",
+          "top_level": true
+        },
+        {
+          "line": 28,
+          "statement": "from functools import partial",
+          "top_level": true
+        },
+        {
+          "line": 30,
+          "statement": "from .parallel import (\n    parallel_matrix_entries,\n    parallel_df,\n    _compute_series,\n    _compute_matrix_entries,\n)",
+          "top_level": true
+        },
+        {
+          "line": 36,
+          "statement": "from .utils import create_dtype_dict",
+          "top_level": true
+        },
+        {
+          "line": 2388,
+          "statement": "import holoviews as hv",
+          "top_level": false
+        },
+        {
+          "line": 2395,
+          "statement": "import panel as pn",
+          "top_level": false
+        }
+      ]
+    },
+    "benchmark.py": {
+      "owners": [
+        "04",
+        "06"
+      ],
+      "installed_path": "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/benchmark.py",
+      "sha256": "c596f7c220bc5d9ce3bc7c613e69cde43e3b5202f0c9a47f591630c0395ab8b4",
+      "public_definitions": [
+        {
+          "name": "sklearn_pimp_bench",
+          "line": 24
+        },
+        {
+          "name": "compare_varimp",
+          "line": 108
+        },
+        {
+          "name": "highlight_tick",
+          "line": 154
+        }
+      ],
+      "duplicate_definitions": [],
+      "imports": [
+        {
+          "line": 12,
+          "statement": "from __future__ import print_function, division",
+          "top_level": true
+        },
+        {
+          "line": 14,
+          "statement": "import itertools",
+          "top_level": true
+        },
+        {
+          "line": 15,
+          "statement": "from matplotlib import pyplot as plt",
+          "top_level": true
+        },
+        {
+          "line": 16,
+          "statement": "from sklearn.model_selection import train_test_split",
+          "top_level": true
+        },
+        {
+          "line": 17,
+          "statement": "from sklearn.inspection import permutation_importance",
+          "top_level": true
+        },
+        {
+          "line": 19,
+          "statement": "from sklearn.base import clone",
+          "top_level": true
+        },
+        {
+          "line": 21,
+          "statement": "from .preprocessing import OrdinalEncoderPandas",
+          "top_level": true
+        }
+      ]
+    },
+    "feature_selection/__init__.py": {
+      "owners": [
+        "00",
+        "03"
+      ],
+      "installed_path": "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/feature_selection/__init__.py",
+      "sha256": "b4e4e91e208d0aa8f9fd7c3c7b48b47b91588cc9092cb03503cc75a8a96f8143",
+      "public_definitions": [],
+      "duplicate_definitions": [],
+      "imports": [
+        {
+          "line": 1,
+          "statement": "from .allrelevant import Leshy, BoostAGroota, GrootCV",
+          "top_level": true
+        },
+        {
+          "line": 2,
+          "statement": "from .unsupervised import (\n    MissingValueThreshold,\n    UniqueValuesThreshold,\n    CardinalityThreshold,\n    CollinearityThreshold,\n)",
+          "top_level": true
+        },
+        {
+          "line": 9,
+          "statement": "from .lasso import LassoFeatureSelection",
+          "top_level": true
+        },
+        {
+          "line": 10,
+          "statement": "from .variable_importance import VariableImportance",
+          "top_level": true
+        },
+        {
+          "line": 11,
+          "statement": "from .summary import make_fs_summary",
+          "top_level": true
+        },
+        {
+          "line": 12,
+          "statement": "from .mrmr import MinRedundancyMaxRelevance",
+          "top_level": true
+        }
+      ]
+    },
+    "feature_selection/allrelevant.py": {
+      "owners": [
+        "01b",
+        "04",
+        "06"
+      ],
+      "installed_path": "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py",
+      "sha256": "86c1be444b09ec1278f1685acaaee849a84642f5b3a207ab1126ba3051261c7c",
+      "public_definitions": [
+        {
+          "name": "Leshy",
+          "line": 135
+        },
+        {
+          "name": "BoostAGroota",
+          "line": 1423
+        },
+        {
+          "name": "GrootCV",
+          "line": 1932
+        }
+      ],
+      "duplicate_definitions": [],
+      "imports": [
+        {
+          "line": 46,
+          "statement": "from __future__ import print_function, division",
+          "top_level": true
+        },
+        {
+          "line": 47,
+          "statement": "import operator",
+          "top_level": true
+        },
+        {
+          "line": 48,
+          "statement": "import warnings",
+          "top_level": true
+        },
+        {
+          "line": 49,
+          "statement": "import time",
+          "top_level": true
+        },
+        {
+          "line": 50,
+          "statement": "import shap",
+          "top_level": true
+        },
+        {
+          "line": 51,
+          "statement": "import numpy as np",
+          "top_level": true
+        },
+        {
+          "line": 52,
+          "statement": "import pandas as pd",
+          "top_level": true
+        },
+        {
+          "line": 53,
+          "statement": "import lightgbm as lgb",
+          "top_level": true
+        },
+        {
+          "line": 54,
+          "statement": "import matplotlib as mpl",
+          "top_level": true
+        },
+        {
+          "line": 55,
+          "statement": "import matplotlib.pyplot as plt",
+          "top_level": true
+        },
+        {
+          "line": 56,
+          "statement": "import scipy as sp",
+          "top_level": true
+        },
+        {
+          "line": 58,
+          "statement": "from typing import Tuple, Optional, Union, Iterable",
+          "top_level": true
+        },
+        {
+          "line": 59,
+          "statement": "from tqdm.auto import tqdm",
+          "top_level": true
+        },
+        {
+          "line": 60,
+          "statement": "from sklearn.utils import check_random_state, check_X_y",
+          "top_level": true
+        },
+        {
+          "line": 61,
+          "statement": "from sklearn.base import BaseEstimator, is_regressor, is_classifier, clone",
+          "top_level": true
+        },
+        {
+          "line": 63,
+          "statement": "from sklearn.utils.validation import check_is_fitted",
+          "top_level": true
+        },
+        {
+          "line": 64,
+          "statement": "from sklearn.feature_selection._base import SelectorMixin",
+          "top_level": true
+        },
+        {
+          "line": 65,
+          "statement": "from sklearn.model_selection import RepeatedKFold, train_test_split",
+          "top_level": true
+        },
+        {
+          "line": 66,
+          "statement": "from sklearn.inspection import permutation_importance",
+          "top_level": true
+        },
+        {
+          "line": 67,
+          "statement": "from sklearn.utils.validation import _check_sample_weight",
+          "top_level": true
+        },
+        {
+          "line": 68,
+          "statement": "from matplotlib.lines import Line2D",
+          "top_level": true
+        },
+        {
+          "line": 69,
+          "statement": "from lightgbm import early_stopping",
+          "top_level": true
+        },
+        {
+          "line": 72,
+          "statement": "from ..utils import (\n    check_if_tree_based,\n    is_lightgbm,\n    is_catboost,\n    create_dtype_dict,\n    get_pandas_cat_codes,\n    validate_sample_weight,\n)",
+          "top_level": true
+        },
+        {
+          "line": 1294,
+          "statement": "from fasttreeshap import TreeExplainer as FastTreeExplainer",
+          "top_level": false
+        },
+        {
+          "line": 2592,
+          "statement": "from shap import __version__ as shap_version",
+          "top_level": false
+        },
+        {
+          "line": 2556,
+          "statement": "from fasttreeshap import TreeExplainer",
+          "top_level": false
+        },
+        {
+          "line": 2560,
+          "statement": "import shap",
+          "top_level": false
+        },
+        {
+          "line": 322,
+          "statement": "from fasttreeshap import TreeExplainer as FastTreeExplainer",
+          "top_level": false
+        },
+        {
+          "line": 1565,
+          "statement": "from fasttreeshap import TreeExplainer as FastTreeExplainer",
+          "top_level": false
+        }
+      ]
+    },
+    "feature_selection/base.py": {
+      "owners": [
+        "03"
+      ],
+      "installed_path": "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/feature_selection/base.py",
+      "sha256": "8c78b167b7b8935bb55ea31b903c45d34f79445c333c3142e1a17bc2d499601c",
+      "public_definitions": [
+        {
+          "name": "BaseThresholdSelector",
+          "line": 31
+        }
+      ],
+      "duplicate_definitions": [],
+      "imports": [
+        {
+          "line": 12,
+          "statement": "from __future__ import print_function",
+          "top_level": true
+        },
+        {
+          "line": 15,
+          "statement": "import pandas as pd",
+          "top_level": true
+        },
+        {
+          "line": 18,
+          "statement": "import numpy as np",
+          "top_level": true
+        },
+        {
+          "line": 22,
+          "statement": "from sklearn.utils.validation import check_is_fitted",
+          "top_level": true
+        },
+        {
+          "line": 23,
+          "statement": "from sklearn.base import BaseEstimator",
+          "top_level": true
+        },
+        {
+          "line": 24,
+          "statement": "from sklearn.feature_selection._base import SelectorMixin",
+          "top_level": true
+        }
+      ]
+    },
+    "feature_selection/lasso.py": {
+      "owners": [
+        "01c"
+      ],
+      "installed_path": "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/feature_selection/lasso.py",
+      "sha256": "d3f45b9e7f8507b7dddd5023bcc9dcc212f9efb4cb9c94f13e99480fc1684512",
+      "public_definitions": [
+        {
+          "name": "EnetGLM",
+          "line": 56
+        },
+        {
+          "name": "weighted_cross_val_score",
+          "line": 291
+        },
+        {
+          "name": "grid_search_cv",
+          "line": 400
+        },
+        {
+          "name": "LassoFeatureSelection",
+          "line": 492
+        },
+        {
+          "name": "drop_existing_sm_constant_from_df",
+          "line": 653
+        }
+      ],
+      "duplicate_definitions": [],
+      "imports": [
+        {
+          "line": 21,
+          "statement": "import pandas as pd",
+          "top_level": true
+        },
+        {
+          "line": 22,
+          "statement": "import numpy as np",
+          "top_level": true
+        },
+        {
+          "line": 23,
+          "statement": "import statsmodels.api as sm",
+          "top_level": true
+        },
+        {
+          "line": 24,
+          "statement": "from sklearn.base import BaseEstimator, TransformerMixin, RegressorMixin",
+          "top_level": true
+        },
+        {
+          "line": 25,
+          "statement": "from sklearn.base import clone",
+          "top_level": true
+        },
+        {
+          "line": 26,
+          "statement": "from sklearn.utils import check_array",
+          "top_level": true
+        },
+        {
+          "line": 27,
+          "statement": "from sklearn.model_selection import StratifiedKFold, KFold",
+          "top_level": true
+        },
+        {
+          "line": 28,
+          "statement": "from joblib import Parallel, delayed",
+          "top_level": true
+        },
+        {
+          "line": 29,
+          "statement": "from typing import Union, Optional",
+          "top_level": true
+        }
+      ]
+    },
+    "feature_selection/mrmr.py": {
+      "owners": [
+        "01a"
+      ],
+      "installed_path": "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py",
+      "sha256": "b9585ff7346006b5a4571c521b2ab070d34a84f10f5b4c04f5b34db67458103b",
+      "public_definitions": [
+        {
+          "name": "MinRedundancyMaxRelevance",
+          "line": 29
+        }
+      ],
+      "duplicate_definitions": [],
+      "imports": [
+        {
+          "line": 13,
+          "statement": "import functools",
+          "top_level": true
+        },
+        {
+          "line": 14,
+          "statement": "import numpy as np",
+          "top_level": true
+        },
+        {
+          "line": 15,
+          "statement": "import pandas as pd",
+          "top_level": true
+        },
+        {
+          "line": 16,
+          "statement": "from sklearn.base import BaseEstimator",
+          "top_level": true
+        },
+        {
+          "line": 17,
+          "statement": "from sklearn.utils.validation import check_is_fitted",
+          "top_level": true
+        },
+        {
+          "line": 18,
+          "statement": "from tqdm.auto import tqdm",
+          "top_level": true
+        },
+        {
+          "line": 19,
+          "statement": "from sklearn.feature_selection._base import SelectorMixin",
+          "top_level": true
+        },
+        {
+          "line": 20,
+          "statement": "from ..association import (\n    f_stat_classification_parallel,\n    f_stat_regression_parallel,\n    association_series,\n)",
+          "top_level": true
+        }
+      ]
+    },
+    "feature_selection/summary.py": {
+      "owners": [
+        "03"
+      ],
+      "installed_path": "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/feature_selection/summary.py",
+      "sha256": "33ca52f79a2fb9eef15cde7d87222309ea6bbcf2b805f40b36d2d78b4e31ac87",
+      "public_definitions": [
+        {
+          "name": "highlight_discarded",
+          "line": 15
+        },
+        {
+          "name": "make_fs_summary",
+          "line": 31
+        }
+      ],
+      "duplicate_definitions": [],
+      "imports": [
+        {
+          "line": 11,
+          "statement": "import pandas as pd",
+          "top_level": true
+        },
+        {
+          "line": 12,
+          "statement": "import numpy as np",
+          "top_level": true
+        }
+      ]
+    },
+    "feature_selection/unsupervised.py": {
+      "owners": [
+        "03",
+        "06"
+      ],
+      "installed_path": "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/feature_selection/unsupervised.py",
+      "sha256": "61cadc4d6bb791514759dce210a4acbe93f3b29a3613a9d6fdca7f1ca98cb531",
+      "public_definitions": [
+        {
+          "name": "MissingValueThreshold",
+          "line": 62
+        },
+        {
+          "name": "UniqueValuesThreshold",
+          "line": 115
+        },
+        {
+          "name": "CardinalityThreshold",
+          "line": 191
+        },
+        {
+          "name": "CollinearityThreshold",
+          "line": 238
+        }
+      ],
+      "duplicate_definitions": [],
+      "imports": [
+        {
+          "line": 13,
+          "statement": "from __future__ import print_function",
+          "top_level": true
+        },
+        {
+          "line": 14,
+          "statement": "from tqdm.auto import trange",
+          "top_level": true
+        },
+        {
+          "line": 17,
+          "statement": "import pandas as pd",
+          "top_level": true
+        },
+        {
+          "line": 20,
+          "statement": "import numpy as np",
+          "top_level": true
+        },
+        {
+          "line": 23,
+          "statement": "from sklearn.utils.validation import check_is_fitted",
+          "top_level": true
+        },
+        {
+          "line": 24,
+          "statement": "from sklearn.base import BaseEstimator",
+          "top_level": true
+        },
+        {
+          "line": 25,
+          "statement": "from sklearn.feature_selection._base import SelectorMixin",
+          "top_level": true
+        },
+        {
+          "line": 28,
+          "statement": "from .base import BaseThresholdSelector",
+          "top_level": true
+        },
+        {
+          "line": 29,
+          "statement": "from ..utils import create_dtype_dict",
+          "top_level": true
+        },
+        {
+          "line": 30,
+          "statement": "from ..association import (\n    association_matrix,\n    xy_to_matrix,\n    plot_association_matrix,\n    weighted_theils_u,\n    weighted_corr,\n    correlation_ratio,\n)",
+          "top_level": true
+        },
+        {
+          "line": 38,
+          "statement": "from ..preprocessing import OrdinalEncoderPandas",
+          "top_level": true
+        }
+      ]
+    },
+    "feature_selection/variable_importance.py": {
+      "owners": [
+        "03",
+        "06"
+      ],
+      "installed_path": "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py",
+      "sha256": "3370955a62c8fd057a5f5b547d1798ad57dd0f53ded8a509a0d0690166faeb03",
+      "public_definitions": [
+        {
+          "name": "VariableImportance",
+          "line": 34
+        }
+      ],
+      "duplicate_definitions": [],
+      "imports": [
+        {
+          "line": 10,
+          "statement": "from __future__ import print_function",
+          "top_level": true
+        },
+        {
+          "line": 11,
+          "statement": "from tqdm.auto import trange",
+          "top_level": true
+        },
+        {
+          "line": 14,
+          "statement": "import pandas as pd",
+          "top_level": true
+        },
+        {
+          "line": 17,
+          "statement": "import numpy as np",
+          "top_level": true
+        },
+        {
+          "line": 20,
+          "statement": "import matplotlib.pyplot as plt",
+          "top_level": true
+        },
+        {
+          "line": 21,
+          "statement": "import matplotlib.gridspec as gridspec",
+          "top_level": true
+        },
+        {
+          "line": 24,
+          "statement": "from sklearn.utils.validation import check_is_fitted",
+          "top_level": true
+        },
+        {
+          "line": 25,
+          "statement": "from sklearn.base import BaseEstimator",
+          "top_level": true
+        },
+        {
+          "line": 26,
+          "statement": "from sklearn.feature_selection._base import SelectorMixin",
+          "top_level": true
+        },
+        {
+          "line": 29,
+          "statement": "from ..utils import reset_plot",
+          "top_level": true
+        },
+        {
+          "line": 30,
+          "statement": "from ..gbm import GradientBoosting",
+          "top_level": true
+        },
+        {
+          "line": 31,
+          "statement": "from ..preprocessing import OrdinalEncoderPandas",
+          "top_level": true
+        },
+        {
+          "line": 381,
+          "statement": "from fasttreeshap import TreeExplainer as FastTreeExplainer",
+          "top_level": false
+        }
+      ]
+    },
+    "gbm.py": {
+      "owners": [
+        "04"
+      ],
+      "installed_path": "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/gbm.py",
+      "sha256": "1aebbc71aa6873ab6ac23a69684a8311761dde88b6d66a5e90e3d9b3644bea62",
+      "public_definitions": [
+        {
+          "name": "GradientBoosting",
+          "line": 68
+        },
+        {
+          "name": "gbm_flavour",
+          "line": 824
+        }
+      ],
+      "duplicate_definitions": [],
+      "imports": [
+        {
+          "line": 20,
+          "statement": "import gc",
+          "top_level": true
+        },
+        {
+          "line": 21,
+          "statement": "import warnings",
+          "top_level": true
+        },
+        {
+          "line": 22,
+          "statement": "from datetime import date",
+          "top_level": true
+        },
+        {
+          "line": 23,
+          "statement": "from pathlib import Path",
+          "top_level": true
+        },
+        {
+          "line": 24,
+          "statement": "from typing import List, Optional, Union, Dict, Tuple, Any",
+          "top_level": true
+        },
+        {
+          "line": 27,
+          "statement": "import joblib",
+          "top_level": true
+        },
+        {
+          "line": 28,
+          "statement": "import lightgbm as lgb",
+          "top_level": true
+        },
+        {
+          "line": 29,
+          "statement": "import matplotlib as mpl",
+          "top_level": true
+        },
+        {
+          "line": 30,
+          "statement": "import matplotlib.pyplot as plt",
+          "top_level": true
+        },
+        {
+          "line": 31,
+          "statement": "import numpy as np",
+          "top_level": true
+        },
+        {
+          "line": 32,
+          "statement": "import pandas as pd",
+          "top_level": true
+        },
+        {
+          "line": 33,
+          "statement": "from sklearn.model_selection import (\n    GroupShuffleSplit,\n    ShuffleSplit,\n    StratifiedShuffleSplit,\n)",
+          "top_level": true
+        },
+        {
+          "line": 40,
+          "statement": "from arfs.utils import create_dtype_dict",
+          "top_level": true
+        }
+      ]
+    },
+    "parallel.py": {
+      "owners": [
+        "01a",
+        "05"
+      ],
+      "installed_path": "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/parallel.py",
+      "sha256": "8338ff10d235b6ef6e79b5882f2bb5cb26ff624bec41b6fa0728e8d0809fbae4",
+      "public_definitions": [
+        {
+          "name": "parallel_matrix_entries",
+          "line": 18
+        },
+        {
+          "name": "parallel_df",
+          "line": 61
+        }
+      ],
+      "duplicate_definitions": [],
+      "imports": [
+        {
+          "line": 11,
+          "statement": "import numpy as np",
+          "top_level": true
+        },
+        {
+          "line": 12,
+          "statement": "import pandas as pd",
+          "top_level": true
+        },
+        {
+          "line": 13,
+          "statement": "from joblib import Parallel, delayed",
+          "top_level": true
+        },
+        {
+          "line": 14,
+          "statement": "from multiprocessing import cpu_count",
+          "top_level": true
+        },
+        {
+          "line": 15,
+          "statement": "from itertools import chain",
+          "top_level": true
+        }
+      ]
+    },
+    "preprocessing.py": {
+      "owners": [
+        "02",
+        "06"
+      ],
+      "installed_path": "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/preprocessing.py",
+      "sha256": "b8ef4df216724173daaaf14afda273ec586572437f86defcbfb12ebafc643790",
+      "public_definitions": [
+        {
+          "name": "OrdinalEncoderPandas",
+          "line": 46
+        },
+        {
+          "name": "dtype_column_selector",
+          "line": 239
+        },
+        {
+          "name": "cat_var",
+          "line": 328
+        },
+        {
+          "name": "TreeDiscretizer",
+          "line": 394
+        },
+        {
+          "name": "highlight_discarded",
+          "line": 698
+        },
+        {
+          "name": "IntervalToMidpoint",
+          "line": 717
+        },
+        {
+          "name": "transform_interval_to_midpoint",
+          "line": 816
+        },
+        {
+          "name": "find_interval_midpoint",
+          "line": 854
+        },
+        {
+          "name": "PatsyTransformer",
+          "line": 880
+        }
+      ],
+      "duplicate_definitions": [],
+      "imports": [
+        {
+          "line": 14,
+          "statement": "from __future__ import print_function",
+          "top_level": true
+        },
+        {
+          "line": 15,
+          "statement": "from tqdm.auto import tqdm",
+          "top_level": true
+        },
+        {
+          "line": 18,
+          "statement": "import pandas as pd",
+          "top_level": true
+        },
+        {
+          "line": 19,
+          "statement": "from pandas.api.types import IntervalDtype",
+          "top_level": true
+        },
+        {
+          "line": 22,
+          "statement": "import numpy as np",
+          "top_level": true
+        },
+        {
+          "line": 25,
+          "statement": "import re",
+          "top_level": true
+        },
+        {
+          "line": 28,
+          "statement": "from sklearn.preprocessing import OrdinalEncoder",
+          "top_level": true
+        },
+        {
+          "line": 29,
+          "statement": "from sklearn.base import BaseEstimator, TransformerMixin",
+          "top_level": true
+        },
+        {
+          "line": 32,
+          "statement": "from patsy import dmatrix, EvalEnvironment, ModelDesc, INTERCEPT",
+          "top_level": true
+        },
+        {
+          "line": 35,
+          "statement": "from typing import Any, Callable, Union, List, Tuple, Optional, Dict",
+          "top_level": true
+        },
+        {
+          "line": 38,
+          "statement": "from .gbm import GradientBoosting",
+          "top_level": true
+        },
+        {
+          "line": 39,
+          "statement": "from .utils import create_dtype_dict, concat_or_group",
+          "top_level": true
+        }
+      ]
+    },
+    "sampling.py": {
+      "owners": [
+        "05"
+      ],
+      "installed_path": "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/sampling.py",
+      "sha256": "3cc49b8433a4be4851cbe21d3a4f996f89bef52a20ab4f3720ecba45cb0c09af",
+      "public_definitions": [
+        {
+          "name": "sample",
+          "line": 13
+        },
+        {
+          "name": "get_most_common",
+          "line": 80
+        },
+        {
+          "name": "gower_matrix",
+          "line": 86
+        },
+        {
+          "name": "smallest_indices",
+          "line": 310
+        },
+        {
+          "name": "gower_topn",
+          "line": 334
+        },
+        {
+          "name": "get_5_percent_splits",
+          "line": 410
+        },
+        {
+          "name": "isolation_forest",
+          "line": 428
+        },
+        {
+          "name": "isof_find_sample",
+          "line": 442
+        }
+      ],
+      "duplicate_definitions": [],
+      "imports": [
+        {
+          "line": 3,
+          "statement": "import numpy as np",
+          "top_level": true
+        },
+        {
+          "line": 4,
+          "statement": "import pandas as pd",
+          "top_level": true
+        },
+        {
+          "line": 5,
+          "statement": "from scipy.sparse import issparse",
+          "top_level": true
+        },
+        {
+          "line": 6,
+          "statement": "from collections import Counter",
+          "top_level": true
+        },
+        {
+          "line": 7,
+          "statement": "from sklearn.cluster import AgglomerativeClustering",
+          "top_level": true
+        },
+        {
+          "line": 8,
+          "statement": "from sklearn.ensemble import IsolationForest",
+          "top_level": true
+        },
+        {
+          "line": 9,
+          "statement": "from scipy.stats import ks_2samp",
+          "top_level": true
+        },
+        {
+          "line": 10,
+          "statement": "from .utils import is_list_of_str, is_list_of_bool, is_list_of_int",
+          "top_level": true
+        }
+      ]
+    },
+    "utils.py": {
+      "owners": [
+        "00",
+        "01b",
+        "03",
+        "04",
+        "06"
+      ],
+      "installed_path": "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py",
+      "sha256": "4dcae037cea59e68884fc44d1be37b840c444ec4813c9cb39bc69ffebbaf38e4",
+      "public_definitions": [
+        {
+          "name": "concat_or_group",
+          "line": 40
+        },
+        {
+          "name": "reset_plot",
+          "line": 90
+        },
+        {
+          "name": "set_my_plt_style",
+          "line": 96
+        },
+        {
+          "name": "create_dtype_dict",
+          "line": 129
+        },
+        {
+          "name": "get_pandas_cat_codes",
+          "line": 195
+        },
+        {
+          "name": "validate_sample_weight",
+          "line": 230
+        },
+        {
+          "name": "validate_sample_weight",
+          "line": 242
+        },
+        {
+          "name": "validate_pandas_input",
+          "line": 273
+        },
+        {
+          "name": "check_if_tree_based",
+          "line": 290
+        },
+        {
+          "name": "is_lightgbm",
+          "line": 316
+        },
+        {
+          "name": "is_catboost",
+          "line": 333
+        },
+        {
+          "name": "is_xgboost",
+          "line": 350
+        },
+        {
+          "name": "LightForestRegressor",
+          "line": 367
+        },
+        {
+          "name": "LightForestClassifier",
+          "line": 396
+        },
+        {
+          "name": "is_list_of_str",
+          "line": 424
+        },
+        {
+          "name": "is_list_of_bool",
+          "line": 447
+        },
+        {
+          "name": "is_list_of_int",
+          "line": 470
+        },
+        {
+          "name": "plot_y_vs_X",
+          "line": 644
+        },
+        {
+          "name": "load_data",
+          "line": 687
+        }
+      ],
+      "duplicate_definitions": [
+        "validate_sample_weight"
+      ],
+      "imports": [
+        {
+          "line": 3,
+          "statement": "from __future__ import print_function, division",
+          "top_level": true
+        },
+        {
+          "line": 5,
+          "statement": "import lightgbm as lgb",
+          "top_level": true
+        },
+        {
+          "line": 6,
+          "statement": "import matplotlib as mpl",
+          "top_level": true
+        },
+        {
+          "line": 7,
+          "statement": "import numpy as np",
+          "top_level": true
+        },
+        {
+          "line": 8,
+          "statement": "import pandas as pd",
+          "top_level": true
+        },
+        {
+          "line": 10,
+          "statement": "from pkg_resources import resource_filename",
+          "top_level": true
+        },
+        {
+          "line": 11,
+          "statement": "from matplotlib import pyplot as plt",
+          "top_level": true
+        },
+        {
+          "line": 12,
+          "statement": "from sklearn.impute import SimpleImputer",
+          "top_level": true
+        },
+        {
+          "line": 13,
+          "statement": "from sklearn.compose import make_column_transformer",
+          "top_level": true
+        },
+        {
+          "line": 14,
+          "statement": "from sklearn.pipeline import make_pipeline",
+          "top_level": true
+        },
+        {
+          "line": 15,
+          "statement": "from sklearn.datasets import fetch_openml",
+          "top_level": true
+        },
+        {
+          "line": 16,
+          "statement": "from sklearn.datasets import load_breast_cancer",
+          "top_level": true
+        },
+        {
+          "line": 17,
+          "statement": "from sklearn.utils import Bunch",
+          "top_level": true
+        },
+        {
+          "line": 18,
+          "statement": "import joblib",
+          "top_level": true
+        }
+      ]
+    }
+  },
+  "direct_runtime_dependencies": [
+    "lightgbm",
+    "matplotlib",
+    "numpy",
+    "pandas",
+    "scikit-learn",
+    "scipy",
+    "seaborn",
+    "shap",
+    "statsmodels",
+    "tqdm"
+  ],
+  "distributions": {
+    "joblib": {
+      "version": "1.6.0",
+      "requires_python": ">=3.10",
+      "python_metadata_allows": {
+        "3.9.0": false,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "cloudpickle>=3.0",
+        "distributed; extra == \"test\"",
+        "lz4; extra == \"test\"",
+        "numpy; extra == \"test\"",
+        "memory_profiler; extra == \"test\"",
+        "pytest; extra == \"test\"",
+        "pytest-asyncio; extra == \"test\"",
+        "pytest-cov; extra == \"test\"",
+        "pytest-run-parallel; extra == \"test\"",
+        "pytest-timeout; extra == \"test\"",
+        "threadpoolctl; extra == \"test\"",
+        "distributed; extra == \"docs\"",
+        "lz4; extra == \"docs\"",
+        "numpy; extra == \"docs\"",
+        "numpydoc; extra == \"docs\"",
+        "matplotlib; extra == \"docs\"",
+        "pandas; extra == \"docs\"",
+        "psutil; extra == \"docs\"",
+        "sphinx; extra == \"docs\"",
+        "pydata-sphinx-theme; extra == \"docs\"",
+        "sphinx-gallery; extra == \"docs\"",
+        "sphinx-copybutton; extra == \"docs\"",
+        "sphinx-design; extra == \"docs\"",
+        "tqdm; extra == \"docs\""
+      ]
+    },
+    "cloudpickle": {
+      "version": "3.1.2",
+      "requires_python": ">=3.8",
+      "python_metadata_allows": {
+        "3.9.0": true,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": []
+    },
+    "typing_extensions": {
+      "version": "4.16.0",
+      "requires_python": ">=3.9",
+      "python_metadata_allows": {
+        "3.9.0": true,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": []
+    },
+    "six": {
+      "version": "1.17.0",
+      "requires_python": ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*",
+      "python_metadata_allows": {
+        "3.9.0": true,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": []
+    },
+    "coverage": {
+      "version": "7.16.2",
+      "requires_python": ">=3.10",
+      "python_metadata_allows": {
+        "3.9.0": false,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "tomli; python_full_version <= \"3.11.0a6\" and extra == \"toml\""
+      ]
+    },
+    "setuptools": {
+      "version": "80.9.0",
+      "requires_python": ">=3.9",
+      "python_metadata_allows": {
+        "3.9.0": true,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "pytest!=8.1.*,>=6; extra == \"test\"",
+        "virtualenv>=13.0.0; extra == \"test\"",
+        "wheel>=0.44.0; extra == \"test\"",
+        "pip>=19.1; extra == \"test\"",
+        "packaging>=24.2; extra == \"test\"",
+        "jaraco.envs>=2.2; extra == \"test\"",
+        "pytest-xdist>=3; extra == \"test\"",
+        "jaraco.path>=3.7.2; extra == \"test\"",
+        "build[virtualenv]>=1.0.3; extra == \"test\"",
+        "filelock>=3.4.0; extra == \"test\"",
+        "ini2toml[lite]>=0.14; extra == \"test\"",
+        "tomli-w>=1.0.0; extra == \"test\"",
+        "pytest-timeout; extra == \"test\"",
+        "pytest-perf; sys_platform != \"cygwin\" and extra == \"test\"",
+        "jaraco.develop>=7.21; (python_version >= \"3.9\" and sys_platform != \"cygwin\") and extra == \"test\"",
+        "pytest-home>=0.5; extra == \"test\"",
+        "pytest-subprocess; extra == \"test\"",
+        "pyproject-hooks!=1.1; extra == \"test\"",
+        "jaraco.test>=5.5; extra == \"test\"",
+        "sphinx>=3.5; extra == \"doc\"",
+        "jaraco.packaging>=9.3; extra == \"doc\"",
+        "rst.linker>=1.9; extra == \"doc\"",
+        "furo; extra == \"doc\"",
+        "sphinx-lint; extra == \"doc\"",
+        "jaraco.tidelift>=1.4; extra == \"doc\"",
+        "pygments-github-lexers==0.0.5; extra == \"doc\"",
+        "sphinx-favicon; extra == \"doc\"",
+        "sphinx-inline-tabs; extra == \"doc\"",
+        "sphinx-reredirects; extra == \"doc\"",
+        "sphinxcontrib-towncrier; extra == \"doc\"",
+        "sphinx-notfound-page<2,>=1; extra == \"doc\"",
+        "pyproject-hooks!=1.1; extra == \"doc\"",
+        "towncrier<24.7; extra == \"doc\"",
+        "packaging>=24.2; extra == \"core\"",
+        "more_itertools>=8.8; extra == \"core\"",
+        "jaraco.text>=3.7; extra == \"core\"",
+        "importlib_metadata>=6; python_version < \"3.10\" and extra == \"core\"",
+        "tomli>=2.0.1; python_version < \"3.11\" and extra == \"core\"",
+        "wheel>=0.43.0; extra == \"core\"",
+        "platformdirs>=4.2.2; extra == \"core\"",
+        "jaraco.functools>=4; extra == \"core\"",
+        "more_itertools; extra == \"core\"",
+        "pytest-checkdocs>=2.4; extra == \"check\"",
+        "pytest-ruff>=0.2.1; sys_platform != \"cygwin\" and extra == \"check\"",
+        "ruff>=0.8.0; sys_platform != \"cygwin\" and extra == \"check\"",
+        "pytest-cov; extra == \"cover\"",
+        "pytest-enabler>=2.2; extra == \"enabler\"",
+        "pytest-mypy; extra == \"type\"",
+        "mypy==1.14.*; extra == \"type\"",
+        "importlib_metadata>=7.0.2; python_version < \"3.10\" and extra == \"type\"",
+        "jaraco.develop>=7.21; sys_platform != \"cygwin\" and extra == \"type\""
+      ]
+    },
+    "pluggy": {
+      "version": "1.6.0",
+      "requires_python": ">=3.9",
+      "python_metadata_allows": {
+        "3.9.0": true,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "pre-commit; extra == \"dev\"",
+        "tox; extra == \"dev\"",
+        "pytest; extra == \"testing\"",
+        "pytest-benchmark; extra == \"testing\"",
+        "coverage; extra == \"testing\""
+      ]
+    },
+    "fonttools": {
+      "version": "4.66.1",
+      "requires_python": ">=3.11",
+      "python_metadata_allows": {
+        "3.9.0": false,
+        "3.10.0": false,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "lxml>=4.0; extra == \"lxml\"",
+        "brotli>=1.0.1; platform_python_implementation == \"CPython\" and extra == \"woff\"",
+        "brotlicffi>=0.8.0; platform_python_implementation != \"CPython\" and extra == \"woff\"",
+        "zopfli>=0.1.4; extra == \"woff\"",
+        "unicodedata2>=18.0.0; python_version <= \"3.15\" and extra == \"unicode\"",
+        "lz4>=1.7.4.2; extra == \"graphite\"",
+        "scipy; platform_python_implementation != \"PyPy\" and extra == \"interpolatable\"",
+        "munkres; platform_python_implementation == \"PyPy\" and extra == \"interpolatable\"",
+        "pycairo; extra == \"interpolatable\"",
+        "matplotlib; extra == \"plot\"",
+        "sympy; extra == \"symfont\"",
+        "xattr; sys_platform == \"darwin\" and extra == \"type1\"",
+        "skia-pathops>=0.5.0; extra == \"pathops\"",
+        "uharfbuzz>=0.45.0; extra == \"repacker\"",
+        "lxml>=4.0; extra == \"all\"",
+        "brotli>=1.0.1; platform_python_implementation == \"CPython\" and extra == \"all\"",
+        "brotlicffi>=0.8.0; platform_python_implementation != \"CPython\" and extra == \"all\"",
+        "zopfli>=0.1.4; extra == \"all\"",
+        "unicodedata2>=18.0.0; python_version <= \"3.15\" and extra == \"all\"",
+        "lz4>=1.7.4.2; extra == \"all\"",
+        "scipy; platform_python_implementation != \"PyPy\" and extra == \"all\"",
+        "munkres; platform_python_implementation == \"PyPy\" and extra == \"all\"",
+        "pycairo; extra == \"all\"",
+        "matplotlib; extra == \"all\"",
+        "sympy; extra == \"all\"",
+        "xattr; sys_platform == \"darwin\" and extra == \"all\"",
+        "skia-pathops>=0.5.0; extra == \"all\"",
+        "uharfbuzz>=0.45.0; extra == \"all\""
+      ]
+    },
+    "scipy": {
+      "version": "1.18.1",
+      "requires_python": ">=3.12",
+      "python_metadata_allows": {
+        "3.9.0": false,
+        "3.10.0": false,
+        "3.11.0": false,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "numpy<2.8,>=2.0.0",
+        "pytest>=8.0.0; extra == \"test\"",
+        "pytest-cov; extra == \"test\"",
+        "pytest-timeout; extra == \"test\"",
+        "pytest-xdist; extra == \"test\"",
+        "asv; extra == \"test\"",
+        "mpmath; extra == \"test\"",
+        "gmpy2; extra == \"test\"",
+        "threadpoolctl; extra == \"test\"",
+        "scikit-umfpack; extra == \"test\"",
+        "pooch; extra == \"test\"",
+        "hypothesis>=6.30; extra == \"test\"",
+        "array-api-strict>=2.3.1; extra == \"test\"",
+        "Cython; extra == \"test\"",
+        "meson; extra == \"test\"",
+        "ninja; sys_platform != \"emscripten\" and extra == \"test\"",
+        "scipy-doctest>=2.0.0; extra == \"test\"",
+        "sphinx<8.2.0,>=5.0.0; extra == \"doc\"",
+        "intersphinx_registry; extra == \"doc\"",
+        "pydata-sphinx-theme>=0.15.2; extra == \"doc\"",
+        "sphinx-copybutton; extra == \"doc\"",
+        "sphinx-design>=0.4.0; extra == \"doc\"",
+        "matplotlib>=3.5; extra == \"doc\"",
+        "numpydoc; extra == \"doc\"",
+        "jupytext; extra == \"doc\"",
+        "myst-nb>=1.2.0; extra == \"doc\"",
+        "pooch; extra == \"doc\"",
+        "jupyterlite-sphinx>=0.19.1; extra == \"doc\"",
+        "jupyterlite-pyodide-kernel; extra == \"doc\"",
+        "linkify-it-py; extra == \"doc\"",
+        "tabulate; extra == \"doc\"",
+        "click<8.3.0; extra == \"dev\"",
+        "spin; extra == \"dev\"",
+        "mypy==1.19.1; extra == \"dev\"",
+        "pyrefly==0.63.0; extra == \"dev\"",
+        "typing_extensions; extra == \"dev\"",
+        "types-psutil; extra == \"dev\"",
+        "pycodestyle; extra == \"dev\"",
+        "ruff>=0.12.0; extra == \"dev\"",
+        "cython-lint>=0.12.2; extra == \"dev\""
+      ]
+    },
+    "packaging": {
+      "version": "26.3",
+      "requires_python": ">=3.9",
+      "python_metadata_allows": {
+        "3.9.0": true,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": []
+    },
+    "pytest-cov": {
+      "version": "7.1.0",
+      "requires_python": ">=3.9",
+      "python_metadata_allows": {
+        "3.9.0": true,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "coverage[toml]>=7.10.6",
+        "pluggy>=1.2",
+        "pytest>=7",
+        "process-tests; extra == 'testing'",
+        "pytest-xdist; extra == 'testing'",
+        "virtualenv; extra == 'testing'"
+      ]
+    },
+    "cycler": {
+      "version": "0.12.1",
+      "requires_python": ">=3.8",
+      "python_metadata_allows": {
+        "3.9.0": true,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "ipython ; extra == 'docs'",
+        "matplotlib ; extra == 'docs'",
+        "numpydoc ; extra == 'docs'",
+        "sphinx ; extra == 'docs'",
+        "pytest ; extra == 'tests'",
+        "pytest-cov ; extra == 'tests'",
+        "pytest-xdist ; extra == 'tests'"
+      ]
+    },
+    "matplotlib": {
+      "version": "3.11.2",
+      "requires_python": ">=3.11",
+      "python_metadata_allows": {
+        "3.9.0": false,
+        "3.10.0": false,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "contourpy>=1.0.1",
+        "cycler>=0.10",
+        "fonttools>=4.28.2",
+        "kiwisolver>=1.3.1",
+        "numpy>=1.25",
+        "packaging>=20.0",
+        "pillow>=9",
+        "pyparsing>=3",
+        "python-dateutil>=2.7"
+      ]
+    },
+    "python-dateutil": {
+      "version": "2.9.0.post0",
+      "requires_python": "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7",
+      "python_metadata_allows": {
+        "3.9.0": true,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "six >=1.5"
+      ]
+    },
+    "statsmodels": {
+      "version": "0.15.0",
+      "requires_python": ">=3.10",
+      "python_metadata_allows": {
+        "3.9.0": false,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "numpy<3,>=1.23.5",
+        "scipy!=1.9.2,>=1.8",
+        "pandas!=2.1.0,>=1.4",
+        "patsy>=0.5.6",
+        "packaging>=21.3",
+        "formulaic>=1.1.0",
+        "pytest<10,>=8.4.1; extra == \"test\"",
+        "pytest-randomly; extra == \"test\"",
+        "pytest-run-parallel; extra == \"test\"",
+        "pytest-xdist; extra == \"test\"",
+        "pytest-cov; extra == \"test\"",
+        "coverage[toml]; extra == \"test\"",
+        "meson; extra == \"test\"",
+        "ninja; sys_platform != \"emscripten\" and extra == \"test\"",
+        "sphinx; extra == \"doc\"",
+        "pandas!=2.1.0,>=2.2.2; extra == \"doc\"",
+        "pydata-sphinx-theme; extra == \"doc\"",
+        "jupyter; extra == \"doc\"",
+        "notebook; extra == \"doc\"",
+        "nbsphinx; extra == \"doc\"",
+        "nbconvert; extra == \"doc\"",
+        "pyyaml; extra == \"doc\"",
+        "pandas-datareader; extra == \"doc\"",
+        "simplegeneric; extra == \"doc\"",
+        "seaborn; extra == \"doc\"",
+        "numpydoc; extra == \"doc\"",
+        "pymc; os_name != \"nt\" and extra == \"doc\"",
+        "arviz; os_name != \"nt\" and extra == \"doc\"",
+        "jinja2; extra == \"doc\"",
+        "pickleshare; extra == \"doc\"",
+        "pytest<10,>=8.4.1; extra == \"doc\"",
+        "cython<4,>=3.0.10; extra == \"dev\"",
+        "setuptools_scm~=9.0; extra == \"dev\"",
+        "meson-python>=0.18.0; extra == \"dev\"",
+        "meson; extra == \"dev\"",
+        "ninja; extra == \"dev\"",
+        "matplotlib>=3; extra == \"dev\"",
+        "colorama; extra == \"dev\"",
+        "joblib; extra == \"dev\"",
+        "pywinpty; os_name == \"nt\" and extra == \"dev\"",
+        "ruff; extra == \"dev\"",
+        "polars>=1.0.0; extra == \"polars\""
+      ]
+    },
+    "formulaic": {
+      "version": "1.2.2",
+      "requires_python": ">=3.9",
+      "python_metadata_allows": {
+        "3.9.0": true,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "interface-meta>=1.2.0",
+        "narwhals>=1.17",
+        "numpy>=1.20.0",
+        "pandas>=1.3",
+        "scipy>=1.6",
+        "typing-extensions>=4.2.0",
+        "wrapt>=1.0; python_version < '3.13'",
+        "wrapt>=1.17.0rc1; python_version >= '3.13'",
+        "pyarrow>=1; extra == 'arrow'",
+        "sympy!=1.10,>=1.3; extra == 'calculus'",
+        "polars>=1; extra == 'polars'"
+      ]
+    },
+    "wrapt": {
+      "version": "2.5.0",
+      "requires_python": ">=3.9",
+      "python_metadata_allows": {
+        "3.9.0": true,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "pytest; extra == \"dev\"",
+        "setuptools; extra == \"dev\""
+      ]
+    },
+    "arfs": {
+      "version": "3.0.0",
+      "requires_python": "<3.13,>=3.9",
+      "python_metadata_allows": {
+        "3.9.0": true,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": false
+      },
+      "requires_dist": [
+        "lightgbm>=4.6.0",
+        "matplotlib>=3.9.4",
+        "numpy>=2.0.2",
+        "pandas>=2.2.3",
+        "scikit-learn>=1.6.1",
+        "scipy>=1.13.1",
+        "seaborn>=0.13.2",
+        "shap>=0.47.0",
+        "statsmodels>=0.14.4",
+        "tqdm>=4.67.1",
+        "ipykernel; extra == \"docs\"",
+        "ipython_genutils; extra == \"docs\"",
+        "pandoc; extra == \"docs\"",
+        "sphinx; extra == \"docs\"",
+        "sphinxawesome-theme==5.0.0b5; extra == \"docs\"",
+        "nbsphinx==0.9.2; extra == \"docs\"",
+        "sphinx-autodoc-typehints<1.24.0; extra == \"docs\"",
+        "sphinx-copybutton==0.5.2; extra == \"docs\"",
+        "sphinx-tabs==3.4.1; extra == \"docs\"",
+        "pytest; extra == \"test\"",
+        "pytest-cov; extra == \"test\""
+      ]
+    },
+    "threadpoolctl": {
+      "version": "3.7.0",
+      "requires_python": ">=3.9",
+      "python_metadata_allows": {
+        "3.9.0": true,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": []
+    },
+    "slicer": {
+      "version": "0.0.8",
+      "requires_python": ">=3.6",
+      "python_metadata_allows": {
+        "3.9.0": true,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": []
+    },
+    "lightgbm": {
+      "version": "4.7.0",
+      "requires_python": ">=3.10",
+      "python_metadata_allows": {
+        "3.9.0": false,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "narwhals>=1.15",
+        "numpy>=1.21.3",
+        "scipy",
+        "narwhals[pyarrow]; extra == \"arrow\"",
+        "pyarrow>=16.0.0; extra == \"arrow\"",
+        "dask[array,dataframe,distributed]>=2.0.0; extra == \"dask\"",
+        "narwhals[pandas]; extra == \"dask\"",
+        "pandas>=1.3.4; extra == \"dask\"",
+        "narwhals[pandas]; extra == \"pandas\"",
+        "pandas>=1.3.4; extra == \"pandas\"",
+        "graphviz; extra == \"plotting\"",
+        "matplotlib; extra == \"plotting\"",
+        "narwhals[polars]; extra == \"polars\"",
+        "polars>=1.0.0; extra == \"polars\"",
+        "scikit-learn>=1.0.2; extra == \"scikit-learn\""
+      ]
+    },
+    "tqdm": {
+      "version": "4.70.1",
+      "requires_python": ">=3.8",
+      "python_metadata_allows": {
+        "3.9.0": true,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "colorama; platform_system == \"Windows\"",
+        "requests; extra == \"discord\"",
+        "envwrap; extra == \"discord\"",
+        "slack-sdk; extra == \"slack\"",
+        "envwrap; extra == \"slack\"",
+        "requests; extra == \"telegram\"",
+        "envwrap; extra == \"telegram\"",
+        "ipywidgets>=6; extra == \"notebook\""
+      ]
+    },
+    "pandas": {
+      "version": "3.0.6",
+      "requires_python": ">=3.11",
+      "python_metadata_allows": {
+        "3.9.0": false,
+        "3.10.0": false,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "numpy>=1.26.0; python_version < \"3.14\"",
+        "numpy>=2.3.3; python_version >= \"3.14\"",
+        "python-dateutil>=2.8.2",
+        "tzdata; sys_platform == \"win32\"",
+        "tzdata; sys_platform == \"emscripten\"",
+        "hypothesis>=6.116.0; extra == \"test\"",
+        "pytest<9.1,>=8.3.4; extra == \"test\"",
+        "pytest-xdist>=3.6.1; extra == \"test\"",
+        "pyarrow>=13.0.0; extra == \"pyarrow\"",
+        "bottleneck>=1.4.2; extra == \"performance\"",
+        "numba>=0.60.0; extra == \"performance\"",
+        "numexpr>=2.10.2; extra == \"performance\"",
+        "scipy>=1.14.1; extra == \"computation\"",
+        "xarray>=2024.10.0; extra == \"computation\"",
+        "fsspec>=2024.10.0; extra == \"fss\"",
+        "s3fs>=2024.10.0; extra == \"aws\"",
+        "gcsfs>=2024.10.0; extra == \"gcp\"",
+        "odfpy>=1.4.1; extra == \"excel\"",
+        "openpyxl>=3.1.5; extra == \"excel\"",
+        "python-calamine>=0.3.0; extra == \"excel\"",
+        "pyxlsb>=1.0.10; extra == \"excel\"",
+        "xlrd>=2.0.1; extra == \"excel\"",
+        "xlsxwriter>=3.2.0; extra == \"excel\"",
+        "pyarrow>=13.0.0; extra == \"parquet\"",
+        "pyarrow>=13.0.0; extra == \"feather\"",
+        "pyiceberg>=0.8.1; extra == \"iceberg\"",
+        "tables>=3.10.1; extra == \"hdf5\"",
+        "pyreadstat>=1.2.8; extra == \"spss\"",
+        "SQLAlchemy>=2.0.36; extra == \"postgresql\"",
+        "psycopg2>=2.9.10; extra == \"postgresql\"",
+        "adbc-driver-postgresql>=1.2.0; extra == \"postgresql\"",
+        "SQLAlchemy>=2.0.36; extra == \"mysql\"",
+        "pymysql>=1.1.1; extra == \"mysql\"",
+        "SQLAlchemy>=2.0.36; extra == \"sql-other\"",
+        "adbc-driver-postgresql>=1.2.0; extra == \"sql-other\"",
+        "adbc-driver-sqlite>=1.2.0; extra == \"sql-other\"",
+        "beautifulsoup4>=4.12.3; extra == \"html\"",
+        "html5lib>=1.1; extra == \"html\"",
+        "lxml>=5.3.0; extra == \"html\"",
+        "lxml>=5.3.0; extra == \"xml\"",
+        "matplotlib>=3.9.3; extra == \"plot\"",
+        "jinja2>=3.1.5; extra == \"output-formatting\"",
+        "tabulate>=0.9.0; extra == \"output-formatting\"",
+        "PyQt5>=5.15.9; extra == \"clipboard\"",
+        "qtpy>=2.4.2; extra == \"clipboard\"",
+        "zstandard>=0.23.0; extra == \"compression\"",
+        "pytz>=2020.1; extra == \"timezone\"",
+        "adbc-driver-postgresql>=1.2.0; extra == \"all\"",
+        "adbc-driver-sqlite>=1.2.0; extra == \"all\"",
+        "beautifulsoup4>=4.12.3; extra == \"all\"",
+        "bottleneck>=1.4.2; extra == \"all\"",
+        "fastparquet>=2024.11.0; extra == \"all\"",
+        "fsspec>=2024.10.0; extra == \"all\"",
+        "gcsfs>=2024.10.0; extra == \"all\"",
+        "html5lib>=1.1; extra == \"all\"",
+        "hypothesis>=6.116.0; extra == \"all\"",
+        "jinja2>=3.1.5; extra == \"all\"",
+        "lxml>=5.3.0; extra == \"all\"",
+        "matplotlib>=3.9.3; extra == \"all\"",
+        "numba>=0.60.0; extra == \"all\"",
+        "numexpr>=2.10.2; extra == \"all\"",
+        "odfpy>=1.4.1; extra == \"all\"",
+        "openpyxl>=3.1.5; extra == \"all\"",
+        "psycopg2>=2.9.10; extra == \"all\"",
+        "pyarrow>=13.0.0; extra == \"all\"",
+        "pyiceberg>=0.8.1; extra == \"all\"",
+        "pymysql>=1.1.1; extra == \"all\"",
+        "PyQt5>=5.15.9; extra == \"all\"",
+        "pyreadstat>=1.2.8; extra == \"all\"",
+        "pytest>=8.3.4; extra == \"all\"",
+        "pytest-xdist>=3.6.1; extra == \"all\"",
+        "python-calamine>=0.3.0; extra == \"all\"",
+        "pytz>=2020.1; extra == \"all\"",
+        "pyxlsb>=1.0.10; extra == \"all\"",
+        "qtpy>=2.4.2; extra == \"all\"",
+        "scipy>=1.14.1; extra == \"all\"",
+        "s3fs>=2024.10.0; extra == \"all\"",
+        "SQLAlchemy>=2.0.36; extra == \"all\"",
+        "tables>=3.10.1; extra == \"all\"",
+        "tabulate>=0.9.0; extra == \"all\"",
+        "xarray>=2024.10.0; extra == \"all\"",
+        "xlrd>=2.0.1; extra == \"all\"",
+        "xlsxwriter>=3.2.0; extra == \"all\"",
+        "zstandard>=0.23.0; extra == \"all\""
+      ]
+    },
+    "narwhals": {
+      "version": "2.27.1",
+      "requires_python": ">=3.10",
+      "python_metadata_allows": {
+        "3.9.0": false,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "cudf-cu12>=24.10.0 ; sys_platform == 'linux' and extra == 'cudf'",
+        "dask[dataframe]>=2024.8 ; extra == 'dask'",
+        "duckdb>=1.1 ; extra == 'duckdb'",
+        "ibis-framework>=6.0.0 ; extra == 'ibis'",
+        "packaging>=21.3 ; extra == 'ibis'",
+        "pyarrow-hotfix>=0.7 ; extra == 'ibis'",
+        "modin>=0.22.0 ; extra == 'modin'",
+        "pandas>=1.3.4 ; extra == 'pandas'",
+        "polars>=0.20.4 ; extra == 'polars'",
+        "pyarrow>=13.0.0 ; extra == 'pyarrow'",
+        "pyspark>=3.5.0 ; extra == 'pyspark'",
+        "pyspark[connect]>=3.5.0 ; extra == 'pyspark-connect'",
+        "narwhals[duckdb] ; extra == 'sql'",
+        "sqlparse>=0.5.5 ; extra == 'sql'",
+        "sqlframe>=3.22.0,!=3.39.3 ; extra == 'sqlframe'"
+      ]
+    },
+    "iniconfig": {
+      "version": "2.3.1",
+      "requires_python": ">=3.10",
+      "python_metadata_allows": {
+        "3.9.0": false,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": []
+    },
+    "contourpy": {
+      "version": "1.4.0",
+      "requires_python": ">=3.12",
+      "python_metadata_allows": {
+        "3.9.0": false,
+        "3.10.0": false,
+        "3.11.0": false,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "numpy>=2.0",
+        "myst-parser; extra == \"docs\"",
+        "sphinx; extra == \"docs\"",
+        "sphinx-book-theme; extra == \"docs\"",
+        "sphinx-copybutton; extra == \"docs\"",
+        "bokeh; extra == \"bokeh\"",
+        "selenium; extra == \"bokeh\"",
+        "contourpy[bokeh,docs]; extra == \"mypy\"",
+        "bokeh; extra == \"mypy\"",
+        "docutils-stubs; extra == \"mypy\"",
+        "mypy==2.1.0; extra == \"mypy\"",
+        "types-Pillow; extra == \"mypy\"",
+        "contourpy[test-no-images]; extra == \"test\"",
+        "matplotlib; extra == \"test\"",
+        "pre-commit; extra == \"test\"",
+        "Pillow; extra == \"test\"",
+        "pytest; extra == \"test-no-images\"",
+        "pytest-cov; extra == \"test-no-images\"",
+        "pytest-rerunfailures<16; extra == \"test-no-images\"",
+        "pytest-xdist; extra == \"test-no-images\"",
+        "wurlitzer; extra == \"test-no-images\""
+      ]
+    },
+    "kiwisolver": {
+      "version": "1.5.1",
+      "requires_python": ">=3.10",
+      "python_metadata_allows": {
+        "3.9.0": false,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": []
+    },
+    "pygments": {
+      "version": "2.21.0",
+      "requires_python": ">=3.9",
+      "python_metadata_allows": {
+        "3.9.0": true,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "colorama>=0.4.6; extra == 'windows-terminal'"
+      ]
+    },
+    "interface_meta": {
+      "version": "2.0.1",
+      "requires_python": ">=3.10",
+      "python_metadata_allows": {
+        "3.9.0": false,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": []
+    },
+    "pyparsing": {
+      "version": "3.3.3",
+      "requires_python": ">=3.9",
+      "python_metadata_allows": {
+        "3.9.0": true,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "railroad-diagrams ; extra == \"diagrams\"",
+        "jinja2 ; extra == \"diagrams\""
+      ]
+    },
+    "seaborn": {
+      "version": "0.13.2",
+      "requires_python": ">=3.8",
+      "python_metadata_allows": {
+        "3.9.0": true,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "numpy>=1.20,!=1.24.0",
+        "pandas>=1.2",
+        "matplotlib>=3.4,!=3.6.1",
+        "pytest ; extra == \"dev\"",
+        "pytest-cov ; extra == \"dev\"",
+        "pytest-xdist ; extra == \"dev\"",
+        "flake8 ; extra == \"dev\"",
+        "mypy ; extra == \"dev\"",
+        "pandas-stubs ; extra == \"dev\"",
+        "pre-commit ; extra == \"dev\"",
+        "flit ; extra == \"dev\"",
+        "numpydoc ; extra == \"docs\"",
+        "nbconvert ; extra == \"docs\"",
+        "ipykernel ; extra == \"docs\"",
+        "sphinx<6.0.0 ; extra == \"docs\"",
+        "sphinx-copybutton ; extra == \"docs\"",
+        "sphinx-issues ; extra == \"docs\"",
+        "sphinx-design ; extra == \"docs\"",
+        "pyyaml ; extra == \"docs\"",
+        "pydata_sphinx_theme==0.10.0rc2 ; extra == \"docs\"",
+        "scipy>=1.7 ; extra == \"stats\"",
+        "statsmodels>=0.12 ; extra == \"stats\""
+      ]
+    },
+    "pytest": {
+      "version": "9.1.1",
+      "requires_python": ">=3.10",
+      "python_metadata_allows": {
+        "3.9.0": false,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "colorama>=0.4; sys_platform == \"win32\"",
+        "exceptiongroup>=1; python_version < \"3.11\"",
+        "iniconfig>=1.0.1",
+        "packaging>=22",
+        "pluggy<2,>=1.5",
+        "pygments>=2.7.2",
+        "tomli>=1; python_version < \"3.11\"",
+        "argcomplete; extra == \"dev\"",
+        "attrs>=19.2; extra == \"dev\"",
+        "hypothesis>=3.56; extra == \"dev\"",
+        "mock; extra == \"dev\"",
+        "requests; extra == \"dev\"",
+        "setuptools; extra == \"dev\"",
+        "xmlschema; extra == \"dev\""
+      ]
+    },
+    "shap": {
+      "version": "0.53.0",
+      "requires_python": ">=3.12",
+      "python_metadata_allows": {
+        "3.9.0": false,
+        "3.10.0": false,
+        "3.11.0": false,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "numpy>=2",
+        "scipy",
+        "scikit-learn",
+        "pandas",
+        "tqdm>=4.27.0",
+        "packaging>20.9",
+        "slicer==0.0.8",
+        "cloudpickle"
+      ]
+    },
+    "numpy": {
+      "version": "2.5.4",
+      "requires_python": ">=3.12",
+      "python_metadata_allows": {
+        "3.9.0": false,
+        "3.10.0": false,
+        "3.11.0": false,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": []
+    },
+    "scikit-learn": {
+      "version": "1.9.1",
+      "requires_python": ">=3.11",
+      "python_metadata_allows": {
+        "3.9.0": false,
+        "3.10.0": false,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "numpy>=1.24.1",
+        "scipy>=1.10.0",
+        "joblib>=1.4.0",
+        "narwhals>=2.0.1",
+        "threadpoolctl>=3.5.0"
+      ]
+    },
+    "pillow": {
+      "version": "12.3.0",
+      "requires_python": ">=3.10",
+      "python_metadata_allows": {
+        "3.9.0": false,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "furo; extra == \"docs\"",
+        "olefile; extra == \"docs\"",
+        "sphinx>=8.2; extra == \"docs\"",
+        "sphinx-autobuild; extra == \"docs\"",
+        "sphinx-copybutton; extra == \"docs\"",
+        "sphinx-inline-tabs; extra == \"docs\"",
+        "sphinxext-opengraph; extra == \"docs\"",
+        "olefile; extra == \"fpx\"",
+        "olefile; extra == \"mic\"",
+        "arro3-compute; extra == \"test-arrow\"",
+        "arro3-core; extra == \"test-arrow\"",
+        "nanoarrow; extra == \"test-arrow\"",
+        "pyarrow; extra == \"test-arrow\"",
+        "coverage>=7.4.2; extra == \"tests\"",
+        "defusedxml; extra == \"tests\"",
+        "markdown2; extra == \"tests\"",
+        "olefile; extra == \"tests\"",
+        "packaging; extra == \"tests\"",
+        "pytest; extra == \"tests\"",
+        "pytest-cov; extra == \"tests\"",
+        "pytest-timeout; extra == \"tests\"",
+        "pytest-xdist; extra == \"tests\"",
+        "setuptools; extra == \"tests\"",
+        "trove-classifiers>=2024.10.12; extra == \"tests\"",
+        "defusedxml; extra == \"xmp\""
+      ]
+    },
+    "patsy": {
+      "version": "1.0.3",
+      "requires_python": ">=3.6",
+      "python_metadata_allows": {
+        "3.9.0": true,
+        "3.10.0": true,
+        "3.11.0": true,
+        "3.12.7": true,
+        "3.13.0": true
+      },
+      "requires_dist": [
+        "numpy>=1.4",
+        "packaging",
+        "pytest; extra == \"test\"",
+        "pytest-cov; extra == \"test\"",
+        "scipy; extra == \"test\""
+      ]
+    }
+  },
+  "history": [
+    {
+      "sha": "a9e39406c1895b63096fdf2461acd4983ef336a7",
+      "subject": "chore: :lipstick: ruff formatting",
+      "files": [
+        "src/arfs/__init__.py",
+        "src/arfs/association.py",
+        "src/arfs/feature_selection/allrelevant.py",
+        "src/arfs/feature_selection/lasso.py",
+        "src/arfs/feature_selection/mrmr.py",
+        "src/arfs/feature_selection/unsupervised.py",
+        "src/arfs/feature_selection/variable_importance.py",
+        "src/arfs/gbm.py",
+        "src/arfs/preprocessing.py",
+        "src/arfs/sampling.py",
+        "src/arfs/utils.py"
+      ]
+    },
+    {
+      "sha": "dabb7da8dff7202f62a68ad692063310f08287a6",
+      "subject": "fix: :fire: remove fastshap as the library isn't maintained",
+      "files": [
+        "src/arfs/benchmark.py"
+      ]
+    },
+    {
+      "sha": "858d577fa80eff0136301ffe84ed1b39f82bbb53",
+      "subject": "fix: :arrow_up: update the syntax and structure for the newer version of shap and lightgbm",
+      "files": [
+        "src/arfs/feature_selection/allrelevant.py"
+      ]
+    },
+    {
+      "sha": "42326f713c5896419d32ea62b6db41adb757f691",
+      "subject": "chore: :bookmark: bumps version",
+      "files": [
+        "src/arfs/__init__.py"
+      ]
+    },
+    {
+      "sha": "4105238a4a3c0a040c0090b443cfc126c5605897",
+      "subject": "docs: :memo: re-run docs",
+      "files": [
+        "src/arfs/feature_selection/allrelevant.py"
+      ]
+    },
+    {
+      "sha": "a4130afd9af28a6c03bd020074771ccf39ada7e5",
+      "subject": "feat: :arrow_up: upgrade to lightgbm 4.6, modify the code accordingly",
+      "files": [
+        "src/arfs/gbm.py"
+      ]
+    },
+    {
+      "sha": "cbdd14d1f7c0cd2078121f95b27ac75f1c606e1d",
+      "subject": "chore: :bookmark: bump version number",
+      "files": [
+        "src/arfs/__init__.py"
+      ]
+    },
+    {
+      "sha": "6b2412165a0e8fd5a88a723c435f492e4345b052",
+      "subject": "fix: :bug: fix the shape of the array to avoid shape error",
+      "files": [
+        "src/arfs/association.py"
+      ]
+    },
+    {
+      "sha": "0f3220fba02861bd313b35cf2acfd56740199f08",
+      "subject": "Typos corrections",
+      "files": [
+        "src/arfs/association.py",
+        "src/arfs/benchmark.py",
+        "src/arfs/gbm.py",
+        "src/arfs/parallel.py",
+        "src/arfs/preprocessing.py",
+        "src/arfs/sampling.py"
+      ]
+    },
+    {
+      "sha": "949f3a9895e7d3b36473f986d2c9e376aea1b3a6",
+      "subject": "Corrected docstrings and parameter names",
+      "files": [
+        "src/arfs/feature_selection/mrmr.py"
+      ]
+    },
+    {
+      "sha": "58d9e9d91cccf96c54305248272f40776384cb12",
+      "subject": "chore: :bookmark: bump version number",
+      "files": [
+        "src/arfs/__init__.py"
+      ]
+    },
+    {
+      "sha": "85bcf3b4323eb4e1d07f55b9e384a94a766be8c8",
+      "subject": "feat: :safety_vest: validate max_iter",
+      "files": [
+        "src/arfs/feature_selection/allrelevant.py"
+      ]
+    },
+    {
+      "sha": "57cbb0b0209f40433356630c8cdab04419f67079",
+      "subject": "fix: :bug: fix the range, as it should run up to and included max_iter",
+      "files": [
+        "src/arfs/feature_selection/allrelevant.py"
+      ]
+    },
+    {
+      "sha": "2e2d952755fd9b39bcab2298ffb3069397ea72f9",
+      "subject": "chore: :bookmark: bump to version 2.3.2",
+      "files": [
+        "src/arfs/__init__.py"
+      ]
+    },
+    {
+      "sha": "f8f90dabe2871e579dbbdcb8b93fd2dc349d92f8",
+      "subject": "fix: :bug: update the shap importance to handle the ndarray, new dtype output in the newest shap version",
+      "files": [
+        "src/arfs/feature_selection/allrelevant.py"
+      ]
+    },
+    {
+      "sha": "e50c1e58e7913ba8ba797a31e4d3dfd48cb12d82",
+      "subject": "fix: :bug: update the argument name to adhere to the new naming in newer version of sklearn",
+      "files": [
+        "src/arfs/sampling.py"
+      ]
+    },
+    {
+      "sha": "978b2309a8797e1b41311ba756dbaafa1a918a03",
+      "subject": "fix: :bug: fix the pandas syntax to avoid error with the newer version",
+      "files": [
+        "src/arfs/association.py"
+      ]
+    },
+    {
+      "sha": "63598ab00aac01faf1cc9d9f13c78a48ae7aa325",
+      "subject": "chore: :see_no_evil: ignore catboost suff",
+      "files": [
+        "src/arfs/.gitignore"
+      ]
+    },
+    {
+      "sha": "95a42cd88179bb2c4b1bbac2a1b2d8f12be663e0",
+      "subject": "fix: :bug: fix bug caused by the new behaviour of shap returning a ndarray or a list depending on the version",
+      "files": [
+        "src/arfs/feature_selection/allrelevant.py"
+      ]
+    },
+    {
+      "sha": "fb109a11739138b02672520763714687c209430e",
+      "subject": "fix: :bug: replace np.Inf by np.inf because the former is deprecated and the latter is standard notation",
+      "files": [
+        "src/arfs/__init__.py",
+        "src/arfs/preprocessing.py"
+      ]
+    },
+    {
+      "sha": "820b58d76504e4c451c65636299aefae7ac7303e",
+      "subject": "chore: :bookmark: bump version tag",
+      "files": [
+        "src/arfs/__init__.py"
+      ]
+    },
+    {
+      "sha": "b81c755d6b4764ea8cece3202d4c3731cb8e5e7f",
+      "subject": "fix: :bug: fix the column name for the GrootCV scheme",
+      "files": [
+        "src/arfs/feature_selection/allrelevant.py"
+      ]
+    },
+    {
+      "sha": "3771d499f8dbc572ad4d9a7df740c38e0616bd61",
+      "subject": "feat: :sparkles: add support for folds generator",
+      "files": [
+        "src/arfs/feature_selection/allrelevant.py"
+      ]
+    },
+    {
+      "sha": "8edd3e0d6c28158ba388cb2d69fd673787a02d02",
+      "subject": "feat: :sparkles: change the default value of fastshap to false to avoid error if the user did not install it. It doesn't work perfectly anyway",
+      "files": [
+        "src/arfs/feature_selection/allrelevant.py",
+        "src/arfs/feature_selection/variable_importance.py"
+      ]
+    },
+    {
+      "sha": "4bec1883dc04049ca8f38b552508aaa62a8ec085",
+      "subject": "chore: :bookmark: bump version number",
+      "files": [
+        "src/arfs/__init__.py"
+      ]
+    },
+    {
+      "sha": "f69899c8a47285b70a8408179adce69ae1cfa045",
+      "subject": "fix: :bug: fix shap imp calculation for multiclass",
+      "files": [
+        "src/arfs/feature_selection/variable_importance.py"
+      ]
+    },
+    {
+      "sha": "9fa0bf99831f0292b9e1f1d6b8de73a0e48b6aa8",
+      "subject": "feat: :alien: update aggregate to get rid of pandas future deprecated warnings",
+      "files": [
+        "src/arfs/preprocessing.py"
+      ]
+    },
+    {
+      "sha": "2ccf54440fadf08ade62769c9fd1f464a449f679",
+      "subject": "chore: :bookmark: bump version number",
+      "files": [
+        "src/arfs/__init__.py"
+      ]
+    },
+    {
+      "sha": "33469b77f4bd91213b8928bdbd7a1beec09072d9",
+      "subject": "feat: :sparkles: return the figure",
+      "files": [
+        "src/arfs/feature_selection/variable_importance.py"
+      ]
+    },
+    {
+      "sha": "6f550c8c07cfbbe98c170ba37a952c3bb7e780cc",
+      "subject": "fix: :bug: fix shap calculation for multiclass, no more a list of arrays but a genuine array",
+      "files": [
+        "src/arfs/feature_selection/allrelevant.py"
+      ]
+    },
+    {
+      "sha": "7ca86bb24422d442e1c3afb9dc4da35a0cceb528",
+      "subject": "fix: :bug: fix the transposition",
+      "files": [
+        "src/arfs/feature_selection/allrelevant.py"
+      ]
+    },
+    {
+      "sha": "421de4b6557d2ea693bfda6121f365b3cbfd75dd",
+      "subject": "fix: :bug: fix shap computation for multiclass, summing abs contrib of each class to have a shape of (n_features,)",
+      "files": [
+        "src/arfs/feature_selection/allrelevant.py"
+      ]
+    },
+    {
+      "sha": "4251a746d487301ccf7bdef2445c25ace3179b5d",
+      "subject": "Avoid redundant calls to `.abs` in association matrix",
+      "files": [
+        "src/arfs/feature_selection/unsupervised.py"
+      ]
+    },
+    {
+      "sha": "9de6353358ceb77a112b4f4f8e7d2fea8809844e",
+      "subject": "chore: :bookmark: bump version number",
+      "files": [
+        "src/arfs/__init__.py"
+      ]
+    },
+    {
+      "sha": "1465946c4dc1c8933d3a32d8c20bdb4cde3900ff",
+      "subject": "fix: :bug: fix importance fn name for fastshap option",
+      "files": [
+        "src/arfs/feature_selection/allrelevant.py"
+      ]
+    },
+    {
+      "sha": "945d8fc55692d627497796bc26df5935ec734825",
+      "subject": "fix: :bug: add missing axis=1 for computing the right avg and remove unnecessary merge duplicating the cols",
+      "files": [
+        "src/arfs/feature_selection/allrelevant.py"
+      ]
+    },
+    {
+      "sha": "3cba7f081d1fa15377a6b90f56979a4165005e3e",
+      "subject": "feat: :memo: default to spearman coefficient",
+      "files": [
+        "src/arfs/association.py"
+      ]
+    },
+    {
+      "sha": "7ba9bd8a8cac26b192e2501ddb94eac3a5ca20c2",
+      "subject": "chore: :bookmark: bump version number and add to changelog",
+      "files": [
+        "src/arfs/__init__.py"
+      ]
+    },
+    {
+      "sha": "ed5e235fe204208e0687f7efa2bcc09d7d998f5a",
+      "subject": "fix: :bug: change default to spearman for consistency with the doc, closes #42",
+      "files": [
+        "src/arfs/association.py"
+      ]
+    },
+    {
+      "sha": "b0b1b8773e1dd9e60cd37f9394b1b0aed4e0afd8",
+      "subject": "refactor: :recycle: divide by 2 for avoiding exceeding 1 which can be confuisng for association <= 1",
+      "files": [
+        "src/arfs/feature_selection/unsupervised.py"
+      ]
+    }
+  ],
+  "cochanges_excluding_ruff_formatting": [
+    {
+      "files": [
+        "src/arfs/association.py",
+        "src/arfs/benchmark.py"
+      ],
+      "count": 1
+    },
+    {
+      "files": [
+        "src/arfs/association.py",
+        "src/arfs/gbm.py"
+      ],
+      "count": 1
+    },
+    {
+      "files": [
+        "src/arfs/association.py",
+        "src/arfs/parallel.py"
+      ],
+      "count": 1
+    },
+    {
+      "files": [
+        "src/arfs/association.py",
+        "src/arfs/preprocessing.py"
+      ],
+      "count": 1
+    },
+    {
+      "files": [
+        "src/arfs/association.py",
+        "src/arfs/sampling.py"
+      ],
+      "count": 1
+    },
+    {
+      "files": [
+        "src/arfs/benchmark.py",
+        "src/arfs/gbm.py"
+      ],
+      "count": 1
+    },
+    {
+      "files": [
+        "src/arfs/benchmark.py",
+        "src/arfs/parallel.py"
+      ],
+      "count": 1
+    },
+    {
+      "files": [
+        "src/arfs/benchmark.py",
+        "src/arfs/preprocessing.py"
+      ],
+      "count": 1
+    },
+    {
+      "files": [
+        "src/arfs/benchmark.py",
+        "src/arfs/sampling.py"
+      ],
+      "count": 1
+    },
+    {
+      "files": [
+        "src/arfs/gbm.py",
+        "src/arfs/parallel.py"
+      ],
+      "count": 1
+    },
+    {
+      "files": [
+        "src/arfs/gbm.py",
+        "src/arfs/preprocessing.py"
+      ],
+      "count": 1
+    },
+    {
+      "files": [
+        "src/arfs/gbm.py",
+        "src/arfs/sampling.py"
+      ],
+      "count": 1
+    }
+  ],
+  "import_costs": {
+    "arfs": [
+      {
+        "seconds": 0.000335239979904145,
+        "process_peak_rss_kib": 31148,
+        "loaded": {
+          "numpy": false,
+          "pandas": false,
+          "scipy": false,
+          "sklearn": false,
+          "matplotlib": false,
+          "lightgbm": false,
+          "shap": false,
+          "numba": false,
+          "statsmodels": false,
+          "patsy": false,
+          "pkg_resources": false
+        }
+      },
+      {
+        "seconds": 0.0004685079911723733,
+        "process_peak_rss_kib": 31148,
+        "loaded": {
+          "numpy": false,
+          "pandas": false,
+          "scipy": false,
+          "sklearn": false,
+          "matplotlib": false,
+          "lightgbm": false,
+          "shap": false,
+          "numba": false,
+          "statsmodels": false,
+          "patsy": false,
+          "pkg_resources": false
+        }
+      },
+      {
+        "seconds": 0.00023655302356928587,
+        "process_peak_rss_kib": 31148,
+        "loaded": {
+          "numpy": false,
+          "pandas": false,
+          "scipy": false,
+          "sklearn": false,
+          "matplotlib": false,
+          "lightgbm": false,
+          "shap": false,
+          "numba": false,
+          "statsmodels": false,
+          "patsy": false,
+          "pkg_resources": false
+        }
+      }
+    ],
+    "arfs.parallel": [
+      {
+        "seconds": 0.47022858797572553,
+        "process_peak_rss_kib": 72928,
+        "loaded": {
+          "numpy": true,
+          "pandas": true,
+          "scipy": false,
+          "sklearn": false,
+          "matplotlib": false,
+          "lightgbm": false,
+          "shap": false,
+          "numba": false,
+          "statsmodels": false,
+          "patsy": false,
+          "pkg_resources": false
+        }
+      },
+      {
+        "seconds": 0.42417331697652116,
+        "process_peak_rss_kib": 72944,
+        "loaded": {
+          "numpy": true,
+          "pandas": true,
+          "scipy": false,
+          "sklearn": false,
+          "matplotlib": false,
+          "lightgbm": false,
+          "shap": false,
+          "numba": false,
+          "statsmodels": false,
+          "patsy": false,
+          "pkg_resources": false
+        }
+      },
+      {
+        "seconds": 0.4467771020135842,
+        "process_peak_rss_kib": 72832,
+        "loaded": {
+          "numpy": true,
+          "pandas": true,
+          "scipy": false,
+          "sklearn": false,
+          "matplotlib": false,
+          "lightgbm": false,
+          "shap": false,
+          "numba": false,
+          "statsmodels": false,
+          "patsy": false,
+          "pkg_resources": false
+        }
+      }
+    ],
+    "arfs.association": [
+      {
+        "seconds": 5.5742508309776895,
+        "process_peak_rss_kib": 190988,
+        "loaded": {
+          "numpy": true,
+          "pandas": true,
+          "scipy": true,
+          "sklearn": true,
+          "matplotlib": true,
+          "lightgbm": true,
+          "shap": false,
+          "numba": false,
+          "statsmodels": false,
+          "patsy": false,
+          "pkg_resources": true
+        }
+      },
+      {
+        "seconds": 2.739251408027485,
+        "process_peak_rss_kib": 189064,
+        "loaded": {
+          "numpy": true,
+          "pandas": true,
+          "scipy": true,
+          "sklearn": true,
+          "matplotlib": true,
+          "lightgbm": true,
+          "shap": false,
+          "numba": false,
+          "statsmodels": false,
+          "patsy": false,
+          "pkg_resources": true
+        }
+      },
+      {
+        "seconds": 2.518543304002378,
+        "process_peak_rss_kib": 189540,
+        "loaded": {
+          "numpy": true,
+          "pandas": true,
+          "scipy": true,
+          "sklearn": true,
+          "matplotlib": true,
+          "lightgbm": true,
+          "shap": false,
+          "numba": false,
+          "statsmodels": false,
+          "patsy": false,
+          "pkg_resources": true
+        }
+      }
+    ],
+    "arfs.feature_selection.unsupervised": [
+      {
+        "seconds": 4.953498154005501,
+        "process_peak_rss_kib": 242816,
+        "loaded": {
+          "numpy": true,
+          "pandas": true,
+          "scipy": true,
+          "sklearn": true,
+          "matplotlib": true,
+          "lightgbm": true,
+          "shap": true,
+          "numba": false,
+          "statsmodels": true,
+          "patsy": true,
+          "pkg_resources": true
+        }
+      },
+      {
+        "seconds": 3.7802079599932767,
+        "process_peak_rss_kib": 232508,
+        "loaded": {
+          "numpy": true,
+          "pandas": true,
+          "scipy": true,
+          "sklearn": true,
+          "matplotlib": true,
+          "lightgbm": true,
+          "shap": true,
+          "numba": false,
+          "statsmodels": true,
+          "patsy": true,
+          "pkg_resources": true
+        }
+      },
+      {
+        "seconds": 3.2050659399828874,
+        "process_peak_rss_kib": 233144,
+        "loaded": {
+          "numpy": true,
+          "pandas": true,
+          "scipy": true,
+          "sklearn": true,
+          "matplotlib": true,
+          "lightgbm": true,
+          "shap": true,
+          "numba": false,
+          "statsmodels": true,
+          "patsy": true,
+          "pkg_resources": true
+        }
+      }
+    ]
+  },
+  "import_measurement_limits": "Three fresh interpreters, warm filesystem cache, one CPU thread per native library; whole-process peak RSS, not marginal allocation or a general benchmark."
+}

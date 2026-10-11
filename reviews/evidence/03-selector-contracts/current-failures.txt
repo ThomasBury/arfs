@@ -1,0 +1,398 @@
+............F.FFFFFFFFFFFFFFFFFFF.....FFFFF...FFF..FFFFFFFF....F.FFF.... [ 98%]
+F                                                                        [100%]
+=================================== FAILURES ===================================
+___________________ test_cardinality_string_extension_dtype ____________________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:143: in test_cardinality_string_extension_dtype
+    assert selector.statistic_series_['text'] == 3
+E   assert np.int64(0) == 3
+_ test_duplicate_names_either_rejected_or_positionally_selected[UniqueValuesThreshold] _
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:161: in test_duplicate_names_either_rejected_or_positionally_selected
+    assert_frame_equal(out, X.iloc[:,selector.get_support()])
+E   AssertionError: DataFrame are different
+E   
+E   DataFrame shape mismatch
+E   [left]:  (3, 2)
+E   [right]: (3, 1)
+_ test_duplicate_names_either_rejected_or_positionally_selected[CardinalityThreshold] _
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:161: in test_duplicate_names_either_rejected_or_positionally_selected
+    assert_frame_equal(out, X.iloc[:,selector.get_support()])
+E   AssertionError: DataFrame are different
+E   
+E   DataFrame shape mismatch
+E   [left]:  (3, 4)
+E   [right]: (3, 2)
+___________ test_custom_statistic_aligns_by_documented_feature_index ___________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:168: in test_custom_statistic_aligns_by_documented_feature_index
+    assert_array_equal(selector.fit(X).selected_features_, ['varying'])
+E   AssertionError: 
+E   Arrays are not equal
+E   
+E   Mismatched elements: 1 / 1 (100%)
+E   Mismatch at index:
+E    [0]: constant (ACTUAL), varying (DESIRED)
+E    ACTUAL: array(['constant'], dtype=object)
+E    DESIRED: array(['varying'], dtype='<U7')
+_____ test_invalid_thresholds_rejected_at_fit[MissingValueThreshold--0.1] ______
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:180: in test_invalid_thresholds_rejected_at_fit
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+______ test_invalid_thresholds_rejected_at_fit[MissingValueThreshold-1.1] ______
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:180: in test_invalid_thresholds_rejected_at_fit
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+______ test_invalid_thresholds_rejected_at_fit[MissingValueThreshold-nan] ______
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:180: in test_invalid_thresholds_rejected_at_fit
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+_______ test_invalid_thresholds_rejected_at_fit[UniqueValuesThreshold-0] _______
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:180: in test_invalid_thresholds_rejected_at_fit
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+_______ test_invalid_thresholds_rejected_at_fit[CardinalityThreshold-0] ________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:180: in test_invalid_thresholds_rejected_at_fit
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+______ test_invalid_thresholds_rejected_at_fit[CollinearityThreshold-nan] ______
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:180: in test_invalid_thresholds_rejected_at_fit
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+______ test_invalid_thresholds_rejected_at_fit[CollinearityThreshold-1.1] ______
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:180: in test_invalid_thresholds_rejected_at_fit
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+_______ test_invalid_thresholds_rejected_at_fit[VariableImportance-nan] ________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:180: in test_invalid_thresholds_rejected_at_fit
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+_______ test_invalid_thresholds_rejected_at_fit[VariableImportance-1.1] ________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:180: in test_invalid_thresholds_rejected_at_fit
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+___________________ test_nonpositive_iterations_rejected[0] ____________________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:188: in test_nonpositive_iterations_rejected
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+___________________ test_nonpositive_iterations_rejected[-1] ___________________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:188: in test_nonpositive_iterations_rejected
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+_______ test_unfitted_transform_raises_not_fitted[MissingValueThreshold] _______
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:197: in test_unfitted_transform_raises_not_fitted
+    cls().transform(X)
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/sklearn/utils/_set_output.py:327: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/feature_selection/base.py:139: in transform
+    return X[self.selected_features_]
+             ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'MissingValueThreshold' object has no attribute 'selected_features_'
+_______ test_unfitted_transform_raises_not_fitted[UniqueValuesThreshold] _______
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:197: in test_unfitted_transform_raises_not_fitted
+    cls().transform(X)
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/sklearn/utils/_set_output.py:327: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/feature_selection/base.py:139: in transform
+    return X[self.selected_features_]
+             ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'UniqueValuesThreshold' object has no attribute 'selected_features_'
+_______ test_unfitted_transform_raises_not_fitted[CardinalityThreshold] ________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:197: in test_unfitted_transform_raises_not_fitted
+    cls().transform(X)
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/sklearn/utils/_set_output.py:327: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/feature_selection/base.py:139: in transform
+    return X[self.selected_features_]
+             ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'CardinalityThreshold' object has no attribute 'selected_features_'
+_______ test_unfitted_transform_raises_not_fitted[CollinearityThreshold] _______
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:197: in test_unfitted_transform_raises_not_fitted
+    cls().transform(X)
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/sklearn/utils/_set_output.py:327: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/feature_selection/unsupervised.py:384: in transform
+    return X[self.selected_features_]
+             ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'CollinearityThreshold' object has no attribute 'selected_features_'
+________ test_unfitted_transform_raises_not_fitted[VariableImportance] _________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:197: in test_unfitted_transform_raises_not_fitted
+    cls().transform(X)
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/sklearn/utils/_set_output.py:327: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py:204: in transform
+    return X[self.selected_features_]
+             ^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'VariableImportance' object has no attribute 'selected_features_'
+_______________ test_fitted_feature_count[MissingValueThreshold] _______________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:213: in test_fitted_feature_count
+    assert cls().fit(X,y).n_features_in_ == X.shape[1]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'MissingValueThreshold' object has no attribute 'n_features_in_'
+_______________ test_fitted_feature_count[UniqueValuesThreshold] _______________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:213: in test_fitted_feature_count
+    assert cls().fit(X,y).n_features_in_ == X.shape[1]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'UniqueValuesThreshold' object has no attribute 'n_features_in_'
+_______________ test_fitted_feature_count[CardinalityThreshold] ________________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:213: in test_fitted_feature_count
+    assert cls().fit(X,y).n_features_in_ == X.shape[1]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'CardinalityThreshold' object has no attribute 'n_features_in_'
+_______________ test_fitted_feature_count[CollinearityThreshold] _______________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:213: in test_fitted_feature_count
+    assert cls().fit(X,y).n_features_in_ == X.shape[1]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'CollinearityThreshold' object has no attribute 'n_features_in_'
+________________ test_fitted_feature_count[VariableImportance] _________________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:213: in test_fitted_feature_count
+    assert cls().fit(X,y).n_features_in_ == X.shape[1]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'VariableImportance' object has no attribute 'n_features_in_'
+_____________ test_collinearity_handles_fewer_than_two_features[0] _____________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:258: in test_collinearity_handles_fewer_than_two_features
+    assert pipe.fit_transform(X).shape == (4,remaining)
+           ^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/sklearn/base.py:1403: in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/sklearn/pipeline.py:730: in fit_transform
+    Xt = last_step.fit_transform(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/sklearn/utils/_set_output.py:327: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/sklearn/base.py:969: in fit_transform
+    return self.fit(X, **fit_params).transform(X)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/feature_selection/unsupervised.py:364: in fit
+    self.assoc_matrix_ = xy_to_matrix(assoc_matrix)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py:2086: in xy_to_matrix
+    xy = xy.pivot(index="row", columns="col").fillna(0)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/frame.py:10988: in pivot
+    return pivot(self, index=index, columns=columns, values=values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/reshape/pivot.py:874: in pivot
+    indexed = data.set_index(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/frame.py:6991: in set_index
+    raise KeyError(f"None of {missing} are in the columns")
+E   KeyError: "None of ['row', 'col'] are in the columns"
+_____________ test_collinearity_handles_fewer_than_two_features[1] _____________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:258: in test_collinearity_handles_fewer_than_two_features
+    assert pipe.fit_transform(X).shape == (4,remaining)
+           ^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/sklearn/base.py:1403: in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/sklearn/pipeline.py:730: in fit_transform
+    Xt = last_step.fit_transform(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/sklearn/utils/_set_output.py:327: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/sklearn/base.py:969: in fit_transform
+    return self.fit(X, **fit_params).transform(X)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/feature_selection/unsupervised.py:364: in fit
+    self.assoc_matrix_ = xy_to_matrix(assoc_matrix)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/association.py:2086: in xy_to_matrix
+    xy = xy.pivot(index="row", columns="col").fillna(0)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/frame.py:10988: in pivot
+    return pivot(self, index=index, columns=columns, values=values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/reshape/pivot.py:874: in pivot
+    indexed = data.set_index(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/frame.py:6991: in set_index
+    raise KeyError(f"None of {missing} are in the columns")
+E   KeyError: "None of ['row', 'col'] are in the columns"
+___________ test_collinearity_tie_is_reproducible_between_processes ____________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:271: in test_collinearity_tie_is_reproducible_between_processes
+    assert len({tuple(value) for value in outcomes.values()}) == 1, outcomes
+E   AssertionError: {0: ['a'], 1: ['a'], 2: ['b'], 3: ['b']}
+E   assert 2 == 1
+E    +  where 2 = len({('a',), ('b',)})
+______ test_cumulative_threshold_includes_crossing_feature[0.5-expected0] ______
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:301: in test_cumulative_threshold_includes_crossing_feature
+    assert_array_equal(selector.selected_features_,expected)
+E   AssertionError: 
+E   Arrays are not equal
+E   
+E   (shapes (0,), (1,) mismatch)
+E    ACTUAL: array([], dtype=object)
+E    DESIRED: array(['a'], dtype='<U1')
+______ test_cumulative_threshold_includes_crossing_feature[0.9-expected1] ______
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:301: in test_cumulative_threshold_includes_crossing_feature
+    assert_array_equal(selector.selected_features_,expected)
+E   AssertionError: 
+E   Arrays are not equal
+E   
+E   (shapes (1,), (2,) mismatch)
+E    ACTUAL: array(['a'], dtype=object)
+E    DESIRED: array(['a', 'b'], dtype='<U1')
+______ test_cumulative_threshold_includes_crossing_feature[1.0-expected2] ______
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:301: in test_cumulative_threshold_includes_crossing_feature
+    assert_array_equal(selector.selected_features_,expected)
+E   AssertionError: 
+E   Arrays are not equal
+E   
+E   (shapes (2,), (3,) mismatch)
+E    ACTUAL: array(['a', 'b'], dtype=object)
+E    DESIRED: array(['a', 'b', 'c'], dtype='<U1')
+__________________ test_real_zero_importance_is_not_selected ___________________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:309: in test_real_zero_importance_is_not_selected
+    assert selector.selected_features_.size == 0
+E   AssertionError: assert 3 == 0
+E    +  where 3 = array(['a', 'b', 'c'], dtype=object).size
+E    +    where array(['a', 'b', 'c'], dtype=object) = VariableImportance(encode=False,\n                   lgb_kwargs={'metric': 'rmse', 'min_data_in_leaf': 5,\n             ...m_threads': 1, 'objective': 'rmse',\n                               'verbosity': -1},\n                   n_iterations=1).selected_features_
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+__________________ test_nonfinite_contributions_rejected[nan] __________________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:317: in test_nonfinite_contributions_rejected
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+__________________ test_nonfinite_contributions_rejected[inf] __________________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:317: in test_nonfinite_contributions_rejected
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+____________________ test_real_dominant_feature_is_retained ____________________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:328: in test_real_dominant_feature_is_retained
+    assert_array_equal(selector.selected_features_,['a'])
+E   AssertionError: 
+E   Arrays are not equal
+E   
+E   (shapes (0,), (1,) mismatch)
+E    ACTUAL: array([], dtype=object)
+E    DESIRED: array(['a'], dtype='<U1')
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+_____________ test_real_iterations_actually_change_split_or_model ______________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:345: in test_real_iterations_actually_change_split_or_model
+    assert len(set(models))>1, 'three identical validation splits and serialized fitted models'
+E   AssertionError: three identical validation splits and serialized fitted models
+E   assert 1 > 1
+E    +  where 1 = len({((1044, 1047, 1004, 1055, 1026, 1064, ...), 'tree\nversion=v4\nnum_class=1\nnum_tree_per_iteration=1\nlabel_index=0\n...evice_id: -1]\n[gpu_device_id_list: ]\n[gpu_use_dp: 0]\n[num_gpu: 1]\n\nend of parameters\n\npandas_categorical:[]\n')})
+E    +    where {((1044, 1047, 1004, 1055, 1026, 1064, ...), 'tree\nversion=v4\nnum_class=1\nnum_tree_per_iteration=1\nlabel_index=0\n...evice_id: -1]\n[gpu_device_id_list: ]\n[gpu_use_dp: 0]\n[num_gpu: 1]\n\nend of parameters\n\npandas_categorical:[]\n')} = set([((1044, 1047, 1004, 1055, 1026, 1064, ...), 'tree\nversion=v4\nnum_class=1\nnum_tree_per_iteration=1\nlabel_index=0\n...evice_id: -1]\n[gpu_device_id_list: ]\n[gpu_use_dp: 0]\n[num_gpu: 1]\n\nend of parameters\n\npandas_categorical:[]\n')])
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+__________________ test_real_multiclass_accepts_array_target ___________________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:405: in test_real_multiclass_accepts_array_target
+    importance_selector(task='multiclass',lgb_kwargs=params).fit(X,np.tile([0,1,2],40))
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py:147: in fit
+    feature_importances = _compute_varimp_lgb(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py:409: in _compute_varimp_lgb
+    y_freq_table = pd.Series(y.fillna(0)).value_counts(normalize=True)
+                             ^^^^^^^^
+E   AttributeError: 'numpy.ndarray' object has no attribute 'fillna'. Did you mean: 'fill'?
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+________________ test_missing_fasttreeshap_reports_import_error ________________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:422: in test_missing_fasttreeshap_reports_import_error
+    importance_selector(fastshap=True).fit(X,y)
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py:147: in fit
+    feature_importances = _compute_varimp_lgb(
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py:385: in _compute_varimp_lgb
+    explainer = FastTreeExplainer(
+                ^^^^^^^^^^^^^^^^^
+E   UnboundLocalError: cannot access local variable 'FastTreeExplainer' where it is not associated with a value
+__ test_summary_real_pipeline_name_preserving_transformer_and_empty_selection __
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:433: in test_summary_real_pipeline_name_preserving_transformer_and_empty_selection
+    style=fs.make_fs_summary(pipe)
+          ^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/feature_selection/summary.py:68: in make_fs_summary
+    tag_df.style.apply(highlight_discarded, subset=tag_df.columns[1:])
+    ^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/generic.py:6194: in __getattr__
+    return object.__getattribute__(self, name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/pandas/core/frame.py:1430: in style
+    raise AttributeError("The '.style' accessor requires jinja2")
+E   AttributeError: The '.style' accessor requires jinja2. Did you mean: 'astype'?
+_______________________ test_every_public_export_exists ________________________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:445: in test_every_public_export_exists
+    assert not missing,missing
+E   AssertionError: ['BaseThresholdSelector']
+E   assert not ['BaseThresholdSelector']
+_______________ test_collinearity_invalid_method_rejected_at_fit _______________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:490: in test_collinearity_invalid_method_rejected_at_fit
+    with pytest.raises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Failed: DID NOT RAISE ValueError
+=============================== warnings summary ===============================
+../arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:10
+  /tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+    from pkg_resources import resource_filename
+
+checks.py::test_cardinality_inferred_strings
+  /tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:154: Pandas4Warning: For backward compatibility, 'str' dtypes are included by select_dtypes when 'object' dtype is specified. This behavior is deprecated and will be removed in a future version. Explicitly pass 'str' to `include` to select them, or to `exclude` to remove them and silence this warning.
+  See https://pandas.pydata.org/docs/user_guide/migration-3-strings.html#string-migration-select-dtypes for details on how to write code that works with pandas 2 and 3.
+    categorical_cols = df.select_dtypes(include=["object", "category", "bool"]).columns
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_cardinality_string_extension_dtype
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_duplicate_names_either_rejected_or_positionally_selected[UniqueValuesThreshold]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_duplicate_names_either_rejected_or_positionally_selected[CardinalityThreshold]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_custom_statistic_aligns_by_documented_feature_index
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_invalid_thresholds_rejected_at_fit[MissingValueThreshold--0.1]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_invalid_thresholds_rejected_at_fit[MissingValueThreshold-1.1]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_invalid_thresholds_rejected_at_fit[MissingValueThreshold-nan]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_invalid_thresholds_rejected_at_fit[UniqueValuesThreshold-0]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_invalid_thresholds_rejected_at_fit[CardinalityThreshold-0]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_invalid_thresholds_rejected_at_fit[CollinearityThreshold-nan]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_invalid_thresholds_rejected_at_fit[CollinearityThreshold-1.1]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_invalid_thresholds_rejected_at_fit[VariableImportance-nan]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_invalid_thresholds_rejected_at_fit[VariableImportance-1.1]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_nonpositive_iterations_rejected[0]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_nonpositive_iterations_rejected[-1]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_unfitted_transform_raises_not_fitted[MissingValueThreshold]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_unfitted_transform_raises_not_fitted[UniqueValuesThreshold]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_unfitted_transform_raises_not_fitted[CardinalityThreshold]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_unfitted_transform_raises_not_fitted[CollinearityThreshold]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_unfitted_transform_raises_not_fitted[VariableImportance]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_fitted_feature_count[MissingValueThreshold]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_fitted_feature_count[UniqueValuesThreshold]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_fitted_feature_count[CardinalityThreshold]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_fitted_feature_count[CollinearityThreshold]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_fitted_feature_count[VariableImportance]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_collinearity_handles_fewer_than_two_features[0]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_collinearity_handles_fewer_than_two_features[1]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_collinearity_tie_is_reproducible_between_processes
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_cumulative_threshold_includes_crossing_feature[0.5-expected0]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_cumulative_threshold_includes_crossing_feature[0.9-expected1]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_cumulative_threshold_includes_crossing_feature[1.0-expected2]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_real_zero_importance_is_not_selected
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_nonfinite_contributions_rejected[nan]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_nonfinite_contributions_rejected[inf]
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_real_dominant_feature_is_retained
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_real_iterations_actually_change_split_or_model
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_real_multiclass_accepts_array_target
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_missing_fasttreeshap_reports_import_error
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_summary_real_pipeline_name_preserving_transformer_and_empty_selection
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_every_public_export_exists
+FAILED ../../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_collinearity_invalid_method_rejected_at_fit
+41 failed, 32 passed, 2 warnings in 33.09s

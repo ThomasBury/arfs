@@ -1,0 +1,192 @@
+....FFFFFFFFFFF.FFFF...F                                                 [100%]
+=================================== FAILURES ===================================
+______________ test_leshy_does_not_select_only_tentative_features ______________
+/home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py:79: in test_leshy_does_not_select_only_tentative_features
+    assert not selector.support_.any()
+E   AssertionError: assert not np.True_
+E    +  where np.True_ = <built-in method any of numpy.ndarray object at 0x771baa67be70>()
+E    +    where <built-in method any of numpy.ndarray object at 0x771baa67be70> = array([ True,  True,  True]).any
+E    +      where array([ True,  True,  True]) = Leshy(estimator=LGBMRegressor(min_child_samples=8, n_estimators=2, n_jobs=1,\n                              num_leaves=...=-1),\n      importance='native', max_iter=2, n_estimators=2,\n      random_state=RandomState(MT19937) at 0x771BC5142D40).support_
+----------------------------- Captured stdout call -----------------------------
+All relevant predictors selected in 00:00:00.01
+----------------------------- Captured stderr call -----------------------------
+Leshy iteration:   0%|          | 0/2 [00:00<?, ?it/s]Leshy iteration: 100%|██████████| 2/2 [00:00<00:00, 404.76it/s]
+_______________ test_tentative_rule_uses_all_recorded_iterations _______________
+/home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py:84: in test_tentative_rule_uses_all_recorded_iterations
+    assert_array_equal(a._select_tentative(np.array([0]),
+arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError: 
+E   Arrays are not equal
+E   
+E   (shapes (0,), (1,) mismatch)
+E    ACTUAL: array([], dtype=int64)
+E    DESIRED: array([0])
+____________ test_permutation_importance_matches_weighted_reference ____________
+/home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py:100: in test_permutation_importance_matches_weighted_reference
+    assert_allclose(actual, expected)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError: 
+E   Not equal to tolerance rtol=1e-07, atol=0
+E   
+E   Mismatched elements: 3 / 3 (100%)
+E   Max absolute difference among violations: 0.72772626
+E   Max relative difference among violations: 0.96841699
+E    ACTUAL: array([ 1.552487,  0.013375, -0.027775])
+E    DESIRED: array([ 2.280213,  0.105371, -0.01411 ])
+_________ test_boost_negative_importances_do_not_select_worst_feature __________
+/home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py:110: in test_boost_negative_importances_do_not_select_worst_feature
+    assert "b" not in selected.values
+E   AssertionError: assert 'b' not in array(['b'], dtype=object)
+E    +  where array(['b'], dtype=object) = 1    b\nName: feature, dtype: object.values
+_________________ test_fit_preserves_categorical_input[boost] __________________
+/home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py:122: in test_fit_preserves_categorical_input
+    assert_frame_equal(X, original)
+E   AssertionError: Attributes of DataFrame.iloc[:, 3] (column name="cat") are different
+E   
+E   Attribute "dtype" are different
+E   [left]:  int64
+E   [right]: CategoricalDtype(categories=['no', 'yes'], ordered=False, categories_dtype=object)
+----------------------------- Captured stderr call -----------------------------
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+_________________ test_fit_preserves_categorical_input[groot] __________________
+/home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py:122: in test_fit_preserves_categorical_input
+    assert_frame_equal(X, original)
+E   AssertionError: Attributes of DataFrame.iloc[:, 3] (column name="cat") are different
+E   
+E   Attribute "dtype" are different
+E   [left]:  int64
+E   [right]: CategoricalDtype(categories=['no', 'yes'], ordered=False, categories_dtype=object)
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[23]	training's l2: 3.09358	valid_1's l2: 2.57703
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[61]	training's l2: 2.36477	valid_1's l2: 3.09052
+----------------------------- Captured stderr call -----------------------------
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]Cross Validation: 100%|██████████| 2/2 [00:00<00:00, 55.22it/s]
+_____________ test_boost_preserves_categorical_roles_across_rounds _____________
+/home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py:139: in test_boost_preserves_categorical_roles_across_rounds
+    assert recorded == [(["a", "b", "ShadowVar1", "ShadowVar2"], [0, 2]),
+E   AssertionError: assert [(['a', 'b', ...Var1'], None)] == [(['a', 'b', ...r1'], [0, 1])]
+E     
+E     At index 0 diff: (['a', 'b', 'ShadowVar1', 'ShadowVar2'], [0]) != (['a', 'b', 'ShadowVar1', 'ShadowVar2'], [0, 2])
+E     Use -v to get more diff
+----------------------------- Captured stderr call -----------------------------
+BoostaGRoota round:   0%|          | 0/2 [00:00<?, ?it/s]BoostaGRoota round:  50%|█████     | 1/2 [00:00<00:00, 87.40it/s]
+____________________ test_groot_preserves_categorical_roles ____________________
+/home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py:155: in test_groot_preserves_categorical_roles
+    assert recorded == [["a", "ShadowVar1"], ["a", "ShadowVar1"]]
+E   AssertionError: assert [[], []] == [['a', 'Shado...'ShadowVar1']]
+E     
+E     At index 0 diff: [] != ['a', 'ShadowVar1']
+E     Use -v to get more diff
+----------------------------- Captured stderr call -----------------------------
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]Cross Validation: 100%|██████████| 2/2 [00:00<00:00, 171.68it/s]
+___________ test_leshy_numeric_category_shadow_matches_original_role ___________
+/home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py:170: in test_leshy_numeric_category_shadow_matches_original_role
+    assert all(dtype == X.category.dtype for dtype in recorded[0])
+E   assert False
+E    +  where False = all(<generator object test_leshy_numeric_category_shadow_matches_original_role.<locals>.<genexpr> at 0x771baa375ff0>)
+_______________ test_groot_multiclass_objective_aliases[binary] ________________
+/home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py:178: in test_groot_multiclass_objective_aliases
+    a.GrootCV(objective=objective, n_folds=2, n_iter=1, n_jobs=1).fit(X, y)
+arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2073: in fit
+    self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2319: in _reduce_vars_lgb_cv
+    importance = _compute_importance(
+arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2624: in _compute_importance
+    return sorted(importance.items(), key=operator.itemgetter(1))
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[5]	training's multi_logloss: 1.02942	valid_1's multi_logloss: 1.1262
+----------------------------- Captured stderr call -----------------------------
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+_____________ test_groot_multiclass_objective_aliases[multiclass] ______________
+/home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py:178: in test_groot_multiclass_objective_aliases
+    a.GrootCV(objective=objective, n_folds=2, n_iter=1, n_jobs=1).fit(X, y)
+arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2073: in fit
+    self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2319: in _reduce_vars_lgb_cv
+    importance = _compute_importance(
+arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2624: in _compute_importance
+    return sorted(importance.items(), key=operator.itemgetter(1))
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[2]	training's multi_logloss: 1.05809	valid_1's multi_logloss: 1.12835
+----------------------------- Captured stderr call -----------------------------
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+_________________ test_groot_documented_max_of_shadow_medians __________________
+/home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py:201: in test_groot_documented_max_of_shadow_medians
+    assert selector.sha_cutoff == pytest.approx(.35)
+E   assert np.float64(0....6666666666693) == 0.35 ± 3.5e-07
+E     
+E     comparison failed
+E     Obtained: 0.44166666666666693
+E     Expected: 0.35 ± 3.5e-07
+----------------------------- Captured stderr call -----------------------------
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 195.82it/s]
+___________________ test_boost_documented_max_shadow_cutoff ____________________
+/home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py:213: in test_boost_documented_max_shadow_cutoff
+    assert threshold == pytest.approx(.5)
+E   assert np.float64(0.3) == 0.5 ± 5.0e-07
+E     
+E     comparison failed
+E     Obtained: 0.3
+E     Expected: 0.5 ± 5.0e-07
+______ test_shadow_names_do_not_change_real_feature_identity[ShadowVar1] _______
+/home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py:222: in test_shadow_names_do_not_change_real_feature_identity
+    assert augmented.columns.is_unique
+E   AssertionError: assert False
+E    +  where False = Index(['b', 'ShadowVar1', 'ShadowVar1', 'ShadowVar1', 'ShadowVar1',\n       'ShadowVar2'],\n      dtype='object').is_unique
+E    +    where Index(['b', 'ShadowVar1', 'ShadowVar1', 'ShadowVar1', 'ShadowVar1',\n       'ShadowVar2'],\n      dtype='object') =         b  ShadowVar1  ShadowVar1  ShadowVar1  ShadowVar1  ShadowVar2\n0   100.0         0.0         7.0         0.0   ...0        12.0        18.0        12.0       118.0\n19  119.0        19.0         3.0        19.0         3.0       114.0.columns
+______ test_shadow_names_do_not_change_real_feature_identity[ShadowVar2] _______
+/home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py:222: in test_shadow_names_do_not_change_real_feature_identity
+    assert augmented.columns.is_unique
+E   AssertionError: assert False
+E    +  where False = Index(['b', 'ShadowVar2', 'ShadowVar2', 'ShadowVar1', 'ShadowVar2',\n       'ShadowVar2'],\n      dtype='object').is_unique
+E    +    where Index(['b', 'ShadowVar2', 'ShadowVar2', 'ShadowVar1', 'ShadowVar2',\n       'ShadowVar2'],\n      dtype='object') =         b  ShadowVar2  ShadowVar2  ShadowVar1  ShadowVar2  ShadowVar2\n0   100.0         0.0       119.0         1.0   ...0       115.0        11.0        18.0       115.0\n19  119.0        19.0       118.0         5.0        19.0       118.0.columns
+_____________________ test_leshy_rejects_missing_response ______________________
+/home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py:257: in test_leshy_rejects_missing_response
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+All relevant predictors selected in 00:00:00.02
+----------------------------- Captured stderr call -----------------------------
+Leshy iteration:   0%|          | 0/2 [00:00<?, ?it/s]Leshy iteration: 100%|██████████| 2/2 [00:00<00:00, 110.80it/s]
+=============================== warnings summary ===============================
+arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+    from pkg_resources import resource_filename
+
+checks.py::test_shadow_preserves_values_index_and_input
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1693: UserWarning: you are shuffling a 'Categorical' object which is not a subclass of 'Sequence'; `shuffle` is not guaranteed to behave correctly. E.g., non-numpy array/tensor objects with view semantics may contain duplicates after shuffling.
+    np.random.shuffle(X_shadow[c].values)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py::test_leshy_does_not_select_only_tentative_features
+FAILED ../home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py::test_tentative_rule_uses_all_recorded_iterations
+FAILED ../home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py::test_permutation_importance_matches_weighted_reference
+FAILED ../home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py::test_boost_negative_importances_do_not_select_worst_feature
+FAILED ../home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py::test_fit_preserves_categorical_input[boost]
+FAILED ../home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py::test_fit_preserves_categorical_input[groot]
+FAILED ../home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py::test_boost_preserves_categorical_roles_across_rounds
+FAILED ../home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py::test_groot_preserves_categorical_roles
+FAILED ../home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py::test_leshy_numeric_category_shadow_matches_original_role
+FAILED ../home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py::test_groot_multiclass_objective_aliases[binary]
+FAILED ../home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py::test_groot_multiclass_objective_aliases[multiclass]
+FAILED ../home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py::test_groot_documented_max_of_shadow_medians
+FAILED ../home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py::test_boost_documented_max_shadow_cutoff
+FAILED ../home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py::test_shadow_names_do_not_change_real_feature_identity[ShadowVar1]
+FAILED ../home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py::test_shadow_names_do_not_change_real_feature_identity[ShadowVar2]
+FAILED ../home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py::test_leshy_rejects_missing_response
+16 failed, 8 passed, 2 warnings in 4.84s

@@ -1,0 +1,821 @@
+===== existing-pytest =====
+exit_code=1
+/home/bsatom/Documents/arfs/.venv/bin/python: No module named pytest
+
+===== existing-import =====
+exit_code=1
+3.0.0 /home/bsatom/Documents/arfs/src/arfs/__init__.py
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/home/bsatom/Documents/arfs/src/arfs/feature_selection/__init__.py", line 1, in <module>
+    from .allrelevant import Leshy, BoostAGroota, GrootCV
+  File "/home/bsatom/Documents/arfs/src/arfs/feature_selection/allrelevant.py", line 72, in <module>
+    from ..utils import (
+  File "/home/bsatom/Documents/arfs/src/arfs/utils.py", line 10, in <module>
+    from pkg_resources import resource_filename
+ModuleNotFoundError: No module named 'pkg_resources'
+
+===== lock-check =====
+Using CPython 3.12.7 interpreter at: .venv/bin/python
+Resolved 116 packages in 2.05s
+error: The lockfile at `uv.lock` needs to be updated, but `--check` was provided.
+
+hint: To update the lockfile, run `uv lock`.
+
+===== source-collection =====
+
+==================================== ERRORS ====================================
+______ ERROR collecting arfs-review-03f67d0/run/tests/test_allrelevant.py ______
+ImportError while importing test module '/tmp/arfs-review-03f67d0/run/tests/test_allrelevant.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_allrelevant.py:4: in <module>
+    from arfs.feature_selection.allrelevant import Leshy, BoostAGroota, GrootCV
+../source/src/arfs/feature_selection/__init__.py:1: in <module>
+    from .allrelevant import Leshy, BoostAGroota, GrootCV
+../source/src/arfs/feature_selection/allrelevant.py:72: in <module>
+    from ..utils import (
+../source/src/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+______ ERROR collecting arfs-review-03f67d0/run/tests/test_featselect.py _______
+ImportError while importing test module '/tmp/arfs-review-03f67d0/run/tests/test_featselect.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_featselect.py:4: in <module>
+    from arfs.feature_selection import (
+../source/src/arfs/feature_selection/__init__.py:1: in <module>
+    from .allrelevant import Leshy, BoostAGroota, GrootCV
+../source/src/arfs/feature_selection/allrelevant.py:72: in <module>
+    from ..utils import (
+../source/src/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+=========================== short test summary info ============================
+ERROR tests/test_allrelevant.py
+ERROR tests/test_featselect.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!
+no tests collected, 2 errors in 3.93s
+
+===== wheel-collection =====
+
+==================================== ERRORS ====================================
+______ ERROR collecting arfs-review-03f67d0/run/tests/test_allrelevant.py ______
+ImportError while importing test module '/tmp/arfs-review-03f67d0/run/tests/test_allrelevant.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_allrelevant.py:4: in <module>
+    from arfs.feature_selection.allrelevant import Leshy, BoostAGroota, GrootCV
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/__init__.py:1: in <module>
+    from .allrelevant import Leshy, BoostAGroota, GrootCV
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:72: in <module>
+    from ..utils import (
+../wheel-env/lib/python3.12/site-packages/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+______ ERROR collecting arfs-review-03f67d0/run/tests/test_featselect.py _______
+ImportError while importing test module '/tmp/arfs-review-03f67d0/run/tests/test_featselect.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_featselect.py:4: in <module>
+    from arfs.feature_selection import (
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/__init__.py:1: in <module>
+    from .allrelevant import Leshy, BoostAGroota, GrootCV
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:72: in <module>
+    from ..utils import (
+../wheel-env/lib/python3.12/site-packages/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+=========================== short test summary info ============================
+ERROR tests/test_allrelevant.py
+ERROR tests/test_featselect.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!
+no tests collected, 2 errors in 3.53s
+
+===== locked-collection =====
+
+==================================== ERRORS ====================================
+______ ERROR collecting arfs-review-03f67d0/run/tests/test_allrelevant.py ______
+ImportError while importing test module '/tmp/arfs-review-03f67d0/run/tests/test_allrelevant.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_allrelevant.py:4: in <module>
+    from arfs.feature_selection.allrelevant import Leshy, BoostAGroota, GrootCV
+../locked-env/lib/python3.12/site-packages/arfs/feature_selection/__init__.py:1: in <module>
+    from .allrelevant import Leshy, BoostAGroota, GrootCV
+../locked-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:72: in <module>
+    from ..utils import (
+../locked-env/lib/python3.12/site-packages/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+______ ERROR collecting arfs-review-03f67d0/run/tests/test_featselect.py _______
+ImportError while importing test module '/tmp/arfs-review-03f67d0/run/tests/test_featselect.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+tests/test_featselect.py:4: in <module>
+    from arfs.feature_selection import (
+../locked-env/lib/python3.12/site-packages/arfs/feature_selection/__init__.py:1: in <module>
+    from .allrelevant import Leshy, BoostAGroota, GrootCV
+../locked-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:72: in <module>
+    from ..utils import (
+../locked-env/lib/python3.12/site-packages/arfs/utils.py:10: in <module>
+    from pkg_resources import resource_filename
+E   ModuleNotFoundError: No module named 'pkg_resources'
+=========================== short test summary info ============================
+ERROR tests/test_allrelevant.py
+ERROR tests/test_featselect.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!
+no tests collected, 2 errors in 4.84s
+
+===== source-tests =====
+......FFFFFF.FF                                                          [100%]
+=================================== FAILURES ===================================
+_ TestBoostAGroota.test_boostagroota_clf_with_lgb_and_shap_feature_importance_and_sample_weight _
+
+self = <tests.test_allrelevant.TestBoostAGroota object at 0x76ea585a1f70>
+
+    def test_boostagroota_clf_with_lgb_and_shap_feature_importance_and_sample_weight(
+        self,
+    ):
+        baseline_list = ["var0", "var1", "var2", "var3", "var4"]
+    
+        X, y, w = _make_corr_dataset_classification(size=500)
+        model = lgb.LGBMClassifier(verbose=-1, force_col_wise=True, n_estimators=10)
+        arfs = BoostAGroota(
+            estimator=model,
+            cutoff=1,
+            iters=3,
+            max_rounds=3,
+            delta=0.1,
+            silent=False,
+            importance="shap",
+        )
+>       arfs.fit(X, y, w)
+
+tests/test_allrelevant.py:163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../source/src/arfs/feature_selection/allrelevant.py:1579: in fit
+    _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _boostaroota(
+../source/src/arfs/feature_selection/allrelevant.py:1889: in _boostaroota
+    crit, keep_vars, df_vimp, mean_shadow = _reduce_vars_sklearn(
+../source/src/arfs/feature_selection/allrelevant.py:1780: in _reduce_vars_sklearn
+    new_x, shadow_names = _create_shadow(X)
+                          ^^^^^^^^^^^^^^^^^
+../source/src/arfs/feature_selection/allrelevant.py:1693: in _create_shadow
+    np.random.shuffle(X_shadow[c].values)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   ValueError: array is read-only
+
+numpy/random/mtrand.pyx:4620: ValueError
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+_ TestBoostAGroota.test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight _
+
+self = <tests.test_allrelevant.TestBoostAGroota object at 0x76ea585a2ba0>
+
+    def test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight(
+        self,
+    ):
+        baseline_list = ["var0", "var1", "var2", "var3", "var4"]
+    
+        X, y, w = _make_corr_dataset_classification(size=500)
+        model = lgb.LGBMClassifier(verbose=-1, force_col_wise=True, n_estimators=10)
+        arfs = BoostAGroota(
+            estimator=model,
+            cutoff=1,
+            iters=3,
+            max_rounds=3,
+            delta=0.1,
+            silent=False,
+            importance="pimp",
+        )
+>       arfs.fit(X, y, w)
+
+tests/test_allrelevant.py:186: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../source/src/arfs/feature_selection/allrelevant.py:1579: in fit
+    _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _boostaroota(
+../source/src/arfs/feature_selection/allrelevant.py:1889: in _boostaroota
+    crit, keep_vars, df_vimp, mean_shadow = _reduce_vars_sklearn(
+../source/src/arfs/feature_selection/allrelevant.py:1780: in _reduce_vars_sklearn
+    new_x, shadow_names = _create_shadow(X)
+                          ^^^^^^^^^^^^^^^^^
+../source/src/arfs/feature_selection/allrelevant.py:1693: in _create_shadow
+    np.random.shuffle(X_shadow[c].values)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   ValueError: array is read-only
+
+numpy/random/mtrand.pyx:4620: ValueError
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+_ TestBoostAGroota.test_boostagroota_rgr_with_lgb_and_shap_feature_importance_and_sample_weight _
+
+self = <tests.test_allrelevant.TestBoostAGroota object at 0x76ea58a13710>
+
+    def test_boostagroota_rgr_with_lgb_and_shap_feature_importance_and_sample_weight(
+        self,
+    ):
+        baseline_list = ["var0", "var1", "var2", "var3", "var4", "var5"]
+    
+        X, y, w = _make_corr_dataset_regression(size=500)
+        model = lgb.LGBMRegressor(verbose=-1, force_col_wise=True, n_estimators=10)
+        arfs = BoostAGroota(
+            estimator=model,
+            cutoff=1,
+            iters=3,
+            max_rounds=3,
+            delta=0.1,
+            silent=False,
+            importance="shap",
+        )
+>       arfs.fit(X, y, w)
+
+tests/test_allrelevant.py:209: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../source/src/arfs/feature_selection/allrelevant.py:1579: in fit
+    _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _boostaroota(
+../source/src/arfs/feature_selection/allrelevant.py:1889: in _boostaroota
+    crit, keep_vars, df_vimp, mean_shadow = _reduce_vars_sklearn(
+../source/src/arfs/feature_selection/allrelevant.py:1780: in _reduce_vars_sklearn
+    new_x, shadow_names = _create_shadow(X)
+                          ^^^^^^^^^^^^^^^^^
+../source/src/arfs/feature_selection/allrelevant.py:1693: in _create_shadow
+    np.random.shuffle(X_shadow[c].values)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   ValueError: array is read-only
+
+numpy/random/mtrand.pyx:4620: ValueError
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+_ TestBoostAGroota.test_boostagroota_regr_with_lgb_and_pimp_feature_importance_and_sample_weight _
+
+self = <tests.test_allrelevant.TestBoostAGroota object at 0x76ea585a2ab0>
+
+    def test_boostagroota_regr_with_lgb_and_pimp_feature_importance_and_sample_weight(
+        self,
+    ):
+        baseline_list = ["var0", "var1", "var2", "var3", "var4", "var5"]
+    
+        X, y, w = _make_corr_dataset_regression(size=500)
+        model = lgb.LGBMRegressor(verbose=-1, force_col_wise=True, n_estimators=10)
+        arfs = BoostAGroota(
+            estimator=model,
+            cutoff=1,
+            iters=3,
+            max_rounds=3,
+            delta=0.1,
+            silent=False,
+            importance="pimp",
+        )
+>       arfs.fit(X, y, w)
+
+tests/test_allrelevant.py:232: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../source/src/arfs/feature_selection/allrelevant.py:1579: in fit
+    _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _boostaroota(
+../source/src/arfs/feature_selection/allrelevant.py:1889: in _boostaroota
+    crit, keep_vars, df_vimp, mean_shadow = _reduce_vars_sklearn(
+../source/src/arfs/feature_selection/allrelevant.py:1780: in _reduce_vars_sklearn
+    new_x, shadow_names = _create_shadow(X)
+                          ^^^^^^^^^^^^^^^^^
+../source/src/arfs/feature_selection/allrelevant.py:1693: in _create_shadow
+    np.random.shuffle(X_shadow[c].values)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   ValueError: array is read-only
+
+numpy/random/mtrand.pyx:4620: ValueError
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+________ TestGrootCV.test_grootcv_classification_with_and_sample_weight ________
+
+self = <tests.test_allrelevant.TestGrootCV object at 0x76ea585a1c70>
+
+    def test_grootcv_classification_with_and_sample_weight(self):
+        baseline_list = ["var0", "var1", "var2", "var3", "var4"]
+    
+        X, y, w = _make_corr_dataset_classification(size=100)
+        arfs = GrootCV(objective="binary", cutoff=1, n_folds=3, n_iter=3, silent=False)
+>       arfs.fit(X, y, w)
+
+tests/test_allrelevant.py:250: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../source/src/arfs/feature_selection/allrelevant.py:2073: in fit
+    self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+../source/src/arfs/feature_selection/allrelevant.py:2303: in _reduce_vars_lgb_cv
+    new_x_tr, shadow_names = _create_shadow(X_train)
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+../source/src/arfs/feature_selection/allrelevant.py:1693: in _create_shadow
+    np.random.shuffle(X_shadow[c].values)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   ValueError: array is read-only
+
+numpy/random/mtrand.pyx:4620: ValueError
+----------------------------- Captured stdout call -----------------------------
+GrootCV: classification with unbalance classes
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/9 [00:00<?, ?it/s]
+Cross Validation:   0%|          | 0/9 [00:00<?, ?it/s]
+__________ TestGrootCV.test_grootcv_regression_with_and_sample_weight __________
+
+self = <tests.test_allrelevant.TestGrootCV object at 0x76ea585a1550>
+
+    def test_grootcv_regression_with_and_sample_weight(self):
+        baseline_list = ["var0", "var1", "var2", "var3", "var4", "var5"]
+    
+        X, y, w = _make_corr_dataset_regression(size=100)
+        arfs = GrootCV(objective="l2", cutoff=1, n_folds=3, n_iter=3, silent=False)
+>       arfs.fit(X, y, w)
+
+tests/test_allrelevant.py:262: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../source/src/arfs/feature_selection/allrelevant.py:2073: in fit
+    self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+../source/src/arfs/feature_selection/allrelevant.py:2303: in _reduce_vars_lgb_cv
+    new_x_tr, shadow_names = _create_shadow(X_train)
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+../source/src/arfs/feature_selection/allrelevant.py:1693: in _create_shadow
+    np.random.shuffle(X_shadow[c].values)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   ValueError: array is read-only
+
+numpy/random/mtrand.pyx:4620: ValueError
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/9 [00:00<?, ?it/s]
+Cross Validation:   0%|          | 0/9 [00:00<?, ?it/s]
+____ TestFeatSelectZeroVariance.test_identify_single_unique_classification _____
+
+self = <tests.test_featselect.TestFeatSelectZeroVariance object at 0x76ea585a3320>
+
+    def test_identify_single_unique_classification(self):
+        # not task dependent (same for clf and regr)
+        X, y, w = _make_corr_dataset_classification(size=10)
+        fs = UniqueValuesThreshold(threshold=2)
+        fs.fit(X)
+        message = "Expected: {0}, Actual: {1}".format(
+            "var10", fs.not_selected_features_
+        )
+>       assert fs.not_selected_features_ == ["var10"], message
+E       ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+
+tests/test_featselect.py:45: ValueError
+_ TestFeatSelectHighCardinality.test_identify_high_cardinality_classification __
+
+self = <tests.test_featselect.TestFeatSelectHighCardinality object at 0x76ea585a37a0>
+
+    def test_identify_high_cardinality_classification(self):
+        # not task dependent (same for clf and regr)
+        X, y, w = _make_corr_dataset_classification(size=100)
+        fs = CardinalityThreshold(threshold=5)
+        fs.fit(X)
+        expected = sorted(["dummy", "nice_guys"])
+        actual = sorted(list(fs.not_selected_features_))
+        message = "Expected: {0}, Actual: {1}".format(expected, actual)
+>       assert actual == expected, message
+E       AssertionError: Expected: ['dummy', 'nice_guys'], Actual: ['dummy']
+E       assert ['dummy'] == ['dummy', 'nice_guys']
+E         
+E         Right contains one more item: 'nice_guys'
+E         Use -v to get more diff
+
+tests/test_featselect.py:61: AssertionError
+=============================== warnings summary ===============================
+../source/src/arfs/utils.py:10
+  /tmp/arfs-review-03f67d0/source/src/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+    from pkg_resources import resource_filename
+
+arfs-review-03f67d0/run/tests/test_allrelevant.py: 19 warnings
+  /tmp/arfs-review-03f67d0/source/src/arfs/utils.py:154: Pandas4Warning: For backward compatibility, 'str' dtypes are included by select_dtypes when 'object' dtype is specified. This behavior is deprecated and will be removed in a future version. Explicitly pass 'str' to `include` to select them, or to `exclude` to remove them and silence this warning.
+  See https://pandas.pydata.org/docs/user_guide/migration-3-strings.html#string-migration-select-dtypes for details on how to write code that works with pandas 2 and 3.
+    categorical_cols = df.select_dtypes(include=["object", "category", "bool"]).columns
+
+arfs-review-03f67d0/run/tests/test_allrelevant.py: 20 warnings
+  /tmp/arfs-review-03f67d0/source-env/lib/python3.12/site-packages/shap/explainers/_tree.py:579: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_clf_with_lgb_and_shap_feature_importance_and_sample_weight
+FAILED tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight
+FAILED tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_rgr_with_lgb_and_shap_feature_importance_and_sample_weight
+FAILED tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_regr_with_lgb_and_pimp_feature_importance_and_sample_weight
+FAILED tests/test_allrelevant.py::TestGrootCV::test_grootcv_classification_with_and_sample_weight
+FAILED tests/test_allrelevant.py::TestGrootCV::test_grootcv_regression_with_and_sample_weight
+FAILED tests/test_featselect.py::TestFeatSelectZeroVariance::test_identify_single_unique_classification
+FAILED tests/test_featselect.py::TestFeatSelectHighCardinality::test_identify_high_cardinality_classification
+8 failed, 7 passed, 40 warnings in 43.01s
+
+===== wheel-tests =====
+......FFFFFF.FF                                                          [100%]
+=================================== FAILURES ===================================
+_ TestBoostAGroota.test_boostagroota_clf_with_lgb_and_shap_feature_importance_and_sample_weight _
+
+self = <tests.test_allrelevant.TestBoostAGroota object at 0x7b022f3e5b80>
+
+    def test_boostagroota_clf_with_lgb_and_shap_feature_importance_and_sample_weight(
+        self,
+    ):
+        baseline_list = ["var0", "var1", "var2", "var3", "var4"]
+    
+        X, y, w = _make_corr_dataset_classification(size=500)
+        model = lgb.LGBMClassifier(verbose=-1, force_col_wise=True, n_estimators=10)
+        arfs = BoostAGroota(
+            estimator=model,
+            cutoff=1,
+            iters=3,
+            max_rounds=3,
+            delta=0.1,
+            silent=False,
+            importance="shap",
+        )
+>       arfs.fit(X, y, w)
+
+tests/test_allrelevant.py:163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1579: in fit
+    _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _boostaroota(
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1889: in _boostaroota
+    crit, keep_vars, df_vimp, mean_shadow = _reduce_vars_sklearn(
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1780: in _reduce_vars_sklearn
+    new_x, shadow_names = _create_shadow(X)
+                          ^^^^^^^^^^^^^^^^^
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1693: in _create_shadow
+    np.random.shuffle(X_shadow[c].values)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   ValueError: array is read-only
+
+numpy/random/mtrand.pyx:4620: ValueError
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+_ TestBoostAGroota.test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight _
+
+self = <tests.test_allrelevant.TestBoostAGroota object at 0x7b022f3e5fd0>
+
+    def test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight(
+        self,
+    ):
+        baseline_list = ["var0", "var1", "var2", "var3", "var4"]
+    
+        X, y, w = _make_corr_dataset_classification(size=500)
+        model = lgb.LGBMClassifier(verbose=-1, force_col_wise=True, n_estimators=10)
+        arfs = BoostAGroota(
+            estimator=model,
+            cutoff=1,
+            iters=3,
+            max_rounds=3,
+            delta=0.1,
+            silent=False,
+            importance="pimp",
+        )
+>       arfs.fit(X, y, w)
+
+tests/test_allrelevant.py:186: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1579: in fit
+    _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _boostaroota(
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1889: in _boostaroota
+    crit, keep_vars, df_vimp, mean_shadow = _reduce_vars_sklearn(
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1780: in _reduce_vars_sklearn
+    new_x, shadow_names = _create_shadow(X)
+                          ^^^^^^^^^^^^^^^^^
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1693: in _create_shadow
+    np.random.shuffle(X_shadow[c].values)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   ValueError: array is read-only
+
+numpy/random/mtrand.pyx:4620: ValueError
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+_ TestBoostAGroota.test_boostagroota_rgr_with_lgb_and_shap_feature_importance_and_sample_weight _
+
+self = <tests.test_allrelevant.TestBoostAGroota object at 0x7b022f8f7650>
+
+    def test_boostagroota_rgr_with_lgb_and_shap_feature_importance_and_sample_weight(
+        self,
+    ):
+        baseline_list = ["var0", "var1", "var2", "var3", "var4", "var5"]
+    
+        X, y, w = _make_corr_dataset_regression(size=500)
+        model = lgb.LGBMRegressor(verbose=-1, force_col_wise=True, n_estimators=10)
+        arfs = BoostAGroota(
+            estimator=model,
+            cutoff=1,
+            iters=3,
+            max_rounds=3,
+            delta=0.1,
+            silent=False,
+            importance="shap",
+        )
+>       arfs.fit(X, y, w)
+
+tests/test_allrelevant.py:209: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1579: in fit
+    _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _boostaroota(
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1889: in _boostaroota
+    crit, keep_vars, df_vimp, mean_shadow = _reduce_vars_sklearn(
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1780: in _reduce_vars_sklearn
+    new_x, shadow_names = _create_shadow(X)
+                          ^^^^^^^^^^^^^^^^^
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1693: in _create_shadow
+    np.random.shuffle(X_shadow[c].values)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   ValueError: array is read-only
+
+numpy/random/mtrand.pyx:4620: ValueError
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+_ TestBoostAGroota.test_boostagroota_regr_with_lgb_and_pimp_feature_importance_and_sample_weight _
+
+self = <tests.test_allrelevant.TestBoostAGroota object at 0x7b022f3e6000>
+
+    def test_boostagroota_regr_with_lgb_and_pimp_feature_importance_and_sample_weight(
+        self,
+    ):
+        baseline_list = ["var0", "var1", "var2", "var3", "var4", "var5"]
+    
+        X, y, w = _make_corr_dataset_regression(size=500)
+        model = lgb.LGBMRegressor(verbose=-1, force_col_wise=True, n_estimators=10)
+        arfs = BoostAGroota(
+            estimator=model,
+            cutoff=1,
+            iters=3,
+            max_rounds=3,
+            delta=0.1,
+            silent=False,
+            importance="pimp",
+        )
+>       arfs.fit(X, y, w)
+
+tests/test_allrelevant.py:232: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1579: in fit
+    _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _boostaroota(
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1889: in _boostaroota
+    crit, keep_vars, df_vimp, mean_shadow = _reduce_vars_sklearn(
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1780: in _reduce_vars_sklearn
+    new_x, shadow_names = _create_shadow(X)
+                          ^^^^^^^^^^^^^^^^^
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1693: in _create_shadow
+    np.random.shuffle(X_shadow[c].values)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   ValueError: array is read-only
+
+numpy/random/mtrand.pyx:4620: ValueError
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+________ TestGrootCV.test_grootcv_classification_with_and_sample_weight ________
+
+self = <tests.test_allrelevant.TestGrootCV object at 0x7b022f3e59a0>
+
+    def test_grootcv_classification_with_and_sample_weight(self):
+        baseline_list = ["var0", "var1", "var2", "var3", "var4"]
+    
+        X, y, w = _make_corr_dataset_classification(size=100)
+        arfs = GrootCV(objective="binary", cutoff=1, n_folds=3, n_iter=3, silent=False)
+>       arfs.fit(X, y, w)
+
+tests/test_allrelevant.py:250: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2073: in fit
+    self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2303: in _reduce_vars_lgb_cv
+    new_x_tr, shadow_names = _create_shadow(X_train)
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1693: in _create_shadow
+    np.random.shuffle(X_shadow[c].values)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   ValueError: array is read-only
+
+numpy/random/mtrand.pyx:4620: ValueError
+----------------------------- Captured stdout call -----------------------------
+GrootCV: classification with unbalance classes
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/9 [00:00<?, ?it/s]
+Cross Validation:   0%|          | 0/9 [00:00<?, ?it/s]
+__________ TestGrootCV.test_grootcv_regression_with_and_sample_weight __________
+
+self = <tests.test_allrelevant.TestGrootCV object at 0x7b022f3e5160>
+
+    def test_grootcv_regression_with_and_sample_weight(self):
+        baseline_list = ["var0", "var1", "var2", "var3", "var4", "var5"]
+    
+        X, y, w = _make_corr_dataset_regression(size=100)
+        arfs = GrootCV(objective="l2", cutoff=1, n_folds=3, n_iter=3, silent=False)
+>       arfs.fit(X, y, w)
+
+tests/test_allrelevant.py:262: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2073: in fit
+    self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2303: in _reduce_vars_lgb_cv
+    new_x_tr, shadow_names = _create_shadow(X_train)
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+../wheel-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1693: in _create_shadow
+    np.random.shuffle(X_shadow[c].values)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+>   ???
+E   ValueError: array is read-only
+
+numpy/random/mtrand.pyx:4620: ValueError
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/9 [00:00<?, ?it/s]
+Cross Validation:   0%|          | 0/9 [00:00<?, ?it/s]
+____ TestFeatSelectZeroVariance.test_identify_single_unique_classification _____
+
+self = <tests.test_featselect.TestFeatSelectZeroVariance object at 0x7b022f3e6ed0>
+
+    def test_identify_single_unique_classification(self):
+        # not task dependent (same for clf and regr)
+        X, y, w = _make_corr_dataset_classification(size=10)
+        fs = UniqueValuesThreshold(threshold=2)
+        fs.fit(X)
+        message = "Expected: {0}, Actual: {1}".format(
+            "var10", fs.not_selected_features_
+        )
+>       assert fs.not_selected_features_ == ["var10"], message
+E       ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+
+tests/test_featselect.py:45: ValueError
+_ TestFeatSelectHighCardinality.test_identify_high_cardinality_classification __
+
+self = <tests.test_featselect.TestFeatSelectHighCardinality object at 0x7b022f3e7350>
+
+    def test_identify_high_cardinality_classification(self):
+        # not task dependent (same for clf and regr)
+        X, y, w = _make_corr_dataset_classification(size=100)
+        fs = CardinalityThreshold(threshold=5)
+        fs.fit(X)
+        expected = sorted(["dummy", "nice_guys"])
+        actual = sorted(list(fs.not_selected_features_))
+        message = "Expected: {0}, Actual: {1}".format(expected, actual)
+>       assert actual == expected, message
+E       AssertionError: Expected: ['dummy', 'nice_guys'], Actual: ['dummy']
+E       assert ['dummy'] == ['dummy', 'nice_guys']
+E         
+E         Right contains one more item: 'nice_guys'
+E         Use -v to get more diff
+
+tests/test_featselect.py:61: AssertionError
+=============================== warnings summary ===============================
+../wheel-env/lib/python3.12/site-packages/arfs/utils.py:10
+  /tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+    from pkg_resources import resource_filename
+
+arfs-review-03f67d0/run/tests/test_allrelevant.py: 19 warnings
+  /tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:154: Pandas4Warning: For backward compatibility, 'str' dtypes are included by select_dtypes when 'object' dtype is specified. This behavior is deprecated and will be removed in a future version. Explicitly pass 'str' to `include` to select them, or to `exclude` to remove them and silence this warning.
+  See https://pandas.pydata.org/docs/user_guide/migration-3-strings.html#string-migration-select-dtypes for details on how to write code that works with pandas 2 and 3.
+    categorical_cols = df.select_dtypes(include=["object", "category", "bool"]).columns
+
+arfs-review-03f67d0/run/tests/test_allrelevant.py: 20 warnings
+  /tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/shap/explainers/_tree.py:579: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_clf_with_lgb_and_shap_feature_importance_and_sample_weight
+FAILED tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight
+FAILED tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_rgr_with_lgb_and_shap_feature_importance_and_sample_weight
+FAILED tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_regr_with_lgb_and_pimp_feature_importance_and_sample_weight
+FAILED tests/test_allrelevant.py::TestGrootCV::test_grootcv_classification_with_and_sample_weight
+FAILED tests/test_allrelevant.py::TestGrootCV::test_grootcv_regression_with_and_sample_weight
+FAILED tests/test_featselect.py::TestFeatSelectZeroVariance::test_identify_single_unique_classification
+FAILED tests/test_featselect.py::TestFeatSelectHighCardinality::test_identify_high_cardinality_classification
+8 failed, 7 passed, 40 warnings in 37.65s
+
+===== locked-tests =====
+.............FF                                                          [100%]
+=================================== FAILURES ===================================
+____ TestFeatSelectZeroVariance.test_identify_single_unique_classification _____
+
+self = <tests.test_featselect.TestFeatSelectZeroVariance object at 0x79f01f038770>
+
+    def test_identify_single_unique_classification(self):
+        # not task dependent (same for clf and regr)
+        X, y, w = _make_corr_dataset_classification(size=10)
+        fs = UniqueValuesThreshold(threshold=2)
+        fs.fit(X)
+        message = "Expected: {0}, Actual: {1}".format(
+            "var10", fs.not_selected_features_
+        )
+>       assert fs.not_selected_features_ == ["var10"], message
+E       ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+
+tests/test_featselect.py:45: ValueError
+_ TestFeatSelectHighCardinality.test_identify_high_cardinality_classification __
+
+self = <tests.test_featselect.TestFeatSelectHighCardinality object at 0x79f01f039d60>
+
+    def test_identify_high_cardinality_classification(self):
+        # not task dependent (same for clf and regr)
+        X, y, w = _make_corr_dataset_classification(size=100)
+        fs = CardinalityThreshold(threshold=5)
+        fs.fit(X)
+        expected = sorted(["dummy", "nice_guys"])
+        actual = sorted(list(fs.not_selected_features_))
+        message = "Expected: {0}, Actual: {1}".format(expected, actual)
+>       assert actual == expected, message
+E       AssertionError: Expected: ['dummy', 'nice_guys'], Actual: ['dummy']
+E       assert ['dummy'] == ['dummy', 'nice_guys']
+E         
+E         Right contains one more item: 'nice_guys'
+E         Use -v to get more diff
+
+tests/test_featselect.py:61: AssertionError
+=============================== warnings summary ===============================
+../locked-env/lib/python3.12/site-packages/arfs/utils.py:10
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+    from pkg_resources import resource_filename
+
+arfs-review-03f67d0/run/tests/test_allrelevant.py: 35 warnings
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+---------- coverage: platform linux, python 3.12.7-final-0 -----------
+Name                                                                                                             Stmts   Miss  Cover
+------------------------------------------------------------------------------------------------------------------------------------
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/__init__.py                                    1      0   100%
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/association.py                               619    546    12%
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/benchmark.py                                  57     57     0%
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/__init__.py                  7      0   100%
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py             722    228    68%
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/base.py                     36      8    78%
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/lasso.py                   144    118    18%
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py                     99     80    19%
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/summary.py                  15     11    27%
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/unsupervised.py            107     57    47%
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py     134    113    16%
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/gbm.py                                       258    231    10%
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/parallel.py                                   33     24    27%
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/preprocessing.py                             256    209    18%
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/sampling.py                                  178    178     0%
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py                                     224    113    50%
+------------------------------------------------------------------------------------------------------------------------------------
+TOTAL                                                                                                             2890   1973    32%
+Coverage JSON written to file /tmp/arfs-review-03f67d0/evidence/locked-coverage.json
+
+=========================== short test summary info ============================
+FAILED tests/test_featselect.py::TestFeatSelectZeroVariance::test_identify_single_unique_classification
+FAILED tests/test_featselect.py::TestFeatSelectHighCardinality::test_identify_high_cardinality_classification
+2 failed, 13 passed, 36 warnings in 72.75s (0:01:12)
+

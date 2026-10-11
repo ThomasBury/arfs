@@ -1,0 +1,86 @@
+{
+  "workflow": "regression-native",
+  "notebook": "arfs_regression",
+  "cell_numbering": "zero-based JSON index",
+  "records": [
+    {
+      "cell": 1,
+      "source": "# from IPython.core.display import display, HTML\n# display(HTML(\"<style>.container { width:95% !important; }</style>\"))\nimport numpy as np\nimport matplotlib.pyplot as plt\nimport gc\nfrom sklearn.pipeline import Pipeline\nfrom sklearn.base import clone\nfrom sklearn.ensemble import RandomForestRegressor\nfrom lightgbm import LGBMRegressor\n\nimport arfs\nimport arfs.feature_selection.allrelevant as arfsgroot\nfrom arfs.feature_selection import (\n    MissingValueThreshold,\n    UniqueValuesThreshold,\n    CollinearityThreshold,\n    make_fs_summary,\n)\nfrom arfs.utils import LightForestRegressor\nfrom arfs.benchmark import highlight_tick, compare_varimp\nfrom arfs.utils import load_data\n\nplt.style.use(\"fivethirtyeight\")\nrng = np.random.RandomState(seed=42)\n\n# import warnings\n# warnings.filterwarnings('ignore')",
+      "changes": [
+        "Omitted optional XGBoost/CatBoost imports; all other statements retained"
+      ],
+      "sha256": "67aaf677db4705a8e2b3726c0a845fc5494163b6641b591a7e0b5e8deba0a400",
+      "status": "passed",
+      "output_tail": [
+        "/tmp/arfs-review-03f67d0/wheel-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.",
+        "  from pkg_resources import resource_filename"
+      ]
+    },
+    {
+      "cell": 6,
+      "source": "boston = load_data(name=\"Boston\")\nX, y = boston.data, boston.target",
+      "changes": [],
+      "sha256": "b7b209da60f3c9ed16993f86d6e05efd4a6c06f5881623e66f2787ba3915f814",
+      "status": "passed",
+      "input_shape": [
+        506,
+        18
+      ],
+      "output_tail": []
+    },
+    {
+      "cell": 9,
+      "source": "# Let's use lightgbm as booster, see below for using more models\nmodel = LGBMRegressor(random_state=42, verbose=-1)",
+      "changes": [],
+      "sha256": "80cc39968418ca7f01ce24935afee608fa41ad3ddcd6e8397c0e982bf46d889f",
+      "status": "passed",
+      "input_shape": [
+        506,
+        18
+      ],
+      "output_tail": []
+    },
+    {
+      "cell": 11,
+      "source": "# Leshy\nfeat_selector = arfsgroot.Leshy(\n    model, n_estimators=20, verbose=1, max_iter=10, random_state=42, importance=\"native\"\n)\nfeat_selector.fit(X, y, sample_weight=None)\nprint(f\"The selected features: {feat_selector.get_feature_names_out()}\")\nprint(f\"The agnostic ranking: {feat_selector.ranking_}\")\nprint(f\"The naive ranking: {feat_selector.ranking_absolutes_}\")\nfig = feat_selector.plot_importance(n_feat_per_inch=5)\n\n# highlight synthetic random variable\nfig = highlight_tick(figure=fig, str_match=\"random\")\nfig = highlight_tick(figure=fig, str_match=\"genuine\", color=\"green\")\nplt.show()",
+      "changes": [
+        "Removed timing-only %%time magic"
+      ],
+      "sha256": "a8033135c1ccb54ac7b9e8fd3691918a8c469946816acfa918005ab98861ecaa",
+      "status": "passed",
+      "input_shape": [
+        506,
+        18
+      ],
+      "selected_features": [
+        "CRIM",
+        "NOX",
+        "RM",
+        "AGE",
+        "DIS",
+        "TAX",
+        "PTRATIO",
+        "B",
+        "LSTAT",
+        "genuine_num"
+      ],
+      "output_tail": [
+        "Leshy iteration: 100%|##########| 10/10 [00:00<00:00, 14.06it/s]",
+        "Leshy iteration: 100%|##########| 10/10 [00:00<00:00, 13.09it/s]",
+        "",
+        "",
+        "Leshy finished running using native var. imp.",
+        "",
+        "Iteration: \t1 / 10",
+        "Confirmed: \t10",
+        "Tentative: \t2",
+        "Rejected: \t6",
+        "All relevant predictors selected in 00:00:00.95",
+        "The selected features: ['CRIM' 'NOX' 'RM' 'AGE' 'DIS' 'TAX' 'PTRATIO' 'B' 'LSTAT' 'genuine_num']",
+        "The agnostic ranking: [1 3 2 6 1 1 1 1 6 1 1 1 1 2 4 6 6 1]",
+        "The naive ranking: ['LSTAT', 'RM', 'genuine_num', 'CRIM', 'NOX', 'DIS', 'PTRATIO', 'AGE', 'TAX', 'B', 'INDUS', 'random_num1', 'ZN', 'random_num2', 'RAD', 'CHAS', 'random_cat', 'random_cat_2']",
+        "arfs_regression:cell-11:14: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown"
+      ]
+    }
+  ]
+}

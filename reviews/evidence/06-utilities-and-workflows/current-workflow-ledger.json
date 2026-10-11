@@ -1,0 +1,320 @@
+[
+  {
+    "workflow": "classification-imports",
+    "command": [
+      "/tmp/arfs-review-03f67d0/wheel-env/bin/python",
+      "/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/workflows.py",
+      "child",
+      "classification-imports",
+      "/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/current-workflows/classification-imports.json"
+    ],
+    "cwd": "/tmp/arfs-review06-workflows-current-y1g7ww7r",
+    "exit_code": 0,
+    "log": "classification-imports.txt",
+    "cells": [
+      {
+        "cell": 1,
+        "status": "failed",
+        "exception": "ModuleNotFoundError",
+        "message": "No module named 'xgboost'"
+      }
+    ]
+  },
+  {
+    "workflow": "regression-imports",
+    "command": [
+      "/tmp/arfs-review-03f67d0/wheel-env/bin/python",
+      "/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/workflows.py",
+      "child",
+      "regression-imports",
+      "/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/current-workflows/regression-imports.json"
+    ],
+    "cwd": "/tmp/arfs-review06-workflows-current-y1g7ww7r",
+    "exit_code": 0,
+    "log": "regression-imports.txt",
+    "cells": [
+      {
+        "cell": 1,
+        "status": "failed",
+        "exception": "ModuleNotFoundError",
+        "message": "No module named 'xgboost'"
+      }
+    ]
+  },
+  {
+    "workflow": "basic",
+    "command": [
+      "/tmp/arfs-review-03f67d0/wheel-env/bin/python",
+      "/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/workflows.py",
+      "child",
+      "basic",
+      "/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/current-workflows/basic.json"
+    ],
+    "cwd": "/tmp/arfs-review06-workflows-current-y1g7ww7r",
+    "exit_code": 0,
+    "log": "basic.txt",
+    "cells": [
+      {
+        "cell": 2,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": 6,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": 11,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": 13,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": 17,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": 21,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": 25,
+        "status": "failed",
+        "exception": "TypeError",
+        "message": "One of the series must be categorical and the other numerical."
+      }
+    ]
+  },
+  {
+    "workflow": "preprocessing",
+    "command": [
+      "/tmp/arfs-review-03f67d0/wheel-env/bin/python",
+      "/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/workflows.py",
+      "child",
+      "preprocessing",
+      "/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/current-workflows/preprocessing.json"
+    ],
+    "cwd": "/tmp/arfs-review06-workflows-current-y1g7ww7r",
+    "exit_code": 0,
+    "log": "preprocessing.txt",
+    "cells": [
+      {
+        "cell": 2,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": 5,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": 10,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": 12,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": 14,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": 18,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": 20,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": 22,
+        "status": "failed",
+        "exception": "TypeError",
+        "message": "One of the series must be categorical and the other numerical."
+      }
+    ]
+  },
+  {
+    "workflow": "classification-cell",
+    "command": [
+      "/tmp/arfs-review-03f67d0/wheel-env/bin/python",
+      "/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/workflows.py",
+      "child",
+      "classification-cell",
+      "/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/current-workflows/classification-cell.json"
+    ],
+    "cwd": "/tmp/arfs-review06-workflows-current-y1g7ww7r",
+    "exit_code": 0,
+    "log": "classification-cell.txt",
+    "cells": [
+      {
+        "cell": 1,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": "local-data-substitution",
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": 9,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": 11,
+        "status": "failed",
+        "exception": "NameError",
+        "message": "name 'X_encoded' is not defined"
+      }
+    ]
+  },
+  {
+    "workflow": "classification-core",
+    "command": [
+      "/tmp/arfs-review-03f67d0/wheel-env/bin/python",
+      "/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/workflows.py",
+      "child",
+      "classification-core",
+      "/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/current-workflows/classification-core.json"
+    ],
+    "cwd": "/tmp/arfs-review06-workflows-current-y1g7ww7r",
+    "exit_code": 0,
+    "log": "classification-core.txt",
+    "cells": [
+      {
+        "cell": 1,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": "local-data-substitution",
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": 9,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": 11,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      }
+    ]
+  },
+  {
+    "workflow": "regression-native",
+    "command": [
+      "/tmp/arfs-review-03f67d0/wheel-env/bin/python",
+      "/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/workflows.py",
+      "child",
+      "regression-native",
+      "/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/current-workflows/regression-native.json"
+    ],
+    "cwd": "/tmp/arfs-review06-workflows-current-y1g7ww7r",
+    "exit_code": 0,
+    "log": "regression-native.txt",
+    "cells": [
+      {
+        "cell": 1,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": 6,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": 9,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": 11,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      }
+    ]
+  },
+  {
+    "workflow": "regression-benchmark",
+    "command": [
+      "/tmp/arfs-review-03f67d0/wheel-env/bin/python",
+      "/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/workflows.py",
+      "child",
+      "regression-benchmark",
+      "/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/current-workflows/regression-benchmark.json"
+    ],
+    "cwd": "/tmp/arfs-review06-workflows-current-y1g7ww7r",
+    "exit_code": 0,
+    "log": "regression-benchmark.txt",
+    "cells": [
+      {
+        "cell": 1,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": 6,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": 9,
+        "status": "passed",
+        "exception": null,
+        "message": null
+      },
+      {
+        "cell": 34,
+        "status": "failed",
+        "exception": "NameError",
+        "message": "name 'sklearn_pimp_bench' is not defined"
+      }
+    ]
+  }
+]
