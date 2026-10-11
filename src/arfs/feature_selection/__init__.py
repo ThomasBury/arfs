@@ -1,4 +1,5 @@
 from .allrelevant import Leshy, BoostAGroota, GrootCV
+from .base import BaseThresholdSelector
 from .unsupervised import (
     MissingValueThreshold,
     UniqueValuesThreshold,

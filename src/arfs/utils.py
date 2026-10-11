@@ -2,12 +2,13 @@
 
 from __future__ import print_function, division
 
+from importlib.resources import files
+
 import lightgbm as lgb
 import matplotlib as mpl
 import numpy as np
 import pandas as pd
 
-from pkg_resources import resource_filename
 from matplotlib import pyplot as plt
 from sklearn.impute import SimpleImputer
 from sklearn.compose import make_column_transformer
@@ -592,8 +593,9 @@ def _load_boston_data():
         Bunch sklearn, extension of dictionary
     """
 
-    data_file_name = resource_filename(__name__, "dataset/data/boston_bunch.joblib")
-    return joblib.load(data_file_name)
+    data_file = files("arfs").joinpath("dataset/data/boston_bunch.joblib")
+    with data_file.open("rb") as stream:
+        return joblib.load(stream)
 
 
 def _load_housing(as_frame: bool = False):
@@ -609,15 +611,17 @@ def _load_housing(as_frame: bool = False):
     Returns
     -------
     pd.DataFrame or Bunch
-        the dataset
+        the dataset. The Bunch's ``filename`` identifies the bundled resource;
+        it is a filesystem path in an unpacked installation and an archive
+        resource identifier when imported from a zip file.
 
     """
-    fdescr_name = resource_filename(__name__, "dataset/descr/housing.rst")
-    with open(fdescr_name) as f:
-        descr_text = f.read()
-
-    data_file_name = resource_filename(__name__, "dataset/data/housing.zip")
-    data = pd.read_csv(data_file_name)
+    descr_text = files("arfs").joinpath("dataset/descr/housing.rst").read_text(
+        encoding="utf-8"
+    )
+    data_file = files("arfs").joinpath("dataset/data/housing.zip")
+    with data_file.open("rb") as stream:
+        data = pd.read_csv(stream, compression="zip")
     feature_names = [
         "MedInc",
         "HouseAge",
@@ -637,7 +641,7 @@ def _load_housing(as_frame: bool = False):
             target=data["target"].values,
             feature_names=feature_names,
             DESCR=descr_text,
-            filename=data_file_name,
+            filename=str(data_file),
         )
 
 

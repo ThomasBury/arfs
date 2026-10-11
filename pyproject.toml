@@ -19,6 +19,7 @@ classifiers = [
 ]
 
 dependencies = [
+    "Jinja2>=3.1.6",
     "lightgbm>=4.6.0",
     "matplotlib>=3.9.4",
     "numpy>=2.0.2",
@@ -68,4 +69,4 @@ version = { attr = "arfs.__version__" }
 
 [tool.setuptools.package-data]
 "arfs.dataset.data" = ["*.joblib", "*.zip"]
-"arfs.dataset.description" = ["*.rst"]
+"arfs.dataset.descr" = ["*.rst"]

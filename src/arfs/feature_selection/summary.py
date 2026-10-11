@@ -37,6 +37,11 @@ def make_fs_summary(selector_pipe):
     selector_pipe : sklearn.pipeline.Pipeline
         the feature selector pipeline.
 
+    Returns
+    -------
+    pandas.io.formats.style.Styler
+        The styled summary table. Jinja2 is a runtime dependency for this return type.
+
     Examples
     --------
     >>> groot_pipeline = Pipeline([
