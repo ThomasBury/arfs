@@ -1,0 +1,58 @@
+............                                                             [100%]
+=============================== warnings summary ===============================
+tests/test_dependency_apis.py::test_public_lasso_selector_fits
+  /tmp/arfs-r01.7gLmPw/frozen-env/lib/python3.12/site-packages/sklearn/utils/deprecation.py:151: FutureWarning: 'force_all_finite' was renamed to 'ensure_all_finite' in 1.6 and will be removed in 1.8.
+    warnings.warn(
+
+tests/test_dependency_apis.py::test_public_lasso_selector_fits
+  /tmp/arfs-r01.7gLmPw/frozen-env/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1464: UserWarning: Elastic net fitting did not converge
+    warnings.warn("Elastic net fitting did not converge")
+
+tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+  /tmp/arfs-r01.7gLmPw/frozen-env/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The MissingValueThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+  /tmp/arfs-r01.7gLmPw/frozen-env/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The UniqueValuesThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+  /home/bsatom/Documents/arfs/src/arfs/feature_selection/summary.py:74: FutureWarning: Styler.applymap has been deprecated. Use Styler.map instead.
+    .applymap(lambda x: "" if x == x else "background-color: #f57505")
+
+tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /home/bsatom/Documents/arfs/src/arfs/benchmark.py:94: MatplotlibDeprecationWarning: The 'labels' parameter of boxplot() has been renamed 'tick_labels' since Matplotlib 3.9; support for the old name will be dropped in 3.11.
+    ax.boxplot(
+
+tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /home/bsatom/Documents/arfs/src/arfs/benchmark.py:99: UserWarning: Tight layout not applied. The bottom and top margins cannot be made large enough to accommodate all Axes decorations.
+    fig.tight_layout()
+
+tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /home/bsatom/Documents/arfs/src/arfs/benchmark.py:104: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+    plt.show()
+
+tests/test_dependency_apis.py::test_scalar_anova_preserves_reference_statistic_and_shape[False]
+tests/test_dependency_apis.py::test_scalar_anova_preserves_reference_statistic_and_shape[True]
+tests/test_dependency_apis.py::test_parallel_relevance_agrees[regression-False]
+tests/test_dependency_apis.py::test_parallel_relevance_agrees[regression-True]
+tests/test_dependency_apis.py::test_parallel_relevance_agrees[classification-False]
+tests/test_dependency_apis.py::test_parallel_relevance_agrees[classification-True]
+  /home/bsatom/Documents/arfs/src/arfs/association.py:1461: DeprecationWarning: Calling nonzero on 0d arrays is deprecated, as it behaves surprisingly. Use `atleast_1d(cond).nonzero()` if the old behavior was intended. If the context of this warning is of the form `arr[nonzero(cond)]`, just use `arr[cond]`.
+    constant_features_idx = np.where(msw == 0.0)[0]
+
+tests/test_dependency_apis.py::test_scalar_anova_preserves_reference_statistic_and_shape[False]
+tests/test_dependency_apis.py::test_scalar_anova_preserves_reference_statistic_and_shape[True]
+tests/test_dependency_apis.py::test_parallel_relevance_agrees[regression-False]
+tests/test_dependency_apis.py::test_parallel_relevance_agrees[regression-True]
+tests/test_dependency_apis.py::test_parallel_relevance_agrees[classification-False]
+tests/test_dependency_apis.py::test_parallel_relevance_agrees[classification-True]
+  /tmp/arfs-r01.7gLmPw/frozen-env/lib/python3.12/site-packages/numpy/_core/fromnumeric.py:57: DeprecationWarning: Calling nonzero on 0d arrays is deprecated, as it behaves surprisingly. Use `atleast_1d(arr).nonzero()` if the old behavior was intended.
+    return bound(*args, **kwds)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+12 passed, 24 warnings in 7.07s

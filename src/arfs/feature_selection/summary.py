@@ -71,7 +71,7 @@ def make_fs_summary(selector_pipe):
 
     style = (
         tag_df.style.apply(highlight_discarded, subset=tag_df.columns[1:])
-        .applymap(lambda x: "" if x == x else "background-color: #f57505")
+        .map(lambda x: "" if x == x else "background-color: #f57505")
         .format(precision=0)
     )
 

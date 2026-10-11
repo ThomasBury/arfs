@@ -179,7 +179,7 @@
     "PLC0206": 1,
     "RUF059": 2,
     "SIM103": 1,
-    "UP031": 2,
+    "UP031": 1,
     "UP034": 1
   },
   "src/arfs/benchmark.py": {

@@ -1,0 +1,221 @@
+FFFFFFFFFFFF                                                             [100%]
+=================================== FAILURES ===================================
+_______________________ test_public_lasso_selector_fits ________________________
+tests/test_dependency_apis.py:23: in test_public_lasso_selector_fits
+    model = fs.LassoFeatureSelection(n_iterations=3).fit(X, x + np.sin(x))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/feature_selection/lasso.py:597: in fit
+    self.best_estimator_ = grid_search_cv(
+src/arfs/feature_selection/lasso.py:449: in grid_search_cv
+    y = check_array(y, ensure_2d=False, force_all_finite=False)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: check_array() got an unexpected keyword argument 'force_all_finite'
+___________________ test_summary_real_pipeline_renders_html ____________________
+tests/test_dependency_apis.py:47: in test_summary_real_pipeline_renders_html
+    style = fs.make_fs_summary(pipe)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/feature_selection/summary.py:74: in make_fs_summary
+    .applymap(lambda x: "" if x == x else "background-color: #f57505")
+     ^^^^^^^^
+E   AttributeError: 'Styler' object has no attribute 'applymap'
+_____________________ test_benchmark_real_permutation_plot _____________________
+tests/test_dependency_apis.py:66: in test_benchmark_real_permutation_plot
+    fig = sklearn_pimp_bench(DecisionTreeRegressor(max_depth=2, random_state=8), X, y)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/benchmark.py:94: in sklearn_pimp_bench
+    ax.boxplot(
+E   TypeError: Axes.boxplot() got an unexpected keyword argument 'labels'
+_________ test_association_clustering_and_plot_preserve_data_and_owner _________
+tests/test_dependency_apis.py:81: in test_association_clustering_and_plot_preserve_data_and_owner
+    clustered = association.cluster_sq_matrix(frame)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/association.py:2119: in cluster_sq_matrix
+    d = sch.distance.pdist(sq_matrix.values)
+        ^^^^^^^^^^^^
+E   AttributeError: module 'scipy.cluster.hierarchy' has no attribute 'distance'
+_______ test_scalar_anova_preserves_reference_statistic_and_shape[False] _______
+tests/test_dependency_apis.py:105: in test_scalar_anova_preserves_reference_statistic_and_shape
+    actual = association.f_oneway_weighted(*zip(groups, weights))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/association.py:1461: in f_oneway_weighted
+    constant_features_idx = np.where(msw == 0.0)[0]
+                            ^^^^^^^^^^^^^^^^^^^^
+E   ValueError: Calling nonzero on 0d arrays is not allowed. Use np.atleast_1d(scalar).nonzero() instead. If the context of this error is of the form `arr[nonzero(cond)]`, just use `arr[cond]`.
+_______ test_scalar_anova_preserves_reference_statistic_and_shape[True] ________
+tests/test_dependency_apis.py:105: in test_scalar_anova_preserves_reference_statistic_and_shape
+    actual = association.f_oneway_weighted(*zip(groups, weights))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/association.py:1461: in f_oneway_weighted
+    constant_features_idx = np.where(msw == 0.0)[0]
+                            ^^^^^^^^^^^^^^^^^^^^
+E   ValueError: Calling nonzero on 0d arrays is not allowed. Use np.atleast_1d(scalar).nonzero() instead. If the context of this error is of the form `arr[nonzero(cond)]`, just use `arr[cond]`.
+__________________ test_scalar_anova_constant_handling[False] __________________
+tests/test_dependency_apis.py:115: in test_scalar_anova_constant_handling
+    actual = association.f_oneway_weighted(*((g, np.ones(3)) for g in groups))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/association.py:1461: in f_oneway_weighted
+    constant_features_idx = np.where(msw == 0.0)[0]
+                            ^^^^^^^^^^^^^^^^^^^^
+E   ValueError: Calling nonzero on 0d arrays is not allowed. Use np.atleast_1d(scalar).nonzero() instead. If the context of this error is of the form `arr[nonzero(cond)]`, just use `arr[cond]`.
+__________________ test_scalar_anova_constant_handling[True] ___________________
+tests/test_dependency_apis.py:115: in test_scalar_anova_constant_handling
+    actual = association.f_oneway_weighted(*((g, np.ones(3)) for g in groups))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/association.py:1461: in f_oneway_weighted
+    constant_features_idx = np.where(msw == 0.0)[0]
+                            ^^^^^^^^^^^^^^^^^^^^
+E   ValueError: Calling nonzero on 0d arrays is not allowed. Use np.atleast_1d(scalar).nonzero() instead. If the context of this error is of the form `arr[nonzero(cond)]`, just use `arr[cond]`.
+_______________ test_parallel_relevance_agrees[regression-False] _______________
+tests/test_dependency_apis.py:136: in test_parallel_relevance_agrees
+    assert_series_equal(fn(X, y, sample_weight=w, n_jobs=1), fn(X, y, sample_weight=w, n_jobs=2))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/association.py:1561: in f_cat_regression_parallel
+    return parallel_df(
+src/arfs/parallel.py:87: in parallel_df
+    lst = func(df, series, sample_weight).sort_values(ascending=False)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/parallel.py:137: in _compute_series
+    return X.apply(
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/frame.py:12437: in apply
+    return op.apply().__finalize__(self, method="apply")
+           ^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/apply.py:1015: in apply
+    return self.apply_standard()
+           ^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/apply.py:1167: in apply_standard
+    results, res_index = self.apply_series_generator()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/apply.py:1183: in apply_series_generator
+    results[i] = self.func(v, *self.args, **self.kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/parallel.py:138: in <lambda>
+    lambda col: _closure_compute_series(x=col, y=y, sample_weight=sample_weight)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/parallel.py:130: in _closure_compute_series
+    return func_xyw(
+src/arfs/association.py:1510: in f_cat_regression
+    return f_oneway_weighted(*args)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/association.py:1461: in f_oneway_weighted
+    constant_features_idx = np.where(msw == 0.0)[0]
+                            ^^^^^^^^^^^^^^^^^^^^
+E   ValueError: Calling nonzero on 0d arrays is not allowed. Use np.atleast_1d(scalar).nonzero() instead. If the context of this error is of the form `arr[nonzero(cond)]`, just use `arr[cond]`.
+_______________ test_parallel_relevance_agrees[regression-True] ________________
+tests/test_dependency_apis.py:136: in test_parallel_relevance_agrees
+    assert_series_equal(fn(X, y, sample_weight=w, n_jobs=1), fn(X, y, sample_weight=w, n_jobs=2))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/association.py:1561: in f_cat_regression_parallel
+    return parallel_df(
+src/arfs/parallel.py:87: in parallel_df
+    lst = func(df, series, sample_weight).sort_values(ascending=False)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/parallel.py:137: in _compute_series
+    return X.apply(
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/frame.py:12437: in apply
+    return op.apply().__finalize__(self, method="apply")
+           ^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/apply.py:1015: in apply
+    return self.apply_standard()
+           ^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/apply.py:1167: in apply_standard
+    results, res_index = self.apply_series_generator()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/apply.py:1183: in apply_series_generator
+    results[i] = self.func(v, *self.args, **self.kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/parallel.py:138: in <lambda>
+    lambda col: _closure_compute_series(x=col, y=y, sample_weight=sample_weight)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/parallel.py:130: in _closure_compute_series
+    return func_xyw(
+src/arfs/association.py:1510: in f_cat_regression
+    return f_oneway_weighted(*args)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/association.py:1461: in f_oneway_weighted
+    constant_features_idx = np.where(msw == 0.0)[0]
+                            ^^^^^^^^^^^^^^^^^^^^
+E   ValueError: Calling nonzero on 0d arrays is not allowed. Use np.atleast_1d(scalar).nonzero() instead. If the context of this error is of the form `arr[nonzero(cond)]`, just use `arr[cond]`.
+_____________ test_parallel_relevance_agrees[classification-False] _____________
+tests/test_dependency_apis.py:136: in test_parallel_relevance_agrees
+    assert_series_equal(fn(X, y, sample_weight=w, n_jobs=1), fn(X, y, sample_weight=w, n_jobs=2))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/association.py:1803: in f_cont_classification_parallel
+    return parallel_df(
+src/arfs/parallel.py:87: in parallel_df
+    lst = func(df, series, sample_weight).sort_values(ascending=False)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/parallel.py:137: in _compute_series
+    return X.apply(
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/frame.py:12437: in apply
+    return op.apply().__finalize__(self, method="apply")
+           ^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/apply.py:1015: in apply
+    return self.apply_standard()
+           ^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/apply.py:1167: in apply_standard
+    results, res_index = self.apply_series_generator()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/apply.py:1183: in apply_series_generator
+    results[i] = self.func(v, *self.args, **self.kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/parallel.py:138: in <lambda>
+    lambda col: _closure_compute_series(x=col, y=y, sample_weight=sample_weight)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/parallel.py:130: in _closure_compute_series
+    return func_xyw(
+src/arfs/association.py:1754: in f_cont_classification
+    return f_oneway_weighted(*args)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/association.py:1461: in f_oneway_weighted
+    constant_features_idx = np.where(msw == 0.0)[0]
+                            ^^^^^^^^^^^^^^^^^^^^
+E   ValueError: Calling nonzero on 0d arrays is not allowed. Use np.atleast_1d(scalar).nonzero() instead. If the context of this error is of the form `arr[nonzero(cond)]`, just use `arr[cond]`.
+_____________ test_parallel_relevance_agrees[classification-True] ______________
+tests/test_dependency_apis.py:136: in test_parallel_relevance_agrees
+    assert_series_equal(fn(X, y, sample_weight=w, n_jobs=1), fn(X, y, sample_weight=w, n_jobs=2))
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/association.py:1803: in f_cont_classification_parallel
+    return parallel_df(
+src/arfs/parallel.py:87: in parallel_df
+    lst = func(df, series, sample_weight).sort_values(ascending=False)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/parallel.py:137: in _compute_series
+    return X.apply(
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/frame.py:12437: in apply
+    return op.apply().__finalize__(self, method="apply")
+           ^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/apply.py:1015: in apply
+    return self.apply_standard()
+           ^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/apply.py:1167: in apply_standard
+    results, res_index = self.apply_series_generator()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/pandas/core/apply.py:1183: in apply_series_generator
+    results[i] = self.func(v, *self.args, **self.kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/parallel.py:138: in <lambda>
+    lambda col: _closure_compute_series(x=col, y=y, sample_weight=sample_weight)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/parallel.py:130: in _closure_compute_series
+    return func_xyw(
+src/arfs/association.py:1754: in f_cont_classification
+    return f_oneway_weighted(*args)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+src/arfs/association.py:1461: in f_oneway_weighted
+    constant_features_idx = np.where(msw == 0.0)[0]
+                            ^^^^^^^^^^^^^^^^^^^^
+E   ValueError: Calling nonzero on 0d arrays is not allowed. Use np.atleast_1d(scalar).nonzero() instead. If the context of this error is of the form `arr[nonzero(cond)]`, just use `arr[cond]`.
+=========================== short test summary info ============================
+FAILED tests/test_dependency_apis.py::test_public_lasso_selector_fits - TypeE...
+FAILED tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+FAILED tests/test_dependency_apis.py::test_benchmark_real_permutation_plot - ...
+FAILED tests/test_dependency_apis.py::test_association_clustering_and_plot_preserve_data_and_owner
+FAILED tests/test_dependency_apis.py::test_scalar_anova_preserves_reference_statistic_and_shape[False]
+FAILED tests/test_dependency_apis.py::test_scalar_anova_preserves_reference_statistic_and_shape[True]
+FAILED tests/test_dependency_apis.py::test_scalar_anova_constant_handling[False]
+FAILED tests/test_dependency_apis.py::test_scalar_anova_constant_handling[True]
+FAILED tests/test_dependency_apis.py::test_parallel_relevance_agrees[regression-False]
+FAILED tests/test_dependency_apis.py::test_parallel_relevance_agrees[regression-True]
+FAILED tests/test_dependency_apis.py::test_parallel_relevance_agrees[classification-False]
+FAILED tests/test_dependency_apis.py::test_parallel_relevance_agrees[classification-True]
+12 failed in 9.44s

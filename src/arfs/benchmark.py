@@ -92,7 +92,7 @@ def sklearn_pimp_bench(model, X, y, task="regression", sample_weight=None):
     # Plot (5 predictors per inch)
     fig, ax = plt.subplots(figsize=(16, X.shape[1] / 5))
     ax.boxplot(
-        result.importances[sorted_idx].T, vert=False, labels=X_test.columns[sorted_idx]
+        result.importances[sorted_idx].T, vert=False, tick_labels=X_test.columns[sorted_idx]
     )
     ax.set_title("Permutation Importances (test set)")
     ax.tick_params(axis="both", which="major", labelsize=9)
