@@ -17,8 +17,8 @@ remain; keep one distribution. [Remediation](REMEDIATION.md) is a separate repai
 backlog: [R01 is complete](R01-installed-package.md), and R02 is next, pending.
 Follow its
 [session batching and handoff guidance](REMEDIATION.md#session-batching-and-handoffs):
-R01 alone, optionally R02/R03 sequentially in an explicitly requested batch,
-then R04 alone. Later concurrent tracks require completed prerequisites and
+R02 alone, optionally R02/R03 sequentially in an explicitly requested batch,
+then R04 alone. R01 is already complete. Later concurrent tracks require completed prerequisites and
 a check for shared files; the default remains one phase per session.
 
 | Order | Review item | Status | Read |

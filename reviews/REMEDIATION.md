@@ -41,12 +41,12 @@ record each outcome separately. Stop at a phase boundary if a new API or
 statistical decision, unresolved failure, or wider scope makes the batch too
 large. Session boundaries and repair phases are not published releases.
 
-The recommended start is R01 alone, optionally R02/R03 together after R01, then
-R04 alone. All remaining phases default to separate sessions.
+R01 is complete. Start with R02 alone; if requested, batch R02/R03 sequentially,
+then run R04 alone. All remaining phases default to separate sessions.
 
 | Phases | Session recommendation | Reason |
 | --- | --- | --- |
-| R01 | Alone | Establish a usable installed package before other repairs |
+| R01 | Complete; do not repeat | Installed-package checks are recorded in the R01 handoff |
 | R02 + R03 | Optional two-phase batch, sequentially, after R01 | Both repair dependency compatibility; inspect shared files and callers before combining |
 | R04 | Alone | Establish the test baseline, dependency lock, and runtime CI |
 | R05 | Alone | Shared observation and weight validation affects many callers |
