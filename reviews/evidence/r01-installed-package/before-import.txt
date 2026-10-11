@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/tmp/arfs-r01.7gLmPw/before-env/lib/python3.12/site-packages/arfs/feature_selection/__init__.py", line 1, in <module>
+    from .allrelevant import Leshy, BoostAGroota, GrootCV
+  File "/tmp/arfs-r01.7gLmPw/before-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py", line 72, in <module>
+    from ..utils import (
+  File "/tmp/arfs-r01.7gLmPw/before-env/lib/python3.12/site-packages/arfs/utils.py", line 10, in <module>
+    from pkg_resources import resource_filename
+ModuleNotFoundError: No module named 'pkg_resources'

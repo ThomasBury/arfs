@@ -1,0 +1,13 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+__ test_summary_real_pipeline_name_preserving_transformer_and_empty_selection __
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:433: in test_summary_real_pipeline_name_preserving_transformer_and_empty_selection
+    style=fs.make_fs_summary(pipe)
+          ^^^^^^^^^^^^^^^^^^^^^^^^
+../newer-env/lib/python3.12/site-packages/arfs/feature_selection/summary.py:74: in make_fs_summary
+    .applymap(lambda x: "" if x == x else "background-color: #f57505")
+     ^^^^^^^^
+E   AttributeError: 'Styler' object has no attribute 'applymap'
+=========================== short test summary info ============================
+FAILED ../../../dev::test_summary_real_pipeline_name_preserving_transformer_and_empty_selection
+1 failed, 72 deselected in 7.86s

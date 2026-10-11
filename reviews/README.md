@@ -13,8 +13,13 @@ historical handoffs.
 **Next item: None — queued reviews complete.**
 
 [Final assessment](07-final-assessment.md): review complete, release blockers
-remain; keep one distribution. [Remediation](REMEDIATION.md) is a separate,
-unstarted backlog. Its first implementation phase is R01.
+remain; keep one distribution. [Remediation](REMEDIATION.md) is a separate repair
+backlog: [R01 is complete](R01-installed-package.md), and R02 is next, pending.
+Follow its
+[session batching and handoff guidance](REMEDIATION.md#session-batching-and-handoffs):
+R01 alone, optionally R02/R03 sequentially in an explicitly requested batch,
+then R04 alone. Later concurrent tracks require completed prerequisites and
+a check for shared files; the default remains one phase per session.
 
 | Order | Review item | Status | Read |
 | --- | --- | --- | --- |

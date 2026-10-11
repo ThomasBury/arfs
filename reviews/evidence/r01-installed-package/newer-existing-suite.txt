@@ -1,0 +1,135 @@
+.FF......FFFFFF                                                          [100%]
+=================================== FAILURES ===================================
+____ TestFeatSelectZeroVariance.test_identify_single_unique_classification _____
+tests/test_featselect.py:45: in test_identify_single_unique_classification
+    assert fs.not_selected_features_ == ["var10"], message
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+_ TestFeatSelectHighCardinality.test_identify_high_cardinality_classification __
+tests/test_featselect.py:61: in test_identify_high_cardinality_classification
+    assert actual == expected, message
+E   AssertionError: Expected: ['dummy', 'nice_guys'], Actual: ['dummy']
+E   assert ['dummy'] == ['dummy', 'nice_guys']
+E     
+E     Right contains one more item: 'nice_guys'
+E     Use -v to get more diff
+_ TestBoostAGroota.test_boostagroota_clf_with_lgb_and_shap_feature_importance_and_sample_weight _
+tests/test_allrelevant.py:163: in test_boostagroota_clf_with_lgb_and_shap_feature_importance_and_sample_weight
+    arfs.fit(X, y, w)
+../newer-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1579: in fit
+    _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _boostaroota(
+../newer-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1889: in _boostaroota
+    crit, keep_vars, df_vimp, mean_shadow = _reduce_vars_sklearn(
+../newer-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1780: in _reduce_vars_sklearn
+    new_x, shadow_names = _create_shadow(X)
+                          ^^^^^^^^^^^^^^^^^
+../newer-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1693: in _create_shadow
+    np.random.shuffle(X_shadow[c].values)
+numpy/random/mtrand.pyx:4620: in numpy.random.mtrand.RandomState.shuffle
+    ???
+E   ValueError: array is read-only
+----------------------------- Captured stderr call -----------------------------
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+_ TestBoostAGroota.test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight _
+tests/test_allrelevant.py:186: in test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight
+    arfs.fit(X, y, w)
+../newer-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1579: in fit
+    _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _boostaroota(
+../newer-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1889: in _boostaroota
+    crit, keep_vars, df_vimp, mean_shadow = _reduce_vars_sklearn(
+../newer-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1780: in _reduce_vars_sklearn
+    new_x, shadow_names = _create_shadow(X)
+                          ^^^^^^^^^^^^^^^^^
+../newer-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1693: in _create_shadow
+    np.random.shuffle(X_shadow[c].values)
+numpy/random/mtrand.pyx:4620: in numpy.random.mtrand.RandomState.shuffle
+    ???
+E   ValueError: array is read-only
+----------------------------- Captured stderr call -----------------------------
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+_ TestBoostAGroota.test_boostagroota_rgr_with_lgb_and_shap_feature_importance_and_sample_weight _
+tests/test_allrelevant.py:209: in test_boostagroota_rgr_with_lgb_and_shap_feature_importance_and_sample_weight
+    arfs.fit(X, y, w)
+../newer-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1579: in fit
+    _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _boostaroota(
+../newer-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1889: in _boostaroota
+    crit, keep_vars, df_vimp, mean_shadow = _reduce_vars_sklearn(
+../newer-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1780: in _reduce_vars_sklearn
+    new_x, shadow_names = _create_shadow(X)
+                          ^^^^^^^^^^^^^^^^^
+../newer-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1693: in _create_shadow
+    np.random.shuffle(X_shadow[c].values)
+numpy/random/mtrand.pyx:4620: in numpy.random.mtrand.RandomState.shuffle
+    ???
+E   ValueError: array is read-only
+----------------------------- Captured stderr call -----------------------------
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+_ TestBoostAGroota.test_boostagroota_regr_with_lgb_and_pimp_feature_importance_and_sample_weight _
+tests/test_allrelevant.py:232: in test_boostagroota_regr_with_lgb_and_pimp_feature_importance_and_sample_weight
+    arfs.fit(X, y, w)
+../newer-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1579: in fit
+    _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _boostaroota(
+../newer-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1889: in _boostaroota
+    crit, keep_vars, df_vimp, mean_shadow = _reduce_vars_sklearn(
+../newer-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1780: in _reduce_vars_sklearn
+    new_x, shadow_names = _create_shadow(X)
+                          ^^^^^^^^^^^^^^^^^
+../newer-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1693: in _create_shadow
+    np.random.shuffle(X_shadow[c].values)
+numpy/random/mtrand.pyx:4620: in numpy.random.mtrand.RandomState.shuffle
+    ???
+E   ValueError: array is read-only
+----------------------------- Captured stderr call -----------------------------
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+________ TestGrootCV.test_grootcv_classification_with_and_sample_weight ________
+tests/test_allrelevant.py:250: in test_grootcv_classification_with_and_sample_weight
+    arfs.fit(X, y, w)
+../newer-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2073: in fit
+    self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+../newer-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2303: in _reduce_vars_lgb_cv
+    new_x_tr, shadow_names = _create_shadow(X_train)
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+../newer-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1693: in _create_shadow
+    np.random.shuffle(X_shadow[c].values)
+numpy/random/mtrand.pyx:4620: in numpy.random.mtrand.RandomState.shuffle
+    ???
+E   ValueError: array is read-only
+----------------------------- Captured stdout call -----------------------------
+GrootCV: classification with unbalance classes
+----------------------------- Captured stderr call -----------------------------
+Cross Validation:   0%|          | 0/9 [00:00<?, ?it/s]Cross Validation:   0%|          | 0/9 [00:00<?, ?it/s]
+__________ TestGrootCV.test_grootcv_regression_with_and_sample_weight __________
+tests/test_allrelevant.py:262: in test_grootcv_regression_with_and_sample_weight
+    arfs.fit(X, y, w)
+../newer-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2073: in fit
+    self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+../newer-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2303: in _reduce_vars_lgb_cv
+    new_x_tr, shadow_names = _create_shadow(X_train)
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+../newer-env/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1693: in _create_shadow
+    np.random.shuffle(X_shadow[c].values)
+numpy/random/mtrand.pyx:4620: in numpy.random.mtrand.RandomState.shuffle
+    ???
+E   ValueError: array is read-only
+----------------------------- Captured stderr call -----------------------------
+Cross Validation:   0%|          | 0/9 [00:00<?, ?it/s]Cross Validation:   0%|          | 0/9 [00:00<?, ?it/s]
+=============================== warnings summary ===============================
+arfs-r01.7gLmPw/run/tests/test_allrelevant.py: 19 warnings
+  /tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/arfs/utils.py:155: Pandas4Warning: For backward compatibility, 'str' dtypes are included by select_dtypes when 'object' dtype is specified. This behavior is deprecated and will be removed in a future version. Explicitly pass 'str' to `include` to select them, or to `exclude` to remove them and silence this warning.
+  See https://pandas.pydata.org/docs/user_guide/migration-3-strings.html#string-migration-select-dtypes for details on how to write code that works with pandas 2 and 3.
+    categorical_cols = df.select_dtypes(include=["object", "category", "bool"]).columns
+
+arfs-r01.7gLmPw/run/tests/test_allrelevant.py: 20 warnings
+  /tmp/arfs-r01.7gLmPw/newer-env/lib/python3.12/site-packages/shap/explainers/_tree.py:579: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_featselect.py::TestFeatSelectZeroVariance::test_identify_single_unique_classification
+FAILED tests/test_featselect.py::TestFeatSelectHighCardinality::test_identify_high_cardinality_classification
+FAILED tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_clf_with_lgb_and_shap_feature_importance_and_sample_weight
+FAILED tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight
+FAILED tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_rgr_with_lgb_and_shap_feature_importance_and_sample_weight
+FAILED tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_regr_with_lgb_and_pimp_feature_importance_and_sample_weight
+FAILED tests/test_allrelevant.py::TestGrootCV::test_grootcv_classification_with_and_sample_weight
+FAILED tests/test_allrelevant.py::TestGrootCV::test_grootcv_regression_with_and_sample_weight
+8 failed, 7 passed, 39 warnings in 50.42s

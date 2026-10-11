@@ -1,0 +1,63 @@
+{
+  "phase": "R01",
+  "status": "Complete",
+  "date": "2026-10-11",
+  "branch": "fix/r01-installed-package",
+  "base_commit": "0270aca405f523e87b979b0292a6ccd9d74e5acf",
+  "implementation_commit": "6b675fd5d366894f829f677c7fa1c66c95fac4d8",
+  "changes": "implementation committed; PR delivery authorized",
+  "original_clean_wheel": {
+    "passed": 2,
+    "failed": 20,
+    "setuptools": false
+  },
+  "original_frozen_diagnostic": {
+    "passed": 18,
+    "failed": 4,
+    "setuptools": "80.9.0 diagnostic workaround"
+  },
+  "r01_regressions": {
+    "frozen": {
+      "passed": 22,
+      "failed": 0
+    },
+    "newer": {
+      "passed": 22,
+      "failed": 0
+    }
+  },
+  "real_summary": {
+    "frozen": "passed",
+    "newer": "known R03 blocker: Styler.applymap removed"
+  },
+  "existing_suite": {
+    "frozen": {
+      "passed": 13,
+      "failed": 2,
+      "owners": [
+        "R04"
+      ]
+    },
+    "newer": {
+      "passed": 7,
+      "failed": 8,
+      "owners": [
+        "R02",
+        "R04"
+      ]
+    }
+  },
+  "fresh_install_styling_dependency": "passed; Jinja2 resolved from wheel metadata without preinstallation",
+  "dependency_checks": {
+    "frozen": "passed",
+    "newer": "passed",
+    "base": "passed"
+  },
+  "ruff": {
+    "new_test_file": "passed",
+    "touched_source_before": 13,
+    "touched_source_after": 13,
+    "diagnostic_codes_and_counts_unchanged": true
+  },
+  "scope": "R01 only; no lock, CI, version, release, R02 or R03 repair"
+}

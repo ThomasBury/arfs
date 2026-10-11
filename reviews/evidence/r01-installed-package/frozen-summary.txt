@@ -1,0 +1,20 @@
+.                                                                        [100%]
+=============================== warnings summary ===============================
+::test_summary_real_pipeline_name_preserving_transformer_and_empty_selection
+::test_summary_real_pipeline_name_preserving_transformer_and_empty_selection
+  /tmp/arfs-r01.7gLmPw/frozen-env/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The MissingValueThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+::test_summary_real_pipeline_name_preserving_transformer_and_empty_selection
+::test_summary_real_pipeline_name_preserving_transformer_and_empty_selection
+::test_summary_real_pipeline_name_preserving_transformer_and_empty_selection
+::test_summary_real_pipeline_name_preserving_transformer_and_empty_selection
+  /tmp/arfs-r01.7gLmPw/frozen-env/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The UniqueValuesThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+::test_summary_real_pipeline_name_preserving_transformer_and_empty_selection
+  /tmp/arfs-r01.7gLmPw/frozen-env/lib/python3.12/site-packages/arfs/feature_selection/summary.py:74: FutureWarning: Styler.applymap has been deprecated. Use Styler.map instead.
+    .applymap(lambda x: "" if x == x else "background-color: #f57505")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 72 deselected, 7 warnings in 6.39s

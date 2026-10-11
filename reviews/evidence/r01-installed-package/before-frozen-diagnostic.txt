@@ -1,0 +1,39 @@
+................F..FFF                                                   [100%]
+=================================== FAILURES ===================================
+_________________________ test_declared_exports_exist __________________________
+tests/test_installed_package.py:44: in test_declared_exports_exist
+    assert getattr(selection, name) is not None
+E   AttributeError: module 'arfs.feature_selection' has no attribute 'BaseThresholdSelector'
+_____________________ test_local_datasets[housing-shape2] ______________________
+tests/test_installed_package.py:55: in test_local_datasets
+    dataset = load_data(name)
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:722: in load_data
+    return _load_housing(as_frame=False)
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:616: in _load_housing
+    with open(fdescr_name) as f:
+E   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/dataset/descr/housing.rst'
+________________ test_styling_dependency_is_declared_and_usable ________________
+tests/test_installed_package.py:66: in test_styling_dependency_is_declared_and_usable
+    assert any(re.match(r"(?i)^jinja2\b", requirement) for requirement in requirements)
+E   assert False
+E    +  where False = any(<generator object test_styling_dependency_is_declared_and_usable.<locals>.<genexpr> at 0x7760eb882dc0>)
+________________________ test_dataset_streams_from_zip _________________________
+tests/test_installed_package.py:74: in test_dataset_streams_from_zip
+    expected_housing = utils.load_data("housing")
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:722: in load_data
+    return _load_housing(as_frame=False)
+/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:616: in _load_housing
+    with open(fdescr_name) as f:
+E   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/dataset/descr/housing.rst'
+=============================== warnings summary ===============================
+arfs-r01.7gLmPw/run/tests/test_installed_package.py::test_module_imports[arfs.association]
+  /tmp/arfs-review-03f67d0/locked-env/lib/python3.12/site-packages/arfs/utils.py:10: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+    from pkg_resources import resource_filename
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_installed_package.py::test_declared_exports_exist - Attribu...
+FAILED tests/test_installed_package.py::test_local_datasets[housing-shape2]
+FAILED tests/test_installed_package.py::test_styling_dependency_is_declared_and_usable
+FAILED tests/test_installed_package.py::test_dataset_streams_from_zip - FileN...
+4 failed, 18 passed, 1 warning in 6.67s
