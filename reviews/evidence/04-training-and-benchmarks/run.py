@@ -15,10 +15,17 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-label, interpreter = sys.argv[1:]
-assert label in {"frozen", "current"}
+if len(sys.argv) not in {3, 4} or sys.argv[1] not in {"frozen", "current"}:
+    raise SystemExit("Usage: run.py frozen|current interpreter [output-dir]")
+label, interpreter = sys.argv[1:3]
 evidence = Path(__file__).resolve().parent
 repo = evidence.parents[2]
+destination = (Path(sys.argv[3]).resolve() if len(sys.argv) == 4
+               else Path(tempfile.mkdtemp(prefix=f"arfs-review04-{label}-results-")))
+if destination.is_relative_to(repo):
+    raise SystemExit("Rerun results must be outside the checkout to preserve saved evidence")
+destination.mkdir(parents=True, exist_ok=True)
+print(f"Rerun results: {destination}", flush=True)
 environment = os.environ.copy()
 settings = dict(PYTHONDONTWRITEBYTECODE="1", MPLBACKEND="Agg", OPENBLAS_NUM_THREADS="1",
                 OMP_NUM_THREADS="1", MKL_NUM_THREADS="1", NUMBA_NUM_THREADS="1")
@@ -27,14 +34,14 @@ records = []
 with tempfile.TemporaryDirectory(prefix=f"arfs-review04-{label}-", dir="/tmp") as work:
     environment["MPLCONFIGDIR"] = str(Path(work) / "mpl")
     identity = [interpreter, str(evidence / "environment.py"), str(repo),
-                str(evidence / f"{label}-environment.json")]
+                str(destination / f"{label}-environment.json")]
     subprocess.run(identity, cwd=work, env=environment, check=True, timeout=60)
     base = [interpreter, "-m", "pytest", str(evidence / "checks.py"), "-q", "-rx",
             "--tb=short", "-c", "/dev/null", f"--rootdir={evidence}", "-p", "no:cacheprovider"]
     for suffix, extra, expected in [("checks", [], 0), ("failures", ["--runxfail"], 1)]:
         command = base + extra
         start = time.monotonic()
-        with (evidence / f"{label}-{suffix}.txt").open("w") as output:
+        with (destination / f"{label}-{suffix}.txt").open("w") as output:
             output.write("Command: " + shlex.join(command) + "\n")
             output.flush()
             result = subprocess.run(command, cwd=work, env=environment,
@@ -42,7 +49,7 @@ with tempfile.TemporaryDirectory(prefix=f"arfs-review04-{label}-", dir="/tmp") a
         records.append(dict(command=command, cwd=work, exit_code=result.returncode,
                             elapsed_seconds=round(time.monotonic() - start, 3)))
         assert result.returncode == expected, records[-1]
-    (evidence / f"{label}-runs.json").write_text(json.dumps({
+    (destination / f"{label}-runs.json").write_text(json.dumps({
         "finished_utc": datetime.now(timezone.utc).isoformat(),
         "identity_command": identity,
         "environment": settings | {"MPLCONFIGDIR": environment["MPLCONFIGDIR"]},

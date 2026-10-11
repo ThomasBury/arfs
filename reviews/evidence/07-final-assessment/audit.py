@@ -23,6 +23,8 @@ from packaging.specifiers import SpecifierSet
 
 repo = Path(sys.argv[1]).resolve()
 destination = Path(sys.argv[2]).resolve()
+if destination.is_relative_to(repo):
+    raise SystemExit('Rerun results must be outside the checkout to preserve saved evidence')
 owners = {
     "__init__.py": ["00"],
     "association.py": ["01a", "05", "06", "07"],

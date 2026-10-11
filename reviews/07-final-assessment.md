@@ -248,12 +248,13 @@ requirements/metadata are in the audit JSON and earlier snapshots):
 ```sh
 review_repo="$PWD"
 review_evidence="$review_repo/reviews/evidence/07-final-assessment"
+review_output=$(mktemp -d /tmp/arfs-final-replay.XXXXXX)
 for review_mode in locked wheel; do
   review_python="/tmp/arfs-review-03f67d0/$review_mode-env/bin/python"
   "$review_python" "$review_evidence/audit.py" "$review_repo" \
-    "$review_evidence/$review_mode-rerun-audit.json"
+    "$review_output/$review_mode-rerun-audit.json"
 done
-/tmp/arfs-review-03f67d0/locked-env/bin/python "$review_evidence/resolve.py"
+/tmp/arfs-review-03f67d0/locked-env/bin/python "$review_evidence/resolve.py" "$review_output"
 mkdir -p /tmp/arfs-final-checks
 cd /tmp/arfs-final-checks
 export PYTHONDONTWRITEBYTECODE=1 MPLBACKEND=Agg MPLCONFIGDIR=/tmp/arfs-final-checks/mpl
@@ -266,6 +267,11 @@ for review_mode in locked wheel; do
     -c /dev/null --rootdir="$review_evidence" -p no:cacheprovider
 done
 ```
+
+Rerun audit and resolution files are written outside the checkout; saved evidence
+is not overwritten. The resolver also chooses a new persistent temporary output
+directory if its optional output argument is omitted. Audit destinations inside
+the checkout are rejected.
 
 Unmasked checks intentionally exit 1. The resolver uses online metadata after
 one offline attempt; its output can change with new releases/cache state and
