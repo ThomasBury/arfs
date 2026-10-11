@@ -4,11 +4,19 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import time
 
 repo = Path(__file__).resolve().parents[3]
-evidence = Path(__file__).resolve().parent
+if len(sys.argv) > 2:
+    raise SystemExit('Usage: resolve.py [output-dir]')
+destination = (Path(sys.argv[1]).resolve() if len(sys.argv) == 2
+               else Path(tempfile.mkdtemp(prefix='arfs-final-resolution-results-')))
+if destination.is_relative_to(repo):
+    raise SystemExit('Rerun results must be outside the checkout to preserve saved evidence')
+destination.mkdir(parents=True, exist_ok=True)
+print(f'Rerun results: {destination}', flush=True)
 results = []
 cells = [("offline-py39", "3.9", True, False)]
 cells += [(f"runtime-py{v.replace('.', '')}", v, False, False) for v in ["3.9", "3.10", "3.11", "3.12"]]
@@ -38,6 +46,6 @@ with tempfile.TemporaryDirectory(prefix="arfs-final-resolution-") as run:
                       "stdout": str(exc.stdout), "stderr": str(exc.stderr)}
         result["seconds"] = time.perf_counter() - started
         results.append(result)
-        (evidence / "resolution.json").write_text(json.dumps(results, indent=2) + "\n")
+        (destination / "resolution.json").write_text(json.dumps(results, indent=2) + "\n")
         print(name, result.get("returncode", result.get("status")), flush=True)
 assert len(results) == 7

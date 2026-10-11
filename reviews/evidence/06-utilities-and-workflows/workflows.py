@@ -17,6 +17,8 @@ repo = evidence.parents[2]
 
 
 def child(name, destination):
+    if Path(destination).resolve().is_relative_to(repo):
+        raise SystemExit('Rerun results must be outside the checkout to preserve saved evidence')
     import numpy as np
     import pandas as pd
     from matplotlib import pyplot as plt
@@ -103,11 +105,17 @@ X_encoded = X.copy()
     plt.close('all')
 
 
-def parent(label):
+def parent(label, output_dir=None):
     assert label in {'frozen','current'}
+    destination = (Path(output_dir).resolve() if output_dir is not None
+                   else Path(tempfile.mkdtemp(prefix=f'arfs-review06-workflows-{label}-results-')))
+    if destination.is_relative_to(repo):
+        raise SystemExit('Rerun results must be outside the checkout to preserve saved evidence')
+    destination.mkdir(parents=True, exist_ok=True)
+    print(f'Rerun results: {destination}', flush=True)
     # Restrict this runner and its children only; no model hyperparameter edits.
     if hasattr(os,'sched_getaffinity'): os.sched_setaffinity(0,{min(os.sched_getaffinity(0))})
-    folder=evidence/f'{label}-workflows'
+    folder=destination/f'{label}-workflows'
     folder.mkdir(exist_ok=True)
     env=os.environ.copy()
     env.update(PYTHONDONTWRITEBYTECODE='1',MPLBACKEND='Agg',OPENBLAS_NUM_THREADS='1',
@@ -129,7 +137,7 @@ def parent(label):
                 output=error.stdout or b''
                 (folder/f'{name}.txt').write_text(output.decode(errors='replace') if isinstance(output,bytes) else output)
             ledger.append(entry)
-            (evidence/f'{label}-workflow-ledger.json').write_text(json.dumps(ledger,indent=2)+'\n')
+            (destination/f'{label}-workflow-ledger.json').write_text(json.dumps(ledger,indent=2)+'\n')
             print(json.dumps(entry),flush=True)
         build=[]
         for title,cmd in [
@@ -137,7 +145,7 @@ def parent(label):
             ('configured-source',[sys.executable,'-m','sphinx','-b','html',str(repo/'docs'),str(Path(work)/'direct-build')])]:
             result=subprocess.run(cmd,cwd=work,env=env,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=30)
             build.append({'attempt':title,'command':cmd,'exit_code':result.returncode,'output':result.stdout})
-        (evidence/f'{label}-build.json').write_text(json.dumps(build,indent=2)+'\n')
+        (destination/f'{label}-build.json').write_text(json.dumps(build,indent=2)+'\n')
         source_env=env.copy(); source_env['PYTHONPATH']=str(repo/'src')
         source_code='''import json, arfs.utils as u
 import numpy as np
@@ -150,7 +158,7 @@ assert len(bunch.DESCR)>100
 print(json.dumps({'module':u.__file__,'as_frame_shape':list(frame.shape),'bunch_shape':list(bunch.data.shape),'columns':list(frame.columns),'description_length':len(bunch.DESCR),'target_min':float(frame.target.min()),'target_max':float(frame.target.max())}))
 '''
         result=subprocess.run([sys.executable,'-c',source_code],cwd=work,env=source_env,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=30)
-        (evidence/f'{label}-source-housing.txt').write_text(result.stdout)
+        (destination/f'{label}-source-housing.txt').write_text(result.stdout)
         assert result.returncode==0,result.stdout
     text=(repo/'README.md').read_text()
     refs=re.findall(r'\]\((\.[^ )]+)\)',text)+re.findall(r'src="([^"h][^"]*)"',text)
@@ -167,9 +175,10 @@ print(json.dumps({'module':u.__file__,'as_frame_shape':list(frame.shape),'bunch_
             reference_ledger.append({'from':str(file.relative_to(repo)), 'module':module,
                                      'exists':path.with_suffix('.py').exists() or (path/'__init__.py').exists()})
     reference_ledger.append({'from':'docs/Makefile and docs/make.bat','target':'docs/source/conf.py','exists':(repo/'docs/source/conf.py').exists()})
-    (evidence/'local-references.json').write_text(json.dumps(reference_ledger,indent=2)+'\n')
+    (destination/'local-references.json').write_text(json.dumps(reference_ledger,indent=2)+'\n')
 
 
 if __name__=='__main__':
     if sys.argv[1]=='child': child(sys.argv[2],sys.argv[3])
-    else: parent(sys.argv[1])
+    elif len(sys.argv) in {2, 3}: parent(*sys.argv[1:])
+    else: raise SystemExit('Usage: workflows.py frozen|current [output-dir]')
