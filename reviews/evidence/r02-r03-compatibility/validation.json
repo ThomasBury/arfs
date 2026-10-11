@@ -1,0 +1,211 @@
+{
+  "source_revision": "a4b7ff6 with R02/R03 changes; validated before commit",
+  "scope": [
+    "R02",
+    "R03"
+  ],
+  "phase_status": {
+    "R02": "complete",
+    "R03": "complete"
+  },
+  "python": "3.12.7",
+  "platform": "Linux",
+  "tests_have_expected_failure_markers": false,
+  "snapshots": {
+    "frozen": {
+      "r02-before": {
+        "log": "reviews/evidence/r02-r03-compatibility/r02-before-frozen.txt",
+        "summary": "1 failed, 8 passed, 17 warnings in 3.59s",
+        "failures": [
+          "tests/test_pandas_writes.py::test_shadow_preserves_values_dtypes_index_and_input[True]"
+        ]
+      },
+      "r02-after": {
+        "log": "reviews/evidence/r02-r03-compatibility/r02-after-frozen.txt",
+        "summary": "9 passed, 8 warnings in 3.23s",
+        "failures": []
+      },
+      "r02-callers": {
+        "log": "reviews/evidence/r02-r03-compatibility/r02-callers-frozen.txt",
+        "summary": "6 passed, 6 deselected, 20 warnings in 18.60s",
+        "failures": []
+      },
+      "r03-before": {
+        "log": "reviews/evidence/r02-r03-compatibility/r03-before-frozen.txt",
+        "summary": "12 passed, 24 warnings in 7.07s",
+        "failures": []
+      },
+      "r03-after": {
+        "log": "reviews/evidence/r02-r03-compatibility/r03-after-frozen.txt",
+        "summary": "12 passed, 9 warnings in 7.37s",
+        "failures": []
+      },
+      "installed-suite": {
+        "log": "reviews/evidence/r02-r03-compatibility/installed-suite-frozen.txt",
+        "summary": "2 failed, 56 passed, 59 warnings in 73.19s (0:01:13)",
+        "failures": [
+          "tests/test_featselect.py::TestFeatSelectZeroVariance::test_identify_single_unique_classification",
+          "tests/test_featselect.py::TestFeatSelectHighCardinality::test_identify_high_cardinality_classification"
+        ]
+      },
+      "remaining_failures_owned_by": "R04",
+      "versions": {
+        "tqdm": "4.67.1",
+        "statsmodels": "0.14.4",
+        "Jinja2": "3.1.6",
+        "numba": "0.60.0",
+        "pyparsing": "3.2.3",
+        "contourpy": "1.3.0",
+        "six": "1.17.0",
+        "llvmlite": "0.43.0",
+        "tzdata": "2025.2",
+        "packaging": "24.2",
+        "matplotlib": "3.9.4",
+        "scipy": "1.13.1",
+        "pillow": "11.1.0",
+        "patsy": "1.0.1",
+        "cycler": "0.12.1",
+        "python-dateutil": "2.9.0.post0",
+        "typing_extensions": "4.13.0",
+        "joblib": "1.4.2",
+        "pytest": "8.3.5",
+        "scikit-learn": "1.6.1",
+        "arfs": "3.0.0",
+        "pandas": "2.2.3",
+        "numpy": "2.0.2",
+        "slicer": "0.0.8",
+        "threadpoolctl": "3.6.0",
+        "MarkupSafe": "3.0.3",
+        "coverage": "7.8.0",
+        "fonttools": "4.56.0",
+        "lightgbm": "4.6.0",
+        "shap": "0.47.1",
+        "cloudpickle": "3.1.1",
+        "seaborn": "0.13.2",
+        "iniconfig": "2.1.0",
+        "kiwisolver": "1.4.7",
+        "pytest-cov": "6.0.0",
+        "pluggy": "1.5.0",
+        "pytz": "2025.2"
+      },
+      "installed_wheel_payloads_verified": true,
+      "pip_check": "passed"
+    },
+    "newer": {
+      "r02-before": {
+        "log": "reviews/evidence/r02-r03-compatibility/r02-before-newer.txt",
+        "summary": "4 failed, 1 passed, 4 warnings in 5.22s",
+        "failures": [
+          "tests/test_pandas_writes.py::test_shadow_preserves_values_dtypes_index_and_input[True]",
+          "tests/test_pandas_writes.py::test_interval_public_midpoints[True-estimator]",
+          "tests/test_pandas_writes.py::test_interval_public_midpoints[True-function]",
+          "tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]"
+        ]
+      },
+      "r02-after": {
+        "log": "reviews/evidence/r02-r03-compatibility/r02-after-newer.txt",
+        "summary": "5 passed, 4 warnings in 3.85s",
+        "failures": []
+      },
+      "r02-callers": {
+        "log": "reviews/evidence/r02-r03-compatibility/r02-callers-newer.txt",
+        "summary": "6 passed, 6 deselected, 18 warnings in 21.06s",
+        "failures": []
+      },
+      "r03-before": {
+        "log": "reviews/evidence/r02-r03-compatibility/r03-before-newer.txt",
+        "summary": "12 failed in 9.44s",
+        "failures": [
+          "tests/test_dependency_apis.py::test_public_lasso_selector_fits",
+          "tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html",
+          "tests/test_dependency_apis.py::test_benchmark_real_permutation_plot",
+          "tests/test_dependency_apis.py::test_association_clustering_and_plot_preserve_data_and_owner",
+          "tests/test_dependency_apis.py::test_scalar_anova_preserves_reference_statistic_and_shape[False]",
+          "tests/test_dependency_apis.py::test_scalar_anova_preserves_reference_statistic_and_shape[True]",
+          "tests/test_dependency_apis.py::test_scalar_anova_constant_handling[False]",
+          "tests/test_dependency_apis.py::test_scalar_anova_constant_handling[True]",
+          "tests/test_dependency_apis.py::test_parallel_relevance_agrees[regression-False]",
+          "tests/test_dependency_apis.py::test_parallel_relevance_agrees[regression-True]",
+          "tests/test_dependency_apis.py::test_parallel_relevance_agrees[classification-False]",
+          "tests/test_dependency_apis.py::test_parallel_relevance_agrees[classification-True]"
+        ]
+      },
+      "r03-after": {
+        "log": "reviews/evidence/r02-r03-compatibility/r03-after-newer.txt",
+        "summary": "12 passed, 4 warnings in 9.34s",
+        "failures": []
+      },
+      "installed-suite": {
+        "log": "reviews/evidence/r02-r03-compatibility/installed-suite-newer.txt",
+        "summary": "2 failed, 52 passed, 62 warnings in 80.10s (0:01:20)",
+        "failures": [
+          "tests/test_featselect.py::TestFeatSelectZeroVariance::test_identify_single_unique_classification",
+          "tests/test_featselect.py::TestFeatSelectHighCardinality::test_identify_high_cardinality_classification"
+        ]
+      },
+      "remaining_failures_owned_by": "R04",
+      "versions": {
+        "joblib": "1.6.0",
+        "cloudpickle": "3.1.2",
+        "typing_extensions": "4.16.0",
+        "Jinja2": "3.1.6",
+        "six": "1.17.0",
+        "coverage": "7.16.2",
+        "pluggy": "1.6.0",
+        "fonttools": "4.66.1",
+        "scipy": "1.18.1",
+        "packaging": "26.3",
+        "pytest-cov": "7.1.0",
+        "cycler": "0.12.1",
+        "matplotlib": "3.11.2",
+        "python-dateutil": "2.9.0.post0",
+        "statsmodels": "0.15.0",
+        "formulaic": "1.2.2",
+        "wrapt": "2.5.0",
+        "arfs": "3.0.0",
+        "threadpoolctl": "3.7.0",
+        "slicer": "0.0.8",
+        "lightgbm": "4.7.0",
+        "tqdm": "4.70.1",
+        "MarkupSafe": "3.0.3",
+        "pandas": "3.0.6",
+        "narwhals": "2.27.1",
+        "iniconfig": "2.3.1",
+        "contourpy": "1.4.0",
+        "kiwisolver": "1.5.1",
+        "Pygments": "2.21.0",
+        "interface_meta": "2.0.1",
+        "pyparsing": "3.3.3",
+        "seaborn": "0.13.2",
+        "pytest": "9.1.1",
+        "shap": "0.53.0",
+        "numpy": "2.5.4",
+        "scikit-learn": "1.9.1",
+        "pillow": "12.3.0",
+        "patsy": "1.0.3"
+      },
+      "installed_wheel_payloads_verified": true,
+      "pip_check": "passed"
+    }
+  },
+  "next_phase": "R04",
+  "not_checked": [
+    "Other Python versions/platforms",
+    "Full notebooks/docs",
+    "Optional interactive plotting backends",
+    "Statistical calibration and the deferred R08/R13 numerical repairs"
+  ],
+  "lint": {
+    "new_tests": "passed",
+    "new_tests_format": "passed",
+    "touched_source_new_diagnostics": 0,
+    "removed_diagnostics": {
+      "association.py:UP031": 1
+    }
+  },
+  "implementation_commits": {
+    "R02": "36f1ee6",
+    "R03": "65f894a"
+  },
+  "implementation_branch": "fix/r02-r03-dependency-compatibility"
+}

@@ -1,0 +1,23 @@
+{
+  "wheel": "/tmp/arfs-r02-r03/dist/arfs-3.0.0-py3-none-any.whl",
+  "wheel_sha256": "5bbdb020b6a7eb9d0c498220cbda28c629e1d1aa8542419f0453658c6ea7540a",
+  "source_revision": "a4b7ff6 with R02/R03 changes; validated before commit",
+  "snapshots": {
+    "frozen": {
+      "all_payloads_match_wheel": true,
+      "arfs_path": "/tmp/arfs-r02-r03/frozen-env/lib/python3.12/site-packages/arfs/__init__.py",
+      "setuptools_present": false
+    },
+    "newer": {
+      "all_payloads_match_wheel": true,
+      "arfs_path": "/tmp/arfs-r02-r03/newer-env/lib/python3.12/site-packages/arfs/__init__.py",
+      "setuptools_present": false
+    }
+  },
+  "all_wheel_payloads_match_current_source": true,
+  "implementation_commits": {
+    "R02": "36f1ee6",
+    "R03": "65f894a"
+  },
+  "implementation_branch": "fix/r02-r03-dependency-compatibility"
+}
