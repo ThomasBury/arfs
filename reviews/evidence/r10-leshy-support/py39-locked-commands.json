@@ -1,0 +1,26 @@
+[
+  {
+    "cwd": "/home/bsatom/Documents/arfs",
+    "command": "uv venv --python /tmp/arfs-r09/py39-locked/bin/python /tmp/arfs-r10/py39-locked"
+  },
+  {
+    "cwd": "/home/bsatom/Documents/arfs",
+    "command": "uv pip install --python /tmp/arfs-r10/py39-locked/bin/python -r /tmp/arfs-r10/locked-requirements.txt /tmp/arfs-r10/dist/arfs-3.0.0-py3-none-any.whl"
+  },
+  {
+    "cwd": "/home/bsatom/Documents/arfs",
+    "command": "uv pip check --python /tmp/arfs-r10/py39-locked/bin/python"
+  },
+  {
+    "cwd": "/home/bsatom/Documents/arfs",
+    "command": "/tmp/arfs-r10/py39-locked/bin/python -I -c 'import matplotlib.font_manager'"
+  },
+  {
+    "cwd": "/home/bsatom/Documents/arfs",
+    "command": "/tmp/arfs-r10/py39-locked/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py"
+  },
+  {
+    "cwd": "/tmp/arfs-r10/run-py39-locked",
+    "command": "/tmp/arfs-r10/py39-locked/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider"
+  }
+]

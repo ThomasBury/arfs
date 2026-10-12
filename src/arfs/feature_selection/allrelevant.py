@@ -183,6 +183,9 @@ class Leshy(SelectorMixin, BaseEstimator):
         If RandomState instance, random_state is the random number generator;
         If None, the random number generator is the RandomState instance used
         by `np.random`.
+    keep_weak : bool, default=False
+        Include median-retained tentative features in the selected mask. Their
+        relative rank remains 2; confirmed features have rank 1.
     verbose : int, default=0
         Controls verbosity of output. 0: no output, 1: displays iteration number,
         2: which features have been selected already
@@ -193,7 +196,7 @@ class Leshy(SelectorMixin, BaseEstimator):
     n_features_ : int
         The number of selected features.
     support_ : array of shape [n_features]
-        The mask of selected features - only confirmed ones are True.
+        The mask of confirmed features, plus tentative features if keep_weak=True.
     support_weak_ : array of shape [n_features]
         The mask of selected tentative features, which haven't gained enough
         support during the max_iter number of iterations.
@@ -981,14 +984,13 @@ class Leshy(SelectorMixin, BaseEstimator):
                 Boolean array indicating the tentatively selected features.
         """
         # basic result variables
-        self.n_features_ = confirmed.shape[0]
         self.support_ = np.zeros(n_feat, dtype=bool)
         self.support_weak_ = np.zeros(n_feat, dtype=bool)
         self.support_[confirmed] = 1
-        self.support_weak_ = np.zeros(n_feat, dtype=bool)
         self.support_weak_[tentative] = 1
         if self.keep_weak:
             self.support_[tentative] = 1
+        self.n_features_ = int(self.support_.sum())
 
     def _calculate_absolute_ranking(self):
         """
@@ -1027,7 +1029,7 @@ class Leshy(SelectorMixin, BaseEstimator):
             An array containing the indices of tentative features.
         confirmed : ndarray of shape (n_confirmed_features,)
             An array containing the indices of confirmed features.
-        imp_history : ndarray of shape (n_iterations + 1, n_features)
+        imp_history : ndarray of shape (n_iterations, n_features)
             An array containing the feature importances for each iteration.
 
         Returns
@@ -1043,7 +1045,7 @@ class Leshy(SelectorMixin, BaseEstimator):
         # all rejected features are sorted by importance history
         not_selected = np.setdiff1d(np.arange(n_feat), selected)
         # large importance values should rank higher = lower ranks -> *(-1)
-        imp_history_rejected = imp_history[1:, not_selected] * -1
+        imp_history_rejected = imp_history[:, not_selected] * -1
 
         # update rank for not_selected features
         if not_selected.shape[0] > 0:
@@ -1059,9 +1061,6 @@ class Leshy(SelectorMixin, BaseEstimator):
                 # and 2 otherwise
                 ranks = ranks - np.min(ranks) + 2
             self.ranking_[not_selected] = ranks
-        else:
-            # all are selected, thus we set feature supports to True
-            self.support_ = np.ones(n_feat, dtype=bool)
 
     def _print_result(self, dec_reg, _iter, start_time):
         """
@@ -1108,9 +1107,9 @@ def _select_tentative(tentative, imp_history, sha_max_history):
     ----------
     tentative: array-like of shape (n_tentative,)
         Array of indices representing tentative features.
-    imp_history: array-like of shape (n_iterations + 1, n_features)
+    imp_history: array-like of shape (n_iterations, n_features)
         Importance values for each feature in each iteration.
-    sha_max_history: array-like of shape (n_iterations + 1,)
+    sha_max_history: array-like of shape (n_iterations,)
         The history of the highest stability scores.
 
     Returns
@@ -1118,8 +1117,7 @@ def _select_tentative(tentative, imp_history, sha_max_history):
     tentative: array-like of shape (n_tentative_confirmed,)
         The confirmed tentative features based on their median importance values.
     """
-    # ignore the first row of zeros
-    tentative_median = np.median(imp_history[1:, tentative], axis=0)
+    tentative_median = np.median(imp_history[:, tentative], axis=0)
     # which tentative to keep
     tentative_confirmed = np.where(tentative_median > np.median(sha_max_history))[0]
     tentative = tentative[tentative_confirmed]
