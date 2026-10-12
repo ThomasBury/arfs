@@ -63,13 +63,40 @@ BorutaPy vs. Boruta R:
 
     We highly recommend using pruned trees with a depth between 3-7. For more, see the docs of these functions, and the examples below. Original code and method by: Miron B Kursa, https://m2.icm.edu.pl/boruta/
     
+BoostAGroota
+------------
+
+In each reduction round, BoostAGroota normalizes the real and shadow importances
+separately for each model iteration, then takes each feature's mean across
+iterations. The threshold is the maximum of the shadow means divided by
+``cutoff``. Real features at or above the threshold are kept. For example,
+one iteration with real scores ``[.3, .1]`` and shadow scores ``[.5, .1]``
+uses a threshold of ``.5`` when ``cutoff=1``.
+
+Permutation scores retain their signs and are normalized by their absolute
+total; an all-zero vector stays zero. Only strictly positive mean permutation
+scores can be selected. SHAP and native importances retain their existing
+per-iteration total normalization. These empirical thresholds do not establish
+false-discovery control.
+
 GrootCV, a new method
 ---------------------
 
 New: GrootCV:
 - Cross-validated feature importance to smooth out the noise, based on lightGBM only (which is, most of the time, the fastest and more accurate Boosting).
-- The feature importance is derived using SHAP importance.
-- Taking the max of median of the shadow var. imp over folds otherwise not enough conservative and it improves the convergence (needs less evaluation to find a threshold).
+- SHAP importance is the mean absolute contribution over each fold's training
+  rows, summed over outputs for multi-output models, then normalized across
+  real and shadow features. Validation rows drive early stopping.
+- Take each feature's median across all folds and repeats, then the maximum
+  shadow median divided by ``cutoff``. Keep real medians at or above this
+  threshold. Summary columns do not enter either calculation.
+- For real scores ``[.57, .57, .16]`` and shadows ``[.35, .05, .70]`` and
+  ``[.05, .35, .05]`` across three folds, the real median is ``.57`` and the
+  threshold is ``.35`` at ``cutoff=1``, so the real feature is kept.
+- Recognized multiclass classification objectives resolve to softmax, including
+  binary classification with more than two target classes. SHAP aggregation
+  follows the returned output axes rather than the objective's spelling.
+- This empirical comparison does not establish calibrated false-discovery control.
 - Not based on a given percentage of cols needed to be deleted.
 - Plot method for var. imp.
 

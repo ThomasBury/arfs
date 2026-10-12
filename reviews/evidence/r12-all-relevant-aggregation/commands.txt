@@ -1,0 +1,40 @@
+Checkout: /home/bsatom/Documents/arfs; base main @ f68e482 (R11).
+Earlier R04–R09 work preserved; R12 uses a separate local source/test/docs/evidence commit.
+Shared remediation and queue edits remain uncommitted with earlier updates.
+
+Runtime environment:
+UV_CACHE_DIR=/tmp/arfs-r04/cache MPLBACKEND=Agg
+MPLCONFIGDIR=/tmp/arfs-r12/mpl-$cell OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 PYTHONHASHSEED=0
+PYTHONDONTWRITEBYTECODE=1; installed-wheel runs omit PYTHONPATH.
+
+Historical before:
+/tmp/arfs-r11/py312-locked/bin/python -I -m pytest reviews/evidence/01b-all-relevant/checks.py -k 'multiclass_objective_aliases or documented_max or explicit_softmax or shap_multiclass_aggregation_reference' --runxfail -q --tb=short -p no:cacheprovider
+Maintained before:
+/tmp/arfs-r11/py312-locked/bin/python -I -m pytest tests/test_allrelevant_aggregation.py -q --tb=short -p no:cacheprovider
+Source (PYTHONPATH=src):
+/tmp/arfs-r11/py312-locked/bin/python -m pytest tests/test_allrelevant_aggregation.py tests/test_permutation_importance.py tests/test_shadow_contracts.py -q --tb=short -p no:cacheprovider
+
+uv build --python /tmp/arfs-r11/py312-locked/bin/python --out-dir /tmp/arfs-r12/dist
+uv lock --check --python /tmp/arfs-r11/py312-locked/bin/python
+uv export --locked --extra test --no-emit-project --output-file /tmp/arfs-r12/locked-requirements.txt
+uv tool run --from ruff==0.17.0 ruff check tests/test_allrelevant_aggregation.py
+uv tool run --from ruff==0.17.0 ruff format --check tests/test_allrelevant_aggregation.py
+uv tool run --from ruff==0.17.0 python .github/scripts/check_ruff_baseline.py
+/tmp/arfs-r11/py312-locked/bin/python -m unittest discover -s .github/scripts -p 'test_*.py'
+git diff --check
+
+Per-cell command JSON files record exact venv/install/check/font/provenance/test
+commands, working directories and exit codes. Locked requirements come from the
+current uv.lock export. Newer pins are .github/requirements/runtime-newer-py312.txt.
+All eight installed module hashes are compared with source; copied tests must
+match source bytes. All 19 declared source/sdist/wheel files match, and the twelve
+unrelated tracked diff sections remain byte-for-byte identical to the initial diff.
+Original historical scripts and logs are unchanged. New logs have only terminal
+carriage returns/trailing whitespace removed after completion.
+
+Documentation lookup: Context7 LightGBM objective/metric aliases and SHAP output
+layouts; Context7's SHAP retrieval was inconclusive, so official TreeExplainer
+API documentation was checked directly:
+https://lightgbm.readthedocs.io/en/stable/Parameters.html
+https://shap.readthedocs.io/en/stable/generated/shap.TreeExplainer.html

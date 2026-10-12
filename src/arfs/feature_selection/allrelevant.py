@@ -1233,7 +1233,7 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
         # Pre-v0.45.0 format
         if is_classifier(estimator):
             if len(np.unique(y)) > 2:  # Multiclass
-                # Reconstruct the concatenated matrix like in _compute_importance
+                # Reconstruct the concatenated per-class matrix
                 shap_concat = np.concatenate(shap_values, axis=1)
                 n_feat = X_tt.shape[1]
                 shap_values = np.delete(
@@ -1243,7 +1243,7 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
                 )
                 shap_imp = np.abs(shap_values[:, :-1]).mean(axis=0)
             else:
-                # Binary - use positive class only (consistent with _compute_importance)
+                # Binary - use positive class only
                 shap_imp = np.abs(shap_values[1][:, :-1]).mean(axis=0)
         else:
             # Regression
@@ -1436,7 +1436,9 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
     estimator : scikit-learn estimator
         The model to train, lightGBM recommended, see the reduce lightgbm method.
     cutoff : float
-        The value by which the max of shadow imp is divided, to compare to real importance.
+        Divide the maximum shadow mean importance by this value. In each round,
+        normalize importances per iteration, then average each real and shadow
+        feature across iterations. Keep real means at or above this threshold.
     iters : int (>0)
         The number of iterations to average for the feature importance (on the same split),
         to reduce the variance.
@@ -1470,7 +1472,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
     sha_cutoff_df : dataframe
         Feature importance of the real+shadow predictors over iterations.
     mean_shadow : float
-        The threshold below which the predictors are rejected.
+        Maximum shadow mean divided by cutoff in the final round.
 
     Examples
     --------
@@ -1743,7 +1745,7 @@ def _reduce_vars_sklearn(
         The number of times the core BoostARoota algorithm will run.
         Each round eliminates more and more features
     cutoff : float
-        the value by which the max of shadow imp is divided, to compare to real importance
+        Divide the maximum of per-shadow iteration means by this value.
     n_iterations : int
         The number of iterations to average for the feature importance (on the same split),
         to reduce the variance
@@ -1808,18 +1810,12 @@ def _reduce_vars_sklearn(
         # Print the iteration number if not silent
         if not silent:
             print("Round: ", this_round, " iteration: ", i)
-    df["Mean"] = df.select_dtypes(include=[np.number]).mean(axis=1, skipna=True)
+    df["Mean"] = df.filter(regex=r"^fscore\d+$").mean(axis=1)
     # Split them back out
     real_vars = df.loc[~df["feature"].isin(shadow_names)]
     shadow_vars = df.loc[df["feature"].isin(shadow_names)]
 
-    # Get mean value from the shadows (max, like in Boruta)
-    mean_shadow = (
-        shadow_vars.select_dtypes(include=[np.number])
-        .max(skipna=True, axis=1)
-        .mean(skipna=True)
-        / cutoff
-    )
+    mean_shadow = shadow_vars["Mean"].max() / cutoff
     real_vars = real_vars[(real_vars.Mean >= mean_shadow)]
     if imp_kind == "pimp":
         real_vars = real_vars[real_vars.Mean > 0]
@@ -1942,14 +1938,17 @@ class GrootCV(SelectorMixin, BaseEstimator):
     GrootCV is a feature selection method based on cross-validation with lightGBM.
 
     A shuffled copy of the predictors matrix is added (shadows) to the original set of predictors.
-    The lightGBM is fitted using repeated cross-validation, the feature importance
-    is extracted each time and averaged to smooth out the noise.
-    If the feature importance is larger than the average shadow feature importance then the predictors are rejected, the others are kept.
+    LightGBM is fitted using repeated cross-validation. Each fold's SHAP
+    importance is the row mean of absolute contributions, summed over outputs
+    for multi-output models, then normalized across real and shadow features.
+    Each feature's median is computed across all folds and repeats. Keep real
+    medians at or above the maximum shadow median divided by cutoff.
+    Explanations use training rows; validation rows drive early stopping.
+    This empirical threshold does not establish false-discovery control.
         - Cross-validated feature importance to smooth out the noise, based on lightGBM only
           (which is, most of the time, the fastest and more accurate Boosting).
         - the feature importance is derived using SHAP importance
-        - Taking the max of median of the shadow var. imp over folds otherwise not enough conservative and
-          it improves the convergence (needs less evaluation to find a threshold)
+        - Compare feature medians with the maximum shadow median across folds
         - Not based on a given percentage of cols needed to be deleted
         - Plot method for var. imp
 
@@ -1957,8 +1956,10 @@ class GrootCV(SelectorMixin, BaseEstimator):
     ----------
     objective : str or callable, default=None
         The objective function to use in lightGBM. If None, it uses the objective specified in `lgbm_params`.
+        Recognized multiclass classification objectives resolve to softmax;
+        binary is also promoted to softmax when the target has more than two classes.
     cutoff : float, default=1
-        The value by which the max of shadow imp is divided, to compare to real importance.
+        Divide the maximum of per-shadow fold/repeat medians by this value.
     n_folds : int, default=5
         The number of folds for cross-validation.
     folds : Optional[Union[Iterable[Tuple[np.ndarray, np.ndarray]]
@@ -1967,7 +1968,8 @@ class GrootCV(SelectorMixin, BaseEstimator):
         splitter classes (https://scikit-learn.org/stable/modules/classes.html#splitter-classes) and have split method.
         This argument has highest priority over other data split arguments.
     n_iter : int, default=5
-        The number of iterations to average for the feature importance (on the same split), to reduce variance.
+        Number of cross-validation repeats; take each feature's median over
+        all folds and repeats.
     silent : bool, default=True
         Set to True if you don't want to see the GrootCV output printed.
     rf : bool, default=False
@@ -1984,7 +1986,8 @@ class GrootCV(SelectorMixin, BaseEstimator):
     selected_features_ : ndarray
         The list of columns to keep as selected features.
     cv_df : pd.DataFrame
-        DataFrame containing feature importance values for each fold and iteration.
+        Normalized importance per fold/repeat in fscore columns and each
+        feature's median in Med. Summary columns never enter the aggregation.
     sha_cutoff : float
         The threshold below which the predictors are rejected.
     ranking_absolutes_ : list
@@ -2100,14 +2103,11 @@ class GrootCV(SelectorMixin, BaseEstimator):
         )
         self.ranking_ = np.where(self.support_, 2, 1)
 
-        b_df = self.cv_df.T.copy()
-        b_df.columns = b_df.iloc[0]
-        b_df = b_df.drop(b_df.index[0])
-        b_df = b_df.drop(b_df.index[-1])
-        b_df = b_df.convert_dtypes()
-        real_df = b_df.iloc[:, : int(b_df.shape[1] / 2)].copy()
         self.ranking_absolutes_ = list(
-            real_df.mean().sort_values(ascending=False).index
+            self.cv_df.set_index("feature")["Med"]
+            .loc[self.feature_names_in_]
+            .sort_values(ascending=False)
+            .index
         )
         return self
 
@@ -2174,7 +2174,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
 
         real_df = real_df.reindex(
             real_df.select_dtypes(include=[np.number])
-            .mean()
+            .median()
             .sort_values(ascending=True)
             .index,
             axis=1,
@@ -2253,7 +2253,7 @@ def _reduce_vars_lgb_cv(
     nfold : int
         Number of folds in CV.
     cutoff : float
-            the value by which the max of shadow imp is divided, to compare to real importance
+            Divide the maximum of per-shadow fold/repeat medians by this value.
     n_iter : int
             The number of repetition of the cross-validation, smooth out the feature importance noise
     silent : bool
@@ -2325,7 +2325,7 @@ def _reduce_vars_lgb_cv(
         )
 
         importance = _compute_importance(
-            new_x_tr, shap_matrix, params, objective, fastshap
+            new_x_tr, shap_matrix, params, params["objective"], fastshap
         )
         df = _merge_importance_df(
             df=df,
@@ -2337,15 +2337,12 @@ def _reduce_vars_lgb_cv(
         )
         iter += 1
 
-    df["Med"] = df.select_dtypes(include=[np.number]).mean(axis=1)
+    df["Med"] = df.filter(regex=r"^fscore\d+$").median(axis=1)
     # Split them back out
     real_vars = df[~df["feature"].isin(shadow_names)]
     shadow_vars = df[df["feature"].isin(shadow_names)]
 
-    # Get median value from the shadows, comparing predictor by predictor. Not the same criteria
-    # max().max() like in Boruta but max of the median to mitigate.
-    # Otherwise too conservative (reject too often)
-    cutoff_shadow = shadow_vars.select_dtypes(include=[np.number]).max().mean() / cutoff
+    cutoff_shadow = shadow_vars["Med"].max() / cutoff
     real_vars = real_vars[(real_vars.Med.values >= cutoff_shadow)]
 
     return real_vars["feature"], df, cutoff_shadow
@@ -2387,28 +2384,12 @@ def _set_lgb_parameters(
 
     n_feat = X.shape[1]
 
-    params = lgbm_params if lgbm_params is not None else {}
+    params = lgbm_params.copy() if lgbm_params is not None else {}
+    if objective is None:
+        objective = params.get("objective")
 
     params["objective"] = objective
     params["verbosity"] = -1
-    if objective == "softmax":
-        params["num_class"] = len(np.unique(y))
-
-    if rf:
-        feat_frac = (
-            np.sqrt(n_feat) / n_feat
-            if objective in ["softmax", "binary"]
-            else n_feat / (3 * n_feat)
-        )
-        params.update(
-            {
-                "boosting_type": "rf",
-                "bagging_fraction": 0.7,
-                "feature_fraction": feat_frac,
-                "bagging_freq": 1,
-            }
-        )
-
     clf_losses = [
         "binary",
         "softmax",
@@ -2420,11 +2401,30 @@ def _set_lgb_parameters(
         "ovr",
         "binary_logloss",
     ]
+    if objective in clf_losses and objective not in ["binary", "binary_logloss"]:
+        params["objective"] = "softmax"
+        params["num_class"] = len(np.unique(y))
+
+    if rf:
+        feat_frac = (
+            np.sqrt(n_feat) / n_feat
+            if params["objective"] in ["softmax", "binary"]
+            else n_feat / (3 * n_feat)
+        )
+        params.update(
+            {
+                "boosting_type": "rf",
+                "bagging_fraction": 0.7,
+                "feature_fraction": feat_frac,
+                "bagging_freq": 1,
+            }
+        )
+
     if objective in clf_losses:
         y = y.astype(int)
         y_freq_table = pd.Series(y.fillna(0)).value_counts(normalize=True)
         n_classes = y_freq_table.size
-        if n_classes > 2 and objective != "softmax":
+        if n_classes > 2 and params["objective"] != "softmax":
             params["objective"] = "softmax"
             params["num_class"] = len(np.unique(y))
             if not silent:
@@ -2585,7 +2585,9 @@ def _compute_importance(new_x_tr, shap_matrix, param, objective, fastshap):
     new_x_tr : numpy.ndarray
         The training dataset after being processed.
     shap_matrix : numpy.ndarray
-        The matrix containing SHAP values computed by a LightGBM model.
+        TreeExplainer contributions with shape (rows, features) or
+        (rows, features, outputs), or a list of per-output matrices.
+        Expected values are separate; no feature column is removed.
     param : dict
         A dictionary containing the parameters for a LightGBM model.
     objective : str
@@ -2595,38 +2597,22 @@ def _compute_importance(new_x_tr, shap_matrix, param, objective, fastshap):
     -------
     list
         A list of tuples containing feature names and their corresponding importance scores.
+        Scores are row means of absolute contributions, summed over outputs
+        for multi-output models. Layout, not version/objective/backend, sets
+        the output axis.
     """
-    try:
-        from shap import __version__ as shap_version
-
-        new_shap = tuple(map(int, shap_version.split(".")[:2])) >= (0, 45)
-    except Exception:
-        new_shap = False  # Assume old version if can't check
-
-    if fastshap:
-        if not new_shap and objective == "softmax" and isinstance(shap_matrix, list):
-            shap_matrix = np.abs(np.concatenate(shap_matrix, axis=1))
-        shap_imp = np.mean(np.abs(shap_matrix), axis=0)
-    else:
-        if new_shap:
-            # the bias is now in a dedicated attribute, no more a column
-            if objective == "softmax":
-                shap_imp = np.mean(np.abs(shap_matrix).sum(axis=2), axis=0)
-            else:
-                shap_imp = np.mean(np.abs(shap_matrix), axis=0)
-        else:
-            if objective == "softmax":
-                n_feat = new_x_tr.shape[1]
-                shap_matrix = np.delete(
-                    shap_matrix,
-                    list(range(n_feat, (n_feat + 1) * param["num_class"], n_feat + 1)),
-                    axis=1,
-                )
-                shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
-            else:
-                if isinstance(shap_matrix, list):
-                    shap_matrix = shap_matrix[1]  # Positive class
-                shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
+    # TreeExplainer separates the expected value from feature contributions.
+    values = (
+        np.stack(shap_matrix, axis=-1)
+        if isinstance(shap_matrix, list)
+        else np.asarray(shap_matrix)
+    )
+    if values.ndim not in (2, 3) or values.shape[:2] != new_x_tr.shape:
+        raise ValueError("SHAP values must have shape (rows, features[, outputs]).")
+    values = np.abs(values)
+    if values.ndim == 3:
+        values = values.sum(axis=2)
+    shap_imp = values.mean(axis=0)
 
     importance = dict(zip(new_x_tr.columns, shap_imp))
     return sorted(importance.items(), key=operator.itemgetter(1))
