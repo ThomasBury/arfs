@@ -172,7 +172,8 @@ class Leshy(SelectorMixin, BaseEstimator):
         importance) is biased towards numerical and large cardinality predictors, even
         if they are random. Shapley values and permutation imp. are robust w.r.t those predictors.
         Possible values: 'shap' (Shapley values), 'fastshap' (FastTreeShap implementation),
-        'pimp' (permutation importance) and 'native' (Gini/impurity)
+        'pimp' (permutation importance) and 'native' (Gini/impurity).
+        Permutation scoring uses validation sample weights and retains signed scores.
     two_step : Boolean, default = True
         If you want to use the original implementation of Boruta with Bonferroni
         correction only set this to False.
@@ -1322,7 +1323,7 @@ def _get_shap_imp_fast(estimator, X, y, sample_weight=None, cat_feature=None):
 
 
 def _get_perm_imp(estimator, X, y, sample_weight, cat_feature=None):
-    """Private function, Get the SHAP feature importance
+    """Private function, get signed permutation importance with weighted scoring.
 
     Parameters
     ----------
@@ -1348,7 +1349,7 @@ def _get_perm_imp(estimator, X, y, sample_weight, cat_feature=None):
         estimator, X, y, sample_weight=sample_weight, cat_feature=cat_feature
     )
     perm_imp = permutation_importance(
-        model, X_tt, y_tt, n_repeats=5, random_state=42, n_jobs=-1
+        model, X_tt, y_tt, sample_weight=w_tt, n_repeats=5, random_state=42, n_jobs=-1
     )
     imp = perm_imp.importances_mean.ravel()
     return imp
@@ -1449,6 +1450,9 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
     importance : str, default='shap'
         The kind of feature importance to use. Possible values: 'shap' (Shapley values),
         'pimp' (permutation importance), and 'native' (Gini/impurity).
+        Permutation scoring uses validation sample weights. Each iteration's
+        signed scores are divided by their absolute total; an all-zero vector
+        stays zero. Only positive mean permutation scores can be selected.
 
     Attributes
     ----------
@@ -1793,7 +1797,11 @@ def _reduce_vars_sklearn(
         # Store the feature importances
         try:
             # Normalize the feature importances
-            df["fscore" + str(i)] = importance / importance.sum()
+            if imp_kind == "pimp":
+                total = np.abs(importance).sum()
+                df["fscore" + str(i)] = importance / total if total else importance
+            else:
+                df["fscore" + str(i)] = importance / importance.sum()
         except ValueError:
             print("Only Sklearn tree based methods allowed")
 
@@ -1813,6 +1821,8 @@ def _reduce_vars_sklearn(
         / cutoff
     )
     real_vars = real_vars[(real_vars.Mean >= mean_shadow)]
+    if imp_kind == "pimp":
+        real_vars = real_vars[real_vars.Mean > 0]
 
     # Check for the stopping criteria
     # Compute the fraction of features selected in this round

@@ -1,0 +1,1 @@
+Ruff: 418 total diagnostics; 0 new
