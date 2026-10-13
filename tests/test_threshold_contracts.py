@@ -40,6 +40,7 @@ def importance_backend(monkeypatch):
         return pd.DataFrame(
             {
                 "feature": X.columns,
+                "importance": [0.6, 0.3, 0.1][: X.shape[1]],
                 "cumulative_importance": [0.6, 0.9, 1.0][: X.shape[1]],
             }
         )
@@ -297,7 +298,6 @@ def test_real_importance_fit_metadata(frame):
     rng = np.random.default_rng(16)
     X = pd.DataFrame(rng.normal(size=(120, 3)), columns=frame.columns)
     selector = fs.VariableImportance(
-        n_iterations=1,
         lgb_kwargs={
             "objective": "rmse",
             "num_threads": 1,

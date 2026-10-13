@@ -1,0 +1,398 @@
+.FFF...FFF..FFFFFFFFFFFFFFFFFFFFFF......FFFF.FF                          [100%]
+=================================== FAILURES ===================================
+_ test_smallest_positive_prefix_includes_crossing_feature[scores0-0.5-expected1] _
+tests/test_importance_selection.py:88: in test_smallest_positive_prefix_includes_crossing_feature
+    assert_array_equal(selector.selected_features_, expected)
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   (shapes (0,), (1,) mismatch)
+E    ACTUAL: array([], dtype=object)
+E    DESIRED: array(['a'], dtype='<U1')
+_ test_smallest_positive_prefix_includes_crossing_feature[scores0-0.6-expected2] _
+tests/test_importance_selection.py:88: in test_smallest_positive_prefix_includes_crossing_feature
+    assert_array_equal(selector.selected_features_, expected)
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   (shapes (0,), (1,) mismatch)
+E    ACTUAL: array([], dtype=object)
+E    DESIRED: array(['a'], dtype='<U1')
+_ test_smallest_positive_prefix_includes_crossing_feature[scores0-0.7-expected3] _
+tests/test_importance_selection.py:88: in test_smallest_positive_prefix_includes_crossing_feature
+    assert_array_equal(selector.selected_features_, expected)
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   (shapes (1,), (2,) mismatch)
+E    ACTUAL: array(['a'], dtype=object)
+E    DESIRED: array(['a', 'b'], dtype='<U1')
+_ test_smallest_positive_prefix_includes_crossing_feature[scores1-0.5-expected1] _
+tests/test_importance_selection.py:88: in test_smallest_positive_prefix_includes_crossing_feature
+    assert_array_equal(selector.selected_features_, expected)
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   (shapes (0,), (1,) mismatch)
+E    ACTUAL: array([], dtype=object)
+E    DESIRED: array(['a'], dtype='<U1')
+_ test_smallest_positive_prefix_includes_crossing_feature[scores1-0.6-expected2] _
+tests/test_importance_selection.py:88: in test_smallest_positive_prefix_includes_crossing_feature
+    assert_array_equal(selector.selected_features_, expected)
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   (shapes (0,), (1,) mismatch)
+E    ACTUAL: array([], dtype=object)
+E    DESIRED: array(['a'], dtype='<U1')
+_ test_smallest_positive_prefix_includes_crossing_feature[scores1-0.7-expected3] _
+tests/test_importance_selection.py:88: in test_smallest_positive_prefix_includes_crossing_feature
+    assert_array_equal(selector.selected_features_, expected)
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   (shapes (1,), (2,) mismatch)
+E    ACTUAL: array(['a'], dtype=object)
+E    DESIRED: array(['a', 'b'], dtype='<U1')
+_________ test_zero_importance_excluded_at_every_positive_cutoff[0.5] __________
+tests/test_importance_selection.py:100: in test_zero_importance_excluded_at_every_positive_cutoff
+    assert_array_equal(selector.selected_features_, ["b"])
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   (shapes (0,), (1,) mismatch)
+E    ACTUAL: array([], dtype=object)
+E    DESIRED: array(['b'], dtype='<U1')
+_________ test_zero_importance_excluded_at_every_positive_cutoff[0.99] _________
+tests/test_importance_selection.py:100: in test_zero_importance_excluded_at_every_positive_cutoff
+    assert_array_equal(selector.selected_features_, ["b"])
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   (shapes (0,), (1,) mismatch)
+E    ACTUAL: array([], dtype=object)
+E    DESIRED: array(['b'], dtype='<U1')
+__________ test_zero_importance_excluded_at_every_positive_cutoff[1] ___________
+tests/test_importance_selection.py:100: in test_zero_importance_excluded_at_every_positive_cutoff
+    assert_array_equal(selector.selected_features_, ["b"])
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   (shapes (0,), (1,) mismatch)
+E    ACTUAL: array([], dtype=object)
+E    DESIRED: array(['b'], dtype='<U1')
+____________ test_zero_total_summary_is_finite_and_selects_nothing _____________
+tests/test_importance_selection.py:110: in test_zero_total_summary_is_finite_and_selects_nothing
+    assert not selector.get_support().any()
+E   assert not np.True_
+E    +  where np.True_ = <built-in method any of numpy.ndarray object at 0x7c99a1bd68b0>()
+E    +    where <built-in method any of numpy.ndarray object at 0x7c99a1bd68b0> = array([ True,  True,  True]).any
+E    +      where array([ True,  True,  True]) = get_support()
+E    +        where get_support = VariableImportance(encode=False).get_support
+_____________ test_nonfinite_contributions_fail_clearly[False-nan] _____________
+tests/test_importance_selection.py:124: in test_nonfinite_contributions_fail_clearly
+    with pytest.raises(ValueError, match="finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_____________ test_nonfinite_contributions_fail_clearly[False-inf] _____________
+tests/test_importance_selection.py:124: in test_nonfinite_contributions_fail_clearly
+    with pytest.raises(ValueError, match="finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+____________ test_nonfinite_contributions_fail_clearly[False--inf] _____________
+tests/test_importance_selection.py:124: in test_nonfinite_contributions_fail_clearly
+    with pytest.raises(ValueError, match="finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_____________ test_nonfinite_contributions_fail_clearly[True-nan] ______________
+tests/test_importance_selection.py:124: in test_nonfinite_contributions_fail_clearly
+    with pytest.raises(ValueError, match="finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_____________ test_nonfinite_contributions_fail_clearly[True-inf] ______________
+tests/test_importance_selection.py:124: in test_nonfinite_contributions_fail_clearly
+    with pytest.raises(ValueError, match="finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_____________ test_nonfinite_contributions_fail_clearly[True--inf] _____________
+tests/test_importance_selection.py:124: in test_nonfinite_contributions_fail_clearly
+    with pytest.raises(ValueError, match="finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_________________ test_overflowed_importance_total_is_rejected _________________
+tests/test_importance_selection.py:131: in test_overflowed_importance_total_is_rejected
+    with np.errstate(over="ignore"), pytest.raises(ValueError, match="finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+____________ test_current_threshold_validated_before_training[-0.1] ____________
+tests/test_importance_selection.py:139: in test_current_threshold_validated_before_training
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+____________ test_current_threshold_validated_before_training[1.1] _____________
+tests/test_importance_selection.py:139: in test_current_threshold_validated_before_training
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+____________ test_current_threshold_validated_before_training[nan] _____________
+tests/test_importance_selection.py:139: in test_current_threshold_validated_before_training
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+____________ test_current_threshold_validated_before_training[inf] _____________
+tests/test_importance_selection.py:139: in test_current_threshold_validated_before_training
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+____________ test_current_threshold_validated_before_training[-inf] ____________
+tests/test_importance_selection.py:139: in test_current_threshold_validated_before_training
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+____________ test_current_threshold_validated_before_training[bad] _____________
+tests/test_importance_selection.py:140: in test_current_threshold_validated_before_training
+    fs.VariableImportance().set_params(threshold=threshold).fit(X, y)
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py:167: in fit
+    self.feature_importances_summary_["cumulative_importance"] >= self.threshold
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/pandas/core/ops/common.py:76: in new_method
+    return method(self, other)
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/pandas/core/arraylike.py:60: in __ge__
+    return self._cmp_method(other, operator.ge)
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:6119: in _cmp_method
+    res_values = ops.comparison_op(lvalues, rvalues, op)
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/pandas/core/ops/array_ops.py:341: in comparison_op
+    return invalid_comparison(lvalues, rvalues, op)
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/pandas/core/ops/invalid.py:40: in invalid_comparison
+    raise TypeError(f"Invalid comparison between dtype={left.dtype} and {typ}")
+E   TypeError: Invalid comparison between dtype=float64 and str
+____________ test_current_threshold_validated_before_training[True] ____________
+tests/test_importance_selection.py:139: in test_current_threshold_validated_before_training
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+____________ test_multiclass_layouts_sum_output_importances[native] ____________
+tests/test_importance_selection.py:163: in test_multiclass_layouts_sum_output_importances
+    ).fit(X, np.tile([0, 1, 2], 40))
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py:151: in fit
+    feature_importances = _compute_varimp_lgb(
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py:415: in _compute_varimp_lgb
+    y_freq_table = pd.Series(y.fillna(0)).value_counts(normalize=True)
+E   AttributeError: 'numpy.ndarray' object has no attribute 'fillna'. Did you mean: 'fill'?
+____________ test_multiclass_layouts_sum_output_importances[array] _____________
+tests/test_importance_selection.py:163: in test_multiclass_layouts_sum_output_importances
+    ).fit(X, np.tile([0, 1, 2], 40))
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py:151: in fit
+    feature_importances = _compute_varimp_lgb(
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py:435: in _compute_varimp_lgb
+    feature_importance_values += (
+E   ValueError: non-broadcastable output operand with shape (3,) doesn't match the broadcast shape (3,3)
+_____________ test_multiclass_layouts_sum_output_importances[list] _____________
+tests/test_importance_selection.py:165: in test_multiclass_layouts_sum_output_importances
+    assert_allclose(summary.importance, [6, 9, 12])
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 3 / 3 (100%)
+E   Max absolute difference among violations: 8.
+E   Max relative difference among violations: 0.66666667
+E    ACTUAL: array([2., 3., 4.])
+E    DESIRED: array([ 6,  9, 12])
+_______________ test_native_contribution_shape_validated[shape0] _______________
+tests/test_importance_selection.py:174: in test_native_contribution_shape_validated
+    fs.VariableImportance(encode=False).fit(X, y)
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py:151: in fit
+    feature_importances = _compute_varimp_lgb(
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py:432: in _compute_varimp_lgb
+    shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
+E   IndexError: too many indices for array: array is 1-dimensional, but 2 were indexed
+_____________ test_exactly_one_fit_and_removed_iteration_parameter _____________
+tests/test_importance_selection.py:196: in test_exactly_one_fit_and_removed_iteration_parameter
+    assert len(calls) == 1
+E   AssertionError: assert 10 == 1
+E    +  where 10 = len([(            a         b         c\n100  1.101262  0.338431 -0.539972\n101 -1.260242 -1.894621  0.018638\n102 -0.810567 ...objective': 'rmse', 'zero_as_missing': False}, 'return_valid_features': True, 'show_learning_curve': False, ...}), ...])
+_______ test_missing_optional_backend_fails_before_encoding_or_training ________
+tests/test_importance_selection.py:216: in test_missing_optional_backend_fails_before_encoding_or_training
+    fs.VariableImportance(fastshap=True).fit(X, y)
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py:151: in fit
+    feature_importances = _compute_varimp_lgb(
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py:353: in _compute_varimp_lgb
+    else OrdinalEncoderPandas()
+tests/test_importance_selection.py:211: in forbidden
+    pytest.fail("missing backend must fail before encoding/training")
+E   Failed: missing backend must fail before encoding/training
+_____________ test_real_single_signal_and_constant_response[False] _____________
+tests/test_importance_selection.py:226: in test_real_single_signal_and_constant_response
+    assert_array_equal(selector.selected_features_, [] if constant else ["a"])
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   (shapes (0,), (1,) mismatch)
+E    ACTUAL: array([], dtype=object)
+E    DESIRED: array(['a'], dtype='<U1')
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+_____________ test_real_single_signal_and_constant_response[True] ______________
+tests/test_importance_selection.py:226: in test_real_single_signal_and_constant_response
+    assert_array_equal(selector.selected_features_, [] if constant else ["a"])
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   (shapes (3,), (0,) mismatch)
+E    ACTUAL: array(['a', 'b', 'c'], dtype=object)
+E    DESIRED: array([], dtype=float64)
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+_____ test_real_classification_array_series_parity[multiclass-multiclass] ______
+tests/test_importance_selection.py:252: in test_real_classification_array_series_parity
+    array_fit = fs.VariableImportance(**options).fit(X, y)
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py:151: in fit
+    feature_importances = _compute_varimp_lgb(
+/tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py:415: in _compute_varimp_lgb
+    y_freq_table = pd.Series(y.fillna(0)).value_counts(normalize=True)
+E   AttributeError: 'numpy.ndarray' object has no attribute 'fillna'. Did you mean: 'fill'?
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+____________ test_weighted_training_equal_validation_row_population ____________
+tests/test_importance_selection.py:285: in test_weighted_training_equal_validation_row_population
+    assert len(observed) == 1
+E   AssertionError: assert 10 == 1
+E    +  where 10 = len([(ObservedTraining(cat_feat='auto', params={'objective': 'rmse', 'metric': 'rmse', 'n_estimators': 6, 'num_leaves': 4,...\n104     1.0\n       ... \n215    20.0\n216    20.0\n217     1.0\n218    20.0\n219     1.0\nLength: 120, dtype: float64), ...])
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 6 boosting rounds.
+=============================== warnings summary ===============================
+arfs-r17/before/tests/test_importance_selection.py: 20 warnings
+  /tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The VariableImportance or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+arfs-r17/before/tests/test_importance_selection.py::test_weighted_training_equal_validation_row_population
+  /tmp/arfs-r16/py312-locked/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The MissingValueThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_importance_selection.py::test_smallest_positive_prefix_includes_crossing_feature[scores0-0.5-expected1]
+FAILED tests/test_importance_selection.py::test_smallest_positive_prefix_includes_crossing_feature[scores0-0.6-expected2]
+FAILED tests/test_importance_selection.py::test_smallest_positive_prefix_includes_crossing_feature[scores0-0.7-expected3]
+FAILED tests/test_importance_selection.py::test_smallest_positive_prefix_includes_crossing_feature[scores1-0.5-expected1]
+FAILED tests/test_importance_selection.py::test_smallest_positive_prefix_includes_crossing_feature[scores1-0.6-expected2]
+FAILED tests/test_importance_selection.py::test_smallest_positive_prefix_includes_crossing_feature[scores1-0.7-expected3]
+FAILED tests/test_importance_selection.py::test_zero_importance_excluded_at_every_positive_cutoff[0.5]
+FAILED tests/test_importance_selection.py::test_zero_importance_excluded_at_every_positive_cutoff[0.99]
+FAILED tests/test_importance_selection.py::test_zero_importance_excluded_at_every_positive_cutoff[1]
+FAILED tests/test_importance_selection.py::test_zero_total_summary_is_finite_and_selects_nothing
+FAILED tests/test_importance_selection.py::test_nonfinite_contributions_fail_clearly[False-nan]
+FAILED tests/test_importance_selection.py::test_nonfinite_contributions_fail_clearly[False-inf]
+FAILED tests/test_importance_selection.py::test_nonfinite_contributions_fail_clearly[False--inf]
+FAILED tests/test_importance_selection.py::test_nonfinite_contributions_fail_clearly[True-nan]
+FAILED tests/test_importance_selection.py::test_nonfinite_contributions_fail_clearly[True-inf]
+FAILED tests/test_importance_selection.py::test_nonfinite_contributions_fail_clearly[True--inf]
+FAILED tests/test_importance_selection.py::test_overflowed_importance_total_is_rejected
+FAILED tests/test_importance_selection.py::test_current_threshold_validated_before_training[-0.1]
+FAILED tests/test_importance_selection.py::test_current_threshold_validated_before_training[1.1]
+FAILED tests/test_importance_selection.py::test_current_threshold_validated_before_training[nan]
+FAILED tests/test_importance_selection.py::test_current_threshold_validated_before_training[inf]
+FAILED tests/test_importance_selection.py::test_current_threshold_validated_before_training[-inf]
+FAILED tests/test_importance_selection.py::test_current_threshold_validated_before_training[bad]
+FAILED tests/test_importance_selection.py::test_current_threshold_validated_before_training[True]
+FAILED tests/test_importance_selection.py::test_multiclass_layouts_sum_output_importances[native]
+FAILED tests/test_importance_selection.py::test_multiclass_layouts_sum_output_importances[array]
+FAILED tests/test_importance_selection.py::test_multiclass_layouts_sum_output_importances[list]
+FAILED tests/test_importance_selection.py::test_native_contribution_shape_validated[shape0]
+FAILED tests/test_importance_selection.py::test_exactly_one_fit_and_removed_iteration_parameter
+FAILED tests/test_importance_selection.py::test_missing_optional_backend_fails_before_encoding_or_training
+FAILED tests/test_importance_selection.py::test_real_single_signal_and_constant_response[False]
+FAILED tests/test_importance_selection.py::test_real_single_signal_and_constant_response[True]
+FAILED tests/test_importance_selection.py::test_real_classification_array_series_parity[multiclass-multiclass]
+FAILED tests/test_importance_selection.py::test_weighted_training_equal_validation_row_population
+34 failed, 13 passed, 21 warnings in 8.56s

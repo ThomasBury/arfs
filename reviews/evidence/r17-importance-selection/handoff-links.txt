@@ -1,0 +1,1 @@
+All local R17 handoff links resolve.

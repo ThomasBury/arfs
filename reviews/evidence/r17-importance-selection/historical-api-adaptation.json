@@ -1,0 +1,7 @@
+{
+  "original": "/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py",
+  "original_sha256": "36f281557c17e83dbafede0fd4abb2ab1dafb3b2dae5e6d289453e3964288172",
+  "adapted": "/tmp/arfs-r17/historical/checks.py",
+  "adapted_sha256": "56be7a7777a3c1fd20afb37c9a1ec2dc2e78079fbe863b47c51d3496462a3b0d",
+  "change": "Remove two n_iterations=1 arguments only; skip retired repeat-count/iteration-averaging expectations."
+}

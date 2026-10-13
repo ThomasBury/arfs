@@ -1,0 +1,8 @@
+--- original/checks.py
++++ r17-one-fit/checks.py
+@@ -52 +52 @@
+-    options = dict(encode=False, n_iterations=1, lgb_kwargs=PARAMS.copy())
++    options = dict(encode=False,  lgb_kwargs=PARAMS.copy())
+@@ -290 +290 @@
+-    result=vi._compute_varimp_lgb(X,y,task='multiclass',n_iterations=1,fastshap=False).set_index('feature').loc[X.columns]
++    result=vi._compute_varimp_lgb(X,y,task='multiclass',fastshap=False).set_index('feature').loc[X.columns]
