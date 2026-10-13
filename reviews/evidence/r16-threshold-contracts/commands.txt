@@ -1,0 +1,67 @@
+Checkout: /home/bsatom/Documents/arfs; clean main @ 985b0a3.
+R16 alone. No publication, version bump, dependency or packaging configuration change.
+
+Runtime environment (full values in validate.py):
+UV_CACHE_DIR=/tmp/arfs-r04/cache MPLBACKEND=Agg
+MPLCONFIGDIR=/tmp/arfs-r16/mpl-$cell OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 PYTHONHASHSEED=0
+PYTHONDONTWRITEBYTECODE=1; installed-wheel runs remove PYTHONPATH.
+
+Before (copied maintained tests against verified installed R15 wheel):
+cd /tmp/arfs-r16/before
+/tmp/arfs-r15/py312-locked/bin/python -I -m pytest tests/test_threshold_contracts.py -q --tb=short -p no:cacheprovider
+Result: 73 failed, 11 passed, exit 1 in before-final.txt.
+Initial 79-case probe: 71 failed, 8 passed in before.txt.
+before-provenance.json verifies all three changed selector modules against 985b0a3.
+
+Source (PYTHONPATH=src, checkout cwd):
+/tmp/arfs-r15/py312-locked/bin/python -m pytest tests/test_threshold_contracts.py tests/test_featselect.py tests/test_category_identity.py tests/test_observation_boundaries.py tests/test_dependency_apis.py -q --tb=short -p no:cacheprovider
+Result: 321 passed in source-final.txt.
+Initial source run: 2 failed, 314 passed in source.txt (empty collinearity mask dtype).
+Final maintained R16 file: 84 cases; old behavior fails 73 of them.
+
+uv build --python /tmp/arfs-r15/py312-locked/bin/python --out-dir /tmp/arfs-r16/dist
+uv export --locked --extra test --no-emit-project --output-file /tmp/arfs-r16/locked-requirements.txt
+uv lock --check --python /tmp/arfs-r15/py312-locked/bin/python
+/tmp/arfs-r15/py312-locked/bin/python /tmp/arfs-r16/check_payloads.py
+Payload result: all 19 source/sdist/wheel files match; three data payloads.
+
+Exact orchestrators validate.py, environment.py and check_payloads.py are retained
+in this directory and copied to /tmp/arfs-r16 before running. They create fresh
+venvs with the verified R15 interpreters; those older installed packages are not
+used by repaired-wheel tests. Disposable environments must be recreated if absent.
+/tmp/arfs-r15/py312-locked/bin/python /tmp/arfs-r16/validate.py py39-locked
+/tmp/arfs-r15/py312-locked/bin/python /tmp/arfs-r16/validate.py py312-locked
+/tmp/arfs-r15/py312-locked/bin/python /tmp/arfs-r16/validate.py py312-newer
+Result: 772 / 772 / 756 passed, respectively.
+Per-cell *-commands.json records venv, install, dependency, isolated provenance,
+full-suite and historical commands, exact working directories and exit codes.
+Locked pins come from uv.lock; newer pins are .github/requirements/runtime-newer-py312.txt.
+Copied tests match source bytes; eleven installed module hashes match source,
+including base.py, unsupervised.py and variable_importance.py. No setuptools.
+
+Historical checks use --runxfail on reviews/evidence/03-selector-contracts/checks.py:
+duplicate_names or custom_statistic or unfitted_transform or unfitted_support
+or fitted_feature_count or valid_parameter_updates or collinearity_negative_asymmetric
+or real_collinearity_negative or collinearity_handles or collinearity_tie
+or threshold_fit_transform_metadata or empty_selection
+Result: 29 passed in each Python 3.12 snapshot. Historical scripts/logs are unchanged.
+Invalid parameters are checked by maintained cases; VariableImportance's parameter/
+importance arithmetic and backend defects remain R17.
+
+uv tool run --from ruff==0.17.0 python .github/scripts/check_ruff_baseline.py
+Result: 414 total diagnostics; zero new. Three allowances removed, none added.
+/tmp/arfs-r15/py312-locked/bin/python -m unittest discover -s .github/scripts -p 'test_*.py'
+Result: two passed.
+uv tool run --from ruff==0.17.0 ruff check tests/test_threshold_contracts.py reviews/evidence/r16-threshold-contracts/*.py
+uv tool run --from ruff==0.17.0 ruff format --check tests/test_threshold_contracts.py reviews/evidence/r16-threshold-contracts/*.py
+Result: both pass. changed-source-lint.json records inherited changed-file diagnostics.
+git diff --check
+Local link validation resolves each non-http Markdown link in the new handoff;
+REMEDIATION.md's new handoff link is also checked.
+
+Context7: sklearn 1.9.1 developer guidance for fit-time parameter validation;
+real matrix uses sklearn 1.6.1 and 1.9.1. Output remains a named DataFrame projection.
+Hosted CI, full docs/notebooks, full sklearn compliance, other platforms, optional
+backends, performance and statistical calibration are skipped. R17–R33 remain pending.
+Completed log carriage returns and trailing whitespace are removed before commit.

@@ -1,0 +1,3 @@
+Using CPython 3.9.25 interpreter at: /tmp/arfs-r15/py39-locked/bin/python
+Creating virtual environment at: /tmp/arfs-r16/py39-locked
+Activate with: source /tmp/arfs-r16/py39-locked/bin/activate

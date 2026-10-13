@@ -26,6 +26,7 @@ from sklearn.base import BaseEstimator
 from sklearn.feature_selection._base import SelectorMixin
 
 # ARFS
+from .base import _validate_dataframe
 from ..utils import reset_plot
 from ..gbm import GradientBoosting
 from ..preprocessing import OrdinalEncoderPandas
@@ -59,6 +60,11 @@ class VariableImportance(SelectorMixin, BaseEstimator):
     encoder_kwargs : dictionary of keyword arguments, optional
         dictionary of the :class:`OrdinalEncoderPandas` parameters
 
+    Notes
+    -----
+    X must have unique column names. Transform projects selected names in fitted
+    order; extra/reordered columns and omitted rejected columns are accepted.
+    Missing selected columns raise KeyError; duplicate columns are rejected.
 
     Returns
     -------
@@ -139,10 +145,8 @@ class VariableImportance(SelectorMixin, BaseEstimator):
             Returns the instance itself.
         """
 
-        if isinstance(X, pd.DataFrame):
-            self.feature_names_in_ = X.columns.to_numpy()
-        else:
-            raise TypeError("X is not a dataframe")
+        _validate_dataframe(X)
+        feature_names = X.columns.to_numpy(copy=True)
 
         feature_importances = _compute_varimp_lgb(
             X=X,
@@ -167,15 +171,17 @@ class VariableImportance(SelectorMixin, BaseEstimator):
         )
 
         self.support_ = np.asarray(
-            [False if c in to_drop else True for c in self.feature_names_in_]
+            [c not in to_drop for c in feature_names], dtype=bool
         )
+        self.feature_names_in_ = feature_names
+        self.n_features_in_ = X.shape[1]
         self.selected_features_ = self.feature_names_in_[self.support_]
         self.not_selected_features_ = self.feature_names_in_[~self.support_]
 
         return self
 
     def _get_support_mask(self):
-        check_is_fitted(self)
+        check_is_fitted(self, "support_")
 
         return self.support_
 
@@ -199,8 +205,8 @@ class VariableImportance(SelectorMixin, BaseEstimator):
             if the input is not a pd.DataFrame
         """
 
-        if not isinstance(X, pd.DataFrame):
-            raise TypeError("X is not a dataframe")
+        check_is_fitted(self, "support_")
+        _validate_dataframe(X)
         return X[self.selected_features_]
 
     def fit_transform(self, X, y=None, sample_weight=None):

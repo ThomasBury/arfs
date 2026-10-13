@@ -224,9 +224,7 @@
     "PLR0124": 1
   },
   "src/arfs/feature_selection/unsupervised.py": {
-    "F401": 1,
     "I001": 1,
-    "SIM210": 1,
     "UP010": 1
   },
   "src/arfs/feature_selection/variable_importance.py": {
@@ -235,7 +233,6 @@
     "I001": 1,
     "PLR0402": 1,
     "PLW0133": 1,
-    "SIM211": 1,
     "UP010": 1,
     "UP030": 1,
     "UP032": 1

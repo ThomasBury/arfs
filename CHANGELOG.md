@@ -7,6 +7,7 @@
  - Return negative response-scale GLM deviance for sklearn scoring, preserve BIC minimization, and repair weighted CV splits, NumPy inputs and fold isolation.
  - Reuse fitted GLM designs for single-row inference, align named schemas, preserve supplied constants and resolve current family/link parameters at fit. Input/support metadata now excludes generated intercepts.
  - Omit zero-weight GLM rows before fitting/scoring/tuning, correct AIC/BIC dimensions and reject nonfinite search criteria. Document unpenalized post-selection refits and reject unsupported pure ridge fits.
+ - Reject duplicate threshold-selector names, align labelled statistics, validate current parameters and expose fitted feature counts. Preserve named projection and strict threshold equality; handle empty collinearity stages and break ties in input order.
  - Test installed wheels on Python 3.9 and 3.12 with locked dependencies, plus a newer Python 3.12 snapshot.
  - Keep the next version and release pending the remaining remediation blockers and R33 release checks.
 

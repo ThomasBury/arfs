@@ -1,0 +1,20 @@
+{
+  "src/arfs/feature_selection/base.py": {
+    "UP010": 1,
+    "I001": 1
+  },
+  "src/arfs/feature_selection/unsupervised.py": {
+    "UP010": 1,
+    "I001": 1
+  },
+  "src/arfs/feature_selection/variable_importance.py": {
+    "UP010": 1,
+    "I001": 1,
+    "PLR0402": 1,
+    "B006": 2,
+    "UP030": 1,
+    "UP032": 1,
+    "PLW0133": 1,
+    "B018": 1
+  }
+}

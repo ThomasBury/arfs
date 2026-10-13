@@ -1,0 +1,235 @@
+Building source distribution...
+/home/bsatom/.cache/uv/builds-v0/.tmpcY0aws/lib/python3.12/site-packages/setuptools/config/_apply_pyprojecttoml.py:82: SetuptoolsDeprecationWarning: `project.license` as a TOML table is deprecated
+!!
+
+        ********************************************************************************
+        Please use a simple string containing a SPDX expression for `project.license`. You can also use `project.license-files`. (Both options available on setuptools>=77.0.0).
+
+        By 2027-Feb-18, you need to update your project and remove deprecated calls
+        or your builds will no longer be supported.
+
+        See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+        ********************************************************************************
+
+!!
+  corresp(dist, value, root_dir)
+running egg_info
+writing src/arfs.egg-info/PKG-INFO
+writing dependency_links to src/arfs.egg-info/dependency_links.txt
+writing requirements to src/arfs.egg-info/requires.txt
+writing top-level names to src/arfs.egg-info/top_level.txt
+reading manifest file 'src/arfs.egg-info/SOURCES.txt'
+adding license file 'LICENSE.md'
+writing manifest file 'src/arfs.egg-info/SOURCES.txt'
+/home/bsatom/.cache/uv/builds-v0/.tmpcY0aws/lib/python3.12/site-packages/setuptools/config/_apply_pyprojecttoml.py:82: SetuptoolsDeprecationWarning: `project.license` as a TOML table is deprecated
+!!
+
+        ********************************************************************************
+        Please use a simple string containing a SPDX expression for `project.license`. You can also use `project.license-files`. (Both options available on setuptools>=77.0.0).
+
+        By 2027-Feb-18, you need to update your project and remove deprecated calls
+        or your builds will no longer be supported.
+
+        See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+        ********************************************************************************
+
+!!
+  corresp(dist, value, root_dir)
+running sdist
+running egg_info
+writing src/arfs.egg-info/PKG-INFO
+writing dependency_links to src/arfs.egg-info/dependency_links.txt
+writing requirements to src/arfs.egg-info/requires.txt
+writing top-level names to src/arfs.egg-info/top_level.txt
+reading manifest file 'src/arfs.egg-info/SOURCES.txt'
+adding license file 'LICENSE.md'
+writing manifest file 'src/arfs.egg-info/SOURCES.txt'
+running check
+creating arfs-3.0.0
+creating arfs-3.0.0/src/arfs
+creating arfs-3.0.0/src/arfs.egg-info
+creating arfs-3.0.0/src/arfs/dataset/data
+creating arfs-3.0.0/src/arfs/dataset/descr
+creating arfs-3.0.0/src/arfs/feature_selection
+creating arfs-3.0.0/tests
+copying files to arfs-3.0.0...
+copying LICENSE.md -> arfs-3.0.0
+copying README.md -> arfs-3.0.0
+copying pyproject.toml -> arfs-3.0.0
+copying src/arfs/__init__.py -> arfs-3.0.0/src/arfs
+copying src/arfs/association.py -> arfs-3.0.0/src/arfs
+copying src/arfs/benchmark.py -> arfs-3.0.0/src/arfs
+copying src/arfs/gbm.py -> arfs-3.0.0/src/arfs
+copying src/arfs/parallel.py -> arfs-3.0.0/src/arfs
+copying src/arfs/preprocessing.py -> arfs-3.0.0/src/arfs
+copying src/arfs/sampling.py -> arfs-3.0.0/src/arfs
+copying src/arfs/utils.py -> arfs-3.0.0/src/arfs
+copying src/arfs.egg-info/PKG-INFO -> arfs-3.0.0/src/arfs.egg-info
+copying src/arfs.egg-info/SOURCES.txt -> arfs-3.0.0/src/arfs.egg-info
+copying src/arfs.egg-info/dependency_links.txt -> arfs-3.0.0/src/arfs.egg-info
+copying src/arfs.egg-info/not-zip-safe -> arfs-3.0.0/src/arfs.egg-info
+copying src/arfs.egg-info/requires.txt -> arfs-3.0.0/src/arfs.egg-info
+copying src/arfs.egg-info/top_level.txt -> arfs-3.0.0/src/arfs.egg-info
+copying src/arfs/dataset/data/boston_bunch.joblib -> arfs-3.0.0/src/arfs/dataset/data
+copying src/arfs/dataset/data/housing.zip -> arfs-3.0.0/src/arfs/dataset/data
+copying src/arfs/dataset/descr/housing.rst -> arfs-3.0.0/src/arfs/dataset/descr
+copying src/arfs/feature_selection/__init__.py -> arfs-3.0.0/src/arfs/feature_selection
+copying src/arfs/feature_selection/allrelevant.py -> arfs-3.0.0/src/arfs/feature_selection
+copying src/arfs/feature_selection/base.py -> arfs-3.0.0/src/arfs/feature_selection
+copying src/arfs/feature_selection/lasso.py -> arfs-3.0.0/src/arfs/feature_selection
+copying src/arfs/feature_selection/mrmr.py -> arfs-3.0.0/src/arfs/feature_selection
+copying src/arfs/feature_selection/summary.py -> arfs-3.0.0/src/arfs/feature_selection
+copying src/arfs/feature_selection/unsupervised.py -> arfs-3.0.0/src/arfs/feature_selection
+copying src/arfs/feature_selection/variable_importance.py -> arfs-3.0.0/src/arfs/feature_selection
+copying tests/test_allrelevant.py -> arfs-3.0.0/tests
+copying tests/test_allrelevant_aggregation.py -> arfs-3.0.0/tests
+copying tests/test_category_identity.py -> arfs-3.0.0/tests
+copying tests/test_dependency_apis.py -> arfs-3.0.0/tests
+copying tests/test_featselect.py -> arfs-3.0.0/tests
+copying tests/test_glm_design.py -> arfs-3.0.0/tests
+copying tests/test_glm_likelihood.py -> arfs-3.0.0/tests
+copying tests/test_glm_scoring.py -> arfs-3.0.0/tests
+copying tests/test_installed_package.py -> arfs-3.0.0/tests
+copying tests/test_leshy_support.py -> arfs-3.0.0/tests
+copying tests/test_mrmr_ranking.py -> arfs-3.0.0/tests
+copying tests/test_observation_boundaries.py -> arfs-3.0.0/tests
+copying tests/test_pandas_writes.py -> arfs-3.0.0/tests
+copying tests/test_permutation_importance.py -> arfs-3.0.0/tests
+copying tests/test_runtime_baseline.py -> arfs-3.0.0/tests
+copying tests/test_shadow_contracts.py -> arfs-3.0.0/tests
+copying tests/test_statistical_arithmetic.py -> arfs-3.0.0/tests
+copying tests/test_threshold_contracts.py -> arfs-3.0.0/tests
+Writing arfs-3.0.0/setup.cfg
+Creating tar archive
+removing 'arfs-3.0.0' (and everything under it)
+Building wheel from source distribution...
+/home/bsatom/.cache/uv/builds-v0/.tmpXfscoh/lib/python3.12/site-packages/setuptools/config/_apply_pyprojecttoml.py:82: SetuptoolsDeprecationWarning: `project.license` as a TOML table is deprecated
+!!
+
+        ********************************************************************************
+        Please use a simple string containing a SPDX expression for `project.license`. You can also use `project.license-files`. (Both options available on setuptools>=77.0.0).
+
+        By 2027-Feb-18, you need to update your project and remove deprecated calls
+        or your builds will no longer be supported.
+
+        See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+        ********************************************************************************
+
+!!
+  corresp(dist, value, root_dir)
+running egg_info
+writing src/arfs.egg-info/PKG-INFO
+writing dependency_links to src/arfs.egg-info/dependency_links.txt
+writing requirements to src/arfs.egg-info/requires.txt
+writing top-level names to src/arfs.egg-info/top_level.txt
+reading manifest file 'src/arfs.egg-info/SOURCES.txt'
+adding license file 'LICENSE.md'
+writing manifest file 'src/arfs.egg-info/SOURCES.txt'
+/home/bsatom/.cache/uv/builds-v0/.tmpXfscoh/lib/python3.12/site-packages/setuptools/config/_apply_pyprojecttoml.py:82: SetuptoolsDeprecationWarning: `project.license` as a TOML table is deprecated
+!!
+
+        ********************************************************************************
+        Please use a simple string containing a SPDX expression for `project.license`. You can also use `project.license-files`. (Both options available on setuptools>=77.0.0).
+
+        By 2027-Feb-18, you need to update your project and remove deprecated calls
+        or your builds will no longer be supported.
+
+        See https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license for details.
+        ********************************************************************************
+
+!!
+  corresp(dist, value, root_dir)
+running bdist_wheel
+running build
+running build_py
+creating build/lib/arfs
+copying src/arfs/__init__.py -> build/lib/arfs
+copying src/arfs/preprocessing.py -> build/lib/arfs
+copying src/arfs/gbm.py -> build/lib/arfs
+copying src/arfs/sampling.py -> build/lib/arfs
+copying src/arfs/parallel.py -> build/lib/arfs
+copying src/arfs/utils.py -> build/lib/arfs
+copying src/arfs/benchmark.py -> build/lib/arfs
+copying src/arfs/association.py -> build/lib/arfs
+creating build/lib/arfs/feature_selection
+copying src/arfs/feature_selection/allrelevant.py -> build/lib/arfs/feature_selection
+copying src/arfs/feature_selection/base.py -> build/lib/arfs/feature_selection
+copying src/arfs/feature_selection/__init__.py -> build/lib/arfs/feature_selection
+copying src/arfs/feature_selection/lasso.py -> build/lib/arfs/feature_selection
+copying src/arfs/feature_selection/summary.py -> build/lib/arfs/feature_selection
+copying src/arfs/feature_selection/variable_importance.py -> build/lib/arfs/feature_selection
+copying src/arfs/feature_selection/mrmr.py -> build/lib/arfs/feature_selection
+copying src/arfs/feature_selection/unsupervised.py -> build/lib/arfs/feature_selection
+running egg_info
+writing src/arfs.egg-info/PKG-INFO
+writing dependency_links to src/arfs.egg-info/dependency_links.txt
+writing requirements to src/arfs.egg-info/requires.txt
+writing top-level names to src/arfs.egg-info/top_level.txt
+reading manifest file 'src/arfs.egg-info/SOURCES.txt'
+adding license file 'LICENSE.md'
+writing manifest file 'src/arfs.egg-info/SOURCES.txt'
+creating build/lib/arfs/dataset/data
+copying src/arfs/dataset/data/boston_bunch.joblib -> build/lib/arfs/dataset/data
+copying src/arfs/dataset/data/housing.zip -> build/lib/arfs/dataset/data
+creating build/lib/arfs/dataset/descr
+copying src/arfs/dataset/descr/housing.rst -> build/lib/arfs/dataset/descr
+installing to build/bdist.linux-x86_64/wheel
+running install
+running install_lib
+creating build/bdist.linux-x86_64/wheel
+creating build/bdist.linux-x86_64/wheel/arfs
+creating build/bdist.linux-x86_64/wheel/arfs/feature_selection
+copying build/lib/arfs/feature_selection/allrelevant.py -> build/bdist.linux-x86_64/wheel/./arfs/feature_selection
+copying build/lib/arfs/feature_selection/base.py -> build/bdist.linux-x86_64/wheel/./arfs/feature_selection
+copying build/lib/arfs/feature_selection/__init__.py -> build/bdist.linux-x86_64/wheel/./arfs/feature_selection
+copying build/lib/arfs/feature_selection/lasso.py -> build/bdist.linux-x86_64/wheel/./arfs/feature_selection
+copying build/lib/arfs/feature_selection/summary.py -> build/bdist.linux-x86_64/wheel/./arfs/feature_selection
+copying build/lib/arfs/feature_selection/variable_importance.py -> build/bdist.linux-x86_64/wheel/./arfs/feature_selection
+copying build/lib/arfs/feature_selection/mrmr.py -> build/bdist.linux-x86_64/wheel/./arfs/feature_selection
+copying build/lib/arfs/feature_selection/unsupervised.py -> build/bdist.linux-x86_64/wheel/./arfs/feature_selection
+copying build/lib/arfs/__init__.py -> build/bdist.linux-x86_64/wheel/./arfs
+copying build/lib/arfs/preprocessing.py -> build/bdist.linux-x86_64/wheel/./arfs
+copying build/lib/arfs/gbm.py -> build/bdist.linux-x86_64/wheel/./arfs
+copying build/lib/arfs/sampling.py -> build/bdist.linux-x86_64/wheel/./arfs
+copying build/lib/arfs/parallel.py -> build/bdist.linux-x86_64/wheel/./arfs
+copying build/lib/arfs/utils.py -> build/bdist.linux-x86_64/wheel/./arfs
+copying build/lib/arfs/benchmark.py -> build/bdist.linux-x86_64/wheel/./arfs
+copying build/lib/arfs/association.py -> build/bdist.linux-x86_64/wheel/./arfs
+creating build/bdist.linux-x86_64/wheel/arfs/dataset
+creating build/bdist.linux-x86_64/wheel/arfs/dataset/data
+copying build/lib/arfs/dataset/data/boston_bunch.joblib -> build/bdist.linux-x86_64/wheel/./arfs/dataset/data
+copying build/lib/arfs/dataset/data/housing.zip -> build/bdist.linux-x86_64/wheel/./arfs/dataset/data
+creating build/bdist.linux-x86_64/wheel/arfs/dataset/descr
+copying build/lib/arfs/dataset/descr/housing.rst -> build/bdist.linux-x86_64/wheel/./arfs/dataset/descr
+running install_egg_info
+Copying src/arfs.egg-info to build/bdist.linux-x86_64/wheel/./arfs-3.0.0-py3.12.egg-info
+running install_scripts
+creating build/bdist.linux-x86_64/wheel/arfs-3.0.0.dist-info/WHEEL
+creating '/tmp/arfs-r16/dist/.tmp-nb8cj3rz/arfs-3.0.0-py3-none-any.whl' and adding 'build/bdist.linux-x86_64/wheel' to it
+adding 'arfs/__init__.py'
+adding 'arfs/association.py'
+adding 'arfs/benchmark.py'
+adding 'arfs/gbm.py'
+adding 'arfs/parallel.py'
+adding 'arfs/preprocessing.py'
+adding 'arfs/sampling.py'
+adding 'arfs/utils.py'
+adding 'arfs/dataset/data/boston_bunch.joblib'
+adding 'arfs/dataset/data/housing.zip'
+adding 'arfs/dataset/descr/housing.rst'
+adding 'arfs/feature_selection/__init__.py'
+adding 'arfs/feature_selection/allrelevant.py'
+adding 'arfs/feature_selection/base.py'
+adding 'arfs/feature_selection/lasso.py'
+adding 'arfs/feature_selection/mrmr.py'
+adding 'arfs/feature_selection/summary.py'
+adding 'arfs/feature_selection/unsupervised.py'
+adding 'arfs/feature_selection/variable_importance.py'
+adding 'arfs-3.0.0.dist-info/licenses/LICENSE.md'
+adding 'arfs-3.0.0.dist-info/METADATA'
+adding 'arfs-3.0.0.dist-info/WHEEL'
+adding 'arfs-3.0.0.dist-info/top_level.txt'
+adding 'arfs-3.0.0.dist-info/RECORD'
+removing build/bdist.linux-x86_64/wheel
+Successfully built /tmp/arfs-r16/dist/arfs-3.0.0.tar.gz
+Successfully built /tmp/arfs-r16/dist/arfs-3.0.0-py3-none-any.whl

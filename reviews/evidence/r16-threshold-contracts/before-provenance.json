@@ -1,0 +1,17 @@
+{
+  "revision": "985b0a3",
+  "modules": {
+    "arfs.feature_selection.base": {
+      "path": "/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/base.py",
+      "sha256": "8c78b167b7b8935bb55ea31b903c45d34f79445c333c3142e1a17bc2d499601c"
+    },
+    "arfs.feature_selection.unsupervised": {
+      "path": "/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/unsupervised.py",
+      "sha256": "61cadc4d6bb791514759dce210a4acbe93f3b29a3613a9d6fdca7f1ca98cb531"
+    },
+    "arfs.feature_selection.variable_importance": {
+      "path": "/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py",
+      "sha256": "3370955a62c8fd057a5f5b547d1798ad57dd0f53ded8a509a0d0690166faeb03"
+    }
+  }
+}

@@ -10,6 +10,7 @@ Module Structure:
 
 # Settings and libraries
 from __future__ import print_function
+from numbers import Real
 
 # pandas
 import pandas as pd
@@ -28,18 +29,32 @@ from sklearn.feature_selection._base import SelectorMixin
 np.random.seed(7)
 
 
+def _validate_dataframe(X):
+    if not isinstance(X, pd.DataFrame):
+        raise TypeError("X is not a dataframe")
+    if not X.columns.is_unique:
+        raise ValueError("X must have unique feature names.")
+
+
 class BaseThresholdSelector(SelectorMixin, BaseEstimator):
     """Base class for threshold-based feature selection
 
     Parameters
     ----------
     threshold : float, .05
-        Features with a training-set missing greater/lower (geq/leq) than this threshold will be removed
+        Finite cutoff. Retain statistics strictly above it when
+        greater_than_threshold=True, otherwise strictly below it. Equality is rejected.
     statistic_fn : callable, optional
         The function for computing the statistic series. The index should be the column names and the
         the values the computed statistic
     greater_than_threshold : bool, False
-        Whether or not to reject the features if lower or greater than threshold
+        Whether to retain statistics strictly above rather than below the cutoff.
+
+    Notes
+    -----
+    X must be a DataFrame with unique column names. Transform projects selected
+    names in fitted order: reordered/extra columns and omitted rejected columns
+    are accepted; missing selected columns raise KeyError. Empty selections are valid.
 
     Returns
     -------
@@ -69,6 +84,18 @@ class BaseThresholdSelector(SelectorMixin, BaseEstimator):
         self.statistic_fn = statistic_fn
         self.greater_than_threshold = greater_than_threshold
 
+    def _validate_params(self):
+        if (
+            isinstance(self.threshold, (bool, np.bool_))
+            or not isinstance(self.threshold, Real)
+            or not np.isfinite(self.threshold)
+        ):
+            raise ValueError("threshold must be a finite real number.")
+        if not callable(self.statistic_fn):
+            raise TypeError("statistic_fn must be callable.")
+        if not isinstance(self.greater_than_threshold, (bool, np.bool_)):
+            raise TypeError("greater_than_threshold must be boolean.")
+
     def fit(self, X, y=None, sample_weight=None):
         """Learn empirical statistics from X.
 
@@ -81,7 +108,8 @@ class BaseThresholdSelector(SelectorMixin, BaseEstimator):
             Ignored. This parameter exists only for compatibility with
             sklearn.pipeline.Pipeline.
         sample_weight : pd.Series, optional, shape (n_samples,)
-            weights for computing the statistics (e.g. weighted average)
+            Ignored. The callback receives X only; built-in missing/unique/cardinality
+            statistics count rows or distinct values without observation weights.
 
         Returns
         -------
@@ -89,21 +117,37 @@ class BaseThresholdSelector(SelectorMixin, BaseEstimator):
             Returns the instance itself.
         """
 
-        # Calculate the fraction of missing in each column
+        _validate_dataframe(X)
+        self._validate_params()
+        if len(X) == 0:
+            raise ValueError("X must contain observations.")
+        statistics = self.statistic_fn(X)
+        if (
+            not isinstance(statistics, pd.Series)
+            or not statistics.index.is_unique
+            or len(statistics) != X.shape[1]
+            or not X.columns.isin(statistics.index).all()
+        ):
+            raise ValueError(
+                "statistic_fn must return a Series indexed by each input feature exactly once."
+            )
+        statistics = statistics.reindex(X.columns)
+        if (
+            statistics.isna().any()
+            or not pd.api.types.is_numeric_dtype(statistics.dtype)
+            or pd.api.types.is_complex_dtype(statistics.dtype)
+            or not np.isfinite(statistics.to_numpy(dtype=float)).all()
+        ):
+            raise ValueError("statistic_fn must return finite numeric statistics.")
 
-        if isinstance(X, pd.DataFrame):
-            self.feature_names_in_ = X.columns.to_numpy()
-        else:
-            raise TypeError("X is not a dataframe")
-
-        self.statistic_series_ = self.statistic_fn(X)
-        self.statistic_df_ = pd.DataFrame(self.statistic_series_).rename(
-            columns={"index": "feature", 0: "statistic"}
-        )
+        self.feature_names_in_ = X.columns.to_numpy(copy=True)
+        self.n_features_in_ = X.shape[1]
+        self.statistic_series_ = statistics
+        self.statistic_df_ = statistics.to_frame(name="statistic")
 
         # Sort with highest number of missing values on top
         self.statistic_df_ = self.statistic_df_.sort_values(
-            "statistic", ascending=False
+            "statistic", ascending=False, kind="stable"
         )
         if self.greater_than_threshold:
             self.support_ = self.statistic_series_.values > self.threshold
@@ -116,7 +160,7 @@ class BaseThresholdSelector(SelectorMixin, BaseEstimator):
         return self
 
     def _get_support_mask(self):
-        check_is_fitted(self)
+        check_is_fitted(self, "support_")
 
         return self.support_
 
@@ -126,16 +170,16 @@ class BaseThresholdSelector(SelectorMixin, BaseEstimator):
 
         Parameters
         ----------
-        X : array-like of shape (n_samples, n_features)
-            Input samples.
+        X : pd.DataFrame
+            Input samples with unique names and all selected columns.
 
         Returns
         -------
-        X_new : ndarray array of shape (n_samples, n_features_new)
-            Transformed array.
+        X_new : pd.DataFrame of shape (n_samples, n_features_new)
+            Selected columns in fitted order, preserving row index and dtypes.
         """
-        if not isinstance(X, pd.DataFrame):
-            raise TypeError("X is not a dataframe")
+        check_is_fitted(self, "support_")
+        _validate_dataframe(X)
         return X[self.selected_features_]
 
     def fit_transform(self, X, y=None, sample_weight=None, **fit_params):

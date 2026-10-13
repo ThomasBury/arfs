@@ -1,0 +1,592 @@
+FFFFFFFFFFFFFFFF..FFFFFFFFFFFFFFF.FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF.FFFFF [ 85%]
+FF.......FFF                                                             [100%]
+=================================== FAILURES ===================================
+____ test_duplicate_fit_and_transform_names_rejected[MissingValueThreshold] ____
+tests/test_threshold_contracts.py:57: in test_duplicate_fit_and_transform_names_rejected
+    cls().fit(duplicate, np.arange(len(frame)))
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/base.py:105: in fit
+    self.statistic_df_ = self.statistic_df_.sort_values(
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:7200: in sort_values
+    indexer = nargsort(
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/sorting.py:439: in nargsort
+    indexer = non_nan_idx[non_nans.argsort(kind=kind)]
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/generic.py:1577: in __nonzero__
+    raise ValueError(
+E   ValueError: The truth value of a Series is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
+
+During handling of the above exception, another exception occurred:
+tests/test_threshold_contracts.py:56: in test_duplicate_fit_and_transform_names_rejected
+    with pytest.raises(ValueError, match="unique"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'unique'
+E    Input: 'The truth value of a Series is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().'
+____ test_duplicate_fit_and_transform_names_rejected[UniqueValuesThreshold] ____
+tests/test_threshold_contracts.py:56: in test_duplicate_fit_and_transform_names_rejected
+    with pytest.raises(ValueError, match="unique"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+____ test_duplicate_fit_and_transform_names_rejected[CardinalityThreshold] _____
+tests/test_threshold_contracts.py:56: in test_duplicate_fit_and_transform_names_rejected
+    with pytest.raises(ValueError, match="unique"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+____ test_duplicate_fit_and_transform_names_rejected[CollinearityThreshold] ____
+tests/test_threshold_contracts.py:57: in test_duplicate_fit_and_transform_names_rejected
+    cls().fit(duplicate, np.arange(len(frame)))
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/unsupervised.py:356: in fit
+    assoc_matrix = association_matrix(
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/association.py:1230: in association_matrix
+    w_num_num = _callable_association_matrix_fn(
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/association.py:1400: in _callable_association_matrix_fn
+    return parallel_matrix_entries(
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/parallel.py:46: in parallel_matrix_entries
+    lst = func(X=df, sample_weight=sample_weight, comb_list=comb_list)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/parallel.py:163: in _compute_matrix_entries
+    func_xyw(x=X[comb[0]], y=X[comb[1]], sample_weight=sample_weight, as_frame=True)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/association.py:879: in weighted_corr
+    x, y, sample_weight = _check_association_pair(x, y, sample_weight)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/association.py:1950: in _check_association_pair
+    x = validate_target(x, np.size(x))
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/utils.py:273: in validate_target
+    raise ValueError(
+E   ValueError: y must be one-dimensional, nonempty and match the number of observations.
+
+During handling of the above exception, another exception occurred:
+tests/test_threshold_contracts.py:56: in test_duplicate_fit_and_transform_names_rejected
+    with pytest.raises(ValueError, match="unique"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'unique'
+E    Input: 'y must be one-dimensional, nonempty and match the number of observations.'
+_____ test_duplicate_fit_and_transform_names_rejected[VariableImportance] ______
+tests/test_threshold_contracts.py:56: in test_duplicate_fit_and_transform_names_rejected
+    with pytest.raises(ValueError, match="unique"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+___ test_unfitted_and_partial_state_raise_not_fitted[MissingValueThreshold] ____
+tests/test_threshold_contracts.py:72: in test_unfitted_and_partial_state_raise_not_fitted
+    operation(frame) if operation == selector.transform else operation()
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/base.py:139: in transform
+    return X[self.selected_features_]
+E   AttributeError: 'MissingValueThreshold' object has no attribute 'selected_features_'
+___ test_unfitted_and_partial_state_raise_not_fitted[UniqueValuesThreshold] ____
+tests/test_threshold_contracts.py:72: in test_unfitted_and_partial_state_raise_not_fitted
+    operation(frame) if operation == selector.transform else operation()
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/base.py:139: in transform
+    return X[self.selected_features_]
+E   AttributeError: 'UniqueValuesThreshold' object has no attribute 'selected_features_'
+____ test_unfitted_and_partial_state_raise_not_fitted[CardinalityThreshold] ____
+tests/test_threshold_contracts.py:72: in test_unfitted_and_partial_state_raise_not_fitted
+    operation(frame) if operation == selector.transform else operation()
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/base.py:139: in transform
+    return X[self.selected_features_]
+E   AttributeError: 'CardinalityThreshold' object has no attribute 'selected_features_'
+___ test_unfitted_and_partial_state_raise_not_fitted[CollinearityThreshold] ____
+tests/test_threshold_contracts.py:72: in test_unfitted_and_partial_state_raise_not_fitted
+    operation(frame) if operation == selector.transform else operation()
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/unsupervised.py:384: in transform
+    return X[self.selected_features_]
+E   AttributeError: 'CollinearityThreshold' object has no attribute 'selected_features_'
+_____ test_unfitted_and_partial_state_raise_not_fitted[VariableImportance] _____
+tests/test_threshold_contracts.py:72: in test_unfitted_and_partial_state_raise_not_fitted
+    operation(frame) if operation == selector.transform else operation()
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py:204: in transform
+    return X[self.selected_features_]
+E   AttributeError: 'VariableImportance' object has no attribute 'selected_features_'
+____ test_metadata_named_projection_clone_and_refit[MissingValueThreshold] _____
+tests/test_threshold_contracts.py:84: in test_metadata_named_projection_clone_and_refit
+    assert selector.n_features_in_ == 3
+E   AttributeError: 'MissingValueThreshold' object has no attribute 'n_features_in_'
+____ test_metadata_named_projection_clone_and_refit[UniqueValuesThreshold] _____
+tests/test_threshold_contracts.py:84: in test_metadata_named_projection_clone_and_refit
+    assert selector.n_features_in_ == 3
+E   AttributeError: 'UniqueValuesThreshold' object has no attribute 'n_features_in_'
+_____ test_metadata_named_projection_clone_and_refit[CardinalityThreshold] _____
+tests/test_threshold_contracts.py:84: in test_metadata_named_projection_clone_and_refit
+    assert selector.n_features_in_ == 3
+E   AttributeError: 'CardinalityThreshold' object has no attribute 'n_features_in_'
+____ test_metadata_named_projection_clone_and_refit[CollinearityThreshold] _____
+tests/test_threshold_contracts.py:84: in test_metadata_named_projection_clone_and_refit
+    assert selector.n_features_in_ == 3
+E   AttributeError: 'CollinearityThreshold' object has no attribute 'n_features_in_'
+______ test_metadata_named_projection_clone_and_refit[VariableImportance] ______
+tests/test_threshold_contracts.py:84: in test_metadata_named_projection_clone_and_refit
+    assert selector.n_features_in_ == 3
+E   AttributeError: 'VariableImportance' object has no attribute 'n_features_in_'
+________________ test_labelled_statistic_aligned_to_input_order ________________
+tests/test_threshold_contracts.py:113: in test_labelled_statistic_aligned_to_input_order
+    ).fit(frame)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/base.py:105: in fit
+    self.statistic_df_ = self.statistic_df_.sort_values(
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:7189: in sort_values
+    k = self._get_label_or_level_values(by[0], axis=axis)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/generic.py:1911: in _get_label_or_level_values
+    raise KeyError(key)
+E   KeyError: 'statistic'
+______________ test_collinearity_uses_fitted_order_for_real_ties _______________
+tests/test_threshold_contracts.py:135: in test_collinearity_uses_fitted_order_for_real_ties
+    assert_array_equal(selector.selected_features_, ["z"])
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 1 / 1 (100%)
+E    ACTUAL: array(['a'], dtype=object)
+E    DESIRED: array(['z'], dtype='<U1')
+______________ test_invalid_callback_result_rejected[statistic0] _______________
+tests/test_threshold_contracts.py:158: in test_invalid_callback_result_rejected
+    selector.fit(frame)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/base.py:113: in fit
+    self.selected_features_ = self.feature_names_in_[self.support_]
+E   IndexError: boolean index did not match indexed array along axis 0; size of axis is 3 but size of corresponding boolean axis is 2
+______________ test_invalid_callback_result_rejected[statistic1] _______________
+tests/test_threshold_contracts.py:157: in test_invalid_callback_result_rejected
+    with pytest.raises(ValueError, match="statistic"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+______________ test_invalid_callback_result_rejected[statistic2] _______________
+tests/test_threshold_contracts.py:157: in test_invalid_callback_result_rejected
+    with pytest.raises(ValueError, match="statistic"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+______________ test_invalid_callback_result_rejected[statistic3] _______________
+tests/test_threshold_contracts.py:157: in test_invalid_callback_result_rejected
+    with pytest.raises(ValueError, match="statistic"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+______________ test_invalid_callback_result_rejected[statistic4] _______________
+tests/test_threshold_contracts.py:157: in test_invalid_callback_result_rejected
+    with pytest.raises(ValueError, match="statistic"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+______________ test_invalid_callback_result_rejected[statistic5] _______________
+tests/test_threshold_contracts.py:158: in test_invalid_callback_result_rejected
+    selector.fit(frame)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/base.py:105: in fit
+    self.statistic_df_ = self.statistic_df_.sort_values(
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:7200: in sort_values
+    indexer = nargsort(
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/sorting.py:439: in nargsort
+    indexer = non_nan_idx[non_nans.argsort(kind=kind)]
+E   TypeError: '<' not supported between instances of 'str' and 'int'
+______________ test_invalid_callback_result_rejected[statistic6] _______________
+tests/test_threshold_contracts.py:158: in test_invalid_callback_result_rejected
+    selector.fit(frame)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/base.py:113: in fit
+    self.selected_features_ = self.feature_names_in_[self.support_]
+E   IndexError: only integers, slices (`:`), ellipsis (`...`), numpy.newaxis (`None`) and integer or boolean arrays are valid indices
+______________ test_invalid_callback_result_rejected[statistic7] _______________
+tests/test_threshold_contracts.py:157: in test_invalid_callback_result_rejected
+    with pytest.raises(ValueError, match="statistic"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+______________ test_invalid_callback_result_rejected[statistic8] _______________
+tests/test_threshold_contracts.py:158: in test_invalid_callback_result_rejected
+    selector.fit(frame)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/base.py:109: in fit
+    self.support_ = self.statistic_series_.values > self.threshold
+E   AttributeError: 'numpy.ndarray' object has no attribute 'values'
+_______________ test_base_rejects_invalid_threshold_at_fit[nan] ________________
+tests/test_threshold_contracts.py:166: in test_base_rejects_invalid_threshold_at_fit
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_______________ test_base_rejects_invalid_threshold_at_fit[inf] ________________
+tests/test_threshold_contracts.py:166: in test_base_rejects_invalid_threshold_at_fit
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_______________ test_base_rejects_invalid_threshold_at_fit[-inf] _______________
+tests/test_threshold_contracts.py:166: in test_base_rejects_invalid_threshold_at_fit
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_______________ test_base_rejects_invalid_threshold_at_fit[bad] ________________
+tests/test_threshold_contracts.py:167: in test_base_rejects_invalid_threshold_at_fit
+    selector.set_params(threshold=threshold).fit(frame)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/base.py:111: in fit
+    self.support_ = self.statistic_series_.values < self.threshold
+E   numpy._core._exceptions._UFuncNoLoopError: ufunc 'less' did not contain a loop with signature matching types (<class 'numpy.dtypes.Int64DType'>, <class 'numpy.dtypes.StrDType'>) -> None
+_______________ test_base_rejects_invalid_threshold_at_fit[True] _______________
+tests/test_threshold_contracts.py:166: in test_base_rejects_invalid_threshold_at_fit
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+____________ test_base_rejects_invalid_callback_parameters[params1] ____________
+tests/test_threshold_contracts.py:175: in test_base_rejects_invalid_callback_parameters
+    with pytest.raises(TypeError):
+E   Failed: DID NOT RAISE <class 'TypeError'>
+______ test_invalid_thresholds_after_set_params[-1-MissingValueThreshold] ______
+tests/test_threshold_contracts.py:183: in test_invalid_thresholds_after_set_params
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+______ test_invalid_thresholds_after_set_params[-1-UniqueValuesThreshold] ______
+tests/test_threshold_contracts.py:183: in test_invalid_thresholds_after_set_params
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+______ test_invalid_thresholds_after_set_params[-1-CardinalityThreshold] _______
+tests/test_threshold_contracts.py:183: in test_invalid_thresholds_after_set_params
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+______ test_invalid_thresholds_after_set_params[-1-CollinearityThreshold] ______
+tests/test_threshold_contracts.py:183: in test_invalid_thresholds_after_set_params
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_____ test_invalid_thresholds_after_set_params[nan-MissingValueThreshold] ______
+tests/test_threshold_contracts.py:183: in test_invalid_thresholds_after_set_params
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_____ test_invalid_thresholds_after_set_params[nan-UniqueValuesThreshold] ______
+tests/test_threshold_contracts.py:183: in test_invalid_thresholds_after_set_params
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+______ test_invalid_thresholds_after_set_params[nan-CardinalityThreshold] ______
+tests/test_threshold_contracts.py:183: in test_invalid_thresholds_after_set_params
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_____ test_invalid_thresholds_after_set_params[nan-CollinearityThreshold] ______
+tests/test_threshold_contracts.py:183: in test_invalid_thresholds_after_set_params
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_____ test_invalid_thresholds_after_set_params[inf-MissingValueThreshold] ______
+tests/test_threshold_contracts.py:183: in test_invalid_thresholds_after_set_params
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_____ test_invalid_thresholds_after_set_params[inf-UniqueValuesThreshold] ______
+tests/test_threshold_contracts.py:183: in test_invalid_thresholds_after_set_params
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+______ test_invalid_thresholds_after_set_params[inf-CardinalityThreshold] ______
+tests/test_threshold_contracts.py:183: in test_invalid_thresholds_after_set_params
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_____ test_invalid_thresholds_after_set_params[inf-CollinearityThreshold] ______
+tests/test_threshold_contracts.py:183: in test_invalid_thresholds_after_set_params
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_____ test_invalid_thresholds_after_set_params[-inf-MissingValueThreshold] _____
+tests/test_threshold_contracts.py:183: in test_invalid_thresholds_after_set_params
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_____ test_invalid_thresholds_after_set_params[-inf-UniqueValuesThreshold] _____
+tests/test_threshold_contracts.py:183: in test_invalid_thresholds_after_set_params
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_____ test_invalid_thresholds_after_set_params[-inf-CardinalityThreshold] ______
+tests/test_threshold_contracts.py:183: in test_invalid_thresholds_after_set_params
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_____ test_invalid_thresholds_after_set_params[-inf-CollinearityThreshold] _____
+tests/test_threshold_contracts.py:183: in test_invalid_thresholds_after_set_params
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_____ test_invalid_thresholds_after_set_params[bad-MissingValueThreshold] ______
+tests/test_threshold_contracts.py:184: in test_invalid_thresholds_after_set_params
+    selector.fit(frame)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/base.py:111: in fit
+    self.support_ = self.statistic_series_.values < self.threshold
+E   numpy._core._exceptions._UFuncNoLoopError: ufunc 'less' did not contain a loop with signature matching types (<class 'numpy.dtypes.Float64DType'>, <class 'numpy.dtypes.StrDType'>) -> None
+_____ test_invalid_thresholds_after_set_params[bad-UniqueValuesThreshold] ______
+tests/test_threshold_contracts.py:184: in test_invalid_thresholds_after_set_params
+    selector.fit(frame)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/base.py:109: in fit
+    self.support_ = self.statistic_series_.values > self.threshold
+E   numpy._core._exceptions._UFuncNoLoopError: ufunc 'greater' did not contain a loop with signature matching types (<class 'numpy.dtypes.Int64DType'>, <class 'numpy.dtypes.StrDType'>) -> None
+______ test_invalid_thresholds_after_set_params[bad-CardinalityThreshold] ______
+tests/test_threshold_contracts.py:184: in test_invalid_thresholds_after_set_params
+    selector.fit(frame)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/base.py:111: in fit
+    self.support_ = self.statistic_series_.values < self.threshold
+E   numpy._core._exceptions._UFuncNoLoopError: ufunc 'less' did not contain a loop with signature matching types (<class 'numpy.dtypes.Int64DType'>, <class 'numpy.dtypes.StrDType'>) -> None
+_____ test_invalid_thresholds_after_set_params[bad-CollinearityThreshold] ______
+tests/test_threshold_contracts.py:184: in test_invalid_thresholds_after_set_params
+    selector.fit(frame)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/unsupervised.py:366: in fit
+    to_drop = _recursive_collinear_elimination(self.assoc_matrix_, self.threshold)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/unsupervised.py:450: in _recursive_collinear_elimination
+    most_collinear_feature, to_drop = _most_collinear(dum, threshold)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/unsupervised.py:428: in _most_collinear
+    :, (association_matrix_abs > threshold).any(axis=0)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/ops/common.py:76: in new_method
+    return method(self, other)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/arraylike.py:56: in __gt__
+    return self._cmp_method(other, operator.gt)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:7900: in _cmp_method
+    new_data = self._dispatch_frame_op(other, op, axis=axis)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:7945: in _dispatch_frame_op
+    bm = self._mgr.apply(array_op, right=right)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/internals/managers.py:361: in apply
+    applied = b.apply(f, **kwargs)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/internals/blocks.py:393: in apply
+    result = func(self.values, **kwargs)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/ops/array_ops.py:341: in comparison_op
+    return invalid_comparison(lvalues, rvalues, op)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/ops/invalid.py:40: in invalid_comparison
+    raise TypeError(f"Invalid comparison between dtype={left.dtype} and {typ}")
+E   TypeError: Invalid comparison between dtype=float64 and str
+_____ test_invalid_thresholds_after_set_params[True-MissingValueThreshold] _____
+tests/test_threshold_contracts.py:183: in test_invalid_thresholds_after_set_params
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_____ test_invalid_thresholds_after_set_params[True-UniqueValuesThreshold] _____
+tests/test_threshold_contracts.py:183: in test_invalid_thresholds_after_set_params
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_____ test_invalid_thresholds_after_set_params[True-CardinalityThreshold] ______
+tests/test_threshold_contracts.py:183: in test_invalid_thresholds_after_set_params
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_____ test_invalid_thresholds_after_set_params[True-CollinearityThreshold] _____
+tests/test_threshold_contracts.py:183: in test_invalid_thresholds_after_set_params
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+__________ test_fraction_threshold_upper_bound[MissingValueThreshold] __________
+tests/test_threshold_contracts.py:189: in test_fraction_threshold_upper_bound
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+__________ test_fraction_threshold_upper_bound[CollinearityThreshold] __________
+tests/test_threshold_contracts.py:189: in test_fraction_threshold_upper_bound
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+______ test_count_threshold_is_positive_integer[0-UniqueValuesThreshold] _______
+tests/test_threshold_contracts.py:196: in test_count_threshold_is_positive_integer
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_______ test_count_threshold_is_positive_integer[0-CardinalityThreshold] _______
+tests/test_threshold_contracts.py:196: in test_count_threshold_is_positive_integer
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_____ test_count_threshold_is_positive_integer[1.5-UniqueValuesThreshold] ______
+tests/test_threshold_contracts.py:196: in test_count_threshold_is_positive_integer
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+______ test_count_threshold_is_positive_integer[1.5-CardinalityThreshold] ______
+tests/test_threshold_contracts.py:196: in test_count_threshold_is_positive_integer
+    with pytest.raises(ValueError, match="threshold"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+______________ test_invalid_collinearity_method_after_set_params _______________
+tests/test_threshold_contracts.py:201: in test_invalid_collinearity_method_after_set_params
+    with pytest.raises(ValueError, match="method"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+______ test_empty_pipeline_stages_have_consistent_metadata[association-0] ______
+tests/test_threshold_contracts.py:238: in test_empty_pipeline_stages_have_consistent_metadata
+    out = pipe.fit_transform(X)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/sklearn/base.py:1389: in wrapper
+    return fit_method(estimator, *args, **kwargs)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/sklearn/pipeline.py:730: in fit_transform
+    return last_step.fit_transform(
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/sklearn/base.py:918: in fit_transform
+    return self.fit(X, **fit_params).transform(X)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/unsupervised.py:364: in fit
+    self.assoc_matrix_ = xy_to_matrix(assoc_matrix)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/association.py:2082: in xy_to_matrix
+    xy = xy.pivot(index="row", columns="col").fillna(0)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:9339: in pivot
+    return pivot(self, index=index, columns=columns, values=values)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/reshape/pivot.py:537: in pivot
+    indexed = data.set_index(
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:6122: in set_index
+    raise KeyError(f"None of {missing} are in the columns")
+E   KeyError: "None of ['row', 'col'] are in the columns"
+______ test_empty_pipeline_stages_have_consistent_metadata[association-1] ______
+tests/test_threshold_contracts.py:238: in test_empty_pipeline_stages_have_consistent_metadata
+    out = pipe.fit_transform(X)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/sklearn/base.py:1389: in wrapper
+    return fit_method(estimator, *args, **kwargs)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/sklearn/pipeline.py:730: in fit_transform
+    return last_step.fit_transform(
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/sklearn/base.py:918: in fit_transform
+    return self.fit(X, **fit_params).transform(X)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/unsupervised.py:364: in fit
+    self.assoc_matrix_ = xy_to_matrix(assoc_matrix)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/association.py:2082: in xy_to_matrix
+    xy = xy.pivot(index="row", columns="col").fillna(0)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:9339: in pivot
+    return pivot(self, index=index, columns=columns, values=values)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/reshape/pivot.py:537: in pivot
+    indexed = data.set_index(
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:6122: in set_index
+    raise KeyError(f"None of {missing} are in the columns")
+E   KeyError: "None of ['row', 'col'] are in the columns"
+______ test_empty_pipeline_stages_have_consistent_metadata[correlation-0] ______
+tests/test_threshold_contracts.py:238: in test_empty_pipeline_stages_have_consistent_metadata
+    out = pipe.fit_transform(X)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/sklearn/base.py:1389: in wrapper
+    return fit_method(estimator, *args, **kwargs)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/sklearn/pipeline.py:730: in fit_transform
+    return last_step.fit_transform(
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/sklearn/base.py:918: in fit_transform
+    return self.fit(X, **fit_params).transform(X)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/unsupervised.py:364: in fit
+    self.assoc_matrix_ = xy_to_matrix(assoc_matrix)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/association.py:2082: in xy_to_matrix
+    xy = xy.pivot(index="row", columns="col").fillna(0)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:9339: in pivot
+    return pivot(self, index=index, columns=columns, values=values)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/reshape/pivot.py:537: in pivot
+    indexed = data.set_index(
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:6122: in set_index
+    raise KeyError(f"None of {missing} are in the columns")
+E   KeyError: "None of ['row', 'col'] are in the columns"
+______ test_empty_pipeline_stages_have_consistent_metadata[correlation-1] ______
+tests/test_threshold_contracts.py:238: in test_empty_pipeline_stages_have_consistent_metadata
+    out = pipe.fit_transform(X)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/sklearn/base.py:1389: in wrapper
+    return fit_method(estimator, *args, **kwargs)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/sklearn/pipeline.py:730: in fit_transform
+    return last_step.fit_transform(
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/sklearn/base.py:918: in fit_transform
+    return self.fit(X, **fit_params).transform(X)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/unsupervised.py:364: in fit
+    self.assoc_matrix_ = xy_to_matrix(assoc_matrix)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/association.py:2082: in xy_to_matrix
+    xy = xy.pivot(index="row", columns="col").fillna(0)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:9339: in pivot
+    return pivot(self, index=index, columns=columns, values=values)
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/reshape/pivot.py:537: in pivot
+    indexed = data.set_index(
+/tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:6122: in set_index
+    raise KeyError(f"None of {missing} are in the columns")
+E   KeyError: "None of ['row', 'col'] are in the columns"
+___________ test_empty_observations_rejected[MissingValueThreshold] ____________
+tests/test_threshold_contracts.py:252: in test_empty_observations_rejected
+    with pytest.raises(ValueError, match="observations"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+___________ test_empty_observations_rejected[UniqueValuesThreshold] ____________
+tests/test_threshold_contracts.py:252: in test_empty_observations_rejected
+    with pytest.raises(ValueError, match="observations"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+____________ test_empty_observations_rejected[CardinalityThreshold] ____________
+tests/test_threshold_contracts.py:252: in test_empty_observations_rejected
+    with pytest.raises(ValueError, match="observations"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+______________ test_directional_association_and_input_order_ties _______________
+tests/test_threshold_contracts.py:274: in test_directional_association_and_input_order_ties
+    assert _recursive_collinear_elimination(tied, 0.8) == ["z"]
+E   AssertionError: assert ['a'] == ['z']
+E
+E     At index 0 diff: 'a' != 'z'
+E     Use -v to get more diff
+______________________ test_ties_stable_across_hash_seeds ______________________
+tests/test_threshold_contracts.py:293: in test_ties_stable_across_hash_seeds
+    assert outputs == [["a"]] * 4
+E   AssertionError: assert [['z'], ['a'], ['z'], ['a']] == [['a'], ['a'], ['a'], ['a']]
+E
+E     At index 0 diff: ['z'] != ['a']
+E     Use -v to get more diff
+______________________ test_real_importance_fit_metadata _______________________
+tests/test_threshold_contracts.py:308: in test_real_importance_fit_metadata
+    assert selector.n_features_in_ == 3
+E   AttributeError: 'VariableImportance' object has no attribute 'n_features_in_'
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 4 boosting rounds.
+=============================== warnings summary ===============================
+arfs-r16/before/tests/test_threshold_contracts.py::test_metadata_named_projection_clone_and_refit[CollinearityThreshold]
+arfs-r16/before/tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[-1-CollinearityThreshold]
+arfs-r16/before/tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[nan-CollinearityThreshold]
+arfs-r16/before/tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[inf-CollinearityThreshold]
+arfs-r16/before/tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[-inf-CollinearityThreshold]
+arfs-r16/before/tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[bad-CollinearityThreshold]
+arfs-r16/before/tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[True-CollinearityThreshold]
+arfs-r16/before/tests/test_threshold_contracts.py::test_fraction_threshold_upper_bound[CollinearityThreshold]
+arfs-r16/before/tests/test_threshold_contracts.py::test_invalid_collinearity_method_after_set_params
+  /tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/association.py:808: RuntimeWarning: invalid value encountered in scalar divide
+    return wcov(x, y, w) / np.sqrt(wcov(x, x, w) * wcov(y, y, w))
+
+arfs-r16/before/tests/test_threshold_contracts.py::test_nonstring_callback_names_preserve_identity[names0]
+arfs-r16/before/tests/test_threshold_contracts.py::test_nonstring_callback_names_preserve_identity[names0]
+arfs-r16/before/tests/test_threshold_contracts.py::test_nonstring_callback_names_preserve_identity[names1]
+arfs-r16/before/tests/test_threshold_contracts.py::test_nonstring_callback_names_preserve_identity[names1]
+  /tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The BaseThresholdSelector or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+arfs-r16/before/tests/test_threshold_contracts.py::test_empty_observations_rejected[MissingValueThreshold]
+  /tmp/arfs-r15/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/unsupervised.py:54: RuntimeWarning: invalid value encountered in scalar divide
+    missing_counts[column] = (
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_threshold_contracts.py::test_duplicate_fit_and_transform_names_rejected[MissingValueThreshold]
+FAILED tests/test_threshold_contracts.py::test_duplicate_fit_and_transform_names_rejected[UniqueValuesThreshold]
+FAILED tests/test_threshold_contracts.py::test_duplicate_fit_and_transform_names_rejected[CardinalityThreshold]
+FAILED tests/test_threshold_contracts.py::test_duplicate_fit_and_transform_names_rejected[CollinearityThreshold]
+FAILED tests/test_threshold_contracts.py::test_duplicate_fit_and_transform_names_rejected[VariableImportance]
+FAILED tests/test_threshold_contracts.py::test_unfitted_and_partial_state_raise_not_fitted[MissingValueThreshold]
+FAILED tests/test_threshold_contracts.py::test_unfitted_and_partial_state_raise_not_fitted[UniqueValuesThreshold]
+FAILED tests/test_threshold_contracts.py::test_unfitted_and_partial_state_raise_not_fitted[CardinalityThreshold]
+FAILED tests/test_threshold_contracts.py::test_unfitted_and_partial_state_raise_not_fitted[CollinearityThreshold]
+FAILED tests/test_threshold_contracts.py::test_unfitted_and_partial_state_raise_not_fitted[VariableImportance]
+FAILED tests/test_threshold_contracts.py::test_metadata_named_projection_clone_and_refit[MissingValueThreshold]
+FAILED tests/test_threshold_contracts.py::test_metadata_named_projection_clone_and_refit[UniqueValuesThreshold]
+FAILED tests/test_threshold_contracts.py::test_metadata_named_projection_clone_and_refit[CardinalityThreshold]
+FAILED tests/test_threshold_contracts.py::test_metadata_named_projection_clone_and_refit[CollinearityThreshold]
+FAILED tests/test_threshold_contracts.py::test_metadata_named_projection_clone_and_refit[VariableImportance]
+FAILED tests/test_threshold_contracts.py::test_labelled_statistic_aligned_to_input_order
+FAILED tests/test_threshold_contracts.py::test_collinearity_uses_fitted_order_for_real_ties
+FAILED tests/test_threshold_contracts.py::test_invalid_callback_result_rejected[statistic0]
+FAILED tests/test_threshold_contracts.py::test_invalid_callback_result_rejected[statistic1]
+FAILED tests/test_threshold_contracts.py::test_invalid_callback_result_rejected[statistic2]
+FAILED tests/test_threshold_contracts.py::test_invalid_callback_result_rejected[statistic3]
+FAILED tests/test_threshold_contracts.py::test_invalid_callback_result_rejected[statistic4]
+FAILED tests/test_threshold_contracts.py::test_invalid_callback_result_rejected[statistic5]
+FAILED tests/test_threshold_contracts.py::test_invalid_callback_result_rejected[statistic6]
+FAILED tests/test_threshold_contracts.py::test_invalid_callback_result_rejected[statistic7]
+FAILED tests/test_threshold_contracts.py::test_invalid_callback_result_rejected[statistic8]
+FAILED tests/test_threshold_contracts.py::test_base_rejects_invalid_threshold_at_fit[nan]
+FAILED tests/test_threshold_contracts.py::test_base_rejects_invalid_threshold_at_fit[inf]
+FAILED tests/test_threshold_contracts.py::test_base_rejects_invalid_threshold_at_fit[-inf]
+FAILED tests/test_threshold_contracts.py::test_base_rejects_invalid_threshold_at_fit[bad]
+FAILED tests/test_threshold_contracts.py::test_base_rejects_invalid_threshold_at_fit[True]
+FAILED tests/test_threshold_contracts.py::test_base_rejects_invalid_callback_parameters[params1]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[-1-MissingValueThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[-1-UniqueValuesThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[-1-CardinalityThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[-1-CollinearityThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[nan-MissingValueThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[nan-UniqueValuesThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[nan-CardinalityThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[nan-CollinearityThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[inf-MissingValueThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[inf-UniqueValuesThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[inf-CardinalityThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[inf-CollinearityThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[-inf-MissingValueThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[-inf-UniqueValuesThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[-inf-CardinalityThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[-inf-CollinearityThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[bad-MissingValueThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[bad-UniqueValuesThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[bad-CardinalityThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[bad-CollinearityThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[True-MissingValueThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[True-UniqueValuesThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[True-CardinalityThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_thresholds_after_set_params[True-CollinearityThreshold]
+FAILED tests/test_threshold_contracts.py::test_fraction_threshold_upper_bound[MissingValueThreshold]
+FAILED tests/test_threshold_contracts.py::test_fraction_threshold_upper_bound[CollinearityThreshold]
+FAILED tests/test_threshold_contracts.py::test_count_threshold_is_positive_integer[0-UniqueValuesThreshold]
+FAILED tests/test_threshold_contracts.py::test_count_threshold_is_positive_integer[0-CardinalityThreshold]
+FAILED tests/test_threshold_contracts.py::test_count_threshold_is_positive_integer[1.5-UniqueValuesThreshold]
+FAILED tests/test_threshold_contracts.py::test_count_threshold_is_positive_integer[1.5-CardinalityThreshold]
+FAILED tests/test_threshold_contracts.py::test_invalid_collinearity_method_after_set_params
+FAILED tests/test_threshold_contracts.py::test_empty_pipeline_stages_have_consistent_metadata[association-0]
+FAILED tests/test_threshold_contracts.py::test_empty_pipeline_stages_have_consistent_metadata[association-1]
+FAILED tests/test_threshold_contracts.py::test_empty_pipeline_stages_have_consistent_metadata[correlation-0]
+FAILED tests/test_threshold_contracts.py::test_empty_pipeline_stages_have_consistent_metadata[correlation-1]
+FAILED tests/test_threshold_contracts.py::test_empty_observations_rejected[MissingValueThreshold]
+FAILED tests/test_threshold_contracts.py::test_empty_observations_rejected[UniqueValuesThreshold]
+FAILED tests/test_threshold_contracts.py::test_empty_observations_rejected[CardinalityThreshold]
+FAILED tests/test_threshold_contracts.py::test_directional_association_and_input_order_ties
+FAILED tests/test_threshold_contracts.py::test_ties_stable_across_hash_seeds
+FAILED tests/test_threshold_contracts.py::test_real_importance_fit_metadata
+73 failed, 11 passed, 14 warnings in 19.42s
