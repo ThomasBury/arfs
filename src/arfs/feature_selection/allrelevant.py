@@ -1,5 +1,9 @@
 """This module provides 3 different methods to perform 'all relevant feature selection'
 
+Selectors encode owned frames without changing the caller's values or dtypes.
+Categorical shadows retain the original's nominal role and missing values;
+categorical identities survive feature removal and fold splitting. Generated
+shadow names are unique. Transform returns selected columns of the raw input.
 
 Reference:
 ----------
@@ -64,7 +68,6 @@ from sklearn.utils.validation import check_is_fitted
 from sklearn.feature_selection._base import SelectorMixin
 from sklearn.model_selection import RepeatedKFold, train_test_split
 from sklearn.inspection import permutation_importance
-from sklearn.utils.validation import _check_sample_weight
 from matplotlib.lines import Line2D
 from lightgbm import early_stopping
 
@@ -73,9 +76,9 @@ from ..utils import (
     check_if_tree_based,
     is_lightgbm,
     is_catboost,
-    create_dtype_dict,
     get_pandas_cat_codes,
     validate_sample_weight,
+    validate_target,
 )
 
 ########################################################################################
@@ -447,11 +450,11 @@ class Leshy(SelectorMixin, BaseEstimator):
         # only sklearn requires to fillna data
         # modern GBM implementations can handle this
         # X = X.fillna(0)
-        y = pd.Series(y).fillna(0) if not isinstance(y, pd.Series) else y.fillna(0)
+        y = validate_target(y, len(X))
 
         # check input params
         self._check_params(X, y)
-        sample_weight = validate_sample_weight(sample_weight)
+        sample_weight = validate_sample_weight(sample_weight, len(X))
         self.random_state = check_random_state(self.random_state)
 
         # setup variables for Boruta
@@ -553,9 +556,11 @@ class Leshy(SelectorMixin, BaseEstimator):
         # make sure there's at least 5 columns in the shadow matrix for
         while x_sha.shape[1] < 5:
             x_sha = pd.concat([x_sha, x_sha], axis=1)
-        # shuffle xSha
-        x_sha = x_sha.apply(self.random_state.permutation, axis=0)
-        x_sha.columns = [f"Shadow_{i}" for i in range(x_sha.shape[1])]
+        x_sha.columns = _make_shadow_names(
+            X.columns, [f"Shadow_{i}" for i in range(x_sha.shape[1])]
+        )
+        for col in x_sha.columns:
+            x_sha[col] = x_sha[col].array.take(self.random_state.permutation(len(x_sha)))
         # get importance of the merged matrix
         if self.importance == "shap":
             imp = _get_shap_imp(
@@ -1150,9 +1155,11 @@ def _split_fit_estimator(estimator, X, y, sample_weight=None, cat_feature=None):
      y_tt : array [n_samples]
         the test split, target
     """
+    y = validate_target(y, len(X))
+    sample_weight = validate_sample_weight(sample_weight, len(X))
     if cat_feature is None:
         # detect, store and encode categorical predictors
-        X, _, cat_idx = get_pandas_cat_codes(X)
+        X, _, cat_idx = get_pandas_cat_codes(X.copy())
     else:
         cat_idx = cat_feature
 
@@ -1173,6 +1180,8 @@ def _split_fit_estimator(estimator, X, y, sample_weight=None, cat_feature=None):
             X_tr, X_tt, y_tr, y_tt = train_test_split(X, y, stratify=y, random_state=42)
         w_tr, w_tt = None, None
 
+    validate_sample_weight(w_tr, len(X_tr))
+    validate_sample_weight(w_tt, len(X_tt))
     if check_if_tree_based(estimator):
         try:
             # Handle LightGBM categorical features at initialization
@@ -1385,11 +1394,13 @@ def _get_imp(estimator, X, y, sample_weight=None, cat_feature=None):
     imp : array
         the permutation importance array
     """
+    y = validate_target(y, len(X))
+    sample_weight = validate_sample_weight(sample_weight, len(X))
     # be sure to use an non-fitted estimator
     estimator = clone(estimator)
     try:
         if cat_feature is None:
-            X, _, cat_idx = get_pandas_cat_codes(X)
+            X, _, cat_idx = get_pandas_cat_codes(X.copy())
         else:
             cat_idx = cat_feature
 
@@ -1576,8 +1587,10 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         else:
             raise TypeError("X is not a dataframe")
 
+        y = validate_target(y, len(X))
+        sample_weight = validate_sample_weight(sample_weight, len(X))
         if sample_weight is not None:
-            sample_weight = pd.Series(_check_sample_weight(sample_weight, X))
+            sample_weight = pd.Series(sample_weight)
 
         # crit, keep_vars, df_vimp, mean_shadow
         _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _boostaroota(
@@ -1679,6 +1692,18 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
 ############################################
 
 
+def _make_shadow_names(columns, names):
+    """Keep generated names distinct from real columns and other shadows."""
+    used = set(columns)
+    shadow_names = []
+    for name in names:
+        while name in used:
+            name += "_"
+        shadow_names.append(name)
+        used.add(name)
+    return shadow_names
+
+
 def _create_shadow(X_train):
     """Create shadow features by making copies of all X variables and randomly shuffling them.
 
@@ -1696,18 +1721,12 @@ def _create_shadow(X_train):
     for c in X_shadow.columns:
         X_shadow[c] = X_shadow[c].array.take(np.random.permutation(len(X_shadow)))
     # Rename the shadow variables
-    shadow_names = [f"ShadowVar{i + 1}" for i in range(X_train.shape[1])]
+    shadow_names = _make_shadow_names(
+        X_train.columns, [f"ShadowVar{i + 1}" for i in range(X_train.shape[1])]
+    )
     X_shadow.columns = shadow_names
     # Combine to make one new dataframe
     new_x = pd.concat([X_train, X_shadow], axis=1)
-    # Separate the columns that start with 'ShadowVar' from the other columns
-    shadow_columns = [col for col in new_x.columns if col.startswith("ShadowVar")]
-    other_columns = [col for col in new_x.columns if not col.startswith("ShadowVar")]
-
-    # Concatenate the two lists of column names
-    new_column_order = other_columns + shadow_columns
-    # Reorder the DataFrame columns
-    new_x = new_x[new_column_order]
     return new_x, shadow_names
 
 
@@ -1779,6 +1798,11 @@ def _reduce_vars_sklearn(
         error if the feature importance type is not
     """
     # Set up the parameters for running the model in XGBoost - split is on multi log loss
+    augmented_cat_feature = (
+        cat_feature + [idx + X.shape[1] for idx in cat_feature]
+        if cat_feature is not None
+        else None
+    )
     for i in range(1, n_iterations + 1):
         # Create the shadow variables and run the model to obtain importances
         new_x, shadow_names = _create_shadow(X)
@@ -1789,7 +1813,7 @@ def _reduce_vars_sklearn(
             "native": _get_imp,
         }
         importance = imp_func[imp_kind](
-            estimator, new_x, y, sample_weight=weight, cat_feature=cat_feature
+            estimator, new_x, y, sample_weight=weight, cat_feature=augmented_cat_feature
         )
 
         # Create a dataframe to store the feature importances
@@ -1877,11 +1901,8 @@ def _boostaroota(
     start_time = time.time()
     new_x = X.copy()
 
-    # extract the categorical names for the first time, store it for next iterations
-    # In the below while loop this list will be update only once some of the predictors
-    # are removed. This way the encoding is done only every predictors update and not
-    # every iteration. The code will then be much faster since the encoding is done only once.
-    new_x, obj_feat, cat_idx = get_pandas_cat_codes(X)
+    # Keep categorical identities after their dtypes become integer codes.
+    new_x, obj_feat, cat_idx = get_pandas_cat_codes(new_x)
 
     # Run through loop until "crit" changes
     i = 0
@@ -1912,7 +1933,11 @@ def _boostaroota(
                 break
             else:
                 new_x = new_x[keep_vars].copy()
-                _, _, cat_idx = get_pandas_cat_codes(new_x)
+                cat_idx = [
+                    new_x.columns.get_loc(col)
+                    for col in (obj_feat or [])
+                    if col in new_x.columns
+                ]
 
                 pbar.update(1)
 
@@ -2075,11 +2100,10 @@ class GrootCV(SelectorMixin, BaseEstimator):
         self.feature_names_in_ = X.columns.to_numpy()
         y = pd.Series(y) if not isinstance(y, pd.Series) else y
 
+        y = validate_target(y, len(X))
+        sample_weight = validate_sample_weight(sample_weight, len(X))
         if sample_weight is not None:
-            sample_weight = pd.Series(_check_sample_weight(sample_weight, X))
-
-        # internal encoding (ordinal encoding)
-        X, obj_feat, cat_idx = get_pandas_cat_codes(X)
+            sample_weight = pd.Series(sample_weight)
 
         self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
             X,
@@ -2158,19 +2182,10 @@ class GrootCV(SelectorMixin, BaseEstimator):
 
         b_df = self.cv_df.T.copy()
         b_df.columns = b_df.iloc[0]
-        # Separate the columns that start with 'ShadowVar' from the other columns
-        shadow_columns = [col for col in b_df.columns if col.startswith("ShadowVar")]
-        other_columns = [col for col in b_df.columns if not col.startswith("ShadowVar")]
-
-        # Concatenate the two lists of column names
-        new_column_order = other_columns + shadow_columns
-        # Reorder the DataFrame columns
-        b_df = b_df[new_column_order]
         b_df = b_df.drop(b_df.index[0])
         b_df = b_df.drop(b_df.index[-1])
         b_df = b_df.convert_dtypes()
-        real_df = b_df.iloc[:, : int(b_df.shape[1] / 2)].copy()
-        sha_df = b_df.iloc[:, int(b_df.shape[1] / 2) :].copy()
+        real_df = b_df.loc[:, self.feature_names_in_].copy()
 
         real_df = real_df.reindex(
             real_df.select_dtypes(include=[np.number])
@@ -2281,6 +2296,8 @@ def _reduce_vars_lgb_cv(
             the feature importance threshold, to reject or not the predictors
     """
 
+    X, category_cols, _ = get_pandas_cat_codes(X.copy())
+    category_cols = category_cols or []
     params = _set_lgb_parameters(
         X=X,
         y=y,
@@ -2290,10 +2307,6 @@ def _reduce_vars_lgb_cv(
         n_jobs=n_jobs,
         lgbm_params=lgbm_params,
     )
-
-    dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
-    category_cols = dtypes_dic["cat"] + dtypes_dic["time"] + dtypes_dic["unk"]
-    cat_idx = [X.columns.get_loc(col) for col in category_cols]
 
     if folds is None:
         folds = RepeatedKFold(n_splits=n_folds, n_repeats=n_iter, random_state=2652124)
@@ -2318,7 +2331,8 @@ def _reduce_vars_lgb_cv(
             new_x_val,
             y_val,
             weight_val,
-            category_cols=category_cols,
+            category_cols=category_cols
+            + [shadow_names[X.columns.get_loc(col)] for col in category_cols],
             early_stopping_rounds=20,
             fastshap=fastshap,
             **params,
@@ -2480,7 +2494,11 @@ def _split_data(X, y, tridx, validx, weight=None):
     tuple of pandas.DataFrame and pandas.Series
         X_train, X_val, y_train, y_val, weight_tr, weight_val
     """
+    y = validate_target(y, len(X))
+    checked_weight = validate_sample_weight(weight, len(X))
     if weight is not None:
+        if not isinstance(weight, pd.Series):
+            weight = pd.Series(checked_weight)
         X_train, y_train, weight_tr = (
             X.iloc[tridx, :],
             y.iloc[tridx],
@@ -2496,6 +2514,10 @@ def _split_data(X, y, tridx, validx, weight=None):
         X_val, y_val = X.iloc[validx, :], y.iloc[validx]
         weight_tr = None
         weight_val = None
+    validate_target(y_train, len(X_train))
+    validate_target(y_val, len(X_val))
+    validate_sample_weight(weight_tr, len(X_train))
+    validate_sample_weight(weight_val, len(X_val))
     return X_train, X_val, y_train, y_val, weight_tr, weight_val
 
 
