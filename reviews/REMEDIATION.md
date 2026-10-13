@@ -1,6 +1,6 @@
 # ARFS remediation handoff
 
-**Status: R01–R12 complete; R13–R33 pending. Next implementation group: R13 alone.**
+**Status: R01–R13 complete; R14–R33 pending. Next implementation group: R14 alone.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
 a separate repair backlog. By default, a request to implement the next phase
@@ -74,9 +74,9 @@ record each outcome separately. Stop at a phase boundary if a new API or
 statistical decision, unresolved failure, or wider scope makes the batch too
 large. Session boundaries and repair phases are not published releases.
 
-R01–R12 are complete. The explicitly requested R02/R03 and R10/R11 batches
+R01–R13 are complete. The explicitly requested R02/R03 and R10/R11 batches
 were implemented and validated sequentially; R04–R09 were completed alone.
-Run **R13 alone** next, with R03/R05 complete. Later phases use the recorded grouping
+Run **R14 alone** next, with R13 complete. Later phases use the recorded grouping
 rules below; phases outside the three conditional pairs remain separate.
 
 | Phases | Session recommendation | Reason |
@@ -91,19 +91,22 @@ rules below; phases outside the three conditional pairs remain separate.
 | R09 | Complete; do not repeat | Bounded mixed relevance and coherent ranking are recorded in the [R09 handoff](R09-mrmr-ranking.md) |
 | R10 → R11 | Complete sequential batch; do not repeat | [R10](R10-leshy-support.md) and [R11](R11-permutation-importance.md) record support/history consistency and the agreed signed normalization policy |
 | R12 | Complete; do not repeat | [R12](R12-all-relevant-aggregation.md) records resolved objectives/output axes and the user-chosen median/mean shadow rules |
-| R13 | Run alone next | R03/R05 complete; repair response-scale scoring and independent folds |
+| R13 | Complete; do not repeat | [R13](R13-glm-scoring.md) records negative response-scale deviance, BIC direction and independent weighted folds |
+| R14 | Run alone next | R13 complete; repair fitted GLM design/intercept and parameter state |
 
 ### Recorded groups for next-batch requests
 
 When the user asks to "implement the next batch of RXX", read the current phase
-statuses in this file and use these groups. **The next batch is R13 alone.**
+statuses in this file and use these groups. **The next batch is R14 alone.**
 R10/R11 are complete; their separate handoffs record support/history consistency,
 weighted permutation scoring and the user-chosen absolute-total normalization.
 R12 is complete: GrootCV uses maximum shadow medians across folds/repeats;
 BoostAGroota uses maximum shadow means across iterations, both divided by cutoff.
-R13's R03/R05 prerequisites are complete. A request for the next batch authorizes
-that one group,
-its affected callers, tests, local phase commits and handoff update; stop after
+R13 is complete: GLM scores are negative response-scale deviance; internal BIC
+selection still minimizes BIC, and weighted CV clones each fold with positional
+array/frame slicing and task-aware splits. R14's R13 prerequisite is complete.
+A request for the next batch authorizes that one group, its affected callers,
+tests, local phase commits and handoff update; stop after
 it. It does not authorize the following group or Git publication/release unless
 the user also requests those actions.
 
@@ -376,9 +379,40 @@ GLM response-scale deviance/scoring, weighted CV/grid search and the historical
 Poisson signal counterexample. R14 design/intercept and R15 likelihood/refit
 decisions stay separate. R13–R33 remain pending; stop after this R12 group.
 
+## R13 result — 2026-10-13
+
+R13 is complete on `main`, committed separately as `28b9529` from the clean
+`64b0ce7` checkout. The [handoff](R13-glm-scoring.md) records negative total
+response-scale deviance, higher-is-better public/CV scores, retained BIC
+minimization, task-aware native folds, positional array/frame slicing and a
+fresh clone per fold. Variance weights, unit scale, mean total fold loss and
+unshuffled order remain explicit. Direct score callers must handle the new
+negative sign. R14 design/parameter and R15 likelihood/refit repairs stay separate.
+
+Fresh installed-wheel full suites pass: **py39-locked 566 passed;
+py312-locked 566 passed; py312-newer 550 passed**, including 33 maintained R13
+cases. Those cases fail 29 times on the unchanged R12 wheel; repaired source
+and affected boundary/API callers pass **217** tests. Fourteen historical R13
+cases and controls pass unmasked in both 3.12 snapshots. The seeded Poisson
+counterexample now chooses alpha=1 with independent mean fold deviance 31.7024,
+versus 236.7310 for the former null-model choice. Dependency/provenance checks,
+eight source/installed hashes, 19 source/sdist/wheel payloads, copied tests,
+`uv lock --check`, Ruff 0.17.0 baseline (**417 total, zero new**), gate unit
+tests (**two passed**), new-test lint/format, local links and `git diff --check`
+pass. Exact commands and Python/dependency versions are in the handoff/evidence.
+Hosted CI, full docs/notebooks, other platforms, optional backends, performance,
+full sklearn compliance and statistical calibration were not checked.
+
+**Next group: R14 alone**, with R13 complete. Resume from `1C F5/F7/F8/F10`,
+`EnetGLM.fit/predict`, selector fit/transform, constants, input/support metadata,
+current family/link parameters and summary integration. Settle the fitted
+intercept/input-schema contract before edits. R15's zero-weight likelihood,
+finite criteria and refit policy remain unresolved and separate. R14–R33 are
+pending; no R13 decision remains unresolved. Stop after this completed R13 group.
+
 ## Ordered phases
 
-R01–R12 are **Complete**; R13–R33 are **Pending**. The
+R01–R13 are **Complete**; R14–R33 are **Pending**. The
 [R01 handoff](R01-installed-package.md) records changes, decisions, exact checks,
 environment identities, inherited failures, and the resume point. Changes are
 committed as `6b675fd` on `fix/r01-installed-package` at checkpoint base `0270aca`;
@@ -404,9 +438,12 @@ MRMR ranking, uncommitted on `main` preserving R04–R08 work. The
 [R10 handoff](R10-leshy-support.md) and [R11 handoff](R11-permutation-importance.md)
 record the completed sequential batch in separate local commits. Earlier
 R04–R09 changes remain uncommitted; the commits rely on that checkout state.
-R12 alone is next, with R07 complete. Hosted CI and remaining
-release evidence are still pending. An ID such as `1A F3` means finding 3 in the linked original report. The complete
-ID-to-phase mapping follows the table.
+Those uncommitted notes are historical; the R04–R12 delivery above records
+their merged commits. [R13](R13-glm-scoring.md) is complete in local commit
+`28b9529` on `main`, based on `64b0ce7`. R14 alone is next, with R13 complete.
+Hosted CI for R13 and remaining release evidence are still pending. An ID such
+as `1A F3` means finding 3 in the linked original report. The complete ID-to-phase
+mapping follows the table.
 
 | Phase | Smallest complete outcome | Depends on | Required validation |
 | --- | --- | --- | --- |
@@ -422,7 +459,7 @@ ID-to-phase mapping follows the table.
 | **R10 — Leshy support/history consistency (Complete)** | Let support computation own the mask and use all actual history rows. [1B F1/F2](01b-all-relevant.md) | R07 | Confirmed-only, tentative-only, mixed and empty selections with `keep_weak` on/off; mask/count/transform agreement; two-iteration median and rejected ranking |
 | **R11 — Weighted signed permutation importance (Complete)** | Forward validation scoring weights; normalize permutation scores by absolute total, keep all-zero vectors zero and require positive mean evidence. [1B F3/F4](01b-all-relevant.md) | R05/R07 | Real weighted sklearn reference; negative-total and zero-total fixed vectors; both Leshy and BoostAGroota callers; no promotion of negative scores as positive evidence |
 | **R12 — Explicit all-relevant aggregation (Complete)** | Resolve GrootCV objective/output-axis handling, then choose the intended fold/shadow statistic for GrootCV and BoostAGroota and align prose. [1B F7–F9](01b-all-relevant.md) | R07 | Binary-to-multiclass and objective-alias real fits; exact hand examples with fold columns only; documented cutoff axes/order. Calibration remains a separate claim |
-| **R13 — Correct GLM scoring and independent CV** | Compute response-scale deviance once, expose a higher-is-better sklearn score while minimizing BIC correctly, pass stratification targets, slice documented arrays, clone each fold. [1C F2–F4/F9/F12](01c-weighted-glm-lasso.md) | R03/R05 | Independent Poisson/binomial/Gamma losses, real external GridSearchCV, binary fold splits, array/frame parity, stateful-estimator isolation; rerun the Poisson signal counterexample |
+| **R13 — Correct GLM scoring and independent CV (Complete)** | Compute response-scale deviance once, expose a higher-is-better sklearn score while minimizing BIC correctly, pass stratification targets, slice documented arrays, clone each fold. [1C F2–F4/F9/F12](01c-weighted-glm-lasso.md) | R03/R05 | Independent Poisson/binomial/Gamma losses, real external GridSearchCV, binary fold splits, array/frame parity, stateful-estimator isolation; rerun the Poisson signal counterexample |
 | **R14 — Stable GLM design and parameters** | Use one fitted intercept/input-column contract across fit/predict/transform; derive the family/link at fit from current parameters; return self. [1C F5/F7/F8/F10](01c-weighted-glm-lasso.md) | R13 | Single-row prediction, existing constants, `fit_intercept=False`, reorder/missing/extra/duplicate names, arrays and support metadata, `set_params` vs fresh construction, chained fit/predict and summary integration |
 | **R15 — Honest likelihood and refit contract** | Decide zero-weight likelihood handling, reject all-invalid candidate criteria, describe regularized selection followed by unpenalized refit, remove the near-ridge promise. [1C F6/F11](01c-weighted-glm-lasso.md) | R13/R14 | Zero-weight equivalence to omission or clear rejection; all-nonfinite search fails; independent weighted Gaussian/Poisson BIC comparisons; documented coefficient/refit behavior and post-selection inference limit |
 | **R16 — Threshold selector identity/state** | Reject duplicate names or adopt consistent positions, align labelled callbacks, validate parameters at fit, handle zero/one-feature collinearity, stabilize ties and fitted metadata. Resolve equality wording explicitly. [03 F5–F9/F12](03-selector-contracts.md) | R06/R08 | Masks/names/output agree, reordered callback labels, invalid `set_params`, empty pipeline stages, multiple hash seeds, correct feature counts and NotFittedError. Preserve legitimate named projection if retained as the API |
@@ -447,7 +484,7 @@ ID-to-phase mapping follows the table.
 R21's group/schema safeguards can be advanced immediately after R05/R06 if
 training-wrapper users are the priority; its dependencies do not require waiting
 for the intervening algorithm phases. Similarly independent R24–R28 work need
-not await GLM repairs. The default next group is now R13 alone. Do not parallelize
+not await GLM repairs. The default next group is now R14 alone. Do not parallelize
 edits to shared dtype/weight helpers without agreeing their contract first.
 
 ## Complete finding-to-phase map
