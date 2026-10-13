@@ -112,7 +112,14 @@ Lasso
 -----
 
 Performing a simple grid search with enforced lasso regularization.
-The best model is chosen based on the minimum BIC or deviance score, and all non-zero coefficients are selected.
+The best model minimizes training BIC (``score="bic"``) or mean total validation
+deviance across five folds (``score="deviance"``), and all non-zero coefficients are selected.
+``EnetGLM.score`` returns negative response-scale deviance so sklearn searches
+can maximize it. Weights enter as variance weights; the loss uses unit scale
+and is not divided by fold size or weight mass.
+Each fold fits an independent clone. Classifiers and binomial GLMs with discrete
+targets use stratified folds; regressions, including two-valued numeric responses,
+and fractional binomial responses use ordinary folds. Splits do not shuffle rows.
 The loss function can belong to the exponential family, as seen in the statsmodels GLM documentation.
 Using the bic metric is faster since it is evaluated on the training data, making it unsuitable for the test data, whereas the deviance is cross-validated.
 

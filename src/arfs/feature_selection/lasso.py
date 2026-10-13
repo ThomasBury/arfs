@@ -22,8 +22,8 @@ import pandas as pd
 import numpy as np
 import statsmodels.api as sm
 from sklearn.base import BaseEstimator, TransformerMixin, RegressorMixin
-from sklearn.base import clone
-from sklearn.model_selection import StratifiedKFold, KFold
+from sklearn.base import clone, is_classifier
+from sklearn.model_selection import check_cv
 from joblib import Parallel, delayed
 from typing import Union, Optional
 from ..utils import validate_sample_weight, validate_target
@@ -258,7 +258,7 @@ class EnetGLM(BaseEstimator, RegressorMixin):
         sample_weight: Optional[Union[np.ndarray, pd.Series]] = None,
     ):
         """
-        Return the deviance of the fitted model.
+        Return negative response-scale deviance (higher is better).
 
         Parameters
         ----------
@@ -270,15 +270,15 @@ class EnetGLM(BaseEstimator, RegressorMixin):
 
         Returns
         -------
-        deviance : float
-            The deviance of the fitted model.
+        score : float
+            Negative total deviance, using variance weights and unit scale.
         """
         validate_target(y, len(X))
         sample_weight = validate_sample_weight(sample_weight, len(X))
-        mu = self.objective.link.inverse(self.predict(X))
+        mu = self.predict(X)
 
         var_weights = sample_weight if sample_weight is not None else 1.0
-        return self.objective.deviance(endog=y, mu=mu, var_weights=var_weights)
+        return -self.objective.deviance(endog=y, mu=mu, var_weights=var_weights)
 
     def summary(self):
         """
@@ -307,25 +307,26 @@ def weighted_cross_val_score(estimator, X, y, sample_weight=None, cv=5, n_jobs=-
     sample_weight : array-like of shape (n_samples,), optional
         The sample weights for each data point.
     cv : int, default=5
-        The number of cross-validation folds.
+        The number of cross-validation folds. Classifiers and binomial GLMs
+        with discrete targets use stratified folds; other targets use KFold.
     n_jobs:
         the number of processes
 
     Returns
     -------
-    scores : array of shape (cv,)
-        The list of scores for each fold.
-    average_score : float
-        The average score across all folds.
+    scores : list of length cv
+        Each independent clone's validation score, with validation weights
+        when supplied. EnetGLM returns negative total deviance per fold.
 
     """
 
     validate_target(y, len(X))
     sample_weight = validate_sample_weight(sample_weight, len(X))
-    # logging.info("Starting cross-validation...")
-
-    splitter = (
-        KFold(n_splits=cv) if len(np.unique(y)) > 2 else StratifiedKFold(n_splits=cv)
+    splitter = check_cv(
+        cv,
+        y,
+        classifier=is_classifier(estimator)
+        or getattr(estimator, "family", None) == "binomial",
     )
 
     if not hasattr(estimator, "score") or not callable(getattr(estimator, "score")):
@@ -338,10 +339,9 @@ def weighted_cross_val_score(estimator, X, y, sample_weight=None, cv=5, n_jobs=-
             delayed(_fit_and_score)(
                 estimator, X, y, train_index, test_index, sample_weight
             )
-            for train_index, test_index in splitter.split(X)
+            for train_index, test_index in splitter.split(X, y)
         )
 
-    # logging.info("Finished cross-validation.")
     return scores
 
 
@@ -383,8 +383,12 @@ def _fit_and_score(
     """
     y = validate_target(y, len(X)).to_numpy()
     sample_weight = validate_sample_weight(sample_weight, len(X))
-    X_train, X_test = X.iloc[train_index, :], X.iloc[test_index, :]
+    if isinstance(X, pd.DataFrame):
+        X_train, X_test = X.iloc[train_index, :], X.iloc[test_index, :]
+    else:
+        X_train, X_test = X[train_index, :], X[test_index, :]
     y_train, y_test = y[train_index], y[test_index]
+    estimator = clone(estimator)
 
     if sample_weight is not None:
         sample_weight_train = validate_sample_weight(
@@ -431,7 +435,8 @@ def grid_search_cv(
     link : str, optional
         the GLM link function. It can be any of the: "identity", "log", "logit", "probit", "cloglog", "inverse_squared"
     score : str, default="bic"
-        The score to use for model selection. Options: "bic" (Bayesian Information Criterion) or "mean_cv" (mean cross-validation score).
+        Options: "bic" minimizes training BIC; "deviance" minimizes the mean
+        total validation deviance across five folds (maximizes negative scores).
     n_jobs:
         the number of processes
 
@@ -479,8 +484,8 @@ def grid_search_cv(
                 estimator, X, y, sample_weight=sample_weight, cv=5, n_jobs=n_jobs
             )
             param_score.append(np.mean(scores))
-    # min deviance or min BIC
-    best_alpha_value = grid[np.argmin(param_score)]
+    best_index = np.argmin(param_score) if score == "bic" else np.argmax(param_score)
+    best_alpha_value = grid[best_index]
     best_estimator = clone(estimator)
     best_estimator.set_params(
         **{
@@ -509,7 +514,8 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
     n_iterations : int, default=10
         Number of iterations for the grid search.
     score : str, default="bic"
-        The score to use for model selection. Options: "bic" (Bayesian Information Criterion) or "mean_cv" (mean cross-validation score).
+        Options: "bic" minimizes training BIC; "deviance" minimizes the mean
+        total validation deviance across five folds (maximizes negative scores).
     n_jobs: int, default=-1
         the number of processes. -1 means all the processes
 

@@ -1,0 +1,49 @@
+Checkout: /home/bsatom/Documents/arfs; clean main @ 64b0ce7.
+R13 runs alone. No publication, release, dependency or configuration change.
+
+Runtime environment:
+UV_CACHE_DIR=/tmp/arfs-r04/cache MPLBACKEND=Agg
+MPLCONFIGDIR=/tmp/arfs-r13/mpl-$cell OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 PYTHONHASHSEED=0
+PYTHONDONTWRITEBYTECODE=1; installed-wheel runs omit PYTHONPATH.
+
+Before (final maintained tests against unchanged installed R12 wheel):
+/tmp/arfs-r12/py312-locked/bin/python -I -m pytest tests/test_glm_scoring.py -q --tb=short -p no:cacheprovider
+Expected: 29 failed, 4 passed, exit 1.
+Source (PYTHONPATH=src):
+/tmp/arfs-r12/py312-locked/bin/python -m pytest tests/test_glm_scoring.py tests/test_observation_boundaries.py tests/test_dependency_apis.py -q --tb=short -p no:cacheprovider
+Result: 217 passed, exit 0.
+
+uv build --python /tmp/arfs-r12/py312-locked/bin/python --out-dir /tmp/arfs-r13/dist
+uv export --locked --extra test --no-emit-project --output-file /tmp/arfs-r13/locked-requirements.txt
+uv lock --check --python /tmp/arfs-r12/py312-locked/bin/python
+uv tool run --from ruff==0.17.0 ruff check tests/test_glm_scoring.py
+uv tool run --from ruff==0.17.0 ruff format --check tests/test_glm_scoring.py
+uv tool run --from ruff==0.17.0 python .github/scripts/check_ruff_baseline.py
+/tmp/arfs-r12/py312-locked/bin/python -m unittest discover -s .github/scripts -p 'test_*.py'
+git diff --check
+
+Per-cell command JSON records exact fresh venv/install/dependency/provenance/test
+commands, working directories and exit codes. Locked requirements come from the
+current uv.lock; newer pins are .github/requirements/runtime-newer-py312.txt.
+Tests copied outside the checkout must match source bytes. Eight installed module
+hashes must match source; all 19 source/sdist/wheel payloads match. Python -I and
+provenance checks exclude a source-path import or setuptools workaround.
+
+Historical commands select:
+poisson_cv_chooses or binary_deviance_selector or array_cv_matches or sklearn_search
+or cv_folds_are_independent or bic_grid_matches or poisson_rate_weights
+or poisson_bic_differences or supported_family_predict
+from reviews/evidence/01c-weighted-glm-lasso/checks.py with --runxfail.
+Result: 14 passed in each 3.12 cell. Positive-score assertions remain historical;
+independent negative-score references are promoted in tests/test_glm_scoring.py.
+
+The repaired installed-wheel Poisson counterexample records direct backend
+fold fits plus independent Poisson losses in poisson-case.json. It uses the
+same seed, data and seven penalties as the historical check.
+
+Context7 documentation lookup: sklearn higher-is-better scoring, native check_cv
+split policy, cloning; statsmodels Family.deviance variance weights. Tests check
+real response means and independent Gaussian/Poisson/binomial/Gamma formulas.
+Original historical scripts and logs are unchanged. New terminal carriage
+returns/trailing whitespace are removed from completed logs before commit.

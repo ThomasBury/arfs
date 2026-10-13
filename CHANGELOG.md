@@ -4,6 +4,7 @@
 
  - Validate response and observation-weight inputs, preserve category identity, and correct weighted association arithmetic.
  - Correct MRMR ranking, categorical shadow controls, Leshy support/history, weighted permutation scoring, and GrootCV output/threshold aggregation.
+ - Return negative response-scale GLM deviance for sklearn scoring, preserve BIC minimization, and repair weighted CV splits, NumPy inputs and fold isolation.
  - Test installed wheels on Python 3.9 and 3.12 with locked dependencies, plus a newer Python 3.12 snapshot.
  - Keep the next version and release pending the remaining remediation blockers and R33 release checks.
 
