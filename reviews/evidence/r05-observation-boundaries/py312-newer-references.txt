@@ -1,0 +1,18 @@
+........F.................                                               [100%]
+=================================== FAILURES ===================================
+______ test_zero_weight_category_equivalent_to_removal[correlation_ratio] ______
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:248: in test_zero_weight_category_equivalent_to_removal
+    assert_allclose(statistic(x, y, weights), statistic(x.iloc[:4], y.iloc[:4], weights[:4]))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+../py312-newer/lib/python3.12/site-packages/arfs/association.py:611: in correlation_ratio
+    raise TypeError(
+E   TypeError: One of the series must be categorical and the other numerical.
+=============================== warnings summary ===============================
+reviews/evidence/01a-statistical-foundations/checks.py::test_no_complete_rows_rejected
+  /tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:2040: UserWarning: {'y'} columns have been removed (single unique values)
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_zero_weight_category_equivalent_to_removal[correlation_ratio]
+1 failed, 25 passed, 111 deselected, 1 warning in 17.83s

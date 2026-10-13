@@ -1,0 +1,38 @@
+........F.................FF                                             [100%]
+=================================== FAILURES ===================================
+______ test_zero_weight_category_equivalent_to_removal[correlation_ratio] ______
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:248: in test_zero_weight_category_equivalent_to_removal
+    assert_allclose(statistic(x, y, weights), statistic(x.iloc[:4], y.iloc[:4], weights[:4]))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+../py312-newer/lib/python3.12/site-packages/arfs/association.py:611: in correlation_ratio
+    raise TypeError(
+E   TypeError: One of the series must be categorical and the other numerical.
+_______ test_benchmark_weighted_reference_and_feature_labels[regression] _______
+/home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py:540: in test_benchmark_weighted_reference_and_feature_labels
+    benchmark.sklearn_pimp_bench(model, X, y, task=task, sample_weight=w)
+../py312-newer/lib/python3.12/site-packages/arfs/benchmark.py:99: in sklearn_pimp_bench
+    ax.boxplot(
+/home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py:535: in plot
+    records.update(plotted=values.copy(), labels=list(kwargs["labels"]))
+                                                      ^^^^^^^^^^^^^^^^
+E   KeyError: 'labels'
+_____ test_benchmark_weighted_reference_and_feature_labels[classification] _____
+/home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py:540: in test_benchmark_weighted_reference_and_feature_labels
+    benchmark.sklearn_pimp_bench(model, X, y, task=task, sample_weight=w)
+../py312-newer/lib/python3.12/site-packages/arfs/benchmark.py:99: in sklearn_pimp_bench
+    ax.boxplot(
+/home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py:535: in plot
+    records.update(plotted=values.copy(), labels=list(kwargs["labels"]))
+                                                      ^^^^^^^^^^^^^^^^
+E   KeyError: 'labels'
+=============================== warnings summary ===============================
+reviews/evidence/01a-statistical-foundations/checks.py::test_no_complete_rows_rejected
+  /tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:2040: UserWarning: {'y'} columns have been removed (single unique values)
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_zero_weight_category_equivalent_to_removal[correlation_ratio]
+FAILED ../../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_benchmark_weighted_reference_and_feature_labels[regression]
+FAILED ../../../home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py::test_benchmark_weighted_reference_and_feature_labels[classification]
+3 failed, 25 passed, 109 deselected, 1 warning in 22.78s

@@ -23,13 +23,15 @@ from ..association import (
     association_series,
 )
 
+from ..utils import validate_sample_weight, validate_target
+
 FLOOR = 0.001
 
 
 class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
     """MRMR feature selection for a classification or a regression task
     For a classification task, the target should be of object or pandas category
-    dtype. For a regression task, the target should be of numpy categorical dtype.
+    dtype. For a regression task, the target should be numeric.
     The predictors can be categorical or numerical, there is no encoding required.
     The dtype will be automatically detected and the right method applied (either
     correlation, correlation ration or Theil's U)
@@ -41,7 +43,9 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         Number of features to select.
     relevance_func: callable, optional
         relevance function having arguments "X", "y", "sample_weight" and returning a pd.Series
-        containing a score of relevance for each feature
+        containing finite nonnegative scores indexed by predictor names.
+        Missing/NaN scores make a predictor unavailable. Defaults use F/(1+F)
+        on [0, 1], a mixed-type ranking heuristic without significance claims.
     redundancy_func: callable, optional
         Redundancy method.
         If callable, it should take "X", "sample_weight" as input and return a pandas.Series
@@ -80,6 +84,17 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         name and scores for the selected features
     support_ : list of bool
         the list of the selected X-columns
+    Notes
+    -----
+    Ties follow the input column order. Zero-relevance predictors remain eligible:
+    MRMR fills the requested count rather than testing significance. Missing
+    custom scores or zero input columns yield an empty fitted selection; a zero
+    requested count does too. The default denominator uses absolute unnormalized
+    associations, floored at 0.001. Aggregate redundancy exactly one gives a
+    zero quotient score, so exact duplicates are postponed, but remain eligible.
+    The first selected feature keeps the historical ranking convention of an
+    infinite MRMR score and zero recorded redundancy.
+
     Example
     -------
     >>> from sklearn.datasets import make_classification, make_regression
@@ -136,7 +151,7 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
 
         if self.redundancy_func is None:
             self.redundancy_func = functools.partial(
-                association_series, n_jobs=self.n_jobs, normalize=True
+                association_series, n_jobs=self.n_jobs, normalize=False
             )
 
     def fit(self, X, y, sample_weight=None):
@@ -150,7 +165,11 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         y : array-like or pd.Series of shape (n_samples,)
             Target vector. Must be numeric for regression or categorical for classification.
         sample_weight : pd.Series, optional, shape (n_samples,)
-            weights for computing the statistics (e.g. weighted average)
+            Default relevance uses frequency weight mass for degrees of freedom,
+            without normalizing weights. The F/(1+F) relevance map preserves
+            integer row replication; fractional mass defines scores only.
+            Custom relevance defines its own weight meaning. Redundancy
+            coefficients accept relative weights.
 
         Returns
         -------
@@ -159,35 +178,45 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
             If `return_scores=True`, returns (selected_features, relevance_scores).
         """
 
+        if (
+            isinstance(self.n_features_to_select, (bool, np.bool_))
+            or not isinstance(self.n_features_to_select, (int, np.integer))
+            or self.n_features_to_select < 0
+        ):
+            raise ValueError("n_features_to_select must be a nonnegative integer.")
+
         if isinstance(X, pd.DataFrame):
             self.feature_names_in_ = X.columns.to_numpy()
         else:
             raise TypeError("X is not a pd.DataFrame")
 
-        if not isinstance(y, pd.Series):
-            y = pd.Series(y)
-
-        y.name = "target"
-
-        target = y.copy()
+        target = validate_target(y, len(X)).rename("target")
+        sample_weight = validate_sample_weight(sample_weight, len(X))
         if self.task == "classification":
             target = target.astype("category")
 
         self.relevance_args = {"X": X, "y": target, "sample_weight": sample_weight}
         self.redundancy_args = {"X": X, "sample_weight": sample_weight}
 
-        self.relevance = self.relevance_func(**self.relevance_args)
+        if self.n_features_to_select == 0 or X.shape[1] == 0:
+            self.relevance = pd.Series(dtype=float)
+        else:
+            self.relevance = self.relevance_func(**self.relevance_args)
+        if not isinstance(self.relevance, pd.Series) or not self.relevance.index.is_unique:
+            raise ValueError("Relevance must be a Series with unique predictor labels.")
+        if not self.relevance.index.isin(X.columns).all():
+            raise ValueError("Relevance contains unknown predictor labels.")
+        available = self.relevance.dropna()
+        if not np.isfinite(available).all() or (available < 0).any():
+            raise ValueError("Available relevance scores must be finite and nonnegative.")
+        self.relevance = self.relevance.reindex(X.columns)
         self.features = self.relevance[~self.relevance.isna()].index.to_list()
         self.relevance = self.relevance.loc[self.features]
         self.redundancy = pd.DataFrame(
             FLOOR, index=self.features, columns=self.features
         )
-        self.n_features_to_select = min(self.n_features_to_select, len(self.features))
-
-        if isinstance(X, pd.DataFrame):
-            self.feature_names_in_ = X.columns.to_numpy()
-
-        self.n_features_in_ = len(self.features)
+        self.n_features_to_select_ = min(self.n_features_to_select, len(self.features))
+        self.n_features_in_ = X.shape[1]
 
         self.selected_features = []
         self.not_selected_features = self.features.copy()
@@ -203,14 +232,15 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
             [self.ranking_, self.relevance_, self.redundancy_], axis=1
         )
         self.ranking_.columns = ["mrmr", "relevance", "redundancy"]
-        self.ranking_ = self.ranking_.iloc[: self.n_features_to_select, :]
+        self.ranking_ = self.ranking_.loc[self.selected_features]
 
         # Set back the mrmr score to Inf for the first selected feature to avoid dividing by zero
-        self.ranking_.iloc[0, 0] = float("Inf")
+        if self.selected_features:
+            self.ranking_.iloc[0, 0] = float("Inf")
 
         self.selected_features_ = self.selected_features
         self.support_ = np.asarray(
-            [x in self.selected_features for x in self.feature_names_in_]
+            [x in self.selected_features for x in self.feature_names_in_], dtype=bool
         )
         self.not_selected_features_ = self.not_selected_features
 
@@ -312,7 +342,7 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
             score_denominator = pd.Series(1, index=self.features)
 
         score = score_numerator / score_denominator
-        score = score.sort_values(ascending=False)
+        score = score.sort_values(ascending=False, kind="stable")
         best_feature = score.index[score.argmax()]
 
         return best_feature, score, score_denominator
@@ -340,7 +370,7 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         self.not_selected_features.remove(best_feature)
 
     def run_feature_selection(self):
-        for i in tqdm(range(self.n_features_to_select), disable=not self.show_progress):
+        for i in tqdm(range(self.n_features_to_select_), disable=not self.show_progress):
             best_feature, score, score_denominator = self.select_next_feature(
                 self.not_selected_features,
                 self.selected_features,

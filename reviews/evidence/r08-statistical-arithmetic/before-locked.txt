@@ -1,0 +1,160 @@
+.FFFFFFFFFF                                                              [100%]
+=================================== FAILURES ===================================
+_______________________ test_numeric_f_linear_reference ________________________
+reviews/evidence/01a-statistical-foundations/checks.py:164: in test_numeric_f_linear_reference
+    assert_allclose(a.f_cont_regression_parallel(X, y, n_jobs=1)["x"], f_regression(X, y)[0][0])
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 1.79769313e+308
+E   Max relative difference among violations: 5.24327164e+306
+E    ACTUAL: array(1.797693e+308)
+E    DESIRED: array(34.285714)
+___________________ test_numeric_f_drop_equals_manual_filter ___________________
+reviews/evidence/01a-statistical-foundations/checks.py:173: in test_numeric_f_drop_equals_manual_filter
+    assert_allclose(actual, reference)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 4.26315789
+E   Max relative difference among violations: 0.33333333
+E    ACTUAL: array([17.052632])
+E    DESIRED: array([12.789474])
+___________________ test_constant_categorical_relevance_zero ___________________
+reviews/evidence/01a-statistical-foundations/checks.py:179: in test_constant_categorical_relevance_zero
+    assert a.f_cat_classification_parallel(X, y, n_jobs=1)["constant"] == 0
+E   assert np.float64(1.7976931348623157e+308) == 0
+______________ test_constant_categorical_matrix_and_collinearity _______________
+reviews/evidence/01a-statistical-foundations/checks.py:191: in test_constant_categorical_matrix_and_collinearity
+    matrix = a.association_matrix(X)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1266: in association_matrix
+    w_nom_nom = _callable_association_matrix_fn(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1414: in _callable_association_matrix_fn
+    return parallel_matrix_entries(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py:47: in parallel_matrix_entries
+    return pd.concat(lst, ignore_index=True).sort_values("val", ascending=False)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/reshape/concat.py:382: in concat
+    op = _Concatenator(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/reshape/concat.py:448: in __init__
+    ndims = self._get_ndims(objs)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/reshape/concat.py:489: in _get_ndims
+    raise TypeError(msg)
+E   TypeError: cannot concatenate object of type '<class 'float'>'; only Series and DataFrame objs are valid
+_________________ test_normalized_pearson_matrix_matches_pair __________________
+reviews/evidence/01a-statistical-foundations/checks.py:202: in test_normalized_pearson_matrix_matches_pair
+    assert_allclose(result.loc[(result.row == "y") & (result.col == "x"), "val"], [expected])
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   (shapes (0,), (1,) mismatch)
+E    ACTUAL: array([], dtype=float64)
+E    DESIRED: array([0.748331])
+_______________ test_fractional_weights_do_not_return_negative_f _______________
+reviews/evidence/01a-statistical-foundations/checks.py:213: in test_fractional_weights_do_not_return_negative_f
+    assert result >= 0, result
+E   AssertionError: np.float64(-6.050000000000021)
+E   assert np.float64(-6.050000000000021) >= 0
+_____________________ test_numeric_f_frequency_replication _____________________
+reviews/evidence/01a-statistical-foundations/checks.py:224: in test_numeric_f_frequency_replication
+    assert_allclose(actual, expected)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 7.11111111
+E   Max relative difference among violations: 0.66666667
+E    ACTUAL: array(3.555556)
+E    DESIRED: array(10.666667)
+_______ test_grouped_statistics_translation_invariant[correlation_ratio] _______
+reviews/evidence/01a-statistical-foundations/checks.py:273: in test_grouped_statistics_translation_invariant
+    assert_allclose(statistic(x, y + 1e10, w), statistic(x, y, w), rtol=1e-5)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-05, atol=0
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 0.92636711
+E   Max relative difference among violations: 1.
+E    ACTUAL: array(0.)
+E    DESIRED: array(0.926367)
+_______ test_grouped_statistics_translation_invariant[f_cat_regression] ________
+reviews/evidence/01a-statistical-foundations/checks.py:273: in test_grouped_statistics_translation_invariant
+    assert_allclose(statistic(x, y + 1e10, w), statistic(x, y, w), rtol=1e-5)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-05, atol=0
+E
+E   nan location mismatch:
+E    ACTUAL: array(nan)
+E    DESIRED: array(24.2)
+______________________ test_feature_named_target_retained ______________________
+reviews/evidence/01a-statistical-foundations/checks.py:282: in test_feature_named_target_retained
+    assert set(model.selected_features_) == set(X.columns), model.selected_features_
+E   AssertionError: ['other', 'third']
+E   assert {'other', 'third'} == {'other', 'target', 'third'}
+E
+E     Extra items in the right set:
+E     'target'
+E     Use -v to get more diff
+=============================== warnings summary ===============================
+reviews/evidence/01a-statistical-foundations/checks.py::test_constant_categorical_relevance_zero
+reviews/evidence/01a-statistical-foundations/checks.py::test_constant_categorical_matrix_and_collinearity
+  /tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:2042: UserWarning: {'constant'} columns have been removed (single unique values)
+    warnings.warn(
+
+reviews/evidence/01a-statistical-foundations/checks.py::test_constant_categorical_relevance_zero
+  /tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:232: RuntimeWarning: Rounded U = 1.0 to 1. This is probably due to floating point precision issues.
+    warnings.warn(
+
+reviews/evidence/01a-statistical-foundations/checks.py::test_constant_categorical_matrix_and_collinearity
+reviews/evidence/01a-statistical-foundations/checks.py::test_constant_categorical_matrix_and_collinearity
+reviews/evidence/01a-statistical-foundations/checks.py::test_constant_categorical_matrix_and_collinearity
+reviews/evidence/01a-statistical-foundations/checks.py::test_constant_categorical_matrix_and_collinearity
+  /tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:232: RuntimeWarning: Rounded U = 0.0 to 0. This is probably due to floating point precision issues.
+    warnings.warn(
+
+reviews/evidence/01a-statistical-foundations/checks.py::test_normalized_pearson_matrix_matches_pair
+  /tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1066: RuntimeWarning: divide by zero encountered in divide
+    weighted_std = np.sqrt(sum_of_squares / (sum_weights - ddof))
+
+reviews/evidence/01a-statistical-foundations/checks.py::test_normalized_pearson_matrix_matches_pair
+  /tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1068: RuntimeWarning: divide by zero encountered in divide
+    weighted_cov /= sum_weights - ddof
+
+reviews/evidence/01a-statistical-foundations/checks.py::test_normalized_pearson_matrix_matches_pair
+  /tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1070: RuntimeWarning: invalid value encountered in divide
+    weighted_cov / weighted_std / weighted_std[:, None],
+
+reviews/evidence/01a-statistical-foundations/checks.py::test_grouped_statistics_translation_invariant[f_cat_regression]
+  /tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1478: UserWarning: Features [0] are constant.
+    warnings.warn("Features [0] are constant.", UserWarning)
+
+reviews/evidence/01a-statistical-foundations/checks.py::test_grouped_statistics_translation_invariant[f_cat_regression]
+  /tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1479: RuntimeWarning: invalid value encountered in scalar divide
+    f = msb / msw
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_numeric_f_linear_reference
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_numeric_f_drop_equals_manual_filter
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_constant_categorical_relevance_zero
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_constant_categorical_matrix_and_collinearity
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_normalized_pearson_matrix_matches_pair
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_fractional_weights_do_not_return_negative_f
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_numeric_f_frequency_replication
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_grouped_statistics_translation_invariant[correlation_ratio]
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_grouped_statistics_translation_invariant[f_cat_regression]
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_feature_named_target_retained
+10 failed, 1 passed, 31 deselected, 12 warnings in 6.91s

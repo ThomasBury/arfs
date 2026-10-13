@@ -1,0 +1,81 @@
+FFFFFFF                                                                  [100%]
+=================================== FAILURES ===================================
+_________________ test_fit_preserves_categorical_input[boost] __________________
+reviews/evidence/01b-all-relevant/checks.py:122: in test_fit_preserves_categorical_input
+    assert_frame_equal(X, original)
+E   AssertionError: Attributes of DataFrame.iloc[:, 3] (column name="cat") are different
+E
+E   Attribute "dtype" are different
+E   [left]:  int64
+E   [right]: CategoricalDtype(categories=['no', 'yes'], ordered=False, categories_dtype=str)
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+_________________ test_fit_preserves_categorical_input[groot] __________________
+reviews/evidence/01b-all-relevant/checks.py:122: in test_fit_preserves_categorical_input
+    assert_frame_equal(X, original)
+E   AssertionError: Attributes of DataFrame.iloc[:, 3] (column name="cat") are different
+E
+E   Attribute "dtype" are different
+E   [left]:  int64
+E   [right]: CategoricalDtype(categories=['no', 'yes'], ordered=False, categories_dtype=str)
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[36]	training's l2: 2.64765	valid_1's l2: 2.5009
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[49]	training's l2: 2.35944	valid_1's l2: 3.09801
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+Cross Validation: 100%|██████████| 2/2 [00:00<00:00, 48.74it/s]
+_____________ test_boost_preserves_categorical_roles_across_rounds _____________
+reviews/evidence/01b-all-relevant/checks.py:139: in test_boost_preserves_categorical_roles_across_rounds
+    assert recorded == [(["a", "b", "ShadowVar1", "ShadowVar2"], [0, 2]),
+E   AssertionError: assert [(['a', 'b', ...Var1'], None)] == [(['a', 'b', ...r1'], [0, 1])]
+E
+E     At index 0 diff: (['a', 'b', 'ShadowVar1', 'ShadowVar2'], [0]) != (['a', 'b', 'ShadowVar1', 'ShadowVar2'], [0, 2])
+E     Use -v to get more diff
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/2 [00:00<?, ?it/s]
+BoostaGRoota round:  50%|█████     | 1/2 [00:00<00:00, 70.26it/s]
+____________________ test_groot_preserves_categorical_roles ____________________
+reviews/evidence/01b-all-relevant/checks.py:155: in test_groot_preserves_categorical_roles
+    assert recorded == [["a", "ShadowVar1"], ["a", "ShadowVar1"]]
+E   AssertionError: assert [[], []] == [['a', 'Shado...'ShadowVar1']]
+E
+E     At index 0 diff: [] != ['a', 'ShadowVar1']
+E     Use -v to get more diff
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+Cross Validation: 100%|██████████| 2/2 [00:00<00:00, 145.37it/s]
+___________ test_leshy_numeric_category_shadow_matches_original_role ___________
+reviews/evidence/01b-all-relevant/checks.py:170: in test_leshy_numeric_category_shadow_matches_original_role
+    assert all(dtype == X.category.dtype for dtype in recorded[0])
+E   assert False
+E    +  where False = all(<generator object test_leshy_numeric_category_shadow_matches_original_role.<locals>.<genexpr> at 0x70b2e33fb440>)
+______ test_shadow_names_do_not_change_real_feature_identity[ShadowVar1] _______
+reviews/evidence/01b-all-relevant/checks.py:222: in test_shadow_names_do_not_change_real_feature_identity
+    assert augmented.columns.is_unique
+E   AssertionError: assert False
+E    +  where False = Index(['b', 'ShadowVar1', 'ShadowVar1', 'ShadowVar1', 'ShadowVar1',\n       'ShadowVar2'],\n      dtype='str').is_unique
+E    +    where Index(['b', 'ShadowVar1', 'ShadowVar1', 'ShadowVar1', 'ShadowVar1',\n       'ShadowVar2'],\n      dtype='str') =         b  ShadowVar1  ShadowVar1  ShadowVar1  ShadowVar1  ShadowVar2\n0   100.0         0.0         1.0         0.0   ...0         0.0        18.0         0.0       100.0\n19  119.0        19.0         9.0        19.0         9.0       118.0.columns
+______ test_shadow_names_do_not_change_real_feature_identity[ShadowVar2] _______
+reviews/evidence/01b-all-relevant/checks.py:222: in test_shadow_names_do_not_change_real_feature_identity
+    assert augmented.columns.is_unique
+E   AssertionError: assert False
+E    +  where False = Index(['b', 'ShadowVar2', 'ShadowVar2', 'ShadowVar1', 'ShadowVar2',\n       'ShadowVar2'],\n      dtype='str').is_unique
+E    +    where Index(['b', 'ShadowVar2', 'ShadowVar2', 'ShadowVar1', 'ShadowVar2',\n       'ShadowVar2'],\n      dtype='str') =         b  ShadowVar2  ShadowVar2  ShadowVar1  ShadowVar2  ShadowVar2\n0   100.0         0.0       109.0        11.0   ...0       114.0        18.0        18.0       114.0\n19  119.0        19.0       110.0         4.0        19.0       110.0.columns
+=========================== short test summary info ============================
+FAILED reviews/evidence/01b-all-relevant/checks.py::test_fit_preserves_categorical_input[boost]
+FAILED reviews/evidence/01b-all-relevant/checks.py::test_fit_preserves_categorical_input[groot]
+FAILED reviews/evidence/01b-all-relevant/checks.py::test_boost_preserves_categorical_roles_across_rounds
+FAILED reviews/evidence/01b-all-relevant/checks.py::test_groot_preserves_categorical_roles
+FAILED reviews/evidence/01b-all-relevant/checks.py::test_leshy_numeric_category_shadow_matches_original_role
+FAILED reviews/evidence/01b-all-relevant/checks.py::test_shadow_names_do_not_change_real_feature_identity[ShadowVar1]
+FAILED reviews/evidence/01b-all-relevant/checks.py::test_shadow_names_do_not_change_real_feature_identity[ShadowVar2]
+7 failed, 17 deselected in 4.04s

@@ -1,0 +1,196 @@
+Checkout: /home/bsatom/Documents/arfs
+Base: main @ 170b3e95fee635e8243ed8cdc740ecb80c4738ad.
+Pre-existing R04–R08 work preserved; R09 changes uncommitted.
+uv 0.12.15; Ruff 0.17.0; dependency snapshots match R08.
+
+Runtime environment variables:
+UV_CACHE_DIR=/tmp/arfs-r04/cache MPLBACKEND=Agg
+MPLCONFIGDIR=/tmp/arfs-r09/mpl-$cell
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 PYTHONHASHSEED=0
+
+Before edits, from checkout against installed R08:
+env MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 /tmp/arfs-r08/py312-locked/bin/python -I -m pytest reviews/evidence/01a-statistical-foundations/checks.py -k "mixed_singletons or equal_perfect or default_relevance or negative_duplicate" --runxfail -q --tb=short -p no:cacheprovider
+env MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 /tmp/arfs-r08/py312-locked/bin/python -I -m pytest tests/test_mrmr_ranking.py -q --tb=short -p no:cacheprovider
+The maintained-before log records the first 41 cases; the final file has 50.
+
+Final focused source check, from checkout:
+env PYTHONPATH=src MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 /tmp/arfs-r08/py312-locked/bin/python -m pytest tests/test_mrmr_ranking.py -q --tb=short -p no:cacheprovider
+
+Lock and build from checkout (build repeated for final empty-request handling):
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv lock --check --python /tmp/arfs-r08/py312-locked/bin/python
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv build --python /tmp/arfs-r08/py312-locked/bin/python --out-dir /tmp/arfs-r09/dist
+Locked requirements copied byte-for-byte from /tmp/arfs-r08/locked-requirements.txt,
+exported in R08 using uv export --locked --extra test --no-emit-project.
+
+Per-cell commands follow. Environments were created clean, then only arfs was
+reinstalled after the final empty-request change. Tests are copied from the
+checkout to each run directory before each full run. The interim-* evidence
+preserves the first 46-case wheel and full-suite results.
+
+py39-locked:
+cwd=/home/bsatom/Documents/arfs
+uv venv --python /tmp/arfs-r08/py39-locked/bin/python /tmp/arfs-r09/py39-locked
+cwd=/home/bsatom/Documents/arfs
+uv pip install --python /tmp/arfs-r09/py39-locked/bin/python -r /tmp/arfs-r09/locked-requirements.txt /tmp/arfs-r09/dist/arfs-3.0.0-py3-none-any.whl
+cwd=/home/bsatom/Documents/arfs
+uv pip check --python /tmp/arfs-r09/py39-locked/bin/python
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py39-locked/bin/python -I -c 'import matplotlib.font_manager'
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py39-locked/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+cwd=/tmp/arfs-r09/run-py39-locked
+/tmp/arfs-r09/py39-locked/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider
+cwd=/home/bsatom/Documents/arfs
+uv pip install --python /tmp/arfs-r09/py39-locked/bin/python --reinstall-package arfs /tmp/arfs-r09/dist/arfs-3.0.0-py3-none-any.whl
+cwd=/home/bsatom/Documents/arfs
+uv pip check --python /tmp/arfs-r09/py39-locked/bin/python
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py39-locked/bin/python -I -c 'import matplotlib.font_manager'
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py39-locked/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+
+py312-locked:
+cwd=/home/bsatom/Documents/arfs
+uv venv --python /tmp/arfs-r08/py312-locked/bin/python /tmp/arfs-r09/py312-locked
+cwd=/home/bsatom/Documents/arfs
+uv pip install --python /tmp/arfs-r09/py312-locked/bin/python -r /tmp/arfs-r09/locked-requirements.txt /tmp/arfs-r09/dist/arfs-3.0.0-py3-none-any.whl
+cwd=/home/bsatom/Documents/arfs
+uv pip check --python /tmp/arfs-r09/py312-locked/bin/python
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py312-locked/bin/python -I -c 'import matplotlib.font_manager'
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py312-locked/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+cwd=/tmp/arfs-r09/run-py312-locked
+/tmp/arfs-r09/py312-locked/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider
+cwd=/tmp/arfs-r09/run-py312-locked
+/tmp/arfs-r09/py312-locked/bin/python -I -m pytest /home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py -k 'mixed_singletons or equal_perfect or default_relevance or negative_duplicate or seeded_numeric_signal or noise_only ' --runxfail -q --tb=short -p no:cacheprovider
+cwd=/home/bsatom/Documents/arfs
+uv pip install --python /tmp/arfs-r09/py312-locked/bin/python --reinstall-package arfs /tmp/arfs-r09/dist/arfs-3.0.0-py3-none-any.whl
+cwd=/home/bsatom/Documents/arfs
+uv pip check --python /tmp/arfs-r09/py312-locked/bin/python
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py312-locked/bin/python -I -c 'import matplotlib.font_manager'
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py312-locked/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+
+py312-newer:
+cwd=/home/bsatom/Documents/arfs
+uv venv --python /tmp/arfs-r08/py312-newer/bin/python /tmp/arfs-r09/py312-newer
+cwd=/home/bsatom/Documents/arfs
+uv pip install --python /tmp/arfs-r09/py312-newer/bin/python -r /home/bsatom/Documents/arfs/.github/requirements/runtime-newer-py312.txt /tmp/arfs-r09/dist/arfs-3.0.0-py3-none-any.whl
+cwd=/home/bsatom/Documents/arfs
+uv pip check --python /tmp/arfs-r09/py312-newer/bin/python
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py312-newer/bin/python -I -c 'import matplotlib.font_manager'
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py312-newer/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+cwd=/tmp/arfs-r09/run-py312-newer
+/tmp/arfs-r09/py312-newer/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider
+cwd=/tmp/arfs-r09/run-py312-newer
+/tmp/arfs-r09/py312-newer/bin/python -I -m pytest /home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py -k 'mixed_singletons or equal_perfect or default_relevance or negative_duplicate or seeded_numeric_signal or noise_only ' --runxfail -q --tb=short -p no:cacheprovider
+cwd=/home/bsatom/Documents/arfs
+uv pip install --python /tmp/arfs-r09/py312-newer/bin/python --reinstall-package arfs /tmp/arfs-r09/dist/arfs-3.0.0-py3-none-any.whl
+cwd=/home/bsatom/Documents/arfs
+uv pip check --python /tmp/arfs-r09/py312-newer/bin/python
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py312-newer/bin/python -I -c 'import matplotlib.font_manager'
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py312-newer/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+
+From checkout:
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv tool run --from ruff==0.17.0 python .github/scripts/check_ruff_baseline.py
+/tmp/arfs-r08/py312-locked/bin/python -m unittest discover -s .github/scripts -p "test_*.py"
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv tool run --from ruff==0.17.0 ruff check tests/test_mrmr_ranking.py
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv tool run --from ruff==0.17.0 ruff format --check tests/test_mrmr_ranking.py
+git diff --check
+
+Provenance: all eight recorded installed module hashes match final source;
+setuptools is absent. Copied maintained tests match the checkout.
+Payloads: all 19 source/data members match checkout, sdist and wheel.
+Preservation: 11 unrelated pre-existing tracked diff sections are unchanged.
+Historical review scripts and logs are preserved.
+Skipped: hosted CI, complete docs/notebooks, optional backends, performance,
+broad sklearn compliance and statistical calibration.
+
+Final recorded per-cell commands after completion:
+
+py39-locked:
+cwd=/home/bsatom/Documents/arfs
+uv venv --python /tmp/arfs-r08/py39-locked/bin/python /tmp/arfs-r09/py39-locked
+cwd=/home/bsatom/Documents/arfs
+uv pip install --python /tmp/arfs-r09/py39-locked/bin/python -r /tmp/arfs-r09/locked-requirements.txt /tmp/arfs-r09/dist/arfs-3.0.0-py3-none-any.whl
+cwd=/home/bsatom/Documents/arfs
+uv pip check --python /tmp/arfs-r09/py39-locked/bin/python
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py39-locked/bin/python -I -c 'import matplotlib.font_manager'
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py39-locked/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+cwd=/tmp/arfs-r09/run-py39-locked
+/tmp/arfs-r09/py39-locked/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider
+cwd=/home/bsatom/Documents/arfs
+uv pip install --python /tmp/arfs-r09/py39-locked/bin/python --reinstall-package arfs /tmp/arfs-r09/dist/arfs-3.0.0-py3-none-any.whl
+cwd=/home/bsatom/Documents/arfs
+uv pip check --python /tmp/arfs-r09/py39-locked/bin/python
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py39-locked/bin/python -I -c 'import matplotlib.font_manager'
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py39-locked/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+cwd=/tmp/arfs-r09/run-py39-locked
+/tmp/arfs-r09/py39-locked/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider
+
+py312-locked:
+cwd=/home/bsatom/Documents/arfs
+uv venv --python /tmp/arfs-r08/py312-locked/bin/python /tmp/arfs-r09/py312-locked
+cwd=/home/bsatom/Documents/arfs
+uv pip install --python /tmp/arfs-r09/py312-locked/bin/python -r /tmp/arfs-r09/locked-requirements.txt /tmp/arfs-r09/dist/arfs-3.0.0-py3-none-any.whl
+cwd=/home/bsatom/Documents/arfs
+uv pip check --python /tmp/arfs-r09/py312-locked/bin/python
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py312-locked/bin/python -I -c 'import matplotlib.font_manager'
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py312-locked/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+cwd=/tmp/arfs-r09/run-py312-locked
+/tmp/arfs-r09/py312-locked/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider
+cwd=/tmp/arfs-r09/run-py312-locked
+/tmp/arfs-r09/py312-locked/bin/python -I -m pytest /home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py -k 'mixed_singletons or equal_perfect or default_relevance or negative_duplicate or seeded_numeric_signal or noise_only ' --runxfail -q --tb=short -p no:cacheprovider
+cwd=/home/bsatom/Documents/arfs
+uv pip install --python /tmp/arfs-r09/py312-locked/bin/python --reinstall-package arfs /tmp/arfs-r09/dist/arfs-3.0.0-py3-none-any.whl
+cwd=/home/bsatom/Documents/arfs
+uv pip check --python /tmp/arfs-r09/py312-locked/bin/python
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py312-locked/bin/python -I -c 'import matplotlib.font_manager'
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py312-locked/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+cwd=/tmp/arfs-r09/run-py312-locked
+/tmp/arfs-r09/py312-locked/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider
+cwd=/tmp/arfs-r09/run-py312-locked
+/tmp/arfs-r09/py312-locked/bin/python -I -m pytest /home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py -k 'mixed_singletons or equal_perfect or default_relevance or negative_duplicate or seeded_numeric_signal or noise_only ' --runxfail -q --tb=short -p no:cacheprovider
+
+py312-newer:
+cwd=/home/bsatom/Documents/arfs
+uv venv --python /tmp/arfs-r08/py312-newer/bin/python /tmp/arfs-r09/py312-newer
+cwd=/home/bsatom/Documents/arfs
+uv pip install --python /tmp/arfs-r09/py312-newer/bin/python -r /home/bsatom/Documents/arfs/.github/requirements/runtime-newer-py312.txt /tmp/arfs-r09/dist/arfs-3.0.0-py3-none-any.whl
+cwd=/home/bsatom/Documents/arfs
+uv pip check --python /tmp/arfs-r09/py312-newer/bin/python
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py312-newer/bin/python -I -c 'import matplotlib.font_manager'
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py312-newer/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+cwd=/tmp/arfs-r09/run-py312-newer
+/tmp/arfs-r09/py312-newer/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider
+cwd=/tmp/arfs-r09/run-py312-newer
+/tmp/arfs-r09/py312-newer/bin/python -I -m pytest /home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py -k 'mixed_singletons or equal_perfect or default_relevance or negative_duplicate or seeded_numeric_signal or noise_only ' --runxfail -q --tb=short -p no:cacheprovider
+cwd=/home/bsatom/Documents/arfs
+uv pip install --python /tmp/arfs-r09/py312-newer/bin/python --reinstall-package arfs /tmp/arfs-r09/dist/arfs-3.0.0-py3-none-any.whl
+cwd=/home/bsatom/Documents/arfs
+uv pip check --python /tmp/arfs-r09/py312-newer/bin/python
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py312-newer/bin/python -I -c 'import matplotlib.font_manager'
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r09/py312-newer/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+cwd=/tmp/arfs-r09/run-py312-newer
+/tmp/arfs-r09/py312-newer/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider
+cwd=/tmp/arfs-r09/run-py312-newer
+/tmp/arfs-r09/py312-newer/bin/python -I -m pytest /home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py -k 'mixed_singletons or equal_perfect or default_relevance or negative_duplicate or seeded_numeric_signal or noise_only ' --runxfail -q --tb=short -p no:cacheprovider

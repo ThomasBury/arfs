@@ -1,0 +1,22 @@
+........................................................................ [ 75%]
+.......................                                                  [100%]
+=============================== warnings summary ===============================
+tests/test_allrelevant_aggregation.py::test_real_classification_objectives[2-binary]
+tests/test_allrelevant_aggregation.py::test_real_classification_objectives[2-binary]
+  /tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+    warnings.warn(
+
+tests/test_allrelevant_aggregation.py::test_boost_maximum_shadow_mean_and_equality[1-native]
+tests/test_allrelevant_aggregation.py::test_boost_maximum_shadow_mean_and_equality[2-native]
+tests/test_shadow_contracts.py::test_real_sklearn_fits_receive_matching_original_and_shadow_roles[boost]
+  /home/bsatom/Documents/arfs/src/arfs/feature_selection/allrelevant.py:1543: UserWarning: [BoostAGroota]: using native variable importance might break the FS
+    warnings.warn(
+
+tests/test_permutation_importance.py::test_shared_importance_matches_real_sklearn_scoring[False-False]
+tests/test_permutation_importance.py::test_shared_importance_matches_real_sklearn_scoring[False-False]
+tests/test_permutation_importance.py::test_shared_importance_matches_real_sklearn_scoring[False-False]
+  /tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/joblib/externals/loky/backend/fork_exec.py:38: DeprecationWarning: This process (pid=511714) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    pid = os.fork()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+95 passed, 8 warnings in 9.97s

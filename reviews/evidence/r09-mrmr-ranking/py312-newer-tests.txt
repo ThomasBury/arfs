@@ -1,0 +1,80 @@
+........................................................................ [ 16%]
+........................................................................ [ 32%]
+........................................................................ [ 48%]
+........................................................................ [ 64%]
+........................................................................ [ 80%]
+........................................................................ [ 96%]
+...............                                                          [100%]
+=============================== warnings summary ===============================
+arfs-r09/run-py312-newer/tests/test_allrelevant.py: 38 warnings
+  /tmp/arfs-r09/py312-newer/lib/python3.12/site-packages/shap/explainers/_tree.py:579: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+    warnings.warn(
+
+arfs-r09/run-py312-newer/tests/test_category_identity.py: 14 warnings
+arfs-r09/run-py312-newer/tests/test_mrmr_ranking.py: 23 warnings
+arfs-r09/run-py312-newer/tests/test_statistical_arithmetic.py: 22 warnings
+  /tmp/arfs-r09/py312-newer/lib/python3.12/site-packages/arfs/association.py:244: RuntimeWarning: Rounded U = 1.0 to 1. This is probably due to floating point precision issues.
+    warnings.warn(
+
+arfs-r09/run-py312-newer/tests/test_category_identity.py::test_boolean_series_uses_nominal_statistic[1-bool]
+arfs-r09/run-py312-newer/tests/test_category_identity.py::test_boolean_series_uses_nominal_statistic[1-boolean]
+arfs-r09/run-py312-newer/tests/test_observation_boundaries.py::test_zero_weight_category_equivalent_to_removal[weighted_theils_u]
+arfs-r09/run-py312-newer/tests/test_statistical_arithmetic.py::test_categorical_constants_have_zero_relevance[False-1]
+arfs-r09/run-py312-newer/tests/test_statistical_arithmetic.py::test_categorical_constants_have_zero_relevance[True-1]
+arfs-r09/run-py312-newer/tests/test_statistical_arithmetic.py::test_constant_theils_u_frame_and_collinearity[1]
+arfs-r09/run-py312-newer/tests/test_statistical_arithmetic.py::test_constant_theils_u_frame_and_collinearity[1]
+  /tmp/arfs-r09/py312-newer/lib/python3.12/site-packages/arfs/association.py:244: RuntimeWarning: Rounded U = 0.0 to 0. This is probably due to floating point precision issues.
+    warnings.warn(
+
+arfs-r09/run-py312-newer/tests/test_category_identity.py: 1 warning
+arfs-r09/run-py312-newer/tests/test_observation_boundaries.py: 12 warnings
+arfs-r09/run-py312-newer/tests/test_runtime_baseline.py: 1 warning
+arfs-r09/run-py312-newer/tests/test_shadow_contracts.py: 1 warning
+  /tmp/arfs-r09/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1539: UserWarning: [BoostAGroota]: using native variable importance might break the FS
+    warnings.warn(
+
+arfs-r09/run-py312-newer/tests/test_dependency_apis.py::test_public_lasso_selector_fits
+  /tmp/arfs-r09/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:197: ConvergenceWarning: Regularized fitting did not converge
+    self.result = self.model.fit_regularized(
+
+arfs-r09/run-py312-newer/tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+arfs-r09/run-py312-newer/tests/test_observation_boundaries.py::test_benchmark_weights_match_independent_reference[regression]
+arfs-r09/run-py312-newer/tests/test_observation_boundaries.py::test_benchmark_weights_match_independent_reference[classification]
+  /tmp/arfs-r09/py312-newer/lib/python3.12/site-packages/arfs/benchmark.py:99: MatplotlibDeprecationWarning: vert: bool was deprecated in Matplotlib 3.11 and will be removed in 3.13. Use orientation: {'vertical', 'horizontal'} instead.
+    ax.boxplot(
+
+arfs-r09/run-py312-newer/tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+arfs-r09/run-py312-newer/tests/test_observation_boundaries.py::test_benchmark_weights_match_independent_reference[regression]
+arfs-r09/run-py312-newer/tests/test_observation_boundaries.py::test_benchmark_weights_match_independent_reference[classification]
+  /tmp/arfs-r09/py312-newer/lib/python3.12/site-packages/arfs/benchmark.py:104: UserWarning: Tight layout not applied. The bottom and top margins cannot be made large enough to accommodate all Axes decorations.
+    fig.tight_layout()
+
+arfs-r09/run-py312-newer/tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+arfs-r09/run-py312-newer/tests/test_observation_boundaries.py::test_benchmark_weights_match_independent_reference[regression]
+arfs-r09/run-py312-newer/tests/test_observation_boundaries.py::test_benchmark_weights_match_independent_reference[classification]
+  /tmp/arfs-r09/py312-newer/lib/python3.12/site-packages/arfs/benchmark.py:109: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+    plt.show()
+
+arfs-r09/run-py312-newer/tests/test_mrmr_ranking.py: 6 warnings
+arfs-r09/run-py312-newer/tests/test_statistical_arithmetic.py: 4 warnings
+  /tmp/arfs-r09/py312-newer/lib/python3.12/site-packages/arfs/association.py:808: RuntimeWarning: invalid value encountered in scalar divide
+    return wcov(x, y, w) / np.sqrt(wcov(x, x, w) * wcov(y, y, w))
+
+arfs-r09/run-py312-newer/tests/test_mrmr_ranking.py::test_constant_predictors_and_response_have_zero_default_relevance[regression]
+arfs-r09/run-py312-newer/tests/test_mrmr_ranking.py::test_constant_predictors_and_response_have_zero_default_relevance[classification]
+  /tmp/arfs-r09/py312-newer/lib/python3.12/site-packages/arfs/association.py:1464: UserWarning: Features [0] are constant.
+    warnings.warn("Features [0] are constant.", UserWarning)
+
+arfs-r09/run-py312-newer/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+arfs-r09/run-py312-newer/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+arfs-r09/run-py312-newer/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+arfs-r09/run-py312-newer/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+  /tmp/arfs-r09/py312-newer/lib/python3.12/site-packages/arfs/gbm.py:343: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.
+    warnings.warn(
+
+arfs-r09/run-py312-newer/tests/test_shadow_contracts.py::test_real_groot_folds_and_plot_use_original_feature_identity
+  /tmp/arfs-r09/py312-newer/lib/python3.12/site-packages/pandas/plotting/_matplotlib/boxplot.py:112: MatplotlibDeprecationWarning: vert: bool was deprecated in Matplotlib 3.11 and will be removed in 3.13. Use orientation: {'vertical', 'horizontal'} instead.
+    bp = ax.boxplot(ys, **kwds)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+447 passed, 146 warnings in 126.30s (0:02:06)

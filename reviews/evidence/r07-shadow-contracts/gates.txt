@@ -1,0 +1,8 @@
+Ruff: 420 total diagnostics; 0 new
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.003s
+
+OK
+All checks passed!
+1 file already formatted

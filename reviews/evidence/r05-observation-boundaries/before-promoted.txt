@@ -1,0 +1,995 @@
+FF..FFFF..FFFFFF..F..FFFFFFFF.F.FFFFFFFFFFFFFFF.FFFFF...FFFF..FFFFFFFFF. [ 41%]
+.F.F..F.F..F...F.F..........F.FF.F.FFFF....F..............FFFFFFFFFF.FFF [ 83%]
+F.FFFFFFFFFF.F.FFFF.FFFFFF..                                             [100%]
+=================================== FAILURES ===================================
+__________ test_invalid_weights_rejected[association_series-weights0] __________
+tests/test_observation_boundaries.py:43: in test_invalid_weights_rejected
+    statistic(X, "y", sample_weight=weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1136: in association_series
+    X, sample_weight = _check_association_input(X, sample_weight, handle_na)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:2018: in _check_association_input
+    X, sample_weight = X.loc[na_mask, :], sample_weight[na_mask]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+__________ test_invalid_weights_rejected[association_series-weights1] __________
+tests/test_observation_boundaries.py:43: in test_invalid_weights_rejected
+    statistic(X, "y", sample_weight=weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1136: in association_series
+    X, sample_weight = _check_association_input(X, sample_weight, handle_na)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:2018: in _check_association_input
+    X, sample_weight = X.loc[na_mask, :], sample_weight[na_mask]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+__________ test_invalid_weights_rejected[association_series-weights4] __________
+tests/test_observation_boundaries.py:43: in test_invalid_weights_rejected
+    statistic(X, "y", sample_weight=weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1136: in association_series
+    X, sample_weight = _check_association_input(X, sample_weight, handle_na)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:2018: in _check_association_input
+    X, sample_weight = X.loc[na_mask, :], sample_weight[na_mask]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+__________ test_invalid_weights_rejected[association_series-weights5] __________
+tests/test_observation_boundaries.py:43: in test_invalid_weights_rejected
+    statistic(X, "y", sample_weight=weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1136: in association_series
+    X, sample_weight = _check_association_input(X, sample_weight, handle_na)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:2018: in _check_association_input
+    X, sample_weight = X.loc[na_mask, :], sample_weight[na_mask]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+__________ test_invalid_weights_rejected[association_matrix-weights0] __________
+tests/test_observation_boundaries.py:45: in test_invalid_weights_rejected
+    statistic(X, sample_weight=weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1218: in association_matrix
+    X, sample_weight = _check_association_input(X, sample_weight, handle_na)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:2018: in _check_association_input
+    X, sample_weight = X.loc[na_mask, :], sample_weight[na_mask]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+__________ test_invalid_weights_rejected[association_matrix-weights1] __________
+tests/test_observation_boundaries.py:45: in test_invalid_weights_rejected
+    statistic(X, sample_weight=weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1218: in association_matrix
+    X, sample_weight = _check_association_input(X, sample_weight, handle_na)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:2018: in _check_association_input
+    X, sample_weight = X.loc[na_mask, :], sample_weight[na_mask]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+__________ test_invalid_weights_rejected[association_matrix-weights4] __________
+tests/test_observation_boundaries.py:45: in test_invalid_weights_rejected
+    statistic(X, sample_weight=weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1218: in association_matrix
+    X, sample_weight = _check_association_input(X, sample_weight, handle_na)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:2018: in _check_association_input
+    X, sample_weight = X.loc[na_mask, :], sample_weight[na_mask]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+__________ test_invalid_weights_rejected[association_matrix-weights5] __________
+tests/test_observation_boundaries.py:45: in test_invalid_weights_rejected
+    statistic(X, sample_weight=weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1218: in association_matrix
+    X, sample_weight = _check_association_input(X, sample_weight, handle_na)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:2018: in _check_association_input
+    X, sample_weight = X.loc[na_mask, :], sample_weight[na_mask]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+____________ test_invalid_weights_rejected[weighted_corr-weights0] _____________
+tests/test_observation_boundaries.py:41: in test_invalid_weights_rejected
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+____________ test_invalid_weights_rejected[weighted_corr-weights1] _____________
+tests/test_observation_boundaries.py:41: in test_invalid_weights_rejected
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+____________ test_invalid_weights_rejected[weighted_corr-weights2] _____________
+tests/test_observation_boundaries.py:41: in test_invalid_weights_rejected
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+____________ test_invalid_weights_rejected[weighted_corr-weights3] _____________
+tests/test_observation_boundaries.py:41: in test_invalid_weights_rejected
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_______ test_list_array_series_weights_and_complete_case_alignment[list] _______
+tests/test_observation_boundaries.py:57: in test_list_array_series_weights_and_complete_case_alignment
+    result = a.wcorr_series(X, "y", weights, method="pearson")
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:919: in wcorr_series
+    X, sample_weight = _check_association_input(X, sample_weight, handle_na)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:2018: in _check_association_input
+    X, sample_weight = X.loc[na_mask, :], sample_weight[na_mask]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+______ test_zero_weight_category_equivalent_to_removal[correlation_ratio] ______
+tests/test_observation_boundaries.py:89: in test_zero_weight_category_equivalent_to_removal
+    statistic(x, y, [1, 1, 1, 1, 0]),
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:613: in correlation_ratio
+    (continuous[categorical == category], sample_weight[categorical == category])
+E   TypeError: list indices must be integers or slices, not Series
+______ test_zero_weight_category_equivalent_to_removal[f_cat_regression] _______
+tests/test_observation_boundaries.py:89: in test_zero_weight_category_equivalent_to_removal
+    statistic(x, y, [1, 1, 1, 1, 0]),
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1497: in f_cat_regression
+    sample_weight[safe_mask(sample_weight, x == k)],
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+__________ test_zero_weight_category_equivalent_to_removal[cramer_v] ___________
+tests/test_observation_boundaries.py:89: in test_zero_weight_category_equivalent_to_removal
+    statistic(x, y, [1, 1, 1, 1, 0]),
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:390: in cramer_v
+    chi2 = ss.chi2_contingency(weighted_tab, correction=False)[0]
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/scipy/stats/contingency.py:340: in chi2_contingency
+    raise ValueError("The internally computed table of expected "
+E   ValueError: The internally computed table of expected frequencies has a zero element at (np.int64(0), np.int64(0)).
+______ test_zero_weight_category_equivalent_to_removal[weighted_theils_u] ______
+tests/test_observation_boundaries.py:89: in test_zero_weight_category_equivalent_to_removal
+    statistic(x, y, [1, 1, 1, 1, 0]),
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:210: in weighted_theils_u
+    y_encoded[x_mask], weights=sample_weight[x_mask], minlength=len(y_unique)
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_ test_zero_weight_category_equivalent_to_removal[weighted_conditional_entropy] _
+tests/test_observation_boundaries.py:89: in test_zero_weight_category_equivalent_to_removal
+    statistic(x, y, [1, 1, 1, 1, 0]),
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:148: in weighted_conditional_entropy
+    weights=sample_weight[x_encoded == level],
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+____ test_zero_weight_category_equivalent_to_removal[f_cont_classification] ____
+tests/test_observation_boundaries.py:89: in test_zero_weight_category_equivalent_to_removal
+    statistic(x, y, [1, 1, 1, 1, 0]),
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1741: in f_cont_classification
+    sample_weight[safe_mask(sample_weight, y == k)],
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_____ test_grouped_statistics_validate_weights[weights0-correlation_ratio] _____
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:613: in correlation_ratio
+    (continuous[categorical == category], sample_weight[categorical == category])
+E   TypeError: list indices must be integers or slices, not Series
+_____ test_grouped_statistics_validate_weights[weights0-f_cat_regression] ______
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1497: in f_cat_regression
+    sample_weight[safe_mask(sample_weight, x == k)],
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_____ test_grouped_statistics_validate_weights[weights0-weighted_theils_u] _____
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:210: in weighted_theils_u
+    y_encoded[x_mask], weights=sample_weight[x_mask], minlength=len(y_unique)
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+___ test_grouped_statistics_validate_weights[weights0-f_cont_classification] ___
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1741: in f_cont_classification
+    sample_weight[safe_mask(sample_weight, y == k)],
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_____ test_grouped_statistics_validate_weights[weights1-correlation_ratio] _____
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:613: in correlation_ratio
+    (continuous[categorical == category], sample_weight[categorical == category])
+E   TypeError: list indices must be integers or slices, not Series
+_____ test_grouped_statistics_validate_weights[weights1-f_cat_regression] ______
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1497: in f_cat_regression
+    sample_weight[safe_mask(sample_weight, x == k)],
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_________ test_grouped_statistics_validate_weights[weights1-cramer_v] __________
+tests/test_observation_boundaries.py:113: in test_grouped_statistics_validate_weights
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_____ test_grouped_statistics_validate_weights[weights1-weighted_theils_u] _____
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:210: in weighted_theils_u
+    y_encoded[x_mask], weights=sample_weight[x_mask], minlength=len(y_unique)
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_ test_grouped_statistics_validate_weights[weights1-weighted_conditional_entropy] _
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:148: in weighted_conditional_entropy
+    weights=sample_weight[x_encoded == level],
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+___ test_grouped_statistics_validate_weights[weights1-f_cont_classification] ___
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1741: in f_cont_classification
+    sample_weight[safe_mask(sample_weight, y == k)],
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_____ test_grouped_statistics_validate_weights[weights2-correlation_ratio] _____
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:613: in correlation_ratio
+    (continuous[categorical == category], sample_weight[categorical == category])
+E   TypeError: list indices must be integers or slices, not Series
+_____ test_grouped_statistics_validate_weights[weights2-f_cat_regression] ______
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1497: in f_cat_regression
+    sample_weight[safe_mask(sample_weight, x == k)],
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_________ test_grouped_statistics_validate_weights[weights2-cramer_v] __________
+tests/test_observation_boundaries.py:113: in test_grouped_statistics_validate_weights
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_____ test_grouped_statistics_validate_weights[weights2-weighted_theils_u] _____
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:210: in weighted_theils_u
+    y_encoded[x_mask], weights=sample_weight[x_mask], minlength=len(y_unique)
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_ test_grouped_statistics_validate_weights[weights2-weighted_conditional_entropy] _
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:148: in weighted_conditional_entropy
+    weights=sample_weight[x_encoded == level],
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+___ test_grouped_statistics_validate_weights[weights2-f_cont_classification] ___
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1741: in f_cont_classification
+    sample_weight[safe_mask(sample_weight, y == k)],
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_____ test_grouped_statistics_validate_weights[weights3-correlation_ratio] _____
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:613: in correlation_ratio
+    (continuous[categorical == category], sample_weight[categorical == category])
+E   TypeError: list indices must be integers or slices, not Series
+_____ test_grouped_statistics_validate_weights[weights3-f_cat_regression] ______
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1497: in f_cat_regression
+    sample_weight[safe_mask(sample_weight, x == k)],
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_____ test_grouped_statistics_validate_weights[weights3-weighted_theils_u] _____
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:210: in weighted_theils_u
+    y_encoded[x_mask], weights=sample_weight[x_mask], minlength=len(y_unique)
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_ test_grouped_statistics_validate_weights[weights3-weighted_conditional_entropy] _
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:148: in weighted_conditional_entropy
+    weights=sample_weight[x_encoded == level],
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+___ test_grouped_statistics_validate_weights[weights3-f_cont_classification] ___
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1741: in f_cont_classification
+    sample_weight[safe_mask(sample_weight, y == k)],
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_____ test_grouped_statistics_validate_weights[weights4-correlation_ratio] _____
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:613: in correlation_ratio
+    (continuous[categorical == category], sample_weight[categorical == category])
+E   TypeError: list indices must be integers or slices, not Series
+_____ test_grouped_statistics_validate_weights[weights4-f_cat_regression] ______
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1497: in f_cat_regression
+    sample_weight[safe_mask(sample_weight, x == k)],
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+___ test_grouped_statistics_validate_weights[weights4-f_cont_classification] ___
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1741: in f_cont_classification
+    sample_weight[safe_mask(sample_weight, y == k)],
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_____ test_grouped_statistics_validate_weights[weights5-correlation_ratio] _____
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:613: in correlation_ratio
+    (continuous[categorical == category], sample_weight[categorical == category])
+E   TypeError: list indices must be integers or slices, not Series
+_____ test_grouped_statistics_validate_weights[weights5-f_cat_regression] ______
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1497: in f_cat_regression
+    sample_weight[safe_mask(sample_weight, x == k)],
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_________ test_grouped_statistics_validate_weights[weights5-cramer_v] __________
+tests/test_observation_boundaries.py:113: in test_grouped_statistics_validate_weights
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+___ test_grouped_statistics_validate_weights[weights5-f_cont_classification] ___
+tests/test_observation_boundaries.py:114: in test_grouped_statistics_validate_weights
+    statistic(x, y, weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1741: in f_cont_classification
+    sample_weight[safe_mask(sample_weight, y == k)],
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+__ test_direct_grouped_input_zero_mass_and_invalid_groups[f_oneway_weighted] ___
+tests/test_observation_boundaries.py:122: in test_direct_grouped_input_zero_mass_and_invalid_groups
+    assert_allclose(statistic(*groups, ([100], [0])), statistic(*groups))
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   nan location mismatch:
+E    ACTUAL: array([nan])
+E    DESIRED: array([9.8])
+_ test_direct_grouped_input_zero_mass_and_invalid_groups[_weighted_correlation_ratio] _
+tests/test_observation_boundaries.py:122: in test_direct_grouped_input_zero_mass_and_invalid_groups
+    assert_allclose(statistic(*groups, ([100], [0])), statistic(*groups))
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   nan location mismatch:
+E    ACTUAL: array([nan])
+E    DESIRED: array([0.911322])
+________________ test_no_usable_observations_rejected[X0-None] _________________
+tests/test_observation_boundaries.py:141: in test_no_usable_observations_rejected
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+______________ test_no_usable_observations_rejected[X1-weights1] _______________
+tests/test_observation_boundaries.py:142: in test_no_usable_observations_rejected
+    a.association_series(X, "y", sample_weight=weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1136: in association_series
+    X, sample_weight = _check_association_input(X, sample_weight, handle_na)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:2018: in _check_association_input
+    X, sample_weight = X.loc[na_mask, :], sample_weight[na_mask]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+________________ test_no_usable_observations_rejected[X2-None] _________________
+tests/test_observation_boundaries.py:141: in test_no_usable_observations_rejected
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+____ test_handle_na_none_preserves_rows_and_weights_for_custom_callable[1] _____
+tests/test_observation_boundaries.py:156: in test_handle_na_none_preserves_rows_and_weights_for_custom_callable
+    result = a.association_series(
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1151: in association_series
+    assoc_series = _callable_association_series_fn(
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1295: in _callable_association_series_fn
+    X, sample_weight = _check_association_input(X, sample_weight, handle_na="drop")
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:2018: in _check_association_input
+    X, sample_weight = X.loc[na_mask, :], sample_weight[na_mask]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+____ test_handle_na_none_preserves_rows_and_weights_for_custom_callable[2] _____
+tests/test_observation_boundaries.py:156: in test_handle_na_none_preserves_rows_and_weights_for_custom_callable
+    result = a.association_series(
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1151: in association_series
+    assoc_series = _callable_association_series_fn(
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1295: in _callable_association_series_fn
+    X, sample_weight = _check_association_input(X, sample_weight, handle_na="drop")
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:2018: in _check_association_input
+    X, sample_weight = X.loc[na_mask, :], sample_weight[na_mask]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+________________ test_training_rejects_invalid_targets[y0-gbm] _________________
+tests/test_observation_boundaries.py:210: in test_training_rejects_invalid_targets
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=3 samples, Validation=1 samples.
+No 'metric' provided, using objective 'regression' as metric.
+Training up to 2 boosting rounds.
+_______________ test_training_rejects_invalid_targets[y0-groot] ________________
+tests/test_observation_boundaries.py:210: in test_training_rejects_invalid_targets
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's l2: 0	valid_1's l2: 2.5
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's l2: 0.25	valid_1's l2: 2.25
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+Cross Validation: 100%|██████████| 2/2 [00:00<00:00, 32.00it/s]
+________________ test_training_rejects_invalid_targets[y1-gbm] _________________
+tests/test_observation_boundaries.py:210: in test_training_rejects_invalid_targets
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=3 samples, Validation=1 samples.
+No 'metric' provided, using objective 'regression' as metric.
+Training up to 2 boosting rounds.
+_______________ test_training_rejects_invalid_targets[y1-groot] ________________
+tests/test_observation_boundaries.py:210: in test_training_rejects_invalid_targets
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's l2: 2.5e+75	valid_1's l2: 2.5e+75
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's l2: 0.25	valid_1's l2: 5e+75
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+Cross Validation: 100%|██████████| 2/2 [00:00<00:00, 36.72it/s]
+________________ test_training_rejects_invalid_targets[y2-gbm] _________________
+tests/test_observation_boundaries.py:210: in test_training_rejects_invalid_targets
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=3 samples, Validation=1 samples.
+No 'metric' provided, using objective 'regression' as metric.
+Training up to 2 boosting rounds.
+_______________ test_training_rejects_invalid_targets[y2-groot] ________________
+tests/test_observation_boundaries.py:210: in test_training_rejects_invalid_targets
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's l2: 2.5e+75	valid_1's l2: 2.5e+75
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's l2: 0.25	valid_1's l2: 5e+75
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+Cross Validation: 100%|██████████| 2/2 [00:00<00:00, 60.79it/s]
+_______________ test_training_rejects_invalid_targets[y3-boost] ________________
+tests/test_observation_boundaries.py:210: in test_training_rejects_invalid_targets
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+________________ test_training_rejects_invalid_targets[y3-glm] _________________
+tests/test_observation_boundaries.py:210: in test_training_rejects_invalid_targets
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_____________ test_training_rejects_invalid_weights[weights0-gbm] ______________
+tests/test_observation_boundaries.py:217: in test_training_rejects_invalid_weights
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=3 samples, Validation=1 samples.
+No 'metric' provided, using objective 'regression' as metric.
+Training up to 2 boosting rounds.
+____________ test_training_rejects_invalid_weights[weights0-boost] _____________
+tests/test_observation_boundaries.py:217: in test_training_rejects_invalid_weights
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+____________ test_training_rejects_invalid_weights[weights0-groot] _____________
+tests/test_observation_boundaries.py:217: in test_training_rejects_invalid_weights
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's l2: nan	valid_1's l2: nan
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's l2: nan	valid_1's l2: nan
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+Cross Validation: 100%|██████████| 2/2 [00:00<00:00, 23.95it/s]
+_____________ test_training_rejects_invalid_weights[weights1-gbm] ______________
+tests/test_observation_boundaries.py:217: in test_training_rejects_invalid_weights
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=3 samples, Validation=1 samples.
+No 'metric' provided, using objective 'regression' as metric.
+Training up to 2 boosting rounds.
+____________ test_training_rejects_invalid_weights[weights1-boost] _____________
+tests/test_observation_boundaries.py:217: in test_training_rejects_invalid_weights
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+____________ test_training_rejects_invalid_weights[weights1-groot] _____________
+tests/test_observation_boundaries.py:217: in test_training_rejects_invalid_weights
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's l2: 0.25	valid_1's l2: -33.75
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's l2: -90	valid_1's l2: 56.5
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+Cross Validation: 100%|██████████| 2/2 [00:00<00:00, 24.22it/s]
+_____________ test_training_rejects_invalid_weights[weights1-glm] ______________
+tests/test_observation_boundaries.py:218: in test_training_rejects_invalid_weights
+    fit(kind, frame(), [0, 1, 2, 3], weights)
+tests/test_observation_boundaries.py:194: in fit
+    return EnetGLM().fit(X, y, sample_weight=weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:195: in fit
+    self.result = self.model.fit_regularized(
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1454: in fit_regularized
+    result = fit_elasticnet(self, method=method,
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/statsmodels/base/elastic_net.py:197: in fit_elasticnet
+    params[k] = _opt_1d(
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/statsmodels/base/elastic_net.py:354: in _opt_1d
+    x_opt = brent(func, args=(model,), brack=(x-1, x+1), tol=tol)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/scipy/optimize/_optimize.py:2626: in brent
+    res = _minimize_scalar_brent(func, brack, args, **options)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/scipy/optimize/_optimize.py:2663: in _minimize_scalar_brent
+    brent.optimize()
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/scipy/optimize/_optimize.py:2433: in optimize
+    xa, xb, xc, fa, fb, fc, funcalls = self.get_bracket_info()
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/scipy/optimize/_optimize.py:2402: in get_bracket_info
+    xa, xb, xc, fa, fb, fc, funcalls = bracket(func, xa=brack[0],
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/scipy/optimize/_optimize.py:3032: in bracket
+    raise e
+E   scipy.optimize._optimize.BracketError: The algorithm terminated without finding a valid bracket. Consider trying different initial points.
+_____________ test_training_rejects_invalid_weights[weights2-gbm] ______________
+tests/test_observation_boundaries.py:217: in test_training_rejects_invalid_weights
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=3 samples, Validation=1 samples.
+No 'metric' provided, using objective 'regression' as metric.
+Training up to 2 boosting rounds.
+_____________ test_training_rejects_invalid_weights[weights3-gbm] ______________
+tests/test_observation_boundaries.py:217: in test_training_rejects_invalid_weights
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=3 samples, Validation=1 samples.
+No 'metric' provided, using objective 'regression' as metric.
+Training up to 2 boosting rounds.
+_ test_relevance_rejects_missing_response_before_row_policy[drop-f_cat_regression_parallel] _
+tests/test_observation_boundaries.py:232: in test_relevance_rejects_missing_response_before_row_policy
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_relevance_rejects_missing_response_before_row_policy[drop-f_cont_regression_parallel] _
+tests/test_observation_boundaries.py:232: in test_relevance_rejects_missing_response_before_row_policy
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_relevance_rejects_missing_response_before_row_policy[drop-f_cont_classification_parallel] _
+tests/test_observation_boundaries.py:232: in test_relevance_rejects_missing_response_before_row_policy
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stderr call -----------------------------
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1461: RuntimeWarning: invalid value encountered in scalar divide
+  msw = sswn / float(dfwn)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1461: RuntimeWarning: invalid value encountered in scalar divide
+  msw = sswn / float(dfwn)
+_ test_relevance_rejects_missing_response_before_row_policy[drop-f_cat_classification_parallel] _
+tests/test_observation_boundaries.py:233: in test_relevance_rejects_missing_response_before_row_policy
+    statistic(frame(), [0, np.nan, 1, 2], handle_na=handle_na)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1871: in f_cat_classification_parallel
+    theils_u_coef = theils_u_series(X, target, sample_weight, n_jobs, handle_na)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:334: in theils_u_series
+    raise TypeError("the target column is not categorical")
+E   TypeError: the target column is not categorical
+_ test_relevance_rejects_missing_response_before_row_policy[fill-f_cat_regression_parallel] _
+tests/test_observation_boundaries.py:232: in test_relevance_rejects_missing_response_before_row_policy
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_relevance_rejects_missing_response_before_row_policy[fill-f_cont_regression_parallel] _
+tests/test_observation_boundaries.py:232: in test_relevance_rejects_missing_response_before_row_policy
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_relevance_rejects_missing_response_before_row_policy[fill-f_cont_classification_parallel] _
+tests/test_observation_boundaries.py:232: in test_relevance_rejects_missing_response_before_row_policy
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_relevance_rejects_missing_response_before_row_policy[fill-f_cat_classification_parallel] _
+tests/test_observation_boundaries.py:233: in test_relevance_rejects_missing_response_before_row_policy
+    statistic(frame(), [0, np.nan, 1, 2], handle_na=handle_na)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1871: in f_cat_classification_parallel
+    theils_u_coef = theils_u_series(X, target, sample_weight, n_jobs, handle_na)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:334: in theils_u_series
+    raise TypeError("the target column is not categorical")
+E   TypeError: the target column is not categorical
+_ test_relevance_rejects_missing_response_before_row_policy[None-f_cat_regression_parallel] _
+tests/test_observation_boundaries.py:232: in test_relevance_rejects_missing_response_before_row_policy
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_relevance_rejects_missing_response_before_row_policy[None-f_cont_regression_parallel] _
+tests/test_observation_boundaries.py:232: in test_relevance_rejects_missing_response_before_row_policy
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stderr call -----------------------------
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:803: RuntimeWarning: invalid value encountered in scalar divide
+  return wcov(x, y, w) / np.sqrt(wcov(x, x, w) * wcov(y, y, w))
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:803: RuntimeWarning: invalid value encountered in scalar divide
+  return wcov(x, y, w) / np.sqrt(wcov(x, x, w) * wcov(y, y, w))
+_ test_relevance_rejects_missing_response_before_row_policy[None-f_cat_classification_parallel] _
+tests/test_observation_boundaries.py:233: in test_relevance_rejects_missing_response_before_row_policy
+    statistic(frame(), [0, np.nan, 1, 2], handle_na=handle_na)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1871: in f_cat_classification_parallel
+    theils_u_coef = theils_u_series(X, target, sample_weight, n_jobs, handle_na)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:334: in theils_u_series
+    raise TypeError("the target column is not categorical")
+E   TypeError: the target column is not categorical
+____________ test_split_weight_mass_checked_before_training[train] _____________
+tests/test_observation_boundaries.py:243: in test_split_weight_mass_checked_before_training
+    with pytest.raises(ValueError, match="positive"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=24 samples, Validation=6 samples.
+____________ test_split_weight_mass_checked_before_training[valid] _____________
+tests/test_observation_boundaries.py:243: in test_split_weight_mass_checked_before_training
+    with pytest.raises(ValueError, match="positive"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=24 samples, Validation=6 samples.
+_______________ test_glm_cross_validation_rejects_zero_mass_fold _______________
+tests/test_observation_boundaries.py:260: in test_glm_cross_validation_rejects_zero_mass_fold
+    with pytest.raises(ValueError, match="positive"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+___________________ test_relative_weights_are_not_normalized ___________________
+tests/test_observation_boundaries.py:284: in test_relative_weights_are_not_normalized
+    assert_array_equal(validate_sample_weight(weights), weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/utils.py:271: in validate_sample_weight
+    raise ValueError("sample_weight must be an array-like object or None.")
+E   ValueError: sample_weight must be an array-like object or None.
+___________ test_low_level_statistics_validate_weights[weights0-wm] ____________
+tests/test_observation_boundaries.py:291: in test_low_level_statistics_validate_weights
+    statistic([0, 1, 2, 3], weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:763: in wm
+    return np.sum(x * w) / np.sum(w)
+E   TypeError: can't multiply sequence by non-int of type 'list'
+__________ test_low_level_statistics_validate_weights[weights0-wrank] __________
+tests/test_observation_boundaries.py:290: in test_low_level_statistics_validate_weights
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+___________ test_low_level_statistics_validate_weights[weights1-wm] ____________
+tests/test_observation_boundaries.py:291: in test_low_level_statistics_validate_weights
+    statistic([0, 1, 2, 3], weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:763: in wm
+    return np.sum(x * w) / np.sum(w)
+E   TypeError: can't multiply sequence by non-int of type 'list'
+__________ test_low_level_statistics_validate_weights[weights1-wrank] __________
+tests/test_observation_boundaries.py:290: in test_low_level_statistics_validate_weights
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+___________ test_low_level_statistics_validate_weights[weights2-wm] ____________
+tests/test_observation_boundaries.py:291: in test_low_level_statistics_validate_weights
+    statistic([0, 1, 2, 3], weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:763: in wm
+    return np.sum(x * w) / np.sum(w)
+E   TypeError: can't multiply sequence by non-int of type 'list'
+__________ test_low_level_statistics_validate_weights[weights2-wrank] __________
+tests/test_observation_boundaries.py:290: in test_low_level_statistics_validate_weights
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+___________ test_low_level_statistics_validate_weights[weights3-wm] ____________
+tests/test_observation_boundaries.py:291: in test_low_level_statistics_validate_weights
+    statistic([0, 1, 2, 3], weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:763: in wm
+    return np.sum(x * w) / np.sum(w)
+E   TypeError: can't multiply sequence by non-int of type 'list'
+__________ test_low_level_statistics_validate_weights[weights3-wrank] __________
+tests/test_observation_boundaries.py:290: in test_low_level_statistics_validate_weights
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+___________ test_low_level_statistics_validate_weights[weights4-wm] ____________
+tests/test_observation_boundaries.py:291: in test_low_level_statistics_validate_weights
+    statistic([0, 1, 2, 3], weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:763: in wm
+    return np.sum(x * w) / np.sum(w)
+E   TypeError: can't multiply sequence by non-int of type 'list'
+___________ test_low_level_statistics_validate_weights[weights5-wm] ____________
+tests/test_observation_boundaries.py:291: in test_low_level_statistics_validate_weights
+    statistic([0, 1, 2, 3], weights)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:763: in wm
+    return np.sum(x * w) / np.sum(w)
+E   TypeError: can't multiply sequence by non-int of type 'list'
+______ test_targets_accept_array_likes_and_preserve_response_values[list] ______
+tests/test_observation_boundaries.py:297: in test_targets_accept_array_likes_and_preserve_response_values
+    assert_array_equal(utils.validate_target(y, 4), y)
+E   AttributeError: module 'arfs.utils' has no attribute 'validate_target'
+_____ test_targets_accept_array_likes_and_preserve_response_values[array] ______
+tests/test_observation_boundaries.py:297: in test_targets_accept_array_likes_and_preserve_response_values
+    assert_array_equal(utils.validate_target(y, 4), y)
+E   AttributeError: module 'arfs.utils' has no attribute 'validate_target'
+_____ test_targets_accept_array_likes_and_preserve_response_values[Series] _____
+tests/test_observation_boundaries.py:297: in test_targets_accept_array_likes_and_preserve_response_values
+    assert_array_equal(utils.validate_target(y, 4), y)
+E   AttributeError: module 'arfs.utils' has no attribute 'validate_target'
+__________ test_pairwise_statistics_reject_invalid_observations[1-y0] __________
+tests/test_observation_boundaries.py:314: in test_pairwise_statistics_reject_invalid_observations
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_________ test_pairwise_statistics_reject_invalid_observations[x2-y2] __________
+tests/test_observation_boundaries.py:314: in test_pairwise_statistics_reject_invalid_observations
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_________ test_pairwise_statistics_reject_invalid_observations[x3-y3] __________
+tests/test_observation_boundaries.py:314: in test_pairwise_statistics_reject_invalid_observations
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_________ test_pairwise_statistics_reject_invalid_observations[x4-y4] __________
+tests/test_observation_boundaries.py:314: in test_pairwise_statistics_reject_invalid_observations
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_________ test_pairwise_statistics_reject_invalid_observations[x5-y5] __________
+tests/test_observation_boundaries.py:314: in test_pairwise_statistics_reject_invalid_observations
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+__________________ test_undefined_grouped_statistics_rejected __________________
+tests/test_observation_boundaries.py:320: in test_undefined_grouped_statistics_rejected
+    a.f_cat_regression(pd.Series(["a", "a", "b"]), [1, 2, 3], [1, 1, 0])
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1496: in f_cat_regression
+    y[safe_mask(y, x == k)],
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_________________ test_pairwise_series_are_aligned_by_position _________________
+tests/test_observation_boundaries.py:328: in test_pairwise_series_are_aligned_by_position
+    assert_allclose(
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 0.8
+E   Max relative difference among violations: 1.
+E    ACTUAL: array(0.)
+E    DESIRED: array(0.8)
+=============================== warnings summary ===============================
+tests/test_observation_boundaries.py::test_invalid_weights_rejected[weighted_corr-weights0]
+tests/test_observation_boundaries.py::test_invalid_weights_rejected[weighted_corr-weights3]
+tests/test_observation_boundaries.py::test_pairwise_statistics_reject_invalid_observations[x2-y2]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:763: RuntimeWarning: invalid value encountered in scalar divide
+    return np.sum(x * w) / np.sum(w)
+
+tests/test_observation_boundaries.py::test_invalid_weights_rejected[weighted_corr-weights0]
+tests/test_observation_boundaries.py::test_pairwise_statistics_reject_invalid_observations[x2-y2]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:783: RuntimeWarning: invalid value encountered in scalar divide
+    return np.sum(w * (x - wm(x, w)) * (y - wm(y, w))) / np.sum(w)
+
+tests/test_observation_boundaries.py::test_invalid_weights_rejected[weighted_corr-weights3]
+tests/test_observation_boundaries.py::test_no_usable_observations_rejected[X0-None]
+tests/test_observation_boundaries.py::test_pairwise_statistics_reject_invalid_observations[1-y0]
+tests/test_observation_boundaries.py::test_pairwise_statistics_reject_invalid_observations[x3-y3]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:803: RuntimeWarning: invalid value encountered in scalar divide
+    return wcov(x, y, w) / np.sqrt(wcov(x, x, w) * wcov(y, y, w))
+
+tests/test_observation_boundaries.py::test_zero_weight_category_equivalent_to_removal[cramer_v]
+tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights1-cramer_v]
+tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights2-cramer_v]
+tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights3-cramer_v]
+tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights5-cramer_v]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:389: FutureWarning: The provided callable <built-in function sum> is currently using DataFrameGroupBy.sum. In a future version of pandas, the provided callable will be used directly. To keep current behavior pass the string "sum" instead.
+    weighted_tab = pd.crosstab(x, y, sample_weight, aggfunc=sum).fillna(0)
+
+tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights0-weighted_theils_u]
+tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights3-weighted_theils_u]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:203: RuntimeWarning: invalid value encountered in divide
+    p_x = x_weights / tot_weight
+
+tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights3-cramer_v]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/scipy/stats/contingency.py:134: RuntimeWarning: invalid value encountered in divide
+    expected = reduce(np.multiply, margsums) / observed.sum() ** (d - 1)
+
+tests/test_observation_boundaries.py::test_direct_grouped_input_zero_mass_and_invalid_groups[f_oneway_weighted]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1455: RuntimeWarning: invalid value encountered in scalar divide
+    ssbn += square_of_sums_args[k] / weight_per_class[k]
+
+tests/test_observation_boundaries.py::test_direct_grouped_input_zero_mass_and_invalid_groups[_weighted_correlation_ratio]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:554: RuntimeWarning: invalid value encountered in scalar divide
+    ssbn = sum(np.square(s) / w for s, w in zip(sums_args, weight_per_class))
+
+tests/test_observation_boundaries.py::test_no_usable_observations_rejected[X0-None]
+tests/test_observation_boundaries.py::test_no_usable_observations_rejected[X0-None]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:2007: UserWarning: {'y'} columns have been removed (single unique values)
+    warnings.warn(
+
+tests/test_observation_boundaries.py::test_no_usable_observations_rejected[X1-weights1]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:2007: UserWarning: {'x'} columns have been removed (single unique values)
+    warnings.warn(
+
+tests/test_observation_boundaries.py: 12 warnings
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1528: UserWarning: [BoostAGroota]: using native variable importance might break the FS
+    warnings.warn(
+
+tests/test_observation_boundaries.py::test_training_rejects_invalid_targets[y1-glm]
+tests/test_observation_boundaries.py::test_training_rejects_invalid_targets[y2-glm]
+tests/test_observation_boundaries.py::test_training_rejects_invalid_weights[weights3-glm]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:576: RuntimeWarning: invalid value encountered in multiply
+    tmp = score_factor * tmp
+
+tests/test_observation_boundaries.py::test_training_rejects_invalid_targets[y1-glm]
+tests/test_observation_boundaries.py::test_training_rejects_invalid_targets[y2-glm]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:897: RuntimeWarning: invalid value encountered in subtract
+    resid = np.power(self.endog - mu, 2) * self.iweights
+
+tests/test_observation_boundaries.py::test_training_rejects_invalid_targets[y1-glm]
+tests/test_observation_boundaries.py::test_training_rejects_invalid_targets[y2-glm]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:600: RuntimeWarning: invalid value encountered in subtract
+    return (endog - mu) ** 2
+
+tests/test_observation_boundaries.py::test_training_rejects_invalid_targets[y3-glm]
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1342: PerfectSeparationWarning: Perfect separation or prediction detected, parameter may not be identified
+    warnings.warn(msg, category=PerfectSeparationWarning)
+
+tests/test_observation_boundaries.py::test_training_rejects_invalid_targets[y3-glm]
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1464: UserWarning: Elastic net fitting did not converge
+    warnings.warn("Elastic net fitting did not converge")
+
+tests/test_observation_boundaries.py::test_training_rejects_invalid_weights[weights0-gbm]
+tests/test_observation_boundaries.py::test_training_rejects_invalid_weights[weights2-gbm]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:733: UserWarning: Could not generate learning curve plot: Axis limits cannot be NaN or Inf
+    warnings.warn(f"Could not generate learning curve plot: {e}")
+
+tests/test_observation_boundaries.py::test_training_rejects_invalid_weights[weights0-glm]
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:648: RuntimeWarning: divide by zero encountered in divide
+    ll_obs += -np.log(scale / var_weights) - np.log(2 * np.pi)
+
+tests/test_observation_boundaries.py::test_training_rejects_invalid_weights[weights0-glm]
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:578: RuntimeWarning: invalid value encountered in divide
+    tmp /= self.iweights * self.n_trials
+
+tests/test_observation_boundaries.py::test_training_rejects_invalid_weights[weights0-glm]
+tests/test_observation_boundaries.py::test_training_rejects_invalid_weights[weights3-glm]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:188: RuntimeWarning: invalid value encountered in divide
+    return np.sum(resid_dev * freq_weights * var_weights / scale)
+
+tests/test_observation_boundaries.py::test_training_rejects_invalid_weights[weights1-boost]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1798: RuntimeWarning: invalid value encountered in divide
+    df["fscore" + str(i)] = importance / importance.sum()
+
+tests/test_observation_boundaries.py::test_training_rejects_invalid_weights[weights1-glm]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:648: RuntimeWarning: invalid value encountered in log
+    ll_obs += -np.log(scale / var_weights) - np.log(2 * np.pi)
+
+tests/test_observation_boundaries.py::test_training_rejects_invalid_weights[weights3-glm]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:648: RuntimeWarning: divide by zero encountered in log
+    ll_obs += -np.log(scale / var_weights) - np.log(2 * np.pi)
+
+tests/test_observation_boundaries.py::test_training_rejects_invalid_weights[weights3-glm]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:648: RuntimeWarning: invalid value encountered in add
+    ll_obs += -np.log(scale / var_weights) - np.log(2 * np.pi)
+
+tests/test_observation_boundaries.py: 21 warnings
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/joblib/externals/loky/backend/fork_exec.py:38: DeprecationWarning: This process (pid=3984578) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    pid = os.fork()
+
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1891: RuntimeWarning: invalid value encountered in scalar subtract
+    prsq = 1 - np.exp((self.llnull - self.llf) * (2 / self.nobs))
+
+tests/test_observation_boundaries.py::test_low_level_statistics_validate_weights[weights3-wrank]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:825: RuntimeWarning: invalid value encountered in subtract
+    return (np.cumsum(a) - a)[arr_inv] + ((counts + 1) / 2 * (a / counts))[arr_inv]
+
+tests/test_observation_boundaries.py::test_benchmark_weights_match_independent_reference[regression]
+tests/test_observation_boundaries.py::test_benchmark_weights_match_independent_reference[classification]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/benchmark.py:99: UserWarning: Tight layout not applied. The bottom and top margins cannot be made large enough to accommodate all Axes decorations.
+    fig.tight_layout()
+
+tests/test_observation_boundaries.py::test_benchmark_weights_match_independent_reference[regression]
+tests/test_observation_boundaries.py::test_benchmark_weights_match_independent_reference[classification]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/benchmark.py:104: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+    plt.show()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_observation_boundaries.py::test_invalid_weights_rejected[association_series-weights0]
+FAILED tests/test_observation_boundaries.py::test_invalid_weights_rejected[association_series-weights1]
+FAILED tests/test_observation_boundaries.py::test_invalid_weights_rejected[association_series-weights4]
+FAILED tests/test_observation_boundaries.py::test_invalid_weights_rejected[association_series-weights5]
+FAILED tests/test_observation_boundaries.py::test_invalid_weights_rejected[association_matrix-weights0]
+FAILED tests/test_observation_boundaries.py::test_invalid_weights_rejected[association_matrix-weights1]
+FAILED tests/test_observation_boundaries.py::test_invalid_weights_rejected[association_matrix-weights4]
+FAILED tests/test_observation_boundaries.py::test_invalid_weights_rejected[association_matrix-weights5]
+FAILED tests/test_observation_boundaries.py::test_invalid_weights_rejected[weighted_corr-weights0]
+FAILED tests/test_observation_boundaries.py::test_invalid_weights_rejected[weighted_corr-weights1]
+FAILED tests/test_observation_boundaries.py::test_invalid_weights_rejected[weighted_corr-weights2]
+FAILED tests/test_observation_boundaries.py::test_invalid_weights_rejected[weighted_corr-weights3]
+FAILED tests/test_observation_boundaries.py::test_list_array_series_weights_and_complete_case_alignment[list]
+FAILED tests/test_observation_boundaries.py::test_zero_weight_category_equivalent_to_removal[correlation_ratio]
+FAILED tests/test_observation_boundaries.py::test_zero_weight_category_equivalent_to_removal[f_cat_regression]
+FAILED tests/test_observation_boundaries.py::test_zero_weight_category_equivalent_to_removal[cramer_v]
+FAILED tests/test_observation_boundaries.py::test_zero_weight_category_equivalent_to_removal[weighted_theils_u]
+FAILED tests/test_observation_boundaries.py::test_zero_weight_category_equivalent_to_removal[weighted_conditional_entropy]
+FAILED tests/test_observation_boundaries.py::test_zero_weight_category_equivalent_to_removal[f_cont_classification]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights0-correlation_ratio]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights0-f_cat_regression]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights0-weighted_theils_u]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights0-f_cont_classification]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights1-correlation_ratio]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights1-f_cat_regression]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights1-cramer_v]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights1-weighted_theils_u]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights1-weighted_conditional_entropy]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights1-f_cont_classification]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights2-correlation_ratio]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights2-f_cat_regression]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights2-cramer_v]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights2-weighted_theils_u]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights2-weighted_conditional_entropy]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights2-f_cont_classification]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights3-correlation_ratio]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights3-f_cat_regression]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights3-weighted_theils_u]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights3-weighted_conditional_entropy]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights3-f_cont_classification]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights4-correlation_ratio]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights4-f_cat_regression]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights4-f_cont_classification]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights5-correlation_ratio]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights5-f_cat_regression]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights5-cramer_v]
+FAILED tests/test_observation_boundaries.py::test_grouped_statistics_validate_weights[weights5-f_cont_classification]
+FAILED tests/test_observation_boundaries.py::test_direct_grouped_input_zero_mass_and_invalid_groups[f_oneway_weighted]
+FAILED tests/test_observation_boundaries.py::test_direct_grouped_input_zero_mass_and_invalid_groups[_weighted_correlation_ratio]
+FAILED tests/test_observation_boundaries.py::test_no_usable_observations_rejected[X0-None]
+FAILED tests/test_observation_boundaries.py::test_no_usable_observations_rejected[X1-weights1]
+FAILED tests/test_observation_boundaries.py::test_no_usable_observations_rejected[X2-None]
+FAILED tests/test_observation_boundaries.py::test_handle_na_none_preserves_rows_and_weights_for_custom_callable[1]
+FAILED tests/test_observation_boundaries.py::test_handle_na_none_preserves_rows_and_weights_for_custom_callable[2]
+FAILED tests/test_observation_boundaries.py::test_training_rejects_invalid_targets[y0-gbm]
+FAILED tests/test_observation_boundaries.py::test_training_rejects_invalid_targets[y0-groot]
+FAILED tests/test_observation_boundaries.py::test_training_rejects_invalid_targets[y1-gbm]
+FAILED tests/test_observation_boundaries.py::test_training_rejects_invalid_targets[y1-groot]
+FAILED tests/test_observation_boundaries.py::test_training_rejects_invalid_targets[y2-gbm]
+FAILED tests/test_observation_boundaries.py::test_training_rejects_invalid_targets[y2-groot]
+FAILED tests/test_observation_boundaries.py::test_training_rejects_invalid_targets[y3-boost]
+FAILED tests/test_observation_boundaries.py::test_training_rejects_invalid_targets[y3-glm]
+FAILED tests/test_observation_boundaries.py::test_training_rejects_invalid_weights[weights0-gbm]
+FAILED tests/test_observation_boundaries.py::test_training_rejects_invalid_weights[weights0-boost]
+FAILED tests/test_observation_boundaries.py::test_training_rejects_invalid_weights[weights0-groot]
+FAILED tests/test_observation_boundaries.py::test_training_rejects_invalid_weights[weights1-gbm]
+FAILED tests/test_observation_boundaries.py::test_training_rejects_invalid_weights[weights1-boost]
+FAILED tests/test_observation_boundaries.py::test_training_rejects_invalid_weights[weights1-groot]
+FAILED tests/test_observation_boundaries.py::test_training_rejects_invalid_weights[weights1-glm]
+FAILED tests/test_observation_boundaries.py::test_training_rejects_invalid_weights[weights2-gbm]
+FAILED tests/test_observation_boundaries.py::test_training_rejects_invalid_weights[weights3-gbm]
+FAILED tests/test_observation_boundaries.py::test_relevance_rejects_missing_response_before_row_policy[drop-f_cat_regression_parallel]
+FAILED tests/test_observation_boundaries.py::test_relevance_rejects_missing_response_before_row_policy[drop-f_cont_regression_parallel]
+FAILED tests/test_observation_boundaries.py::test_relevance_rejects_missing_response_before_row_policy[drop-f_cont_classification_parallel]
+FAILED tests/test_observation_boundaries.py::test_relevance_rejects_missing_response_before_row_policy[drop-f_cat_classification_parallel]
+FAILED tests/test_observation_boundaries.py::test_relevance_rejects_missing_response_before_row_policy[fill-f_cat_regression_parallel]
+FAILED tests/test_observation_boundaries.py::test_relevance_rejects_missing_response_before_row_policy[fill-f_cont_regression_parallel]
+FAILED tests/test_observation_boundaries.py::test_relevance_rejects_missing_response_before_row_policy[fill-f_cont_classification_parallel]
+FAILED tests/test_observation_boundaries.py::test_relevance_rejects_missing_response_before_row_policy[fill-f_cat_classification_parallel]
+FAILED tests/test_observation_boundaries.py::test_relevance_rejects_missing_response_before_row_policy[None-f_cat_regression_parallel]
+FAILED tests/test_observation_boundaries.py::test_relevance_rejects_missing_response_before_row_policy[None-f_cont_regression_parallel]
+FAILED tests/test_observation_boundaries.py::test_relevance_rejects_missing_response_before_row_policy[None-f_cat_classification_parallel]
+FAILED tests/test_observation_boundaries.py::test_split_weight_mass_checked_before_training[train]
+FAILED tests/test_observation_boundaries.py::test_split_weight_mass_checked_before_training[valid]
+FAILED tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+FAILED tests/test_observation_boundaries.py::test_relative_weights_are_not_normalized
+FAILED tests/test_observation_boundaries.py::test_low_level_statistics_validate_weights[weights0-wm]
+FAILED tests/test_observation_boundaries.py::test_low_level_statistics_validate_weights[weights0-wrank]
+FAILED tests/test_observation_boundaries.py::test_low_level_statistics_validate_weights[weights1-wm]
+FAILED tests/test_observation_boundaries.py::test_low_level_statistics_validate_weights[weights1-wrank]
+FAILED tests/test_observation_boundaries.py::test_low_level_statistics_validate_weights[weights2-wm]
+FAILED tests/test_observation_boundaries.py::test_low_level_statistics_validate_weights[weights2-wrank]
+FAILED tests/test_observation_boundaries.py::test_low_level_statistics_validate_weights[weights3-wm]
+FAILED tests/test_observation_boundaries.py::test_low_level_statistics_validate_weights[weights3-wrank]
+FAILED tests/test_observation_boundaries.py::test_low_level_statistics_validate_weights[weights4-wm]
+FAILED tests/test_observation_boundaries.py::test_low_level_statistics_validate_weights[weights5-wm]
+FAILED tests/test_observation_boundaries.py::test_targets_accept_array_likes_and_preserve_response_values[list]
+FAILED tests/test_observation_boundaries.py::test_targets_accept_array_likes_and_preserve_response_values[array]
+FAILED tests/test_observation_boundaries.py::test_targets_accept_array_likes_and_preserve_response_values[Series]
+FAILED tests/test_observation_boundaries.py::test_pairwise_statistics_reject_invalid_observations[1-y0]
+FAILED tests/test_observation_boundaries.py::test_pairwise_statistics_reject_invalid_observations[x2-y2]
+FAILED tests/test_observation_boundaries.py::test_pairwise_statistics_reject_invalid_observations[x3-y3]
+FAILED tests/test_observation_boundaries.py::test_pairwise_statistics_reject_invalid_observations[x4-y4]
+FAILED tests/test_observation_boundaries.py::test_pairwise_statistics_reject_invalid_observations[x5-y5]
+FAILED tests/test_observation_boundaries.py::test_undefined_grouped_statistics_rejected
+FAILED tests/test_observation_boundaries.py::test_pairwise_series_are_aligned_by_position
+106 failed, 66 passed, 105 warnings in 70.92s (0:01:10)

@@ -1,0 +1,362 @@
+.FF.FF.FF.FFFFFFFFFFFFFFFFFFFF                                           [100%]
+=================================== FAILURES ===================================
+___ test_real_fits_preserve_input_and_transform_values[True-category-boost] ____
+tests/test_shadow_contracts.py:74: in test_real_fits_preserve_input_and_transform_values
+    assert_frame_equal(X, before)
+E   AssertionError: Attributes of DataFrame.iloc[:, 0] (column name="cat") are different
+E
+E   Attribute "dtype" are different
+E   [left]:  int64
+E   [right]: CategoricalDtype(categories=[10, 20, 30], ordered=False, categories_dtype=int64)
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/2 [00:00<?, ?it/s]
+BoostaGRoota round:  50%|█████     | 1/2 [00:00<00:00, 13.13it/s]
+___ test_real_fits_preserve_input_and_transform_values[True-category-groot] ____
+tests/test_shadow_contracts.py:74: in test_real_fits_preserve_input_and_transform_values
+    assert_frame_equal(X, before)
+E   AssertionError: Attributes of DataFrame.iloc[:, 0] (column name="cat") are different
+E
+E   Attribute "dtype" are different
+E   [left]:  int64
+E   [right]: CategoricalDtype(categories=[10, 20, 30], ordered=False, categories_dtype=int64)
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[37]	training's l2: 0.495705	valid_1's l2: 1.67134
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[21]	training's l2: 0.874064	valid_1's l2: 1.27099
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+Cross Validation: 100%|██████████| 2/2 [00:00<00:00, 21.20it/s]
+____ test_real_fits_preserve_input_and_transform_values[True-object-boost] _____
+tests/test_shadow_contracts.py:74: in test_real_fits_preserve_input_and_transform_values
+    assert_frame_equal(X, before)
+E   AssertionError: Attributes of DataFrame.iloc[:, 0] (column name="cat") are different
+E
+E   Attribute "dtype" are different
+E   [left]:  int64
+E   [right]: object
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/2 [00:00<?, ?it/s]
+BoostaGRoota round:  50%|█████     | 1/2 [00:00<00:00, 13.54it/s]
+____ test_real_fits_preserve_input_and_transform_values[True-object-groot] _____
+tests/test_shadow_contracts.py:74: in test_real_fits_preserve_input_and_transform_values
+    assert_frame_equal(X, before)
+E   AssertionError: Attributes of DataFrame.iloc[:, 0] (column name="cat") are different
+E
+E   Attribute "dtype" are different
+E   [left]:  int64
+E   [right]: object
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[24]	training's l2: 0.584034	valid_1's l2: 1.64159
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[36]	training's l2: 0.390226	valid_1's l2: 0.970277
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+Cross Validation:  50%|█████     | 1/2 [00:00<00:00,  9.83it/s]
+Cross Validation: 100%|██████████| 2/2 [00:00<00:00, 11.70it/s]
+____ test_real_fits_preserve_input_and_transform_values[True-string-boost] _____
+tests/test_shadow_contracts.py:74: in test_real_fits_preserve_input_and_transform_values
+    assert_frame_equal(X, before)
+E   AssertionError: Attributes of DataFrame.iloc[:, 0] (column name="cat") are different
+E
+E   Attribute "dtype" are different
+E   [left]:  int64
+E   [right]: <StringDtype(storage='python', na_value=<NA>)>
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/2 [00:00<?, ?it/s]
+BoostaGRoota round:  50%|█████     | 1/2 [00:00<00:00, 12.68it/s]
+____ test_real_fits_preserve_input_and_transform_values[True-string-groot] _____
+tests/test_shadow_contracts.py:74: in test_real_fits_preserve_input_and_transform_values
+    assert_frame_equal(X, before)
+E   AssertionError: Attributes of DataFrame.iloc[:, 0] (column name="cat") are different
+E
+E   Attribute "dtype" are different
+E   [left]:  int64
+E   [right]: <StringDtype(storage='python', na_value=<NA>)>
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[27]	training's l2: 0.476108	valid_1's l2: 1.6629
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[26]	training's l2: 0.873677	valid_1's l2: 1.32146
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+Cross Validation: 100%|██████████| 2/2 [00:00<00:00, 28.55it/s]
+_____ test_real_fits_preserve_input_and_transform_values[True-None-boost] ______
+tests/test_shadow_contracts.py:74: in test_real_fits_preserve_input_and_transform_values
+    assert_frame_equal(X, before)
+E   AssertionError: Attributes of DataFrame.iloc[:, 0] (column name="cat") are different
+E
+E   Attribute "dtype" are different
+E   [left]:  int64
+E   [right]: <StringDtype(storage='python', na_value=nan)>
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/2 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/2 [00:00<?, ?it/s]
+_____ test_real_fits_preserve_input_and_transform_values[True-None-groot] ______
+tests/test_shadow_contracts.py:74: in test_real_fits_preserve_input_and_transform_values
+    assert_frame_equal(X, before)
+E   AssertionError: Attributes of DataFrame.iloc[:, 0] (column name="cat") are different
+E
+E   Attribute "dtype" are different
+E   [left]:  int64
+E   [right]: <StringDtype(storage='python', na_value=nan)>
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[27]	training's l2: 0.519925	valid_1's l2: 1.79941
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[27]	training's l2: 0.716083	valid_1's l2: 1.24726
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+Cross Validation: 100%|██████████| 2/2 [00:00<00:00, 18.51it/s]
+Cross Validation: 100%|██████████| 2/2 [00:00<00:00, 18.25it/s]
+___________ test_shared_importance_encoding_owns_its_frame[_get_imp] ___________
+tests/test_shadow_contracts.py:87: in test_shared_importance_encoding_owns_its_frame
+    assert_frame_equal(X, before)
+E   AssertionError: Attributes of DataFrame.iloc[:, 0] (column name="cat") are different
+E
+E   Attribute "dtype" are different
+E   [left]:  int64
+E   [right]: <StringDtype(storage='python', na_value=<NA>)>
+________ test_shared_importance_encoding_owns_its_frame[_get_shap_imp] _________
+tests/test_shadow_contracts.py:87: in test_shared_importance_encoding_owns_its_frame
+    assert_frame_equal(X, before)
+E   AssertionError: Attributes of DataFrame.iloc[:, 0] (column name="cat") are different
+E
+E   Attribute "dtype" are different
+E   [left]:  int64
+E   [right]: <StringDtype(storage='python', na_value=<NA>)>
+________ test_shared_importance_encoding_owns_its_frame[_get_perm_imp] _________
+tests/test_shadow_contracts.py:87: in test_shared_importance_encoding_owns_its_frame
+    assert_frame_equal(X, before)
+E   AssertionError: Attributes of DataFrame.iloc[:, 0] (column name="cat") are different
+E
+E   Attribute "dtype" are different
+E   [left]:  int64
+E   [right]: <StringDtype(storage='python', na_value=<NA>)>
+__________ test_shadow_names_preserve_real_column_identity[columns0] ___________
+tests/test_shadow_contracts.py:104: in test_shadow_names_preserve_real_column_identity
+    assert augmented.shape == (len(X), 2 * len(columns))
+E   assert (20, 6) == (20, 4)
+E
+E     At index 1 diff: 6 != 4
+E     Use -v to get more diff
+__________ test_shadow_names_preserve_real_column_identity[columns1] ___________
+tests/test_shadow_contracts.py:104: in test_shadow_names_preserve_real_column_identity
+    assert augmented.shape == (len(X), 2 * len(columns))
+E   assert (20, 6) == (20, 4)
+E
+E     At index 1 diff: 6 != 4
+E     Use -v to get more diff
+__________ test_shadow_names_preserve_real_column_identity[columns2] ___________
+tests/test_shadow_contracts.py:104: in test_shadow_names_preserve_real_column_identity
+    assert augmented.shape == (len(X), 2 * len(columns))
+E   assert (20, 12) == (20, 8)
+E
+E     At index 1 diff: 12 != 8
+E     Use -v to get more diff
+__________ test_shadow_names_preserve_real_column_identity[columns3] ___________
+tests/test_shadow_contracts.py:103: in test_shadow_names_preserve_real_column_identity
+    augmented, shadows = ar._create_shadow(X)
+                         ^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r06/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1708: in _create_shadow
+    shadow_columns = [col for col in new_x.columns if col.startswith("ShadowVar")]
+                                                      ^^^^^^^^^^^^^^
+E   AttributeError: 'int' object has no attribute 'startswith'
+__ test_leshy_repeated_shadows_keep_dtype_values_and_unique_names[1-category] __
+tests/test_shadow_contracts.py:148: in test_leshy_repeated_shadows_keep_dtype_values_and_unique_names
+    assert frame.columns.is_unique
+E   AssertionError: assert False
+E    +  where False = Index(['Shadow_0', 'Shadow_0', 'Shadow_1', 'Shadow_2', 'Shadow_3', 'Shadow_4',\n       'Shadow_5', 'Shadow_6', 'Shadow_7'],\n      dtype='str').is_unique
+E    +    where Index(['Shadow_0', 'Shadow_0', 'Shadow_1', 'Shadow_2', 'Shadow_3', 'Shadow_4',\n       'Shadow_5', 'Shadow_6', 'Shadow_7'],\n      dtype='str') =    Shadow_0  Shadow_0  Shadow_1  ...  Shadow_5  Shadow_6  Shadow_7\n0        10       NaN      30.0  ...      10.0     ...     30.0      10.0      20.0\n19       30      10.0       NaN  ...      30.0      20.0      30.0\n\n[20 rows x 9 columns].columns
+___ test_leshy_repeated_shadows_keep_dtype_values_and_unique_names[1-string] ___
+tests/test_shadow_contracts.py:148: in test_leshy_repeated_shadows_keep_dtype_values_and_unique_names
+    assert frame.columns.is_unique
+E   AssertionError: assert False
+E    +  where False = Index(['Shadow_0', 'Shadow_0', 'Shadow_1', 'Shadow_2', 'Shadow_3', 'Shadow_4',\n       'Shadow_5', 'Shadow_6', 'Shadow_7'],\n      dtype='str').is_unique
+E    +    where Index(['Shadow_0', 'Shadow_0', 'Shadow_1', 'Shadow_2', 'Shadow_3', 'Shadow_4',\n       'Shadow_5', 'Shadow_6', 'Shadow_7'],\n      dtype='str') =    Shadow_0 Shadow_0 Shadow_1 Shadow_2  ... Shadow_4 Shadow_5 Shadow_6 Shadow_7\n0       nan      NaN        a        a...    nan     None\n19        a      nan      NaN        a  ...      nan        a     None        a\n\n[20 rows x 9 columns].columns
+__ test_leshy_repeated_shadows_keep_dtype_values_and_unique_names[1-boolean] ___
+tests/test_shadow_contracts.py:148: in test_leshy_repeated_shadows_keep_dtype_values_and_unique_names
+    assert frame.columns.is_unique
+E   AssertionError: assert False
+E    +  where False = Index(['Shadow_0', 'Shadow_0', 'Shadow_1', 'Shadow_2', 'Shadow_3', 'Shadow_4',\n       'Shadow_5', 'Shadow_6', 'Shadow_7'],\n      dtype='str').is_unique
+E    +    where Index(['Shadow_0', 'Shadow_0', 'Shadow_1', 'Shadow_2', 'Shadow_3', 'Shadow_4',\n       'Shadow_5', 'Shadow_6', 'Shadow_7'],\n      dtype='str') =     Shadow_0 Shadow_0 Shadow_1 Shadow_2  ... Shadow_4 Shadow_5 Shadow_6 Shadow_7\n0       True     <NA>     True     Tr...  True    False\n19      True     True     <NA>     True  ...     True     True    False     True\n\n[20 rows x 9 columns].columns
+__ test_leshy_repeated_shadows_keep_dtype_values_and_unique_names[3-category] __
+tests/test_shadow_contracts.py:148: in test_leshy_repeated_shadows_keep_dtype_values_and_unique_names
+    assert frame.columns.is_unique
+E   AssertionError: assert False
+E    +  where False = Index(['Shadow_0', 'Shadow_1', 'Shadow_2', 'Shadow_0', 'Shadow_1', 'Shadow_2',\n       'Shadow_3', 'Shadow_4', 'Shadow_5'],\n      dtype='str').is_unique
+E    +    where Index(['Shadow_0', 'Shadow_1', 'Shadow_2', 'Shadow_0', 'Shadow_1', 'Shadow_2',\n       'Shadow_3', 'Shadow_4', 'Shadow_5'],\n      dtype='str') =    Shadow_0 Shadow_1 Shadow_2  Shadow_0  ...  Shadow_2  Shadow_3  Shadow_4  Shadow_5\n0        10       10       10    ...N      30.0\n19       30       30       30      10.0  ...      30.0      10.0      10.0      30.0\n\n[20 rows x 9 columns].columns
+___ test_leshy_repeated_shadows_keep_dtype_values_and_unique_names[3-string] ___
+tests/test_shadow_contracts.py:148: in test_leshy_repeated_shadows_keep_dtype_values_and_unique_names
+    assert frame.columns.is_unique
+E   AssertionError: assert False
+E    +  where False = Index(['Shadow_0', 'Shadow_1', 'Shadow_2', 'Shadow_0', 'Shadow_1', 'Shadow_2',\n       'Shadow_3', 'Shadow_4', 'Shadow_5'],\n      dtype='str').is_unique
+E    +    where Index(['Shadow_0', 'Shadow_1', 'Shadow_2', 'Shadow_0', 'Shadow_1', 'Shadow_2',\n       'Shadow_3', 'Shadow_4', 'Shadow_5'],\n      dtype='str') =    Shadow_0 Shadow_1 Shadow_2 Shadow_0  ... Shadow_2 Shadow_3 Shadow_4 Shadow_5\n0       nan      nan      nan      NaN...    NaN        a\n19        a        a        a      nan  ...        a      nan      nan        a\n\n[20 rows x 9 columns].columns
+__ test_leshy_repeated_shadows_keep_dtype_values_and_unique_names[3-boolean] ___
+tests/test_shadow_contracts.py:148: in test_leshy_repeated_shadows_keep_dtype_values_and_unique_names
+    assert frame.columns.is_unique
+E   AssertionError: assert False
+E    +  where False = Index(['Shadow_0', 'Shadow_1', 'Shadow_2', 'Shadow_0', 'Shadow_1', 'Shadow_2',\n       'Shadow_3', 'Shadow_4', 'Shadow_5'],\n      dtype='str').is_unique
+E    +    where Index(['Shadow_0', 'Shadow_1', 'Shadow_2', 'Shadow_0', 'Shadow_1', 'Shadow_2',\n       'Shadow_3', 'Shadow_4', 'Shadow_5'],\n      dtype='str') =     Shadow_0  Shadow_1  Shadow_2 Shadow_0  ... Shadow_2 Shadow_3 Shadow_4 Shadow_5\n0       True      True      True   ...<NA>     True\n19      True      True      True     True  ...     True     True     True     True\n\n[20 rows x 9 columns].columns
+_____ test_boost_categorical_roles_survive_reordering_and_category_removal _____
+tests/test_shadow_contracts.py:179: in test_boost_categorical_roles_survive_reordering_and_category_removal
+    ).fit(X, y)
+      ^^^^^^^^^
+/tmp/arfs-r06/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1587: in fit
+    _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _boostaroota(
+/tmp/arfs-r06/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1897: in _boostaroota
+    crit, keep_vars, df_vimp, mean_shadow = _reduce_vars_sklearn(
+/tmp/arfs-r06/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1795: in _reduce_vars_sklearn
+    importance = imp_func[imp_kind](
+tests/test_shadow_contracts.py:174: in importance
+    return np.r_[scores[frame.shape[1]], np.ones(frame.shape[1] // 2)]
+                 ^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 10
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/3 [00:00<?, ?it/s]
+_____ test_boost_drops_category_metadata_when_only_numeric_features_remain _____
+tests/test_shadow_contracts.py:212: in test_boost_drops_category_metadata_when_only_numeric_features_remain
+    assert recorded == [[0, 2], []]
+E   assert [[0], None] == [[0, 2], []]
+E
+E     At index 0 diff: [0] != [0, 2]
+E     Use -v to get more diff
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/2 [00:00<?, ?it/s]
+BoostaGRoota round:  50%|█████     | 1/2 [00:00<00:00, 46.22it/s]
+_________ test_real_groot_folds_and_plot_use_original_feature_identity _________
+tests/test_shadow_contracts.py:262: in test_real_groot_folds_and_plot_use_original_feature_identity
+    ).fit(X, y)
+      ^^^^^^^^^
+/tmp/arfs-r06/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2083: in fit
+    self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+/tmp/arfs-r06/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2316: in _reduce_vars_lgb_cv
+    bst, shap_matrix, bst.best_iteration = _train_lgb_model(
+tests/test_shadow_contracts.py:229: in checked_train
+    assert frame.columns.is_unique and len(frame.columns) == 2 * len(X.columns)
+E   AssertionError: assert (False)
+E    +  where False = Index(['num', 'ShadowVar1', 'ShadowVar1', 'ShadowVar1_', 'ShadowVar1',\n       'ShadowVar1', 'ShadowVar2', 'ShadowVar3'],\n      dtype='str').is_unique
+E    +    where Index(['num', 'ShadowVar1', 'ShadowVar1', 'ShadowVar1_', 'ShadowVar1',\n       'ShadowVar1', 'ShadowVar2', 'ShadowVar3'],\n      dtype='str') =           num  ShadowVar1  ShadowVar1  ...  ShadowVar1  ShadowVar2  ShadowVar3\nrow                                    ...19452           1\n257 -0.309347           2           1  ...           1   -0.824481           2\n\n[40 rows x 8 columns].columns
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+___ test_real_sklearn_fits_receive_matching_original_and_shadow_roles[leshy] ___
+/tmp/arfs-r06/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1399: in _get_imp
+    X, _, cat_idx = get_pandas_cat_codes(X)
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r06/py312-newer/lib/python3.12/site-packages/arfs/utils.py:233: in get_pandas_cat_codes
+    X[obj_column] = pd.factorize(X[obj_column], sort=False)[0]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r06/py312-newer/lib/python3.12/site-packages/pandas/core/algorithms.py:791: in factorize
+    values = _ensure_arraylike(values, func_name="factorize")
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r06/py312-newer/lib/python3.12/site-packages/pandas/core/algorithms.py:239: in _ensure_arraylike
+    raise TypeError(
+E   TypeError: factorize requires a Series, Index, ExtensionArray, np.ndarray or NumpyExtensionArray got DataFrame.
+
+During handling of the above exception, another exception occurred:
+tests/test_shadow_contracts.py:305: in test_real_sklearn_fits_receive_matching_original_and_shadow_roles
+    ).fit(X, y)
+      ^^^^^^^^^
+/tmp/arfs-r06/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:333: in fit
+    self._fit(X, y, sample_weight=sample_weight)
+/tmp/arfs-r06/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:472: in _fit
+    dec_reg, sha_max_history, imp_history, imp_sha_max = self.select_features(
+/tmp/arfs-r06/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:943: in select_features
+    ) = self._run_iteration(
+/tmp/arfs-r06/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:894: in _run_iteration
+    cur_imp = self._add_shadows_get_imps(X, y, sample_weight, dec_reg)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r06/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:569: in _add_shadows_get_imps
+    imp = _get_imp(
+/tmp/arfs-r06/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1414: in _get_imp
+    raise ValueError(f"Estimator fitting failed: {str(e)}")
+E   ValueError: Estimator fitting failed: factorize requires a Series, Index, ExtensionArray, np.ndarray or NumpyExtensionArray got DataFrame.
+----------------------------- Captured stderr call -----------------------------
+
+Leshy iteration:   0%|          | 0/3 [00:00<?, ?it/s]
+___ test_real_sklearn_fits_receive_matching_original_and_shadow_roles[boost] ___
+tests/test_shadow_contracts.py:290: in checked_fit
+    assert categorical_feature == expected
+E   assert [0] == [0, 2]
+E
+E     Right contains one more item: 2
+E     Use -v to get more diff
+
+During handling of the above exception, another exception occurred:
+tests/test_shadow_contracts.py:307: in test_real_sklearn_fits_receive_matching_original_and_shadow_roles
+    ar.BoostAGroota(model(), importance="native", iters=1, max_rounds=1).fit(X, y)
+/tmp/arfs-r06/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1587: in fit
+    _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _boostaroota(
+/tmp/arfs-r06/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1897: in _boostaroota
+    crit, keep_vars, df_vimp, mean_shadow = _reduce_vars_sklearn(
+/tmp/arfs-r06/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1795: in _reduce_vars_sklearn
+    importance = imp_func[imp_kind](
+/tmp/arfs-r06/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1414: in _get_imp
+    raise ValueError(f"Estimator fitting failed: {str(e)}")
+E   ValueError: Estimator fitting failed: assert [0] == [0, 2]
+E
+E     Right contains one more item: 2
+E     Use -v to get more diff
+----------------------------- Captured stderr call -----------------------------
+
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s][A
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+=============================== warnings summary ===============================
+tests/test_shadow_contracts.py::test_real_sklearn_fits_receive_matching_original_and_shadow_roles[boost]
+  /tmp/arfs-r06/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1534: UserWarning: [BoostAGroota]: using native variable importance might break the FS
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_shadow_contracts.py::test_real_fits_preserve_input_and_transform_values[True-category-boost]
+FAILED tests/test_shadow_contracts.py::test_real_fits_preserve_input_and_transform_values[True-category-groot]
+FAILED tests/test_shadow_contracts.py::test_real_fits_preserve_input_and_transform_values[True-object-boost]
+FAILED tests/test_shadow_contracts.py::test_real_fits_preserve_input_and_transform_values[True-object-groot]
+FAILED tests/test_shadow_contracts.py::test_real_fits_preserve_input_and_transform_values[True-string-boost]
+FAILED tests/test_shadow_contracts.py::test_real_fits_preserve_input_and_transform_values[True-string-groot]
+FAILED tests/test_shadow_contracts.py::test_real_fits_preserve_input_and_transform_values[True-None-boost]
+FAILED tests/test_shadow_contracts.py::test_real_fits_preserve_input_and_transform_values[True-None-groot]
+FAILED tests/test_shadow_contracts.py::test_shared_importance_encoding_owns_its_frame[_get_imp]
+FAILED tests/test_shadow_contracts.py::test_shared_importance_encoding_owns_its_frame[_get_shap_imp]
+FAILED tests/test_shadow_contracts.py::test_shared_importance_encoding_owns_its_frame[_get_perm_imp]
+FAILED tests/test_shadow_contracts.py::test_shadow_names_preserve_real_column_identity[columns0]
+FAILED tests/test_shadow_contracts.py::test_shadow_names_preserve_real_column_identity[columns1]
+FAILED tests/test_shadow_contracts.py::test_shadow_names_preserve_real_column_identity[columns2]
+FAILED tests/test_shadow_contracts.py::test_shadow_names_preserve_real_column_identity[columns3]
+FAILED tests/test_shadow_contracts.py::test_leshy_repeated_shadows_keep_dtype_values_and_unique_names[1-category]
+FAILED tests/test_shadow_contracts.py::test_leshy_repeated_shadows_keep_dtype_values_and_unique_names[1-string]
+FAILED tests/test_shadow_contracts.py::test_leshy_repeated_shadows_keep_dtype_values_and_unique_names[1-boolean]
+FAILED tests/test_shadow_contracts.py::test_leshy_repeated_shadows_keep_dtype_values_and_unique_names[3-category]
+FAILED tests/test_shadow_contracts.py::test_leshy_repeated_shadows_keep_dtype_values_and_unique_names[3-string]
+FAILED tests/test_shadow_contracts.py::test_leshy_repeated_shadows_keep_dtype_values_and_unique_names[3-boolean]
+Leshy iteration:   0%|          | 0/3 [00:00<?, ?it/s]
+
+FAILED tests/test_shadow_contracts.py::test_boost_categorical_roles_survive_reordering_and_category_removal
+FAILED tests/test_shadow_contracts.py::test_boost_drops_category_metadata_when_only_numeric_features_remain
+FAILED tests/test_shadow_contracts.py::test_real_groot_folds_and_plot_use_original_feature_identity
+FAILED tests/test_shadow_contracts.py::test_real_sklearn_fits_receive_matching_original_and_shadow_roles[leshy]
+FAILED tests/test_shadow_contracts.py::test_real_sklearn_fits_receive_matching_original_and_shadow_roles[boost]
+26 failed, 4 passed, 1 warning in 18.12s

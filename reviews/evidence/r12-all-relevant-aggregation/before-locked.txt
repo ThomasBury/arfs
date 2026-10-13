@@ -1,0 +1,64 @@
+FF.FF.                                                                   [100%]
+=================================== FAILURES ===================================
+_______________ test_groot_multiclass_objective_aliases[binary] ________________
+reviews/evidence/01b-all-relevant/checks.py:178: in test_groot_multiclass_objective_aliases
+    a.GrootCV(objective=objective, n_folds=2, n_iter=1, n_jobs=1).fit(X, y)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2105: in fit
+    self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2341: in _reduce_vars_lgb_cv
+    importance = _compute_importance(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2654: in _compute_importance
+    return sorted(importance.items(), key=operator.itemgetter(1))
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[12]	training's multi_logloss: 1.0008	valid_1's multi_logloss: 1.1266
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+_____________ test_groot_multiclass_objective_aliases[multiclass] ______________
+reviews/evidence/01b-all-relevant/checks.py:178: in test_groot_multiclass_objective_aliases
+    a.GrootCV(objective=objective, n_folds=2, n_iter=1, n_jobs=1).fit(X, y)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2105: in fit
+    self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2341: in _reduce_vars_lgb_cv
+    importance = _compute_importance(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2654: in _compute_importance
+    return sorted(importance.items(), key=operator.itemgetter(1))
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's multi_logloss: 1.07145	valid_1's multi_logloss: 1.12869
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+_________________ test_groot_documented_max_of_shadow_medians __________________
+reviews/evidence/01b-all-relevant/checks.py:201: in test_groot_documented_max_of_shadow_medians
+    assert selector.sha_cutoff == pytest.approx(.35)
+E   assert np.float64(0....6666666666693) == 0.35 ± 3.5e-07
+E
+E     comparison failed
+E     Obtained: 0.44166666666666693
+E     Expected: 0.35 ± 3.5e-07
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 119.09it/s]
+___________________ test_boost_documented_max_shadow_cutoff ____________________
+reviews/evidence/01b-all-relevant/checks.py:213: in test_boost_documented_max_shadow_cutoff
+    assert threshold == pytest.approx(.5)
+E   assert np.float64(0.3) == 0.5 ± 5.0e-07
+E
+E     comparison failed
+E     Obtained: 0.3
+E     Expected: 0.5 ± 5.0e-07
+=========================== short test summary info ============================
+FAILED reviews/evidence/01b-all-relevant/checks.py::test_groot_multiclass_objective_aliases[binary]
+FAILED reviews/evidence/01b-all-relevant/checks.py::test_groot_multiclass_objective_aliases[multiclass]
+FAILED reviews/evidence/01b-all-relevant/checks.py::test_groot_documented_max_of_shadow_medians
+FAILED reviews/evidence/01b-all-relevant/checks.py::test_boost_documented_max_shadow_cutoff
+4 failed, 2 passed, 18 deselected in 5.98s

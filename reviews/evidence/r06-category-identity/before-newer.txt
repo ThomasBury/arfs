@@ -1,0 +1,129 @@
+FFFFFFF                                                                  [100%]
+=================================== FAILURES ===================================
+________________ test_boolean_series_matches_categorical_matrix ________________
+reviews/evidence/01a-statistical-foundations/checks.py:288: in test_boolean_series_matches_categorical_matrix
+    assert_allclose(a.association_series(X, "b1")["b2"], 0.)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:1193: in association_series
+    return assoc_series.sort_values(ascending=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'NoneType' object has no attribute 'sort_values'
+___________________ test_cardinality_string_extension_dtype ____________________
+reviews/evidence/03-selector-contracts/checks.py:143: in test_cardinality_string_extension_dtype
+    assert selector.statistic_series_['text'] == 3
+E   assert np.int64(0) == 3
+_________________ test_inferred_strings_association_matrix[1] __________________
+reviews/evidence/05-sampling-and-parallel/checks.py:450: in test_inferred_strings_association_matrix
+    result = association.association_matrix(X, n_jobs=jobs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:1253: in association_matrix
+    w_nom_num = _callable_association_matrix_fn(
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:1412: in _callable_association_matrix_fn
+    return parallel_matrix_entries(
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/parallel.py:46: in parallel_matrix_entries
+    lst = func(X=df, sample_weight=sample_weight, comb_list=comb_list)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/parallel.py:163: in _compute_matrix_entries
+    func_xyw(x=X[comb[0]], y=X[comb[1]], sample_weight=sample_weight, as_frame=True)
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:611: in correlation_ratio
+    raise TypeError(
+E   TypeError: One of the series must be categorical and the other numerical.
+_________________ test_inferred_strings_association_matrix[2] __________________
+joblib.externals.loky.process_executor._RemoteTraceback:
+"""
+Traceback (most recent call last):
+  File "/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/externals/loky/process_executor.py", line 490, in _process_worker
+    r = call_item()
+        ^^^^^^^^^^^
+  File "/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/externals/loky/process_executor.py", line 291, in __call__
+    return self.fn(*self.args, **self.kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/parallel.py", line 607, in __call__
+    return [func(*args, **kwargs) for func, args, kwargs in self.items]
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/parallel.py", line 163, in _compute_matrix_entries
+    func_xyw(x=X[comb[0]], y=X[comb[1]], sample_weight=sample_weight, as_frame=True)
+  File "/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py", line 611, in correlation_ratio
+    raise TypeError(
+TypeError: One of the series must be categorical and the other numerical.
+"""
+
+The above exception was the direct cause of the following exception:
+reviews/evidence/05-sampling-and-parallel/checks.py:450: in test_inferred_strings_association_matrix
+    result = association.association_matrix(X, n_jobs=jobs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:1253: in association_matrix
+    w_nom_num = _callable_association_matrix_fn(
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:1412: in _callable_association_matrix_fn
+    return parallel_matrix_entries(
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/parallel.py:50: in parallel_matrix_entries
+    lst = Parallel(n_jobs=n_jobs)(
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/parallel.py:2098: in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/parallel.py:1704: in _get_outputs
+    yield from self._retrieve()
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/parallel.py:1806: in _retrieve
+    self._raise_error_fast()
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/parallel.py:1885: in _raise_error_fast
+    error_job.get_result(self.timeout)
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/parallel.py:780: in get_result
+    return self._return_or_raise()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/parallel.py:795: in _return_or_raise
+    raise self._result
+E   TypeError: One of the series must be categorical and the other numerical.
+_______________ test_encoding_preserves_distinct_values[values0] _______________
+reviews/evidence/06-utilities-and-workflows/checks.py:84: in test_encoding_preserves_distinct_values
+    assert encoded.category.nunique() == 2
+E   assert 1 == 2
+E    +  where 1 = nunique()
+E    +    where nunique = 0    0\n1    0\nName: category, dtype: int64.nunique
+E    +      where 0    0\n1    0\nName: category, dtype: int64 =    category\n0         0\n1         0.category
+_______________ test_encoding_preserves_distinct_values[values1] _______________
+reviews/evidence/06-utilities-and-workflows/checks.py:83: in test_encoding_preserves_distinct_values
+    encoded, _, _ = u.get_pandas_cat_codes(frame)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/utils.py:221: in get_pandas_cat_codes
+    _, inverse = np.unique(column, return_inverse=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:296: in unique
+    ret = _unique1d(ar, return_index, return_inverse, return_counts,
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:382: in _unique1d
+    perm = ar.argsort(kind='mergesort' if return_index else 'quicksort')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: '<' not supported between instances of 'str' and 'float'
+_______________ test_encoding_preserves_distinct_values[values2] _______________
+reviews/evidence/06-utilities-and-workflows/checks.py:83: in test_encoding_preserves_distinct_values
+    encoded, _, _ = u.get_pandas_cat_codes(frame)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/utils.py:221: in get_pandas_cat_codes
+    _, inverse = np.unique(column, return_inverse=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:296: in unique
+    ret = _unique1d(ar, return_index, return_inverse, return_counts,
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:382: in _unique1d
+    perm = ar.argsort(kind='mergesort' if return_index else 'quicksort')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: '<' not supported between instances of 'str' and 'float'
+=============================== warnings summary ===============================
+reviews/evidence/05-sampling-and-parallel/checks.py::test_inferred_strings_association_matrix[1]
+reviews/evidence/05-sampling-and-parallel/checks.py::test_inferred_strings_association_matrix[1]
+reviews/evidence/05-sampling-and-parallel/checks.py::test_inferred_strings_association_matrix[1]
+reviews/evidence/05-sampling-and-parallel/checks.py::test_inferred_strings_association_matrix[2]
+reviews/evidence/05-sampling-and-parallel/checks.py::test_inferred_strings_association_matrix[2]
+reviews/evidence/05-sampling-and-parallel/checks.py::test_inferred_strings_association_matrix[2]
+  /tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/utils.py:155: Pandas4Warning: For backward compatibility, 'str' dtypes are included by select_dtypes when 'object' dtype is specified. This behavior is deprecated and will be removed in a future version. Explicitly pass 'str' to `include` to select them, or to `exclude` to remove them and silence this warning.
+  See https://pandas.pydata.org/docs/user_guide/migration-3-strings.html#string-migration-select-dtypes for details on how to write code that works with pandas 2 and 3.
+    categorical_cols = df.select_dtypes(include=["object", "category", "bool"]).columns
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_boolean_series_matches_categorical_matrix
+FAILED reviews/evidence/03-selector-contracts/checks.py::test_cardinality_string_extension_dtype
+FAILED reviews/evidence/05-sampling-and-parallel/checks.py::test_inferred_strings_association_matrix[1]
+FAILED reviews/evidence/05-sampling-and-parallel/checks.py::test_inferred_strings_association_matrix[2]
+FAILED reviews/evidence/06-utilities-and-workflows/checks.py::test_encoding_preserves_distinct_values[values0]
+FAILED reviews/evidence/06-utilities-and-workflows/checks.py::test_encoding_preserves_distinct_values[values1]
+FAILED reviews/evidence/06-utilities-and-workflows/checks.py::test_encoding_preserves_distinct_values[values2]
+7 failed, 212 deselected, 6 warnings in 7.38s

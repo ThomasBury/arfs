@@ -1,0 +1,54 @@
+Checkout: /home/bsatom/Documents/arfs
+Base: main @ 170b3e95fee635e8243ed8cdc740ecb80c4738ad.
+Pre-existing R04/R05 work preserved; R06 changes uncommitted.
+uv 0.12.15; fresh environments under /tmp/arfs-r06.
+
+Historical before runs use the unchanged installed R05 wheel, with these inputs:
+reviews/evidence/01a-statistical-foundations/checks.py
+reviews/evidence/03-selector-contracts/checks.py
+reviews/evidence/05-sampling-and-parallel/checks.py
+reviews/evidence/06-utilities-and-workflows/checks.py
+
+Run once per /tmp/arfs-r05/py312-locked and /tmp/arfs-r05/py312-newer:
+env MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 <cell>/bin/python -I -m pytest <the four inputs above> --import-mode=importlib -k 'boolean_series_matches_categorical_matrix or cardinality_string_extension_dtype or inferred_strings_association_matrix or encoding_preserves_distinct_values' --runxfail -q --tb=short -p no:cacheprovider
+
+Final promoted before check:
+env MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 /tmp/arfs-r05/py312-newer/bin/python -I -m pytest /home/bsatom/Documents/arfs/tests/test_category_identity.py -q --tb=short -p no:cacheprovider
+
+Build/check from checkout:
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv lock --check --python /tmp/arfs-r05/py312-locked/bin/python
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv export --locked --extra test --no-emit-project --output-file /tmp/arfs-r06/locked-requirements.txt
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv build --python /tmp/arfs-r05/py312-locked/bin/python --out-dir /tmp/arfs-r06/dist
+
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv venv --python /tmp/arfs-r05/py39-locked/bin/python /tmp/arfs-r06/py39-locked
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv pip install --python /tmp/arfs-r06/py39-locked/bin/python -r /tmp/arfs-r06/locked-requirements.txt /tmp/arfs-r06/dist/arfs-3.0.0-py3-none-any.whl
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv venv --python /tmp/arfs-r05/py312-locked/bin/python /tmp/arfs-r06/py312-locked
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv pip install --python /tmp/arfs-r06/py312-locked/bin/python -r /tmp/arfs-r06/locked-requirements.txt /tmp/arfs-r06/dist/arfs-3.0.0-py3-none-any.whl
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv venv --python /tmp/arfs-r05/py312-newer/bin/python /tmp/arfs-r06/py312-newer
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv pip install --python /tmp/arfs-r06/py312-newer/bin/python -r .github/requirements/runtime-newer-py312.txt /tmp/arfs-r06/dist/arfs-3.0.0-py3-none-any.whl
+mkdir -p /tmp/arfs-r06/run
+cp -r tests /tmp/arfs-r06/run/
+
+Full suite cwd=/tmp/arfs-r06/run; substitute cell=py39-locked, py312-locked, py312-newer:
+env MPLBACKEND=Agg MPLCONFIGDIR=/tmp/arfs-r06/mpl-$cell OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 PYTHONHASHSEED=0 /tmp/arfs-r06/$cell/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider
+
+Historical after cwd=/tmp/arfs-r06/run; substitute cell=py312-locked, py312-newer and use absolute paths for the four inputs above:
+env MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 /tmp/arfs-r06/$cell/bin/python -I -m pytest <the four inputs above> --import-mode=importlib -k 'boolean_series_matches_categorical_matrix or cardinality_string_extension_dtype or cardinality_inferred_strings or cardinality_hand_reference_and_equality or inferred_strings_association_matrix or encoding_preserves_distinct_values or utility_basics_and_explicit_side_effects' --runxfail -q --tb=short -p no:cacheprovider
+
+Previously blocked R05 raw inferred-string fixture, from checkout:
+env MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 /tmp/arfs-r06/py312-newer/bin/python -I -m pytest reviews/evidence/01a-statistical-foundations/checks.py --import-mode=importlib -k zero_weight_category_equivalent_to_removal --runxfail -q --tb=short -p no:cacheprovider
+
+Per-cell provenance and dependencies, from checkout:
+/tmp/arfs-r06/$cell/bin/python -I reviews/evidence/r05-observation-boundaries/environment.py
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv pip check --python /tmp/arfs-r06/$cell/bin/python
+All recorded package versions equal the corresponding R05 environment JSON.
+wheel.json hashes every packaged arfs/ payload; all match src/ and all source .py files are present.
+All copied test .py files match the final checkout tests byte for byte.
+
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv tool run --from ruff==0.17.0 python .github/scripts/check_ruff_baseline.py
+/tmp/arfs-r06/py312-locked/bin/python -m unittest discover -s .github/scripts -p 'test_*.py'
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv tool run --from ruff==0.17.0 ruff check tests/test_category_identity.py
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv tool run --from ruff==0.17.0 ruff format --check tests/test_category_identity.py
+git diff --check
+
+Hosted CI, docs/notebooks, optional backends, performance and statistical calibration not run.

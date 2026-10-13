@@ -1,0 +1,41 @@
+............................................................             [100%]
+=============================== warnings summary ===============================
+arfs-r04/run/tests/test_allrelevant.py: 56 warnings
+arfs-r04/run/tests/test_featselect.py: 1 warning
+  /tmp/arfs-r04/py312-newer/lib/python3.12/site-packages/arfs/utils.py:155: Pandas4Warning: For backward compatibility, 'str' dtypes are included by select_dtypes when 'object' dtype is specified. This behavior is deprecated and will be removed in a future version. Explicitly pass 'str' to `include` to select them, or to `exclude` to remove them and silence this warning.
+  See https://pandas.pydata.org/docs/user_guide/migration-3-strings.html#string-migration-select-dtypes for details on how to write code that works with pandas 2 and 3.
+    categorical_cols = df.select_dtypes(include=["object", "category", "bool"]).columns
+
+arfs-r04/run/tests/test_allrelevant.py: 38 warnings
+  /tmp/arfs-r04/py312-newer/lib/python3.12/site-packages/shap/explainers/_tree.py:579: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+    warnings.warn(
+
+arfs-r04/run/tests/test_dependency_apis.py::test_public_lasso_selector_fits
+  /tmp/arfs-r04/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:195: ConvergenceWarning: Regularized fitting did not converge
+    self.result = self.model.fit_regularized(
+
+arfs-r04/run/tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /tmp/arfs-r04/py312-newer/lib/python3.12/site-packages/arfs/benchmark.py:94: MatplotlibDeprecationWarning: vert: bool was deprecated in Matplotlib 3.11 and will be removed in 3.13. Use orientation: {'vertical', 'horizontal'} instead.
+    ax.boxplot(
+
+arfs-r04/run/tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /tmp/arfs-r04/py312-newer/lib/python3.12/site-packages/arfs/benchmark.py:99: UserWarning: Tight layout not applied. The bottom and top margins cannot be made large enough to accommodate all Axes decorations.
+    fig.tight_layout()
+
+arfs-r04/run/tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /tmp/arfs-r04/py312-newer/lib/python3.12/site-packages/arfs/benchmark.py:104: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+    plt.show()
+
+arfs-r04/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+arfs-r04/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+arfs-r04/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+arfs-r04/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+  /tmp/arfs-r04/py312-newer/lib/python3.12/site-packages/arfs/gbm.py:348: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.
+    warnings.warn(
+
+arfs-r04/run/tests/test_runtime_baseline.py::test_selector_recovers_signal_and_rejects_noise[boostagroota]
+  /tmp/arfs-r04/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1528: UserWarning: [BoostAGroota]: using native variable importance might break the FS
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+60 passed, 104 warnings in 85.56s (0:01:25)

@@ -1,0 +1,73 @@
+FFFFF                                                                    [100%]
+=================================== FAILURES ===================================
+______________ test_mixed_singletons_can_be_selected[regression] _______________
+reviews/evidence/01a-statistical-foundations/checks.py:133: in test_mixed_singletons_can_be_selected
+    model = MRMR(1, task=task, show_progress=False).fit(X, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+____________ test_mixed_singletons_can_be_selected[classification] _____________
+reviews/evidence/01a-statistical-foundations/checks.py:133: in test_mixed_singletons_can_be_selected
+    model = MRMR(1, task=task, show_progress=False).fit(X, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+_____________ test_equal_perfect_predictors_do_not_empty_selection _____________
+reviews/evidence/01a-statistical-foundations/checks.py:140: in test_equal_perfect_predictors_do_not_empty_selection
+    assert len(MRMR(1, show_progress=False).fit(X, pd.Series(np.arange(6.))).selected_features_) == 1
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+____________________ test_default_relevance_is_nonnegative _____________________
+reviews/evidence/01a-statistical-foundations/checks.py:148: in test_default_relevance_is_nonnegative
+    assert result.notna().all() and (result >= 0).all(), result
+E   AssertionError: num     0.707107
+E     num2   -0.707107
+E     cat          NaN
+E     dtype: float64
+E   assert (np.False_)
+E    +  where np.False_ = all()
+E    +    where all = num      True\nnum2     True\ncat     False\ndtype: bool.all
+E    +      where num      True\nnum2     True\ncat     False\ndtype: bool = notna()
+E    +        where notna = num     0.707107\nnum2   -0.707107\ncat          NaN\ndtype: float64.notna
+______________ test_mrmr_does_not_prefer_exact_negative_duplicate ______________
+reviews/evidence/01a-statistical-foundations/checks.py:157: in test_mrmr_does_not_prefer_exact_negative_duplicate
+    assert model.selected_features_ == ["a", "b"], model.selected_features_
+E   AssertionError: ['a', 'neg']
+E   assert ['a', 'neg'] == ['a', 'b']
+E
+E     At index 1 diff: 'neg' != 'b'
+E     Use -v to get more diff
+=============================== warnings summary ===============================
+reviews/evidence/01a-statistical-foundations/checks.py::test_mixed_singletons_can_be_selected[classification]
+  /tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/association.py:244: RuntimeWarning: Rounded U = 0.0 to 0. This is probably due to floating point precision issues.
+    warnings.warn(
+
+reviews/evidence/01a-statistical-foundations/checks.py::test_mixed_singletons_can_be_selected[classification]
+  /tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/association.py:244: RuntimeWarning: Rounded U = 1.0 to 1. This is probably due to floating point precision issues.
+    warnings.warn(
+
+reviews/evidence/01a-statistical-foundations/checks.py::test_equal_perfect_predictors_do_not_empty_selection
+  /tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/numpy/_core/_methods.py:52: RuntimeWarning: overflow encountered in reduce
+    return umr_sum(a, axis, dtype, out, keepdims, initial, where)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_mixed_singletons_can_be_selected[regression]
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_mixed_singletons_can_be_selected[classification]
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_equal_perfect_predictors_do_not_empty_selection
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_default_relevance_is_nonnegative
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_mrmr_does_not_prefer_exact_negative_duplicate
+5 failed, 37 deselected, 3 warnings in 3.45s

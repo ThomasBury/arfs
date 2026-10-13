@@ -1,0 +1,483 @@
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF                                [100%]
+=================================== FAILURES ===================================
+_____________ test_mixed_singletons_remain_eligible[1-regression] ______________
+tests/test_mrmr_ranking.py:29: in test_mixed_singletons_remain_eligible
+    model = MRMR(2, task=task, n_jobs=jobs, show_progress=False).fit(X, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+___________ test_mixed_singletons_remain_eligible[1-classification] ____________
+tests/test_mrmr_ranking.py:29: in test_mixed_singletons_remain_eligible
+    model = MRMR(2, task=task, n_jobs=jobs, show_progress=False).fit(X, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+_____________ test_mixed_singletons_remain_eligible[2-regression] ______________
+tests/test_mrmr_ranking.py:29: in test_mixed_singletons_remain_eligible
+    model = MRMR(2, task=task, n_jobs=jobs, show_progress=False).fit(X, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+___________ test_mixed_singletons_remain_eligible[2-classification] ____________
+tests/test_mrmr_ranking.py:29: in test_mixed_singletons_remain_eligible
+    model = MRMR(2, task=task, n_jobs=jobs, show_progress=False).fit(X, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+----------------------------- Captured stderr call -----------------------------
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/association.py:244: RuntimeWarning: Rounded U = 1.0 to 1. This is probably due to floating point precision issues.
+  warnings.warn(
+__________ test_mixed_relevance_uses_same_bounded_f_map[1-regression] __________
+tests/test_mrmr_ranking.py:53: in test_mixed_relevance_uses_same_bounded_f_map
+    assert_allclose(actual, expected)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   nan location mismatch:
+E    ACTUAL: array([ 0.707107,       nan, -0.707107])
+E    DESIRED: array([0.995347, 0.859963, 0.609091])
+________ test_mixed_relevance_uses_same_bounded_f_map[1-classification] ________
+tests/test_mrmr_ranking.py:53: in test_mixed_relevance_uses_same_bounded_f_map
+    assert_allclose(actual, expected)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   nan location mismatch:
+E    ACTUAL: array([-0.707107,       nan,  0.707107])
+E    DESIRED: array([0.061837, 0.589503, 0.846283])
+----------------------------- Captured stderr call -----------------------------
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/association.py:244: RuntimeWarning: Rounded U = 1.0 to 1. This is probably due to floating point precision issues.
+  warnings.warn(
+__________ test_mixed_relevance_uses_same_bounded_f_map[2-regression] __________
+tests/test_mrmr_ranking.py:53: in test_mixed_relevance_uses_same_bounded_f_map
+    assert_allclose(actual, expected)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   nan location mismatch:
+E    ACTUAL: array([ 0.707107,       nan, -0.707107])
+E    DESIRED: array([0.995347, 0.859963, 0.609091])
+________ test_mixed_relevance_uses_same_bounded_f_map[2-classification] ________
+tests/test_mrmr_ranking.py:53: in test_mixed_relevance_uses_same_bounded_f_map
+    assert_allclose(actual, expected)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   nan location mismatch:
+E    ACTUAL: array([-0.707107,       nan,  0.707107])
+E    DESIRED: array([0.061837, 0.589503, 0.846283])
+----------------------------- Captured stderr call -----------------------------
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/association.py:244: RuntimeWarning: Rounded U = 1.0 to 1. This is probably due to floating point precision issues.
+  warnings.warn(
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/association.py:244: RuntimeWarning: Rounded U = 1.0 to 1. This is probably due to floating point precision issues.
+  warnings.warn(
+_ test_perfect_equal_scores_are_one_and_ties_follow_input_order[True-regression] _
+tests/test_mrmr_ranking.py:81: in test_perfect_equal_scores_are_one_and_ties_follow_input_order
+    assert_allclose(fn(X, y, force_finite=force_finite, n_jobs=1), 1.0)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   nan location mismatch:
+E    ACTUAL: array([nan, nan, nan])
+E    DESIRED: array(1.)
+_ test_perfect_equal_scores_are_one_and_ties_follow_input_order[True-classification] _
+tests/test_mrmr_ranking.py:81: in test_perfect_equal_scores_are_one_and_ties_follow_input_order
+    assert_allclose(fn(X, y, force_finite=force_finite, n_jobs=1), 1.0)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   nan location mismatch:
+E    ACTUAL: array([nan, nan, nan])
+E    DESIRED: array(1.)
+_ test_perfect_equal_scores_are_one_and_ties_follow_input_order[False-regression] _
+tests/test_mrmr_ranking.py:81: in test_perfect_equal_scores_are_one_and_ties_follow_input_order
+    assert_allclose(fn(X, y, force_finite=force_finite, n_jobs=1), 1.0)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   nan location mismatch:
+E    ACTUAL: array([nan, nan, nan])
+E    DESIRED: array(1.)
+_ test_perfect_equal_scores_are_one_and_ties_follow_input_order[False-classification] _
+tests/test_mrmr_ranking.py:81: in test_perfect_equal_scores_are_one_and_ties_follow_input_order
+    assert_allclose(fn(X, y, force_finite=force_finite, n_jobs=1), 1.0)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   nan location mismatch:
+E    ACTUAL: array([nan, nan, nan])
+E    DESIRED: array(1.)
+____________________ test_default_relevance_is_nonnegative _____________________
+tests/test_mrmr_ranking.py:93: in test_default_relevance_is_nonnegative
+    assert result.notna().all() and result.between(0, 1).all()
+E   assert (np.False_)
+E    +  where np.False_ = all()
+E    +    where all = num      True\nnum2     True\ncat     False\ndtype: bool.all
+E    +      where num      True\nnum2     True\ncat     False\ndtype: bool = notna()
+E    +        where notna = num     0.707107\nnum2   -0.707107\ncat          NaN\ndtype: float64.notna
+__________________ test_negative_duplicate_gets_full_penalty ___________________
+tests/test_mrmr_ranking.py:109: in test_negative_duplicate_gets_full_penalty
+    assert model.selected_features_ == ["a", "b", "neg"]
+E   AssertionError: assert ['a', 'neg', 'b'] == ['a', 'b', 'neg']
+E
+E     At index 1 diff: 'neg' != 'b'
+E     Use -v to get more diff
+_ test_constant_predictors_and_response_have_zero_default_relevance[regression] _
+tests/test_mrmr_ranking.py:122: in test_constant_predictors_and_response_have_zero_default_relevance
+    model = MRMR(2, task=task, show_progress=False).fit(X, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+_ test_constant_predictors_and_response_have_zero_default_relevance[classification] _
+tests/test_mrmr_ranking.py:122: in test_constant_predictors_and_response_have_zero_default_relevance
+    model = MRMR(2, task=task, show_progress=False).fit(X, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+_ test_empty_selection_has_consistent_outputs_and_can_refit[False-zero_request] _
+tests/test_mrmr_ranking.py:146: in test_empty_selection_has_consistent_outputs_and_can_refit
+    output = model.fit(X, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+_ test_empty_selection_has_consistent_outputs_and_can_refit[False-no_columns] __
+tests/test_mrmr_ranking.py:146: in test_empty_selection_has_consistent_outputs_and_can_refit
+    output = model.fit(X, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+_ test_empty_selection_has_consistent_outputs_and_can_refit[False-unavailable] _
+tests/test_mrmr_ranking.py:146: in test_empty_selection_has_consistent_outputs_and_can_refit
+    output = model.fit(X, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+_ test_empty_selection_has_consistent_outputs_and_can_refit[False-empty_callback] _
+tests/test_mrmr_ranking.py:146: in test_empty_selection_has_consistent_outputs_and_can_refit
+    output = model.fit(X, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+_ test_empty_selection_has_consistent_outputs_and_can_refit[True-zero_request] _
+tests/test_mrmr_ranking.py:146: in test_empty_selection_has_consistent_outputs_and_can_refit
+    output = model.fit(X, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+__ test_empty_selection_has_consistent_outputs_and_can_refit[True-no_columns] __
+tests/test_mrmr_ranking.py:146: in test_empty_selection_has_consistent_outputs_and_can_refit
+    output = model.fit(X, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+_ test_empty_selection_has_consistent_outputs_and_can_refit[True-unavailable] __
+tests/test_mrmr_ranking.py:146: in test_empty_selection_has_consistent_outputs_and_can_refit
+    output = model.fit(X, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+_ test_empty_selection_has_consistent_outputs_and_can_refit[True-empty_callback] _
+tests/test_mrmr_ranking.py:146: in test_empty_selection_has_consistent_outputs_and_can_refit
+    output = model.fit(X, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+_______________ test_invalid_custom_relevance_rejected[scores0] ________________
+tests/test_mrmr_ranking.py:162: in test_invalid_custom_relevance_rejected
+    with pytest.raises(ValueError, match="finite.*nonnegative"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_______________ test_invalid_custom_relevance_rejected[scores1] ________________
+tests/test_mrmr_ranking.py:162: in test_invalid_custom_relevance_rejected
+    with pytest.raises(ValueError, match="finite.*nonnegative"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_______________ test_invalid_custom_relevance_rejected[scores2] ________________
+tests/test_mrmr_ranking.py:162: in test_invalid_custom_relevance_rejected
+    with pytest.raises(ValueError, match="finite.*nonnegative"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+__________________ test_invalid_selection_count_rejected[-1] ___________________
+tests/test_mrmr_ranking.py:169: in test_invalid_selection_count_rejected
+    MRMR(count, show_progress=False).fit(*mixed_data())
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+__________________ test_invalid_selection_count_rejected[1.5] __________________
+tests/test_mrmr_ranking.py:169: in test_invalid_selection_count_rejected
+    MRMR(count, show_progress=False).fit(*mixed_data())
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+_________________ test_invalid_selection_count_rejected[True] __________________
+tests/test_mrmr_ranking.py:169: in test_invalid_selection_count_rejected
+    MRMR(count, show_progress=False).fit(*mixed_data())
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+____________ test_custom_relevance_order_does_not_change_tie_order _____________
+tests/test_mrmr_ranking.py:175: in test_custom_relevance_order_does_not_change_tie_order
+    assert model.selected_features_ == ["num"]
+E   AssertionError: assert ['cat'] == ['num']
+E
+E     At index 0 diff: 'cat' != 'num'
+E     Use -v to get more diff
+____________ test_strong_mixed_signal_and_null_screen[0-regression] ____________
+tests/test_mrmr_ranking.py:193: in test_strong_mixed_signal_and_null_screen
+    model = MRMR(2, task=task, show_progress=False).fit(null, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+__________ test_strong_mixed_signal_and_null_screen[0-classification] __________
+tests/test_mrmr_ranking.py:193: in test_strong_mixed_signal_and_null_screen
+    model = MRMR(2, task=task, show_progress=False).fit(null, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+____________ test_strong_mixed_signal_and_null_screen[1-regression] ____________
+tests/test_mrmr_ranking.py:193: in test_strong_mixed_signal_and_null_screen
+    model = MRMR(2, task=task, show_progress=False).fit(null, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+__________ test_strong_mixed_signal_and_null_screen[1-classification] __________
+tests/test_mrmr_ranking.py:193: in test_strong_mixed_signal_and_null_screen
+    model = MRMR(2, task=task, show_progress=False).fit(null, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+____________ test_strong_mixed_signal_and_null_screen[2-regression] ____________
+tests/test_mrmr_ranking.py:193: in test_strong_mixed_signal_and_null_screen
+    model = MRMR(2, task=task, show_progress=False).fit(null, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+__________ test_strong_mixed_signal_and_null_screen[2-classification] __________
+tests/test_mrmr_ranking.py:193: in test_strong_mixed_signal_and_null_screen
+    model = MRMR(2, task=task, show_progress=False).fit(null, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+____________ test_strong_mixed_signal_and_null_screen[3-regression] ____________
+tests/test_mrmr_ranking.py:193: in test_strong_mixed_signal_and_null_screen
+    model = MRMR(2, task=task, show_progress=False).fit(null, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+__________ test_strong_mixed_signal_and_null_screen[3-classification] __________
+tests/test_mrmr_ranking.py:193: in test_strong_mixed_signal_and_null_screen
+    model = MRMR(2, task=task, show_progress=False).fit(null, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+____________ test_strong_mixed_signal_and_null_screen[4-regression] ____________
+tests/test_mrmr_ranking.py:193: in test_strong_mixed_signal_and_null_screen
+    model = MRMR(2, task=task, show_progress=False).fit(null, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+__________ test_strong_mixed_signal_and_null_screen[4-classification] __________
+tests/test_mrmr_ranking.py:193: in test_strong_mixed_signal_and_null_screen
+    model = MRMR(2, task=task, show_progress=False).fit(null, y)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py:210: in fit
+    self.ranking_.iloc[0, 0] = float("Inf")
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:908: in __setitem__
+    self._has_valid_setitem_indexer(key)
+/tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/indexing.py:1646: in _has_valid_setitem_indexer
+    raise IndexError("iloc cannot enlarge its target object")
+E   IndexError: iloc cannot enlarge its target object
+=============================== warnings summary ===============================
+tests/test_mrmr_ranking.py: 17 warnings
+  /tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/association.py:244: RuntimeWarning: Rounded U = 1.0 to 1. This is probably due to floating point precision issues.
+    warnings.warn(
+
+tests/test_mrmr_ranking.py::test_mixed_singletons_remain_eligible[2-regression]
+tests/test_mrmr_ranking.py::test_mixed_singletons_remain_eligible[2-regression]
+tests/test_mrmr_ranking.py::test_mixed_singletons_remain_eligible[2-regression]
+tests/test_mrmr_ranking.py::test_mixed_relevance_uses_same_bounded_f_map[1-regression]
+tests/test_mrmr_ranking.py::test_mixed_relevance_uses_same_bounded_f_map[1-regression]
+tests/test_mrmr_ranking.py::test_mixed_relevance_uses_same_bounded_f_map[2-regression]
+tests/test_mrmr_ranking.py::test_mixed_relevance_uses_same_bounded_f_map[2-regression]
+tests/test_mrmr_ranking.py::test_mixed_relevance_uses_same_bounded_f_map[2-classification]
+  /tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/joblib/externals/loky/backend/fork_exec.py:38: DeprecationWarning: This process (pid=468043) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    pid = os.fork()
+
+tests/test_mrmr_ranking.py::test_perfect_equal_scores_are_one_and_ties_follow_input_order[True-regression]
+  /tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/numpy/_core/_methods.py:52: RuntimeWarning: overflow encountered in reduce
+    return umr_sum(a, axis, dtype, out, keepdims, initial, where)
+
+tests/test_mrmr_ranking.py::test_perfect_equal_scores_are_one_and_ties_follow_input_order[True-classification]
+tests/test_mrmr_ranking.py::test_perfect_equal_scores_are_one_and_ties_follow_input_order[False-regression]
+tests/test_mrmr_ranking.py::test_perfect_equal_scores_are_one_and_ties_follow_input_order[False-classification]
+  /tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/pandas/core/nanops.py:1016: RuntimeWarning: invalid value encountered in subtract
+    sqr = _ensure_numeric((avg - values) ** 2)
+
+tests/test_mrmr_ranking.py::test_constant_predictors_and_response_have_zero_default_relevance[regression]
+  /tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/association.py:808: RuntimeWarning: invalid value encountered in scalar divide
+    return wcov(x, y, w) / np.sqrt(wcov(x, x, w) * wcov(y, y, w))
+
+tests/test_mrmr_ranking.py::test_constant_predictors_and_response_have_zero_default_relevance[classification]
+  /tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/association.py:1464: UserWarning: Features [0] are constant.
+    warnings.warn("Features [0] are constant.", UserWarning)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_mrmr_ranking.py::test_mixed_singletons_remain_eligible[1-regression]
+FAILED tests/test_mrmr_ranking.py::test_mixed_singletons_remain_eligible[1-classification]
+FAILED tests/test_mrmr_ranking.py::test_mixed_singletons_remain_eligible[2-regression]
+FAILED tests/test_mrmr_ranking.py::test_mixed_singletons_remain_eligible[2-classification]
+FAILED tests/test_mrmr_ranking.py::test_mixed_relevance_uses_same_bounded_f_map[1-regression]
+FAILED tests/test_mrmr_ranking.py::test_mixed_relevance_uses_same_bounded_f_map[1-classification]
+FAILED tests/test_mrmr_ranking.py::test_mixed_relevance_uses_same_bounded_f_map[2-regression]
+FAILED tests/test_mrmr_ranking.py::test_mixed_relevance_uses_same_bounded_f_map[2-classification]
+FAILED tests/test_mrmr_ranking.py::test_perfect_equal_scores_are_one_and_ties_follow_input_order[True-regression]
+FAILED tests/test_mrmr_ranking.py::test_perfect_equal_scores_are_one_and_ties_follow_input_order[True-classification]
+FAILED tests/test_mrmr_ranking.py::test_perfect_equal_scores_are_one_and_ties_follow_input_order[False-regression]
+FAILED tests/test_mrmr_ranking.py::test_perfect_equal_scores_are_one_and_ties_follow_input_order[False-classification]
+FAILED tests/test_mrmr_ranking.py::test_default_relevance_is_nonnegative - as...
+FAILED tests/test_mrmr_ranking.py::test_negative_duplicate_gets_full_penalty
+FAILED tests/test_mrmr_ranking.py::test_constant_predictors_and_response_have_zero_default_relevance[regression]
+FAILED tests/test_mrmr_ranking.py::test_constant_predictors_and_response_have_zero_default_relevance[classification]
+FAILED tests/test_mrmr_ranking.py::test_empty_selection_has_consistent_outputs_and_can_refit[False-zero_request]
+FAILED tests/test_mrmr_ranking.py::test_empty_selection_has_consistent_outputs_and_can_refit[False-no_columns]
+FAILED tests/test_mrmr_ranking.py::test_empty_selection_has_consistent_outputs_and_can_refit[False-unavailable]
+FAILED tests/test_mrmr_ranking.py::test_empty_selection_has_consistent_outputs_and_can_refit[False-empty_callback]
+FAILED tests/test_mrmr_ranking.py::test_empty_selection_has_consistent_outputs_and_can_refit[True-zero_request]
+FAILED tests/test_mrmr_ranking.py::test_empty_selection_has_consistent_outputs_and_can_refit[True-no_columns]
+FAILED tests/test_mrmr_ranking.py::test_empty_selection_has_consistent_outputs_and_can_refit[True-unavailable]
+FAILED tests/test_mrmr_ranking.py::test_empty_selection_has_consistent_outputs_and_can_refit[True-empty_callback]
+FAILED tests/test_mrmr_ranking.py::test_invalid_custom_relevance_rejected[scores0]
+FAILED tests/test_mrmr_ranking.py::test_invalid_custom_relevance_rejected[scores1]
+FAILED tests/test_mrmr_ranking.py::test_invalid_custom_relevance_rejected[scores2]
+FAILED tests/test_mrmr_ranking.py::test_invalid_selection_count_rejected[-1]
+FAILED tests/test_mrmr_ranking.py::test_invalid_selection_count_rejected[1.5]
+FAILED tests/test_mrmr_ranking.py::test_invalid_selection_count_rejected[True]
+FAILED tests/test_mrmr_ranking.py::test_custom_relevance_order_does_not_change_tie_order
+FAILED tests/test_mrmr_ranking.py::test_strong_mixed_signal_and_null_screen[0-regression]
+FAILED tests/test_mrmr_ranking.py::test_strong_mixed_signal_and_null_screen[0-classification]
+FAILED tests/test_mrmr_ranking.py::test_strong_mixed_signal_and_null_screen[1-regression]
+FAILED tests/test_mrmr_ranking.py::test_strong_mixed_signal_and_null_screen[1-classification]
+FAILED tests/test_mrmr_ranking.py::test_strong_mixed_signal_and_null_screen[2-regression]
+FAILED tests/test_mrmr_ranking.py::test_strong_mixed_signal_and_null_screen[2-classification]
+FAILED tests/test_mrmr_ranking.py::test_strong_mixed_signal_and_null_screen[3-regression]
+FAILED tests/test_mrmr_ranking.py::test_strong_mixed_signal_and_null_screen[3-classification]
+FAILED tests/test_mrmr_ranking.py::test_strong_mixed_signal_and_null_screen[4-regression]
+FAILED tests/test_mrmr_ranking.py::test_strong_mixed_signal_and_null_screen[4-classification]
+41 failed, 31 warnings in 22.47s

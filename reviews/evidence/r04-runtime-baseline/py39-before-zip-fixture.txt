@@ -1,0 +1,66 @@
+................................................F...............         [100%]
+=================================== FAILURES ===================================
+________________________ test_dataset_streams_from_zip _________________________
+tests/test_installed_package.py:90: in test_dataset_streams_from_zip
+    housing = utils.load_data("housing")
+../py39-locked/lib/python3.9/site-packages/arfs/utils.py:726: in load_data
+    return _load_housing(as_frame=False)
+../py39-locked/lib/python3.9/site-packages/arfs/utils.py:619: in _load_housing
+    descr_text = files("arfs").joinpath("dataset/descr/housing.rst").read_text(
+../python/cpython-3.9.25-linux-x86_64-gnu/lib/python3.9/zipfile.py:2357: in read_text
+    with self.open('r', *args, **kwargs) as strm:
+../python/cpython-3.9.25-linux-x86_64-gnu/lib/python3.9/zipfile.py:2345: in open
+    stream = self.root.open(self.at, zip_mode, pwd=pwd)
+../python/cpython-3.9.25-linux-x86_64-gnu/lib/python3.9/zipfile.py:1548: in open
+    fheader = zef_file.read(sizeFileHeader)
+../python/cpython-3.9.25-linux-x86_64-gnu/lib/python3.9/zipfile.py:761: in read
+    self._file.seek(self._pos)
+E   ValueError: seek of closed file
+=============================== warnings summary ===============================
+arfs-r04/run/tests/test_allrelevant.py: 38 warnings
+  /tmp/arfs-r04/py39-locked/lib/python3.9/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+    warnings.warn(
+
+arfs-r04/run/tests/test_dependency_apis.py::test_public_lasso_selector_fits
+  /tmp/arfs-r04/py39-locked/lib/python3.9/site-packages/statsmodels/genmod/generalized_linear_model.py:1464: UserWarning: Elastic net fitting did not converge
+    warnings.warn("Elastic net fitting did not converge")
+
+arfs-r04/run/tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+arfs-r04/run/tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+  /tmp/arfs-r04/py39-locked/lib/python3.9/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The MissingValueThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+arfs-r04/run/tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+arfs-r04/run/tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+arfs-r04/run/tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+arfs-r04/run/tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+  /tmp/arfs-r04/py39-locked/lib/python3.9/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The UniqueValuesThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+arfs-r04/run/tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /tmp/arfs-r04/py39-locked/lib/python3.9/site-packages/arfs/benchmark.py:99: UserWarning: Tight layout not applied. The bottom and top margins cannot be made large enough to accommodate all Axes decorations.
+    fig.tight_layout()
+
+arfs-r04/run/tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /tmp/arfs-r04/py39-locked/lib/python3.9/site-packages/arfs/benchmark.py:104: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+    plt.show()
+
+arfs-r04/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[False]
+arfs-r04/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[False]
+arfs-r04/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[False]
+arfs-r04/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[False]
+arfs-r04/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+arfs-r04/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+arfs-r04/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+arfs-r04/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+  /tmp/arfs-r04/py39-locked/lib/python3.9/site-packages/arfs/gbm.py:348: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.
+    warnings.warn(
+
+arfs-r04/run/tests/test_runtime_baseline.py::test_selector_recovers_signal_and_rejects_noise[boostagroota]
+  /tmp/arfs-r04/py39-locked/lib/python3.9/site-packages/arfs/feature_selection/allrelevant.py:1528: UserWarning: [BoostAGroota]: using native variable importance might break the FS
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_installed_package.py::test_dataset_streams_from_zip - Value...
+1 failed, 63 passed, 56 warnings in 75.87s (0:01:15)

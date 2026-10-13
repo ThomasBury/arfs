@@ -1,0 +1,6 @@
+Using Python 3.12.7 environment at: /tmp/arfs-r05/py312-newer
+Resolved 1 package in 1ms
+Prepared 1 package in 1ms
+Uninstalled 1 package in 2ms
+Installed 1 package in 4ms
+ ~ arfs==3.0.0 (from file:///tmp/arfs-r05/dist/arfs-3.0.0-py3-none-any.whl)

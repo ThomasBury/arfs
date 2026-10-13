@@ -1,0 +1,37 @@
+..................................................                       [100%]
+=============================== warnings summary ===============================
+tests/test_mrmr_ranking.py: 12 warnings
+  /tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The MinRedundancyMaxRelevance or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+tests/test_mrmr_ranking.py: 27 warnings
+  /home/bsatom/Documents/arfs/src/arfs/association.py:244: RuntimeWarning: Rounded U = 1.0 to 1. This is probably due to floating point precision issues.
+    warnings.warn(
+
+tests/test_mrmr_ranking.py::test_mixed_singletons_remain_eligible[2-regression]
+tests/test_mrmr_ranking.py::test_mixed_singletons_remain_eligible[2-regression]
+tests/test_mrmr_ranking.py::test_mixed_singletons_remain_eligible[2-regression]
+tests/test_mrmr_ranking.py::test_mixed_relevance_uses_same_bounded_f_map[1-regression]
+tests/test_mrmr_ranking.py::test_mixed_relevance_uses_same_bounded_f_map[1-regression]
+tests/test_mrmr_ranking.py::test_mixed_relevance_uses_same_bounded_f_map[2-regression]
+tests/test_mrmr_ranking.py::test_mixed_relevance_uses_same_bounded_f_map[2-regression]
+tests/test_mrmr_ranking.py::test_mixed_relevance_uses_same_bounded_f_map[2-classification]
+  /tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/joblib/externals/loky/backend/fork_exec.py:38: DeprecationWarning: This process (pid=474829) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    pid = os.fork()
+
+tests/test_mrmr_ranking.py::test_constant_predictors_and_response_have_zero_default_relevance[regression]
+tests/test_mrmr_ranking.py::test_constant_predictors_and_response_have_zero_default_relevance[regression]
+tests/test_mrmr_ranking.py::test_constant_predictors_and_response_have_zero_default_relevance[regression]
+tests/test_mrmr_ranking.py::test_constant_predictors_and_response_have_zero_default_relevance[classification]
+tests/test_mrmr_ranking.py::test_undefined_numeric_score_policy_is_explicit[True]
+tests/test_mrmr_ranking.py::test_undefined_numeric_score_policy_is_explicit[False]
+  /home/bsatom/Documents/arfs/src/arfs/association.py:808: RuntimeWarning: invalid value encountered in scalar divide
+    return wcov(x, y, w) / np.sqrt(wcov(x, x, w) * wcov(y, y, w))
+
+tests/test_mrmr_ranking.py::test_constant_predictors_and_response_have_zero_default_relevance[regression]
+tests/test_mrmr_ranking.py::test_constant_predictors_and_response_have_zero_default_relevance[classification]
+  /home/bsatom/Documents/arfs/src/arfs/association.py:1464: UserWarning: Features [0] are constant.
+    warnings.warn("Features [0] are constant.", UserWarning)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+50 passed, 55 warnings in 15.71s

@@ -1,0 +1,29 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_________ test_matrix_to_xy_emits_only_observed_lower_triangle[False] __________
+tests/test_statistical_arithmetic.py:275: in test_matrix_to_xy_emits_only_observed_lower_triangle
+    assert_series_equal(
+E   AssertionError: Series are different
+E
+E   Series length are different
+E   [left]:  4, MultiIndex([('x', 'x'),
+E               ('x', 'y'),
+E               ('y', 'x'),
+E               ('y', 'y')],
+E              )
+E   [right]: 3, MultiIndex([('x', 'x'),
+E               ('y', 'x'),
+E               ('y', 'y')],
+E              names=['row', 'col'])
+__________ test_matrix_to_xy_emits_only_observed_lower_triangle[True] __________
+tests/test_statistical_arithmetic.py:273: in test_matrix_to_xy_emits_only_observed_lower_triangle
+    assert_frame_equal(result, expected)
+E   AssertionError: DataFrame are different
+E
+E   DataFrame shape mismatch
+E   [left]:  (4, 3)
+E   [right]: (3, 3)
+=========================== short test summary info ============================
+FAILED tests/test_statistical_arithmetic.py::test_matrix_to_xy_emits_only_observed_lower_triangle[False]
+FAILED tests/test_statistical_arithmetic.py::test_matrix_to_xy_emits_only_observed_lower_triangle[True]
+2 failed, 83 deselected in 7.05s

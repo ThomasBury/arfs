@@ -37,7 +37,7 @@ from sklearn.model_selection import (
 )
 
 # Local imports
-from arfs.utils import create_dtype_dict
+from arfs.utils import create_dtype_dict, validate_sample_weight, validate_target
 
 
 # --- Matplotlib Configuration ---
@@ -192,9 +192,10 @@ class GradientBoosting:
         X : pd.DataFrame or np.ndarray
             Predictor matrix (features).
         y : pd.Series or np.ndarray
-            Target variable.
-        sample_weight : pd.Series or np.ndarray, optional
-            Sample weights. Must have the same length as y.
+            One-dimensional, finite, nonmissing responses, aligned by row position.
+        sample_weight : array-like, optional
+            Finite nonnegative observation weights with the same length as y.
+            Both training and validation splits must retain positive weight mass.
         init_score : pd.Series or np.ndarray, optional
             Initial scores to boost from. Must have the same length as y.
         groups : pd.Series or np.ndarray, optional
@@ -252,16 +253,10 @@ class GradientBoosting:
         else:
             raise TypeError("cat_feat must be 'auto', a list of column names, or None.")
 
-        # Ensure y is a Series
-        if not isinstance(y, pd.Series):
-            y = pd.Series(y, name="target")  # Assign a default name
-
-        # Ensure sample_weight and init_score are Series if provided
-        if sample_weight is not None:
-            if not isinstance(sample_weight, pd.Series):
-                sample_weight = pd.Series(sample_weight, name="sample_weight")
-            if len(sample_weight) != len(y):
-                raise ValueError("Length of sample_weight must match length of y.")
+        y = validate_target(y, len(X))
+        checked_weight = validate_sample_weight(sample_weight, len(X))
+        if sample_weight is not None and not isinstance(sample_weight, pd.Series):
+            sample_weight = pd.Series(checked_weight, name="sample_weight")
 
         if init_score is not None:
             self.is_init_score = True
@@ -770,7 +765,11 @@ def _make_split(
     Optional[pd.Series],
     Optional[pd.Series],  # init_score_val, init_score_train
 ]:
-    """Splits data into training and validation sets."""
+    """Split by position; require valid responses and positive mass in both sets."""
+    y = validate_target(y, len(X))
+    checked_weight = validate_sample_weight(sample_weight, len(X))
+    if sample_weight is not None and not isinstance(sample_weight, pd.Series):
+        sample_weight = pd.Series(checked_weight, name="sample_weight")
 
     # Choose the appropriate splitter
     if stratified:
@@ -810,6 +809,11 @@ def _make_split(
             sample_weight.iloc[train_index],
             sample_weight.iloc[val_index],
         )
+
+    validate_target(y_train, len(X_train))
+    validate_target(y_val, len(X_val))
+    validate_sample_weight(sw_train, len(X_train))
+    validate_sample_weight(sw_val, len(X_val))
 
     is_train, is_val = (None, None)
     if init_score is not None:

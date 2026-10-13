@@ -1,0 +1,196 @@
+.F.FFFFFFF.FF.FF                                                         [100%]
+=================================== FAILURES ===================================
+_______ test_shared_importance_matches_real_sklearn_scoring[False-True] ________
+tests/test_permutation_importance.py:58: in test_shared_importance_matches_real_sklearn_scoring
+    assert_allclose(actual, expected)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 3 / 3 (100%)
+E   Max absolute difference among violations: 0.72772626
+E   Max relative difference among violations: 0.96841699
+E    ACTUAL: array([ 1.552487,  0.013375, -0.027775])
+E    DESIRED: array([ 2.280213,  0.105371, -0.01411 ])
+________ test_shared_importance_matches_real_sklearn_scoring[True-True] ________
+tests/test_permutation_importance.py:58: in test_shared_importance_matches_real_sklearn_scoring
+    assert_allclose(actual, expected)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 1 / 3 (33.3%)
+E   Max absolute difference among violations: 0.1372043
+E   Max relative difference among violations: 0.80964467
+E    ACTUAL: array([0.306667, 0.      , 0.      ])
+E    DESIRED: array([0.169462, 0.      , 0.      ])
+________ test_public_callers_forward_aligned_validation_weights[leshy] _________
+tests/test_permutation_importance.py:83: in test_public_callers_forward_aligned_validation_weights
+    selector.fit(X, y, weights)
+/tmp/arfs-r10/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:339: in fit
+    self._fit(X, y, sample_weight=sample_weight)
+/tmp/arfs-r10/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:478: in _fit
+    dec_reg, sha_max_history, imp_history, imp_sha_max = self.select_features(
+/tmp/arfs-r10/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:951: in select_features
+    ) = self._run_iteration(
+/tmp/arfs-r10/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:902: in _run_iteration
+    cur_imp = self._add_shadows_get_imps(X, y, sample_weight, dec_reg)
+/tmp/arfs-r10/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:573: in _add_shadows_get_imps
+    imp = _get_perm_imp(
+/tmp/arfs-r10/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1359: in _get_perm_imp
+    perm_imp = permutation_importance(
+tests/test_permutation_importance.py:70: in check_scoring
+    assert supplied is not None
+E   assert None is not None
+----------------------------- Captured stderr call -----------------------------
+
+Leshy iteration:   0%|          | 0/2 [00:00<?, ?it/s]
+________ test_public_callers_forward_aligned_validation_weights[boost] _________
+tests/test_permutation_importance.py:83: in test_public_callers_forward_aligned_validation_weights
+    selector.fit(X, y, weights)
+/tmp/arfs-r10/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1590: in fit
+    _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _boostaroota(
+/tmp/arfs-r10/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1908: in _boostaroota
+    crit, keep_vars, df_vimp, mean_shadow = _reduce_vars_sklearn(
+/tmp/arfs-r10/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1809: in _reduce_vars_sklearn
+    importance = imp_func[imp_kind](
+/tmp/arfs-r10/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1359: in _get_perm_imp
+    perm_imp = permutation_importance(
+tests/test_permutation_importance.py:70: in check_scoring
+    assert supplied is not None
+E   assert None is not None
+----------------------------- Captured stderr call -----------------------------
+
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s][A
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+____ test_boost_signed_normalization_and_positive_evidence[negative-total] _____
+tests/test_permutation_importance.py:118: in test_boost_signed_normalization_and_positive_evidence
+    assert_allclose(table.fscore1, expected)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 4 / 4 (100%)
+E   Max absolute difference among violations: 1.
+E   Max relative difference among violations: 2.
+E    ACTUAL: array([0.1, 0.5, 0.2, 0.2])
+E    DESIRED: array([-0.1, -0.5, -0.2, -0.2])
+_____ test_boost_signed_normalization_and_positive_evidence[cancellation] ______
+tests/test_permutation_importance.py:115: in test_boost_signed_normalization_and_positive_evidence
+    _, kept, table, threshold = a._reduce_vars_sklearn(
+/tmp/arfs-r10/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1820: in _reduce_vars_sklearn
+    df["fscore" + str(i)] = importance / importance.sum()
+E   FloatingPointError: divide by zero encountered in divide
+_______ test_boost_signed_normalization_and_positive_evidence[all-zero] ________
+tests/test_permutation_importance.py:115: in test_boost_signed_normalization_and_positive_evidence
+    _, kept, table, threshold = a._reduce_vars_sklearn(
+/tmp/arfs-r10/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1820: in _reduce_vars_sklearn
+    df["fscore" + str(i)] = importance / importance.sum()
+E   FloatingPointError: invalid value encountered in divide
+--------------------------- Captured stderr teardown ---------------------------
+
+Leshy iteration:   0%|          | 0/2 [00:00<?, ?it/s]
+_________ test_boost_signed_normalization_and_positive_evidence[mixed] _________
+tests/test_permutation_importance.py:118: in test_boost_signed_normalization_and_positive_evidence
+    assert_allclose(table.fscore1, expected)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 3 / 4 (75%)
+E   Max absolute difference among violations: 0.5
+E   Max relative difference among violations: 1.
+E    ACTUAL: array([ 1. , -0.5,  0.5,  0. ])
+E    DESIRED: array([ 0.5 , -0.25,  0.25,  0.  ])
+_______ test_boost_signed_normalization_and_positive_evidence[zero-real] _______
+tests/test_permutation_importance.py:118: in test_boost_signed_normalization_and_positive_evidence
+    assert_allclose(table.fscore1, expected)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 3 / 4 (75%)
+E   Max absolute difference among violations: 0.8
+E   Max relative difference among violations: 2.
+E    ACTUAL: array([-0. ,  0.2,  0.4,  0.4])
+E    DESIRED: array([ 0. , -0.2, -0.4, -0.4])
+____________ test_public_boost_empty_and_signed_selections[scores0] ____________
+tests/test_permutation_importance.py:136: in test_public_boost_empty_and_signed_selections
+    assert_array_equal(selector.support_, expected)
+/tmp/arfs-r10/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 1 / 2 (50%)
+E    ACTUAL: array([False,  True])
+E    DESIRED: array([False, False])
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+____________ test_public_boost_empty_and_signed_selections[scores2] ____________
+tests/test_permutation_importance.py:136: in test_public_boost_empty_and_signed_selections
+    assert_array_equal(selector.support_, expected)
+/tmp/arfs-r10/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 1 / 2 (50%)
+E    ACTUAL: array([False, False])
+E    DESIRED: array([False,  True])
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+_____________ test_boost_each_iteration_has_its_own_positive_scale _____________
+tests/test_permutation_importance.py:148: in test_boost_each_iteration_has_its_own_positive_scale
+    assert_allclose(table.fscore1, [0.5, -0.25, 0.25, 0.0])
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 3 / 4 (75%)
+E   Max absolute difference among violations: 0.5
+E   Max relative difference among violations: 1.
+E    ACTUAL: array([ 1. , -0.5,  0.5,  0. ])
+E    DESIRED: array([ 0.5 , -0.25,  0.25,  0.  ])
+=============================== warnings summary ===============================
+tests/test_permutation_importance.py::test_public_boost_empty_and_signed_selections[scores1]
+tests/test_permutation_importance.py::test_public_boost_empty_and_signed_selections[scores2]
+tests/test_permutation_importance.py::test_boost_each_iteration_has_its_own_positive_scale
+  /tmp/arfs-r10/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1820: RuntimeWarning: invalid value encountered in divide
+    df["fscore" + str(i)] = importance / importance.sum()
+
+tests/test_permutation_importance.py::test_public_boost_empty_and_signed_selections[scores2]
+tests/test_permutation_importance.py::test_boost_each_iteration_has_its_own_positive_scale
+  /tmp/arfs-r10/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1820: RuntimeWarning: divide by zero encountered in divide
+    df["fscore" + str(i)] = importance / importance.sum()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_permutation_importance.py::test_shared_importance_matches_real_sklearn_scoring[False-True]
+FAILED tests/test_permutation_importance.py::test_shared_importance_matches_real_sklearn_scoring[True-True]
+FAILED tests/test_permutation_importance.py::test_public_callers_forward_aligned_validation_weights[leshy]
+FAILED tests/test_permutation_importance.py::test_public_callers_forward_aligned_validation_weights[boost]
+FAILED tests/test_permutation_importance.py::test_boost_signed_normalization_and_positive_evidence[negative-total]
+FAILED tests/test_permutation_importance.py::test_boost_signed_normalization_and_positive_evidence[cancellation]
+FAILED tests/test_permutation_importance.py::test_boost_signed_normalization_and_positive_evidence[all-zero]
+FAILED tests/test_permutation_importance.py::test_boost_signed_normalization_and_positive_evidence[mixed]
+FAILED tests/test_permutation_importance.py::test_boost_signed_normalization_and_positive_evidence[zero-real]
+FAILED tests/test_permutation_importance.py::test_public_boost_empty_and_signed_selections[scores0]
+FAILED tests/test_permutation_importance.py::test_public_boost_empty_and_signed_selections[scores2]
+FAILED tests/test_permutation_importance.py::test_boost_each_iteration_has_its_own_positive_scale
+12 failed, 4 passed, 5 warnings in 7.19s

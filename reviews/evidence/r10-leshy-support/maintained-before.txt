@@ -1,0 +1,175 @@
+..FF.F..FFFFFF.FF                                                        [100%]
+=================================== FAILURES ===================================
+______ test_fitted_mask_count_names_and_transform_agree[tentative-False] _______
+tests/test_leshy_support.py:34: in test_fitted_mask_count_names_and_transform_agree
+    assert_array_equal(selector.support_, expected)
+/tmp/arfs-r09/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 3 / 3 (100%)
+E    ACTUAL: array([ True,  True,  True])
+E    DESIRED: array([False, False, False])
+----------------------------- Captured stdout call -----------------------------
+All relevant predictors selected in 00:00:00.00
+_______ test_fitted_mask_count_names_and_transform_agree[tentative-True] _______
+tests/test_leshy_support.py:37: in test_fitted_mask_count_names_and_transform_agree
+    assert selector.n_features_ == expected.sum()
+E   assert 0 == np.int64(3)
+E    +  where 0 = Leshy(estimator=LGBMRegressor(n_estimators=1000, verbosity=-1), keep_weak=True,\n      random_state=RandomState(MT19937) at 0x7AE2F2036A40).n_features_
+E    +  and   np.int64(3) = <built-in method sum of numpy.ndarray object at 0x7ae2f1b26df0>()
+E    +    where <built-in method sum of numpy.ndarray object at 0x7ae2f1b26df0> = array([ True,  True,  True]).sum
+----------------------------- Captured stdout call -----------------------------
+All relevant predictors selected in 00:00:00.00
+_________ test_fitted_mask_count_names_and_transform_agree[mixed-True] _________
+tests/test_leshy_support.py:37: in test_fitted_mask_count_names_and_transform_agree
+    assert selector.n_features_ == expected.sum()
+E   assert 1 == np.int64(2)
+E    +  where 1 = Leshy(estimator=LGBMRegressor(n_estimators=1000, verbosity=-1), keep_weak=True,\n      random_state=RandomState(MT19937) at 0x7AE2F2037E40).n_features_
+E    +  and   np.int64(2) = <built-in method sum of numpy.ndarray object at 0x7ae2f1b27270>()
+E    +    where <built-in method sum of numpy.ndarray object at 0x7ae2f1b27270> = array([ True,  True, False]).sum
+----------------------------- Captured stdout call -----------------------------
+All relevant predictors selected in 00:00:00.00
+_____ test_fitted_mask_count_names_and_transform_agree[no-rejected-False] ______
+tests/test_leshy_support.py:34: in test_fitted_mask_count_names_and_transform_agree
+    assert_array_equal(selector.support_, expected)
+/tmp/arfs-r09/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 2 / 3 (66.7%)
+E    ACTUAL: array([ True,  True,  True])
+E    DESIRED: array([ True, False, False])
+----------------------------- Captured stdout call -----------------------------
+All relevant predictors selected in 00:00:00.00
+______ test_fitted_mask_count_names_and_transform_agree[no-rejected-True] ______
+tests/test_leshy_support.py:37: in test_fitted_mask_count_names_and_transform_agree
+    assert selector.n_features_ == expected.sum()
+E   assert 1 == np.int64(3)
+E    +  where 1 = Leshy(estimator=LGBMRegressor(n_estimators=1000, verbosity=-1), keep_weak=True,\n      random_state=RandomState(MT19937) at 0x7AE2F1CF1A40).n_features_
+E    +  and   np.int64(3) = <built-in method sum of numpy.ndarray object at 0x7ae2f1d08d50>()
+E    +    where <built-in method sum of numpy.ndarray object at 0x7ae2f1d08d50> = array([ True,  True,  True]).sum
+----------------------------- Captured stdout call -----------------------------
+All relevant predictors selected in 00:00:00.00
+__ test_two_real_iterations_are_recorded_and_tentative_policy_survives[False] __
+tests/test_leshy_support.py:68: in test_two_real_iterations_are_recorded_and_tentative_policy_survives
+    assert selector.support_weak_.all()
+E   AssertionError: assert np.False_
+E    +  where np.False_ = <built-in method all of numpy.ndarray object at 0x7ae2f1d0a1f0>()
+E    +    where <built-in method all of numpy.ndarray object at 0x7ae2f1d0a1f0> = array([False, False, False]).all
+E    +      where array([False, False, False]) = Leshy(estimator=LGBMRegressor(n_estimators=2, random_state=973, verbosity=-1),\n      importance='native', max_iter=2, n_estimators=2,\n      random_state=RandomState(MT19937) at 0x7AE2F1CF2440).support_weak_
+----------------------------- Captured stdout call -----------------------------
+All relevant predictors selected in 00:00:00.01
+----------------------------- Captured stderr call -----------------------------
+
+Leshy iteration:   0%|          | 0/2 [00:00<?, ?it/s]
+Leshy iteration: 100%|██████████| 2/2 [00:00<00:00, 268.08it/s]
+__ test_two_real_iterations_are_recorded_and_tentative_policy_survives[True] ___
+tests/test_leshy_support.py:68: in test_two_real_iterations_are_recorded_and_tentative_policy_survives
+    assert selector.support_weak_.all()
+E   AssertionError: assert np.False_
+E    +  where np.False_ = <built-in method all of numpy.ndarray object at 0x7ae2f1d0b090>()
+E    +    where <built-in method all of numpy.ndarray object at 0x7ae2f1d0b090> = array([False, False, False]).all
+E    +      where array([False, False, False]) = Leshy(estimator=LGBMRegressor(n_estimators=2, random_state=973, verbosity=-1),\n      importance='native', keep_weak=True, max_iter=2, n_estimators=2,\n      random_state=RandomState(MT19937) at 0x7AE2F1CF3040).support_weak_
+----------------------------- Captured stdout call -----------------------------
+All relevant predictors selected in 00:00:00.01
+----------------------------- Captured stderr call -----------------------------
+
+Leshy iteration:   0%|          | 0/2 [00:00<?, ?it/s]
+Leshy iteration: 100%|██████████| 2/2 [00:00<00:00, 243.87it/s]
+___ test_tentative_median_uses_every_actual_row[history0-shadows0-expected0] ___
+tests/test_leshy_support.py:80: in test_tentative_median_uses_every_actual_row
+    assert_array_equal(
+/tmp/arfs-r09/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   (shapes (0,), (1,) mismatch)
+E    ACTUAL: array([], dtype=int64)
+E    DESIRED: array([0])
+___ test_tentative_median_uses_every_actual_row[history1-shadows1-expected1] ___
+tests/test_leshy_support.py:80: in test_tentative_median_uses_every_actual_row
+    assert_array_equal(
+/tmp/arfs-r09/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   (shapes (0,), (1,) mismatch)
+E    ACTUAL: array([], dtype=int64)
+E    DESIRED: array([0])
+_ test_rejected_ranking_uses_both_iterations_and_preserves_support[tentative0] _
+tests/test_leshy_support.py:95: in test_rejected_ranking_uses_both_iterations_and_preserves_support
+    assert_array_equal(selector.ranking_[:2], [base, base])
+/tmp/arfs-r09/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 1 / 2 (50%)
+E   Max absolute difference among violations: 1
+E   Max relative difference among violations: 0.5
+E    ACTUAL: array([3, 2])
+E    DESIRED: array([2, 2])
+_ test_rejected_ranking_uses_both_iterations_and_preserves_support[tentative1] _
+tests/test_leshy_support.py:95: in test_rejected_ranking_uses_both_iterations_and_preserves_support
+    assert_array_equal(selector.ranking_[:2], [base, base])
+/tmp/arfs-r09/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 1 / 2 (50%)
+E   Max absolute difference among violations: 1
+E   Max relative difference among violations: 0.33333333
+E    ACTUAL: array([4, 3])
+E    DESIRED: array([3, 3])
+=============================== warnings summary ===============================
+tests/test_leshy_support.py::test_fitted_mask_count_names_and_transform_agree[confirmed-False]
+tests/test_leshy_support.py::test_fitted_mask_count_names_and_transform_agree[confirmed-True]
+tests/test_leshy_support.py::test_fitted_mask_count_names_and_transform_agree[tentative-True]
+tests/test_leshy_support.py::test_fitted_mask_count_names_and_transform_agree[mixed-False]
+tests/test_leshy_support.py::test_fitted_mask_count_names_and_transform_agree[mixed-True]
+tests/test_leshy_support.py::test_fitted_mask_count_names_and_transform_agree[empty-False]
+tests/test_leshy_support.py::test_fitted_mask_count_names_and_transform_agree[empty-True]
+tests/test_leshy_support.py::test_fitted_mask_count_names_and_transform_agree[no-rejected-True]
+  /tmp/arfs-r09/py312-locked/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The Leshy or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+tests/test_leshy_support.py::test_tentative_median_uses_every_actual_row[history1-shadows1-expected1]
+  /tmp/arfs-r09/py312-locked/lib/python3.12/site-packages/numpy/_core/fromnumeric.py:3596: RuntimeWarning: Mean of empty slice.
+    return _methods._mean(a, axis=axis, dtype=dtype,
+
+tests/test_leshy_support.py::test_tentative_median_uses_every_actual_row[history1-shadows1-expected1]
+  /tmp/arfs-r09/py312-locked/lib/python3.12/site-packages/numpy/_core/_methods.py:130: RuntimeWarning: invalid value encountered in divide
+    ret = um.true_divide(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_leshy_support.py::test_fitted_mask_count_names_and_transform_agree[tentative-False]
+FAILED tests/test_leshy_support.py::test_fitted_mask_count_names_and_transform_agree[tentative-True]
+FAILED tests/test_leshy_support.py::test_fitted_mask_count_names_and_transform_agree[mixed-True]
+FAILED tests/test_leshy_support.py::test_fitted_mask_count_names_and_transform_agree[no-rejected-False]
+FAILED tests/test_leshy_support.py::test_fitted_mask_count_names_and_transform_agree[no-rejected-True]
+FAILED tests/test_leshy_support.py::test_two_real_iterations_are_recorded_and_tentative_policy_survives[False]
+FAILED tests/test_leshy_support.py::test_two_real_iterations_are_recorded_and_tentative_policy_survives[True]
+FAILED tests/test_leshy_support.py::test_tentative_median_uses_every_actual_row[history0-shadows0-expected0]
+FAILED tests/test_leshy_support.py::test_tentative_median_uses_every_actual_row[history1-shadows1-expected1]
+FAILED tests/test_leshy_support.py::test_rejected_ranking_uses_both_iterations_and_preserves_support[tentative0]
+FAILED tests/test_leshy_support.py::test_rejected_ranking_uses_both_iterations_and_preserves_support[tentative1]
+11 failed, 6 passed, 10 warnings in 3.17s

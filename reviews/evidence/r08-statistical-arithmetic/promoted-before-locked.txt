@@ -1,0 +1,1021 @@
+FF..FFFFFFFFFF..FFFFFFFFFFFFFF..FF....FF......F....FFFFFFFFFFFFFFFFFFFFF [ 86%]
+FFFFF...FFF                                                              [100%]
+=================================== FAILURES ===================================
+_______________ test_linear_f_uses_pearson_and_retained_rows[1] ________________
+tests/test_statistical_arithmetic.py:34: in test_linear_f_uses_pearson_and_retained_rows
+    assert_allclose(a.f_cont_regression_parallel(X, y, n_jobs=jobs)["x"], expected)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 1.79769313e+308
+E   Max relative difference among violations: 5.24327164e+306
+E    ACTUAL: array(1.797693e+308)
+E    DESIRED: array(34.285714)
+_______________ test_linear_f_uses_pearson_and_retained_rows[2] ________________
+tests/test_statistical_arithmetic.py:34: in test_linear_f_uses_pearson_and_retained_rows
+    assert_allclose(a.f_cont_regression_parallel(X, y, n_jobs=jobs)["x"], expected)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 1.79769313e+308
+E   Max relative difference among violations: 5.24327164e+306
+E    ACTUAL: array(1.797693e+308)
+E    DESIRED: array(34.285714)
+_ test_relevance_frequency_replication_and_worker_agreement[f_cat_regression_parallel-False-1] _
+tests/test_statistical_arithmetic.py:62: in test_relevance_frequency_replication_and_worker_agreement
+    actual = fn(X, y, weights, n_jobs=jobs).sort_index()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1575: in f_cat_regression_parallel
+    return parallel_df(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py:87: in parallel_df
+    lst = func(df, series, sample_weight).sort_values(ascending=False)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py:130: in _compute_series
+    return X.apply(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:10374: in apply
+    return op.apply().__finalize__(self, method="apply")
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py:916: in apply
+    return self.apply_standard()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py:1063: in apply_standard
+    results, res_index = self.apply_series_generator()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py:1081: in apply_series_generator
+    results[i] = self.func(v, *self.args, **self.kwargs)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py:131: in <lambda>
+    lambda col: func_xyw(x=col, y=y, sample_weight=sample_weight, as_frame=False)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1524: in f_cat_regression
+    return f_oneway_weighted(*args)[0]
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1456: in f_oneway_weighted
+    raise ValueError("ANOVA requires at least two positive-mass groups.")
+E   ValueError: ANOVA requires at least two positive-mass groups.
+_ test_relevance_frequency_replication_and_worker_agreement[f_cat_regression_parallel-False-2] _
+joblib.externals.loky.process_executor._RemoteTraceback:
+"""
+Traceback (most recent call last):
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/externals/loky/process_executor.py", line 463, in _process_worker
+    r = call_item()
+        ^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/externals/loky/process_executor.py", line 291, in __call__
+    return self.fn(*self.args, **self.kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py", line 598, in __call__
+    return [func(*args, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py", line 130, in _compute_series
+    return X.apply(
+           ^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py", line 10374, in apply
+    return op.apply().__finalize__(self, method="apply")
+           ^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py", line 916, in apply
+    return self.apply_standard()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py", line 1063, in apply_standard
+    results, res_index = self.apply_series_generator()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py", line 1081, in apply_series_generator
+    results[i] = self.func(v, *self.args, **self.kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py", line 131, in <lambda>
+    lambda col: func_xyw(x=col, y=y, sample_weight=sample_weight, as_frame=False)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py", line 1524, in f_cat_regression
+    return f_oneway_weighted(*args)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py", line 1456, in f_oneway_weighted
+    raise ValueError("ANOVA requires at least two positive-mass groups.")
+ValueError: ANOVA requires at least two positive-mass groups.
+"""
+
+The above exception was the direct cause of the following exception:
+tests/test_statistical_arithmetic.py:62: in test_relevance_frequency_replication_and_worker_agreement
+    actual = fn(X, y, weights, n_jobs=jobs).sort_index()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1575: in f_cat_regression_parallel
+    return parallel_df(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py:96: in parallel_df
+    lst = Parallel(n_jobs=n_jobs)(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:2007: in __call__
+    return output if self.return_generator else list(output)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:1650: in _get_outputs
+    yield from self._retrieve()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:1754: in _retrieve
+    self._raise_error_fast()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:1789: in _raise_error_fast
+    error_job.get_result(self.timeout)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:745: in get_result
+    return self._return_or_raise()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:763: in _return_or_raise
+    raise self._result
+E   ValueError: ANOVA requires at least two positive-mass groups.
+_ test_relevance_frequency_replication_and_worker_agreement[f_cont_classification_parallel-True-1] _
+tests/test_statistical_arithmetic.py:62: in test_relevance_frequency_replication_and_worker_agreement
+    actual = fn(X, y, weights, n_jobs=jobs).sort_index()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1818: in f_cont_classification_parallel
+    df=X[num_cols],
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:4108: in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6200: in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6252: in _raise_if_missing
+    raise KeyError(f"{not_found} not in index")
+E   KeyError: "['target'] not in index"
+_ test_relevance_frequency_replication_and_worker_agreement[f_cont_classification_parallel-True-2] _
+tests/test_statistical_arithmetic.py:62: in test_relevance_frequency_replication_and_worker_agreement
+    actual = fn(X, y, weights, n_jobs=jobs).sort_index()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1818: in f_cont_classification_parallel
+    df=X[num_cols],
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:4108: in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6200: in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6252: in _raise_if_missing
+    raise KeyError(f"{not_found} not in index")
+E   KeyError: "['target'] not in index"
+_ test_relevance_frequency_replication_and_worker_agreement[f_cat_classification_parallel-True-1] _
+tests/test_statistical_arithmetic.py:64: in test_relevance_frequency_replication_and_worker_agreement
+    assert_allclose(actual, expected)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 1 / 2 (50%)
+E   Max absolute difference among violations: 0.61545863
+E   Max relative difference among violations: 0.42857143
+E    ACTUAL: array([1.797693e+308, 8.206115e-001])
+E    DESIRED: array([1.797693e+308, 1.436070e+000])
+_ test_relevance_frequency_replication_and_worker_agreement[f_cat_classification_parallel-True-2] _
+tests/test_statistical_arithmetic.py:64: in test_relevance_frequency_replication_and_worker_agreement
+    assert_allclose(actual, expected)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 1 / 2 (50%)
+E   Max absolute difference among violations: 0.61545863
+E   Max relative difference among violations: 0.42857143
+E    ACTUAL: array([1.797693e+308, 8.206115e-001])
+E    DESIRED: array([1.797693e+308, 1.436070e+000])
+----------------------------- Captured stderr call -----------------------------
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:232: RuntimeWarning: Rounded U = 1.0 to 1. This is probably due to floating point precision issues.
+  warnings.warn(
+_ test_response_name_cannot_overwrite_features[f_cont_regression_parallel-False-None-1] _
+tests/test_statistical_arithmetic.py:88: in test_response_name_cannot_overwrite_features
+    assert_series_equal(
+E   AssertionError: Series are different
+E
+E   Series length are different
+E   [left]:  2, Index([0, 'target_'], dtype='object')
+E   [right]: 3, Index([0, 'target', 'target_'], dtype='object')
+_ test_response_name_cannot_overwrite_features[f_cont_regression_parallel-False-None-2] _
+tests/test_statistical_arithmetic.py:88: in test_response_name_cannot_overwrite_features
+    assert_series_equal(
+E   AssertionError: Series are different
+E
+E   Series length are different
+E   [left]:  2, Index([0, 'target_'], dtype='object')
+E   [right]: 3, Index([0, 'target', 'target_'], dtype='object')
+_ test_response_name_cannot_overwrite_features[f_cont_regression_parallel-False-target-1] _
+tests/test_statistical_arithmetic.py:88: in test_response_name_cannot_overwrite_features
+    assert_series_equal(
+E   AssertionError: Series are different
+E
+E   Series length are different
+E   [left]:  2, Index([0, 'target_'], dtype='object')
+E   [right]: 3, Index([0, 'target', 'target_'], dtype='object')
+_ test_response_name_cannot_overwrite_features[f_cont_regression_parallel-False-target-2] _
+tests/test_statistical_arithmetic.py:88: in test_response_name_cannot_overwrite_features
+    assert_series_equal(
+E   AssertionError: Series are different
+E
+E   Series length are different
+E   [left]:  2, Index([0, 'target_'], dtype='object')
+E   [right]: 3, Index([0, 'target', 'target_'], dtype='object')
+_ test_response_name_cannot_overwrite_features[f_cont_regression_parallel-False-0-1] _
+tests/test_statistical_arithmetic.py:88: in test_response_name_cannot_overwrite_features
+    assert_series_equal(
+E   AssertionError: Series are different
+E
+E   Series length are different
+E   [left]:  2, Index(['target', 'target_'], dtype='object')
+E   [right]: 3, Index([0, 'target', 'target_'], dtype='object')
+_ test_response_name_cannot_overwrite_features[f_cont_regression_parallel-False-0-2] _
+tests/test_statistical_arithmetic.py:88: in test_response_name_cannot_overwrite_features
+    assert_series_equal(
+E   AssertionError: Series are different
+E
+E   Series length are different
+E   [left]:  2, Index(['target', 'target_'], dtype='object')
+E   [right]: 3, Index([0, 'target', 'target_'], dtype='object')
+_ test_response_name_cannot_overwrite_features[f_cat_regression_parallel-False-None-1] _
+tests/test_statistical_arithmetic.py:86: in test_response_name_cannot_overwrite_features
+    actual = fn(X, y, n_jobs=jobs)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1575: in f_cat_regression_parallel
+    return parallel_df(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py:87: in parallel_df
+    lst = func(df, series, sample_weight).sort_values(ascending=False)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py:130: in _compute_series
+    return X.apply(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:10374: in apply
+    return op.apply().__finalize__(self, method="apply")
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py:916: in apply
+    return self.apply_standard()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py:1063: in apply_standard
+    results, res_index = self.apply_series_generator()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py:1081: in apply_series_generator
+    results[i] = self.func(v, *self.args, **self.kwargs)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py:131: in <lambda>
+    lambda col: func_xyw(x=col, y=y, sample_weight=sample_weight, as_frame=False)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1524: in f_cat_regression
+    return f_oneway_weighted(*args)[0]
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1456: in f_oneway_weighted
+    raise ValueError("ANOVA requires at least two positive-mass groups.")
+E   ValueError: ANOVA requires at least two positive-mass groups.
+_ test_response_name_cannot_overwrite_features[f_cat_regression_parallel-False-None-2] _
+joblib.externals.loky.process_executor._RemoteTraceback:
+"""
+Traceback (most recent call last):
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/externals/loky/process_executor.py", line 463, in _process_worker
+    r = call_item()
+        ^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/externals/loky/process_executor.py", line 291, in __call__
+    return self.fn(*self.args, **self.kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py", line 598, in __call__
+    return [func(*args, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py", line 130, in _compute_series
+    return X.apply(
+           ^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py", line 10374, in apply
+    return op.apply().__finalize__(self, method="apply")
+           ^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py", line 916, in apply
+    return self.apply_standard()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py", line 1063, in apply_standard
+    results, res_index = self.apply_series_generator()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py", line 1081, in apply_series_generator
+    results[i] = self.func(v, *self.args, **self.kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py", line 131, in <lambda>
+    lambda col: func_xyw(x=col, y=y, sample_weight=sample_weight, as_frame=False)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py", line 1524, in f_cat_regression
+    return f_oneway_weighted(*args)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py", line 1456, in f_oneway_weighted
+    raise ValueError("ANOVA requires at least two positive-mass groups.")
+ValueError: ANOVA requires at least two positive-mass groups.
+"""
+
+The above exception was the direct cause of the following exception:
+tests/test_statistical_arithmetic.py:86: in test_response_name_cannot_overwrite_features
+    actual = fn(X, y, n_jobs=jobs)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1575: in f_cat_regression_parallel
+    return parallel_df(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py:96: in parallel_df
+    lst = Parallel(n_jobs=n_jobs)(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:2007: in __call__
+    return output if self.return_generator else list(output)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:1650: in _get_outputs
+    yield from self._retrieve()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:1754: in _retrieve
+    self._raise_error_fast()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:1789: in _raise_error_fast
+    error_job.get_result(self.timeout)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:745: in get_result
+    return self._return_or_raise()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:763: in _return_or_raise
+    raise self._result
+E   ValueError: ANOVA requires at least two positive-mass groups.
+_ test_response_name_cannot_overwrite_features[f_cat_regression_parallel-False-target-1] _
+tests/test_statistical_arithmetic.py:86: in test_response_name_cannot_overwrite_features
+    actual = fn(X, y, n_jobs=jobs)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1575: in f_cat_regression_parallel
+    return parallel_df(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py:87: in parallel_df
+    lst = func(df, series, sample_weight).sort_values(ascending=False)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py:130: in _compute_series
+    return X.apply(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:10374: in apply
+    return op.apply().__finalize__(self, method="apply")
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py:916: in apply
+    return self.apply_standard()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py:1063: in apply_standard
+    results, res_index = self.apply_series_generator()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py:1081: in apply_series_generator
+    results[i] = self.func(v, *self.args, **self.kwargs)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py:131: in <lambda>
+    lambda col: func_xyw(x=col, y=y, sample_weight=sample_weight, as_frame=False)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1524: in f_cat_regression
+    return f_oneway_weighted(*args)[0]
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1456: in f_oneway_weighted
+    raise ValueError("ANOVA requires at least two positive-mass groups.")
+E   ValueError: ANOVA requires at least two positive-mass groups.
+_ test_response_name_cannot_overwrite_features[f_cat_regression_parallel-False-target-2] _
+joblib.externals.loky.process_executor._RemoteTraceback:
+"""
+Traceback (most recent call last):
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/externals/loky/process_executor.py", line 463, in _process_worker
+    r = call_item()
+        ^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/externals/loky/process_executor.py", line 291, in __call__
+    return self.fn(*self.args, **self.kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py", line 598, in __call__
+    return [func(*args, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py", line 130, in _compute_series
+    return X.apply(
+           ^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py", line 10374, in apply
+    return op.apply().__finalize__(self, method="apply")
+           ^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py", line 916, in apply
+    return self.apply_standard()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py", line 1063, in apply_standard
+    results, res_index = self.apply_series_generator()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py", line 1081, in apply_series_generator
+    results[i] = self.func(v, *self.args, **self.kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py", line 131, in <lambda>
+    lambda col: func_xyw(x=col, y=y, sample_weight=sample_weight, as_frame=False)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py", line 1524, in f_cat_regression
+    return f_oneway_weighted(*args)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py", line 1456, in f_oneway_weighted
+    raise ValueError("ANOVA requires at least two positive-mass groups.")
+ValueError: ANOVA requires at least two positive-mass groups.
+"""
+
+The above exception was the direct cause of the following exception:
+tests/test_statistical_arithmetic.py:86: in test_response_name_cannot_overwrite_features
+    actual = fn(X, y, n_jobs=jobs)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1575: in f_cat_regression_parallel
+    return parallel_df(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py:96: in parallel_df
+    lst = Parallel(n_jobs=n_jobs)(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:2007: in __call__
+    return output if self.return_generator else list(output)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:1650: in _get_outputs
+    yield from self._retrieve()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:1754: in _retrieve
+    self._raise_error_fast()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:1789: in _raise_error_fast
+    error_job.get_result(self.timeout)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:745: in get_result
+    return self._return_or_raise()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:763: in _return_or_raise
+    raise self._result
+E   ValueError: ANOVA requires at least two positive-mass groups.
+_ test_response_name_cannot_overwrite_features[f_cat_regression_parallel-False-group-1] _
+tests/test_statistical_arithmetic.py:86: in test_response_name_cannot_overwrite_features
+    actual = fn(X, y, n_jobs=jobs)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1577: in f_cat_regression_parallel
+    df=X[cat_cols],
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:4108: in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6200: in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6252: in _raise_if_missing
+    raise KeyError(f"{not_found} not in index")
+E   KeyError: "['group'] not in index"
+_ test_response_name_cannot_overwrite_features[f_cat_regression_parallel-False-group-2] _
+tests/test_statistical_arithmetic.py:86: in test_response_name_cannot_overwrite_features
+    actual = fn(X, y, n_jobs=jobs)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1577: in f_cat_regression_parallel
+    df=X[cat_cols],
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:4108: in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6200: in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6252: in _raise_if_missing
+    raise KeyError(f"{not_found} not in index")
+E   KeyError: "['group'] not in index"
+_ test_response_name_cannot_overwrite_features[f_cat_regression_parallel-False-0-1] _
+tests/test_statistical_arithmetic.py:86: in test_response_name_cannot_overwrite_features
+    actual = fn(X, y, n_jobs=jobs)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1575: in f_cat_regression_parallel
+    return parallel_df(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py:87: in parallel_df
+    lst = func(df, series, sample_weight).sort_values(ascending=False)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py:130: in _compute_series
+    return X.apply(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:10374: in apply
+    return op.apply().__finalize__(self, method="apply")
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py:916: in apply
+    return self.apply_standard()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py:1063: in apply_standard
+    results, res_index = self.apply_series_generator()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py:1081: in apply_series_generator
+    results[i] = self.func(v, *self.args, **self.kwargs)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py:131: in <lambda>
+    lambda col: func_xyw(x=col, y=y, sample_weight=sample_weight, as_frame=False)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1524: in f_cat_regression
+    return f_oneway_weighted(*args)[0]
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1456: in f_oneway_weighted
+    raise ValueError("ANOVA requires at least two positive-mass groups.")
+E   ValueError: ANOVA requires at least two positive-mass groups.
+_ test_response_name_cannot_overwrite_features[f_cat_regression_parallel-False-0-2] _
+joblib.externals.loky.process_executor._RemoteTraceback:
+"""
+Traceback (most recent call last):
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/externals/loky/process_executor.py", line 463, in _process_worker
+    r = call_item()
+        ^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/externals/loky/process_executor.py", line 291, in __call__
+    return self.fn(*self.args, **self.kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py", line 598, in __call__
+    return [func(*args, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py", line 130, in _compute_series
+    return X.apply(
+           ^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py", line 10374, in apply
+    return op.apply().__finalize__(self, method="apply")
+           ^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py", line 916, in apply
+    return self.apply_standard()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py", line 1063, in apply_standard
+    results, res_index = self.apply_series_generator()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py", line 1081, in apply_series_generator
+    results[i] = self.func(v, *self.args, **self.kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py", line 131, in <lambda>
+    lambda col: func_xyw(x=col, y=y, sample_weight=sample_weight, as_frame=False)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py", line 1524, in f_cat_regression
+    return f_oneway_weighted(*args)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py", line 1456, in f_oneway_weighted
+    raise ValueError("ANOVA requires at least two positive-mass groups.")
+ValueError: ANOVA requires at least two positive-mass groups.
+"""
+
+The above exception was the direct cause of the following exception:
+tests/test_statistical_arithmetic.py:86: in test_response_name_cannot_overwrite_features
+    actual = fn(X, y, n_jobs=jobs)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1575: in f_cat_regression_parallel
+    return parallel_df(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py:96: in parallel_df
+    lst = Parallel(n_jobs=n_jobs)(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:2007: in __call__
+    return output if self.return_generator else list(output)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:1650: in _get_outputs
+    yield from self._retrieve()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:1754: in _retrieve
+    self._raise_error_fast()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:1789: in _raise_error_fast
+    error_job.get_result(self.timeout)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:745: in get_result
+    return self._return_or_raise()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:763: in _return_or_raise
+    raise self._result
+E   ValueError: ANOVA requires at least two positive-mass groups.
+_ test_response_name_cannot_overwrite_features[f_cont_classification_parallel-True-None-1] _
+tests/test_statistical_arithmetic.py:86: in test_response_name_cannot_overwrite_features
+    actual = fn(X, y, n_jobs=jobs)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1818: in f_cont_classification_parallel
+    df=X[num_cols],
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:4108: in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6200: in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6252: in _raise_if_missing
+    raise KeyError(f"{not_found} not in index")
+E   KeyError: "['target'] not in index"
+_ test_response_name_cannot_overwrite_features[f_cont_classification_parallel-True-None-2] _
+tests/test_statistical_arithmetic.py:86: in test_response_name_cannot_overwrite_features
+    actual = fn(X, y, n_jobs=jobs)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1818: in f_cont_classification_parallel
+    df=X[num_cols],
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:4108: in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6200: in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6252: in _raise_if_missing
+    raise KeyError(f"{not_found} not in index")
+E   KeyError: "['target'] not in index"
+_ test_response_name_cannot_overwrite_features[f_cont_classification_parallel-True-target-1] _
+tests/test_statistical_arithmetic.py:86: in test_response_name_cannot_overwrite_features
+    actual = fn(X, y, n_jobs=jobs)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1818: in f_cont_classification_parallel
+    df=X[num_cols],
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:4108: in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6200: in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6252: in _raise_if_missing
+    raise KeyError(f"{not_found} not in index")
+E   KeyError: "['target'] not in index"
+_ test_response_name_cannot_overwrite_features[f_cont_classification_parallel-True-target-2] _
+tests/test_statistical_arithmetic.py:86: in test_response_name_cannot_overwrite_features
+    actual = fn(X, y, n_jobs=jobs)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1818: in f_cont_classification_parallel
+    df=X[num_cols],
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:4108: in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6200: in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6252: in _raise_if_missing
+    raise KeyError(f"{not_found} not in index")
+E   KeyError: "['target'] not in index"
+_ test_response_name_cannot_overwrite_features[f_cont_classification_parallel-True-0-1] _
+tests/test_statistical_arithmetic.py:86: in test_response_name_cannot_overwrite_features
+    actual = fn(X, y, n_jobs=jobs)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1818: in f_cont_classification_parallel
+    df=X[num_cols],
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:4108: in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6200: in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6252: in _raise_if_missing
+    raise KeyError(f"{not_found} not in index")
+E   KeyError: '[0] not in index'
+_ test_response_name_cannot_overwrite_features[f_cont_classification_parallel-True-0-2] _
+tests/test_statistical_arithmetic.py:86: in test_response_name_cannot_overwrite_features
+    actual = fn(X, y, n_jobs=jobs)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1818: in f_cont_classification_parallel
+    df=X[num_cols],
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:4108: in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6200: in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6252: in _raise_if_missing
+    raise KeyError(f"{not_found} not in index")
+E   KeyError: '[0] not in index'
+_ test_response_name_cannot_overwrite_features[f_cat_classification_parallel-True-group-1] _
+tests/test_statistical_arithmetic.py:88: in test_response_name_cannot_overwrite_features
+    assert_series_equal(
+E   AssertionError: Series are different
+E
+E   Series length are different
+E   [left]:  1, Index(['constant'], dtype='object')
+E   [right]: 2, Index(['constant', 'group'], dtype='object')
+_ test_response_name_cannot_overwrite_features[f_cat_classification_parallel-True-group-2] _
+tests/test_statistical_arithmetic.py:88: in test_response_name_cannot_overwrite_features
+    assert_series_equal(
+E   AssertionError: Series are different
+E
+E   Series length are different
+E   [left]:  1, Index(['constant'], dtype='object')
+E   [right]: 2, Index(['constant', 'group'], dtype='object')
+----------------------------- Captured stderr call -----------------------------
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:232: RuntimeWarning: Rounded U = 1.0 to 1. This is probably due to floating point precision issues.
+  warnings.warn(
+___________ test_pearson_matrix_relative_weights_match_pair[1e-06-1] ___________
+tests/test_statistical_arithmetic.py:104: in test_pearson_matrix_relative_weights_match_pair
+    assert len(off_diagonal) > 0
+E   assert 0 > 0
+E    +  where 0 = len(Series([], Name: val, dtype: float64))
+____ test_grouped_statistics_centered_independent_reference[10000000000.0] _____
+tests/test_statistical_arithmetic.py:118: in test_grouped_statistics_centered_independent_reference
+    assert_allclose(a.correlation_ratio(x, y, weights), np.sqrt(121 / 141))
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 0.92636711
+E   Max relative difference among violations: 1.
+E    ACTUAL: array(0.)
+E    DESIRED: array(0.926367)
+____ test_grouped_statistics_centered_independent_reference[-10000000000.0] ____
+tests/test_statistical_arithmetic.py:118: in test_grouped_statistics_centered_independent_reference
+    assert_allclose(a.correlation_ratio(x, y, weights), np.sqrt(121 / 141))
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 0.92636711
+E   Max relative difference among violations: 1.
+E    ACTUAL: array(0.)
+E    DESIRED: array(0.926367)
+_ test_grouped_relevance_rejects_insufficient_frequency_mass[1.0-f_cat_regression] _
+tests/test_statistical_arithmetic.py:131: in test_grouped_relevance_rejects_insufficient_frequency_mass
+    with pytest.raises(ValueError, match="Frequency weight total"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_grouped_relevance_rejects_insufficient_frequency_mass[1.0-f_cont_classification] _
+tests/test_statistical_arithmetic.py:131: in test_grouped_relevance_rejects_insufficient_frequency_mass
+    with pytest.raises(ValueError, match="Frequency weight total"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_grouped_relevance_rejects_insufficient_frequency_mass[2.0-f_cat_regression] _
+tests/test_statistical_arithmetic.py:131: in test_grouped_relevance_rejects_insufficient_frequency_mass
+    with pytest.raises(ValueError, match="Frequency weight total"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_grouped_relevance_rejects_insufficient_frequency_mass[2.0-f_cont_classification] _
+tests/test_statistical_arithmetic.py:131: in test_grouped_relevance_rejects_insufficient_frequency_mass
+    with pytest.raises(ValueError, match="Frequency weight total"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_correlation_relevance_rejects_insufficient_frequency_mass[1.0-f_cont_regression_parallel] _
+tests/test_statistical_arithmetic.py:144: in test_correlation_relevance_rejects_insufficient_frequency_mass
+    with pytest.raises(ValueError, match="Frequency weight total"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_correlation_relevance_rejects_insufficient_frequency_mass[1.0-f_cat_classification_parallel] _
+tests/test_statistical_arithmetic.py:144: in test_correlation_relevance_rejects_insufficient_frequency_mass
+    with pytest.raises(ValueError, match="Frequency weight total"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_correlation_relevance_rejects_insufficient_frequency_mass[2.0-f_cont_regression_parallel] _
+tests/test_statistical_arithmetic.py:144: in test_correlation_relevance_rejects_insufficient_frequency_mass
+    with pytest.raises(ValueError, match="Frequency weight total"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_correlation_relevance_rejects_insufficient_frequency_mass[2.0-f_cat_classification_parallel] _
+tests/test_statistical_arithmetic.py:144: in test_correlation_relevance_rejects_insufficient_frequency_mass
+    with pytest.raises(ValueError, match="Frequency weight total"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+____________ test_numeric_constants_and_perfect_dependence[False-1] ____________
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:3805: in get_loc
+    return self._engine.get_loc(casted_key)
+index.pyx:167: in pandas._libs.index.IndexEngine.get_loc
+    ???
+index.pyx:196: in pandas._libs.index.IndexEngine.get_loc
+    ???
+pandas/_libs/hashtable_class_helper.pxi:7081: in pandas._libs.hashtable.PyObjectHashTable.get_item
+    ???
+pandas/_libs/hashtable_class_helper.pxi:7089: in pandas._libs.hashtable.PyObjectHashTable.get_item
+    ???
+E   KeyError: 'perfect'
+
+The above exception was the direct cause of the following exception:
+tests/test_statistical_arithmetic.py:155: in test_numeric_constants_and_perfect_dependence
+    assert result["perfect"] == (np.finfo(float).max if force_finite else np.inf)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:1121: in __getitem__
+    return self._get_value(key)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:1237: in _get_value
+    loc = self.index.get_loc(label)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:3812: in get_loc
+    raise KeyError(key) from err
+E   KeyError: 'perfect'
+____________ test_numeric_constants_and_perfect_dependence[False-2] ____________
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:3805: in get_loc
+    return self._engine.get_loc(casted_key)
+index.pyx:167: in pandas._libs.index.IndexEngine.get_loc
+    ???
+index.pyx:196: in pandas._libs.index.IndexEngine.get_loc
+    ???
+pandas/_libs/hashtable_class_helper.pxi:7081: in pandas._libs.hashtable.PyObjectHashTable.get_item
+    ???
+pandas/_libs/hashtable_class_helper.pxi:7089: in pandas._libs.hashtable.PyObjectHashTable.get_item
+    ???
+E   KeyError: 'perfect'
+
+The above exception was the direct cause of the following exception:
+tests/test_statistical_arithmetic.py:155: in test_numeric_constants_and_perfect_dependence
+    assert result["perfect"] == (np.finfo(float).max if force_finite else np.inf)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:1121: in __getitem__
+    return self._get_value(key)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:1237: in _get_value
+    loc = self.index.get_loc(label)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:3812: in get_loc
+    raise KeyError(key) from err
+E   KeyError: 'perfect'
+----------------------------- Captured stderr call -----------------------------
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:818: RuntimeWarning: invalid value encountered in scalar divide
+  return wcov(x, y, w) / np.sqrt(wcov(x, x, w) * wcov(y, y, w))
+____________ test_numeric_constants_and_perfect_dependence[True-1] _____________
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:3805: in get_loc
+    return self._engine.get_loc(casted_key)
+index.pyx:167: in pandas._libs.index.IndexEngine.get_loc
+    ???
+index.pyx:196: in pandas._libs.index.IndexEngine.get_loc
+    ???
+pandas/_libs/hashtable_class_helper.pxi:7081: in pandas._libs.hashtable.PyObjectHashTable.get_item
+    ???
+pandas/_libs/hashtable_class_helper.pxi:7089: in pandas._libs.hashtable.PyObjectHashTable.get_item
+    ???
+E   KeyError: 'perfect'
+
+The above exception was the direct cause of the following exception:
+tests/test_statistical_arithmetic.py:155: in test_numeric_constants_and_perfect_dependence
+    assert result["perfect"] == (np.finfo(float).max if force_finite else np.inf)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:1121: in __getitem__
+    return self._get_value(key)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:1237: in _get_value
+    loc = self.index.get_loc(label)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:3812: in get_loc
+    raise KeyError(key) from err
+E   KeyError: 'perfect'
+____________ test_numeric_constants_and_perfect_dependence[True-2] _____________
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:3805: in get_loc
+    return self._engine.get_loc(casted_key)
+index.pyx:167: in pandas._libs.index.IndexEngine.get_loc
+    ???
+index.pyx:196: in pandas._libs.index.IndexEngine.get_loc
+    ???
+pandas/_libs/hashtable_class_helper.pxi:7081: in pandas._libs.hashtable.PyObjectHashTable.get_item
+    ???
+pandas/_libs/hashtable_class_helper.pxi:7089: in pandas._libs.hashtable.PyObjectHashTable.get_item
+    ???
+E   KeyError: 'perfect'
+
+The above exception was the direct cause of the following exception:
+tests/test_statistical_arithmetic.py:155: in test_numeric_constants_and_perfect_dependence
+    assert result["perfect"] == (np.finfo(float).max if force_finite else np.inf)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:1121: in __getitem__
+    return self._get_value(key)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:1237: in _get_value
+    loc = self.index.get_loc(label)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:3812: in get_loc
+    raise KeyError(key) from err
+E   KeyError: 'perfect'
+----------------------------- Captured stderr call -----------------------------
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:818: RuntimeWarning: invalid value encountered in scalar divide
+  return wcov(x, y, w) / np.sqrt(wcov(x, x, w) * wcov(y, y, w))
+___________ test_categorical_constants_have_zero_relevance[False-1] ____________
+tests/test_statistical_arithmetic.py:178: in test_categorical_constants_have_zero_relevance
+    assert result["constant"] == result["weighted_constant"] == 0
+E   assert np.float64(inf) == 0
+___________ test_categorical_constants_have_zero_relevance[False-2] ____________
+tests/test_statistical_arithmetic.py:178: in test_categorical_constants_have_zero_relevance
+    assert result["constant"] == result["weighted_constant"] == 0
+E   assert np.float64(inf) == 0
+----------------------------- Captured stderr call -----------------------------
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:232: RuntimeWarning: Rounded U = 1.0 to 1. This is probably due to floating point precision issues.
+  warnings.warn(
+____________ test_categorical_constants_have_zero_relevance[True-1] ____________
+tests/test_statistical_arithmetic.py:178: in test_categorical_constants_have_zero_relevance
+    assert result["constant"] == result["weighted_constant"] == 0
+E   assert np.float64(1.7976931348623157e+308) == 0
+____________ test_categorical_constants_have_zero_relevance[True-2] ____________
+tests/test_statistical_arithmetic.py:178: in test_categorical_constants_have_zero_relevance
+    assert result["constant"] == result["weighted_constant"] == 0
+E   assert np.float64(1.7976931348623157e+308) == 0
+----------------------------- Captured stderr call -----------------------------
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:232: RuntimeWarning: Rounded U = 1.0 to 1. This is probably due to floating point precision issues.
+  warnings.warn(
+_______________ test_constant_theils_u_frame_and_collinearity[1] _______________
+tests/test_statistical_arithmetic.py:193: in test_constant_theils_u_frame_and_collinearity
+    assert_frame_equal(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/_testing/asserters.py:167: in _check_isinstance
+    raise AssertionError(
+E   AssertionError: DataFrame Expected type <class 'pandas.core.frame.DataFrame'>, found <class 'float'> instead
+_______________ test_constant_theils_u_frame_and_collinearity[2] _______________
+tests/test_statistical_arithmetic.py:193: in test_constant_theils_u_frame_and_collinearity
+    assert_frame_equal(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/_testing/asserters.py:167: in _check_isinstance
+    raise AssertionError(
+E   AssertionError: DataFrame Expected type <class 'pandas.core.frame.DataFrame'>, found <class 'float'> instead
+_______________ test_mrmr_feature_named_target_remains_eligible ________________
+tests/test_statistical_arithmetic.py:206: in test_mrmr_feature_named_target_remains_eligible
+    assert set(result.selected_features_) == set(X.columns)
+E   AssertionError: assert {'target_', 'third'} == {'target', 'target_', 'third'}
+E
+E     Extra items in the right set:
+E     'target'
+E     Use -v to get more diff
+_____________ test_constant_column_warning_does_not_claim_removal ______________
+tests/test_statistical_arithmetic.py:215: in test_constant_column_warning_does_not_claim_removal
+    assert not any("removed" in str(w.message) for w in caught)
+E   assert not True
+E    +  where True = any(<generator object test_constant_column_warning_does_not_claim_removal.<locals>.<genexpr> at 0x722ba7e74e40>)
+______ test_weighted_relevance_dropped_rows_equal_manual_filter[False-1] _______
+tests/test_statistical_arithmetic.py:230: in test_weighted_relevance_dropped_rows_equal_manual_filter
+    assert_series_equal(
+testing.pyx:55: in pandas._libs.testing.assert_almost_equal
+    ???
+testing.pyx:173: in pandas._libs.testing.assert_almost_equal
+    ???
+E   AssertionError: Series are different
+E
+E   Series values are different (100.0 %)
+E   [index]: [target_]
+E   [left]:  [31.01314027247882]
+E   [right]: [1.7976931348623157e+308]
+E   At positional index 0, first diff: 31.01314027247882 != 1.7976931348623157e+308
+______ test_weighted_relevance_dropped_rows_equal_manual_filter[False-2] _______
+tests/test_statistical_arithmetic.py:230: in test_weighted_relevance_dropped_rows_equal_manual_filter
+    assert_series_equal(
+testing.pyx:55: in pandas._libs.testing.assert_almost_equal
+    ???
+testing.pyx:173: in pandas._libs.testing.assert_almost_equal
+    ???
+E   AssertionError: Series are different
+E
+E   Series values are different (100.0 %)
+E   [index]: [target_]
+E   [left]:  [31.01314027247882]
+E   [right]: [1.7976931348623157e+308]
+E   At positional index 0, first diff: 31.01314027247882 != 1.7976931348623157e+308
+_______ test_weighted_relevance_dropped_rows_equal_manual_filter[True-1] _______
+tests/test_statistical_arithmetic.py:231: in test_weighted_relevance_dropped_rows_equal_manual_filter
+    fn(X, y, weights, n_jobs=jobs),
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1818: in f_cont_classification_parallel
+    df=X[num_cols],
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:4108: in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6200: in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6252: in _raise_if_missing
+    raise KeyError(f"{not_found} not in index")
+E   KeyError: "['target'] not in index"
+_______ test_weighted_relevance_dropped_rows_equal_manual_filter[True-2] _______
+tests/test_statistical_arithmetic.py:231: in test_weighted_relevance_dropped_rows_equal_manual_filter
+    fn(X, y, weights, n_jobs=jobs),
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1818: in f_cont_classification_parallel
+    df=X[num_cols],
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:4108: in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6200: in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6252: in _raise_if_missing
+    raise KeyError(f"{not_found} not in index")
+E   KeyError: "['target'] not in index"
+_ test_regression_constant_categories_on_retained_positive_mass_score_zero[1] __
+tests/test_statistical_arithmetic.py:251: in test_regression_constant_categories_on_retained_positive_mass_score_zero
+    result = a.f_cat_regression_parallel(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1575: in f_cat_regression_parallel
+    return parallel_df(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py:87: in parallel_df
+    lst = func(df, series, sample_weight).sort_values(ascending=False)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py:130: in _compute_series
+    return X.apply(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:10374: in apply
+    return op.apply().__finalize__(self, method="apply")
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py:916: in apply
+    return self.apply_standard()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py:1063: in apply_standard
+    results, res_index = self.apply_series_generator()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py:1081: in apply_series_generator
+    results[i] = self.func(v, *self.args, **self.kwargs)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py:131: in <lambda>
+    lambda col: func_xyw(x=col, y=y, sample_weight=sample_weight, as_frame=False)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1524: in f_cat_regression
+    return f_oneway_weighted(*args)[0]
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1456: in f_oneway_weighted
+    raise ValueError("ANOVA requires at least two positive-mass groups.")
+E   ValueError: ANOVA requires at least two positive-mass groups.
+_ test_regression_constant_categories_on_retained_positive_mass_score_zero[2] __
+joblib.externals.loky.process_executor._RemoteTraceback:
+"""
+Traceback (most recent call last):
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/externals/loky/process_executor.py", line 463, in _process_worker
+    r = call_item()
+        ^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/externals/loky/process_executor.py", line 291, in __call__
+    return self.fn(*self.args, **self.kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py", line 598, in __call__
+    return [func(*args, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py", line 130, in _compute_series
+    return X.apply(
+           ^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py", line 10374, in apply
+    return op.apply().__finalize__(self, method="apply")
+           ^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py", line 916, in apply
+    return self.apply_standard()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py", line 1063, in apply_standard
+    results, res_index = self.apply_series_generator()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/pandas/core/apply.py", line 1081, in apply_series_generator
+    results[i] = self.func(v, *self.args, **self.kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py", line 131, in <lambda>
+    lambda col: func_xyw(x=col, y=y, sample_weight=sample_weight, as_frame=False)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py", line 1524, in f_cat_regression
+    return f_oneway_weighted(*args)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py", line 1456, in f_oneway_weighted
+    raise ValueError("ANOVA requires at least two positive-mass groups.")
+ValueError: ANOVA requires at least two positive-mass groups.
+"""
+
+The above exception was the direct cause of the following exception:
+tests/test_statistical_arithmetic.py:251: in test_regression_constant_categories_on_retained_positive_mass_score_zero
+    result = a.f_cat_regression_parallel(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1575: in f_cat_regression_parallel
+    return parallel_df(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/parallel.py:96: in parallel_df
+    lst = Parallel(n_jobs=n_jobs)(
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:2007: in __call__
+    return output if self.return_generator else list(output)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:1650: in _get_outputs
+    yield from self._retrieve()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:1754: in _retrieve
+    self._raise_error_fast()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:1789: in _raise_error_fast
+    error_job.get_result(self.timeout)
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:745: in get_result
+    return self._return_or_raise()
+/tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:763: in _return_or_raise
+    raise self._result
+E   ValueError: ANOVA requires at least two positive-mass groups.
+____ test_grouped_near_perfect_dependence_does_not_cancel_within_variation _____
+tests/test_statistical_arithmetic.py:262: in test_grouped_near_perfect_dependence_does_not_cancel_within_variation
+    assert_allclose(a.f_cat_regression(x, y), 8e20)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   +inf location mismatch:
+E    ACTUAL: array(inf)
+E    DESIRED: array(8.e+20)
+=============================== warnings summary ===============================
+tests/test_statistical_arithmetic.py: 82 warnings
+  /tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:2042: UserWarning: {'constant'} columns have been removed (single unique values)
+    warnings.warn(
+
+tests/test_statistical_arithmetic.py: 19 warnings
+  /tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:232: RuntimeWarning: Rounded U = 1.0 to 1. This is probably due to floating point precision issues.
+    warnings.warn(
+
+tests/test_statistical_arithmetic.py::test_pearson_matrix_relative_weights_match_pair[1e-06-1]
+  /tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1066: RuntimeWarning: invalid value encountered in sqrt
+    weighted_std = np.sqrt(sum_of_squares / (sum_weights - ddof))
+
+tests/test_statistical_arithmetic.py::test_grouped_relevance_rejects_insufficient_frequency_mass[2.0-f_cat_regression]
+tests/test_statistical_arithmetic.py::test_grouped_relevance_rejects_insufficient_frequency_mass[2.0-f_cont_classification]
+  /tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1476: RuntimeWarning: divide by zero encountered in scalar divide
+    msw = sswn / float(dfwn)
+
+tests/test_statistical_arithmetic.py::test_numeric_constants_and_perfect_dependence[False-1]
+tests/test_statistical_arithmetic.py::test_numeric_constants_and_perfect_dependence[True-1]
+  /tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:818: RuntimeWarning: invalid value encountered in scalar divide
+    return wcov(x, y, w) / np.sqrt(wcov(x, x, w) * wcov(y, y, w))
+
+tests/test_statistical_arithmetic.py::test_grouped_near_perfect_dependence_does_not_cancel_within_variation
+  /tmp/arfs-r07/py312-locked/lib/python3.12/site-packages/arfs/association.py:1479: RuntimeWarning: divide by zero encountered in scalar divide
+    f = msb / msw
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_statistical_arithmetic.py::test_linear_f_uses_pearson_and_retained_rows[1]
+FAILED tests/test_statistical_arithmetic.py::test_linear_f_uses_pearson_and_retained_rows[2]
+FAILED tests/test_statistical_arithmetic.py::test_relevance_frequency_replication_and_worker_agreement[f_cat_regression_parallel-False-1]
+FAILED tests/test_statistical_arithmetic.py::test_relevance_frequency_replication_and_worker_agreement[f_cat_regression_parallel-False-2]
+FAILED tests/test_statistical_arithmetic.py::test_relevance_frequency_replication_and_worker_agreement[f_cont_classification_parallel-True-1]
+FAILED tests/test_statistical_arithmetic.py::test_relevance_frequency_replication_and_worker_agreement[f_cont_classification_parallel-True-2]
+FAILED tests/test_statistical_arithmetic.py::test_relevance_frequency_replication_and_worker_agreement[f_cat_classification_parallel-True-1]
+FAILED tests/test_statistical_arithmetic.py::test_relevance_frequency_replication_and_worker_agreement[f_cat_classification_parallel-True-2]
+FAILED tests/test_statistical_arithmetic.py::test_response_name_cannot_overwrite_features[f_cont_regression_parallel-False-None-1]
+FAILED tests/test_statistical_arithmetic.py::test_response_name_cannot_overwrite_features[f_cont_regression_parallel-False-None-2]
+FAILED tests/test_statistical_arithmetic.py::test_response_name_cannot_overwrite_features[f_cont_regression_parallel-False-target-1]
+FAILED tests/test_statistical_arithmetic.py::test_response_name_cannot_overwrite_features[f_cont_regression_parallel-False-target-2]
+FAILED tests/test_statistical_arithmetic.py::test_response_name_cannot_overwrite_features[f_cont_regression_parallel-False-0-1]
+FAILED tests/test_statistical_arithmetic.py::test_response_name_cannot_overwrite_features[f_cont_regression_parallel-False-0-2]
+FAILED tests/test_statistical_arithmetic.py::test_response_name_cannot_overwrite_features[f_cat_regression_parallel-False-None-1]
+FAILED tests/test_statistical_arithmetic.py::test_response_name_cannot_overwrite_features[f_cat_regression_parallel-False-None-2]
+FAILED tests/test_statistical_arithmetic.py::test_response_name_cannot_overwrite_features[f_cat_regression_parallel-False-target-1]
+FAILED tests/test_statistical_arithmetic.py::test_response_name_cannot_overwrite_features[f_cat_regression_parallel-False-target-2]
+FAILED tests/test_statistical_arithmetic.py::test_response_name_cannot_overwrite_features[f_cat_regression_parallel-False-group-1]
+FAILED tests/test_statistical_arithmetic.py::test_response_name_cannot_overwrite_features[f_cat_regression_parallel-False-group-2]
+FAILED tests/test_statistical_arithmetic.py::test_response_name_cannot_overwrite_features[f_cat_regression_parallel-False-0-1]
+FAILED tests/test_statistical_arithmetic.py::test_response_name_cannot_overwrite_features[f_cat_regression_parallel-False-0-2]
+FAILED tests/test_statistical_arithmetic.py::test_response_name_cannot_overwrite_features[f_cont_classification_parallel-True-None-1]
+FAILED tests/test_statistical_arithmetic.py::test_response_name_cannot_overwrite_features[f_cont_classification_parallel-True-None-2]
+FAILED tests/test_statistical_arithmetic.py::test_response_name_cannot_overwrite_features[f_cont_classification_parallel-True-target-1]
+FAILED tests/test_statistical_arithmetic.py::test_response_name_cannot_overwrite_features[f_cont_classification_parallel-True-target-2]
+FAILED tests/test_statistical_arithmetic.py::test_response_name_cannot_overwrite_features[f_cont_classification_parallel-True-0-1]
+FAILED tests/test_statistical_arithmetic.py::test_response_name_cannot_overwrite_features[f_cont_classification_parallel-True-0-2]
+FAILED tests/test_statistical_arithmetic.py::test_response_name_cannot_overwrite_features[f_cat_classification_parallel-True-group-1]
+FAILED tests/test_statistical_arithmetic.py::test_response_name_cannot_overwrite_features[f_cat_classification_parallel-True-group-2]
+FAILED tests/test_statistical_arithmetic.py::test_pearson_matrix_relative_weights_match_pair[1e-06-1]
+FAILED tests/test_statistical_arithmetic.py::test_grouped_statistics_centered_independent_reference[10000000000.0]
+FAILED tests/test_statistical_arithmetic.py::test_grouped_statistics_centered_independent_reference[-10000000000.0]
+FAILED tests/test_statistical_arithmetic.py::test_grouped_relevance_rejects_insufficient_frequency_mass[1.0-f_cat_regression]
+FAILED tests/test_statistical_arithmetic.py::test_grouped_relevance_rejects_insufficient_frequency_mass[1.0-f_cont_classification]
+FAILED tests/test_statistical_arithmetic.py::test_grouped_relevance_rejects_insufficient_frequency_mass[2.0-f_cat_regression]
+FAILED tests/test_statistical_arithmetic.py::test_grouped_relevance_rejects_insufficient_frequency_mass[2.0-f_cont_classification]
+FAILED tests/test_statistical_arithmetic.py::test_correlation_relevance_rejects_insufficient_frequency_mass[1.0-f_cont_regression_parallel]
+FAILED tests/test_statistical_arithmetic.py::test_correlation_relevance_rejects_insufficient_frequency_mass[1.0-f_cat_classification_parallel]
+FAILED tests/test_statistical_arithmetic.py::test_correlation_relevance_rejects_insufficient_frequency_mass[2.0-f_cont_regression_parallel]
+FAILED tests/test_statistical_arithmetic.py::test_correlation_relevance_rejects_insufficient_frequency_mass[2.0-f_cat_classification_parallel]
+FAILED tests/test_statistical_arithmetic.py::test_numeric_constants_and_perfect_dependence[False-1]
+FAILED tests/test_statistical_arithmetic.py::test_numeric_constants_and_perfect_dependence[False-2]
+FAILED tests/test_statistical_arithmetic.py::test_numeric_constants_and_perfect_dependence[True-1]
+FAILED tests/test_statistical_arithmetic.py::test_numeric_constants_and_perfect_dependence[True-2]
+FAILED tests/test_statistical_arithmetic.py::test_categorical_constants_have_zero_relevance[False-1]
+FAILED tests/test_statistical_arithmetic.py::test_categorical_constants_have_zero_relevance[False-2]
+FAILED tests/test_statistical_arithmetic.py::test_categorical_constants_have_zero_relevance[True-1]
+FAILED tests/test_statistical_arithmetic.py::test_categorical_constants_have_zero_relevance[True-2]
+FAILED tests/test_statistical_arithmetic.py::test_constant_theils_u_frame_and_collinearity[1]
+FAILED tests/test_statistical_arithmetic.py::test_constant_theils_u_frame_and_collinearity[2]
+FAILED tests/test_statistical_arithmetic.py::test_mrmr_feature_named_target_remains_eligible
+FAILED tests/test_statistical_arithmetic.py::test_constant_column_warning_does_not_claim_removal
+FAILED tests/test_statistical_arithmetic.py::test_weighted_relevance_dropped_rows_equal_manual_filter[False-1]
+FAILED tests/test_statistical_arithmetic.py::test_weighted_relevance_dropped_rows_equal_manual_filter[False-2]
+FAILED tests/test_statistical_arithmetic.py::test_weighted_relevance_dropped_rows_equal_manual_filter[True-1]
+FAILED tests/test_statistical_arithmetic.py::test_weighted_relevance_dropped_rows_equal_manual_filter[True-2]
+FAILED tests/test_statistical_arithmetic.py::test_regression_constant_categories_on_retained_positive_mass_score_zero[1]
+FAILED tests/test_statistical_arithmetic.py::test_regression_constant_categories_on_retained_positive_mass_score_zero[2]
+FAILED tests/test_statistical_arithmetic.py::test_grouped_near_perfect_dependence_does_not_cancel_within_variation
+60 failed, 23 passed, 107 warnings in 26.29s

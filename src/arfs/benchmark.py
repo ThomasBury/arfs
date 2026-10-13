@@ -19,6 +19,7 @@ from sklearn.inspection import permutation_importance
 from sklearn.base import clone
 
 from .preprocessing import OrdinalEncoderPandas
+from .utils import validate_sample_weight, validate_target
 
 
 def sklearn_pimp_bench(model, X, y, task="regression", sample_weight=None):
@@ -56,6 +57,8 @@ def sklearn_pimp_bench(model, X, y, task="regression", sample_weight=None):
     # your-tree-based-ensembles-worse-heres-why-d64b282b5769
 
     # X, cat_var_df, inv_mapper, mapper = cat_var(X)
+    validate_target(y, len(X))
+    sample_weight = validate_sample_weight(sample_weight, len(X))
     X = OrdinalEncoderPandas().fit_transform(X)
 
     if task == "regression":
@@ -77,6 +80,8 @@ def sklearn_pimp_bench(model, X, y, task="regression", sample_weight=None):
 
     # lightgbm faster and better than RF
 
+    validate_sample_weight(w_train, len(X_train))
+    validate_sample_weight(w_test, len(X_test))
     model.fit(X_train, y_train, sample_weight=w_train)
     result = permutation_importance(
         model,

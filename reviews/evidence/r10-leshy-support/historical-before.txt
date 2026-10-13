@@ -1,0 +1,32 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+______________ test_leshy_does_not_select_only_tentative_features ______________
+reviews/evidence/01b-all-relevant/checks.py:79: in test_leshy_does_not_select_only_tentative_features
+    assert not selector.support_.any()
+E   AssertionError: assert not np.True_
+E    +  where np.True_ = <built-in method any of numpy.ndarray object at 0x779ca3a31230>()
+E    +    where <built-in method any of numpy.ndarray object at 0x779ca3a31230> = array([ True,  True,  True]).any
+E    +      where array([ True,  True,  True]) = Leshy(estimator=LGBMRegressor(min_child_samples=8, n_estimators=2, n_jobs=1,\n                              num_leaves=...=-1),\n      importance='native', max_iter=2, n_estimators=2,\n      random_state=RandomState(MT19937) at 0x779CC2DE2E40).support_
+----------------------------- Captured stdout call -----------------------------
+All relevant predictors selected in 00:00:00.01
+----------------------------- Captured stderr call -----------------------------
+
+Leshy iteration:   0%|          | 0/2 [00:00<?, ?it/s]
+Leshy iteration: 100%|██████████| 2/2 [00:00<00:00, 259.16it/s]
+_______________ test_tentative_rule_uses_all_recorded_iterations _______________
+reviews/evidence/01b-all-relevant/checks.py:84: in test_tentative_rule_uses_all_recorded_iterations
+    assert_array_equal(a._select_tentative(np.array([0]),
+/tmp/arfs-r09/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   (shapes (0,), (1,) mismatch)
+E    ACTUAL: array([], dtype=int64)
+E    DESIRED: array([0])
+=========================== short test summary info ============================
+FAILED reviews/evidence/01b-all-relevant/checks.py::test_leshy_does_not_select_only_tentative_features
+FAILED reviews/evidence/01b-all-relevant/checks.py::test_tentative_rule_uses_all_recorded_iterations
+2 failed, 22 deselected in 6.26s

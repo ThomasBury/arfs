@@ -1,0 +1,579 @@
+FFFFFFFFFFFFFFF..FFFFFFFFFFFFFFFFFFFF                                    [100%]
+=================================== FAILURES ===================================
+________________ test_real_classification_objectives[2-binary] _________________
+tests/test_allrelevant_aggregation.py:57: in test_real_classification_objectives
+    assert params == original
+E   AssertionError: assert {'min_data_in...eed': 42, ...} == {'min_data_in...5, 'seed': 42}
+E
+E     Omitting 2 identical items, use -vv to show
+E     Left contains 3 more items:
+E     {'num_threads': 1, 'objective': 'binary', 'verbosity': -1}
+E     Use -v to get more diff
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[3]	training's binary_logloss: 0.599084	valid_1's binary_logloss: 0.694102
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's binary_logloss: 0.653438	valid_1's binary_logloss: 0.70112
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+Cross Validation: 100%|██████████| 2/2 [00:00<00:00, 41.24it/s]
+______________ test_real_classification_objectives[2-multiclass] _______________
+tests/test_allrelevant_aggregation.py:55: in test_real_classification_objectives
+    ).fit(X, y)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2105: in fit
+    self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2327: in _reduce_vars_lgb_cv
+    bst, shap_matrix, bst.best_iteration = _train_lgb_model(
+tests/test_allrelevant_aggregation.py:45: in checked_train
+    result = train(*args, **kwargs)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2575: in _train_lgb_model
+    bst = lgb.train(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/engine.py:297: in train
+    booster = Booster(params=params, train_set=train_set)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:3656: in __init__
+    train_set.construct()
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2590: in construct
+    self._lazy_init(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2187: in _lazy_init
+    self.__init_from_np2d(data, params_str, ref_dataset)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2318: in __init_from_np2d
+    _safe_call(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:313: in _safe_call
+    raise LightGBMError(_LIB.LGBM_GetLastError().decode("utf-8"))
+E   lightgbm.basic.LightGBMError: Number of classes should be specified and greater than 1 for multiclass training
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s][LightGBM] [Fatal] Number of classes should be specified and greater than 1 for multiclass training
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+________________ test_real_classification_objectives[2-softmax] ________________
+tests/test_allrelevant_aggregation.py:57: in test_real_classification_objectives
+    assert params == original
+E   AssertionError: assert {'min_data_in...softmax', ...} == {'min_data_in...5, 'seed': 42}
+E
+E     Omitting 2 identical items, use -vv to show
+E     Left contains 4 more items:
+E     {'num_class': 2, 'num_threads': 1, 'objective': 'softmax', 'verbosity': -1}
+E     Use -v to get more diff
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[3]	training's multi_logloss: 0.579103	valid_1's multi_logloss: 0.684854
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's multi_logloss: 0.657352	valid_1's multi_logloss: 0.701715
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+Cross Validation: 100%|██████████| 2/2 [00:00<00:00, 45.15it/s]
+_____________ test_real_classification_objectives[2-multiclassova] _____________
+tests/test_allrelevant_aggregation.py:55: in test_real_classification_objectives
+    ).fit(X, y)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2105: in fit
+    self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2327: in _reduce_vars_lgb_cv
+    bst, shap_matrix, bst.best_iteration = _train_lgb_model(
+tests/test_allrelevant_aggregation.py:45: in checked_train
+    result = train(*args, **kwargs)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2575: in _train_lgb_model
+    bst = lgb.train(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/engine.py:297: in train
+    booster = Booster(params=params, train_set=train_set)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:3656: in __init__
+    train_set.construct()
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2590: in construct
+    self._lazy_init(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2187: in _lazy_init
+    self.__init_from_np2d(data, params_str, ref_dataset)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2318: in __init_from_np2d
+    _safe_call(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:313: in _safe_call
+    raise LightGBMError(_LIB.LGBM_GetLastError().decode("utf-8"))
+E   lightgbm.basic.LightGBMError: Number of classes should be specified and greater than 1 for multiclass training
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s][LightGBM] [Fatal] Number of classes should be specified and greater than 1 for multiclass training
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+____________ test_real_classification_objectives[2-multiclass_ova] _____________
+tests/test_allrelevant_aggregation.py:55: in test_real_classification_objectives
+    ).fit(X, y)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2105: in fit
+    self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2327: in _reduce_vars_lgb_cv
+    bst, shap_matrix, bst.best_iteration = _train_lgb_model(
+tests/test_allrelevant_aggregation.py:45: in checked_train
+    result = train(*args, **kwargs)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2575: in _train_lgb_model
+    bst = lgb.train(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/engine.py:297: in train
+    booster = Booster(params=params, train_set=train_set)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:3656: in __init__
+    train_set.construct()
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2590: in construct
+    self._lazy_init(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2187: in _lazy_init
+    self.__init_from_np2d(data, params_str, ref_dataset)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2318: in __init_from_np2d
+    _safe_call(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:313: in _safe_call
+    raise LightGBMError(_LIB.LGBM_GetLastError().decode("utf-8"))
+E   lightgbm.basic.LightGBMError: Number of classes should be specified and greater than 1 for multiclass training
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s][LightGBM] [Fatal] Number of classes should be specified and greater than 1 for multiclass training
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+__________________ test_real_classification_objectives[2-ova] __________________
+tests/test_allrelevant_aggregation.py:55: in test_real_classification_objectives
+    ).fit(X, y)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2105: in fit
+    self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2327: in _reduce_vars_lgb_cv
+    bst, shap_matrix, bst.best_iteration = _train_lgb_model(
+tests/test_allrelevant_aggregation.py:45: in checked_train
+    result = train(*args, **kwargs)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2575: in _train_lgb_model
+    bst = lgb.train(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/engine.py:297: in train
+    booster = Booster(params=params, train_set=train_set)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:3656: in __init__
+    train_set.construct()
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2590: in construct
+    self._lazy_init(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2187: in _lazy_init
+    self.__init_from_np2d(data, params_str, ref_dataset)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2318: in __init_from_np2d
+    _safe_call(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:313: in _safe_call
+    raise LightGBMError(_LIB.LGBM_GetLastError().decode("utf-8"))
+E   lightgbm.basic.LightGBMError: Number of classes should be specified and greater than 1 for multiclass training
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s][LightGBM] [Fatal] Number of classes should be specified and greater than 1 for multiclass training
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+__________________ test_real_classification_objectives[2-ovr] __________________
+tests/test_allrelevant_aggregation.py:55: in test_real_classification_objectives
+    ).fit(X, y)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2105: in fit
+    self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2327: in _reduce_vars_lgb_cv
+    bst, shap_matrix, bst.best_iteration = _train_lgb_model(
+tests/test_allrelevant_aggregation.py:45: in checked_train
+    result = train(*args, **kwargs)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2575: in _train_lgb_model
+    bst = lgb.train(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/engine.py:297: in train
+    booster = Booster(params=params, train_set=train_set)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:3656: in __init__
+    train_set.construct()
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2590: in construct
+    self._lazy_init(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2187: in _lazy_init
+    self.__init_from_np2d(data, params_str, ref_dataset)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2318: in __init_from_np2d
+    _safe_call(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:313: in _safe_call
+    raise LightGBMError(_LIB.LGBM_GetLastError().decode("utf-8"))
+E   lightgbm.basic.LightGBMError: Number of classes should be specified and greater than 1 for multiclass training
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s][LightGBM] [Fatal] Number of classes should be specified and greater than 1 for multiclass training
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+________________ test_real_classification_objectives[3-binary] _________________
+tests/test_allrelevant_aggregation.py:55: in test_real_classification_objectives
+    ).fit(X, y)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2105: in fit
+    self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2341: in _reduce_vars_lgb_cv
+    importance = _compute_importance(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2654: in _compute_importance
+    return sorted(importance.items(), key=operator.itemgetter(1))
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[3]	training's multi_logloss: 0.878256	valid_1's multi_logloss: 1.10488
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+______________ test_real_classification_objectives[3-multiclass] _______________
+tests/test_allrelevant_aggregation.py:55: in test_real_classification_objectives
+    ).fit(X, y)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2105: in fit
+    self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2341: in _reduce_vars_lgb_cv
+    importance = _compute_importance(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2654: in _compute_importance
+    return sorted(importance.items(), key=operator.itemgetter(1))
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[2]	training's multi_logloss: 0.937985	valid_1's multi_logloss: 1.115
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+________________ test_real_classification_objectives[3-softmax] ________________
+tests/test_allrelevant_aggregation.py:57: in test_real_classification_objectives
+    assert params == original
+E   AssertionError: assert {'min_data_in...softmax', ...} == {'min_data_in...5, 'seed': 42}
+E
+E     Omitting 2 identical items, use -vv to show
+E     Left contains 4 more items:
+E     {'num_class': 3, 'num_threads': 1, 'objective': 'softmax', 'verbosity': -1}
+E     Use -v to get more diff
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's multi_logloss: 1.01212	valid_1's multi_logloss: 1.12104
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[4]	training's multi_logloss: 0.855768	valid_1's multi_logloss: 1.13261
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+Cross Validation: 100%|██████████| 2/2 [00:00<00:00, 27.51it/s]
+_____________ test_real_classification_objectives[3-multiclassova] _____________
+tests/test_allrelevant_aggregation.py:55: in test_real_classification_objectives
+    ).fit(X, y)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2105: in fit
+    self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2341: in _reduce_vars_lgb_cv
+    importance = _compute_importance(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2654: in _compute_importance
+    return sorted(importance.items(), key=operator.itemgetter(1))
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's multi_logloss: 1.00083	valid_1's multi_logloss: 1.1309
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+____________ test_real_classification_objectives[3-multiclass_ova] _____________
+tests/test_allrelevant_aggregation.py:55: in test_real_classification_objectives
+    ).fit(X, y)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2105: in fit
+    self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2341: in _reduce_vars_lgb_cv
+    importance = _compute_importance(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2654: in _compute_importance
+    return sorted(importance.items(), key=operator.itemgetter(1))
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[3]	training's multi_logloss: 0.865141	valid_1's multi_logloss: 1.11244
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+__________________ test_real_classification_objectives[3-ova] __________________
+tests/test_allrelevant_aggregation.py:55: in test_real_classification_objectives
+    ).fit(X, y)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2105: in fit
+    self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2341: in _reduce_vars_lgb_cv
+    importance = _compute_importance(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2654: in _compute_importance
+    return sorted(importance.items(), key=operator.itemgetter(1))
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's multi_logloss: 1.00053	valid_1's multi_logloss: 1.12255
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+__________________ test_real_classification_objectives[3-ovr] __________________
+tests/test_allrelevant_aggregation.py:55: in test_real_classification_objectives
+    ).fit(X, y)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2105: in fit
+    self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2341: in _reduce_vars_lgb_cv
+    importance = _compute_importance(
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2654: in _compute_importance
+    return sorted(importance.items(), key=operator.itemgetter(1))
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+----------------------------- Captured stdout call -----------------------------
+Training until validation scores don't improve for 20 rounds
+Early stopping, best iteration is:
+[1]	training's multi_logloss: 0.998778	valid_1's multi_logloss: 1.12459
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+Cross Validation:   0%|          | 0/2 [00:00<?, ?it/s]
+_______________ test_objective_from_params_and_explicit_override _______________
+tests/test_allrelevant_aggregation.py:70: in test_objective_from_params_and_explicit_override
+    assert from_params["objective"] == "softmax"
+E   AssertionError: assert None == 'softmax'
+______________________ test_shap_output_axes[array-False] ______________________
+tests/test_allrelevant_aggregation.py:91: in test_shap_output_axes
+    actual = dict(a._compute_importance(X, values, {}, "binary", fastshap))
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2654: in _compute_importance
+    return sorted(importance.items(), key=operator.itemgetter(1))
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+______________________ test_shap_output_axes[array-True] _______________________
+tests/test_allrelevant_aggregation.py:91: in test_shap_output_axes
+    actual = dict(a._compute_importance(X, values, {}, "binary", fastshap))
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2654: in _compute_importance
+    return sorted(importance.items(), key=operator.itemgetter(1))
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+______________________ test_shap_output_axes[list-False] _______________________
+tests/test_allrelevant_aggregation.py:91: in test_shap_output_axes
+    actual = dict(a._compute_importance(X, values, {}, "binary", fastshap))
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2654: in _compute_importance
+    return sorted(importance.items(), key=operator.itemgetter(1))
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+_______________________ test_shap_output_axes[list-True] _______________________
+tests/test_allrelevant_aggregation.py:91: in test_shap_output_axes
+    actual = dict(a._compute_importance(X, values, {}, "binary", fastshap))
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2654: in _compute_importance
+    return sorted(importance.items(), key=operator.itemgetter(1))
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+___________________ test_shap_mismatched_axes_raise[shape0] ____________________
+tests/test_allrelevant_aggregation.py:99: in test_shap_mismatched_axes_raise
+    a._compute_importance(X, np.ones(shape), {}, "l2", False)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2653: in _compute_importance
+    importance = dict(zip(new_x_tr.columns, shap_imp))
+E   TypeError: 'numpy.float64' object is not iterable
+___________________ test_shap_mismatched_axes_raise[shape1] ____________________
+tests/test_allrelevant_aggregation.py:98: in test_shap_mismatched_axes_raise
+    with pytest.raises(ValueError, match="SHAP.*shape"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+___________________ test_shap_mismatched_axes_raise[shape2] ____________________
+tests/test_allrelevant_aggregation.py:98: in test_shap_mismatched_axes_raise
+    with pytest.raises(ValueError, match="SHAP.*shape"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+___________________ test_shap_mismatched_axes_raise[shape3] ____________________
+tests/test_allrelevant_aggregation.py:99: in test_shap_mismatched_axes_raise
+    a._compute_importance(X, np.ones(shape), {}, "l2", False)
+/tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2654: in _compute_importance
+    return sorted(importance.items(), key=operator.itemgetter(1))
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+
+During handling of the above exception, another exception occurred:
+tests/test_allrelevant_aggregation.py:98: in test_shap_mismatched_axes_raise
+    with pytest.raises(ValueError, match="SHAP.*shape"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'SHAP.*shape'
+E    Input: 'The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()'
+________________ test_groot_medians_use_only_fold_columns[1-1] _________________
+tests/test_allrelevant_aggregation.py:125: in test_groot_medians_use_only_fold_columns
+    assert_allclose(
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 4 / 4 (100%)
+E   Max absolute difference among violations: 0.13666667
+E   Max relative difference among violations: 2.
+E    ACTUAL: array([0.433333, 0.05    , 0.366667, 0.15    ])
+E    DESIRED: array([0.57, 0.03, 0.35, 0.05])
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 103.84it/s]
+________________ test_groot_medians_use_only_fold_columns[1-2] _________________
+tests/test_allrelevant_aggregation.py:125: in test_groot_medians_use_only_fold_columns
+    assert_allclose(
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 4 / 4 (100%)
+E   Max absolute difference among violations: 0.13666667
+E   Max relative difference among violations: 2.
+E    ACTUAL: array([0.433333, 0.05    , 0.366667, 0.15    ])
+E    DESIRED: array([0.57, 0.03, 0.35, 0.05])
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 95.59it/s]
+________________ test_groot_medians_use_only_fold_columns[2-1] _________________
+tests/test_allrelevant_aggregation.py:125: in test_groot_medians_use_only_fold_columns
+    assert_allclose(
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 4 / 4 (100%)
+E   Max absolute difference among violations: 0.13666667
+E   Max relative difference among violations: 2.
+E    ACTUAL: array([0.433333, 0.05    , 0.366667, 0.15    ])
+E    DESIRED: array([0.57, 0.03, 0.35, 0.05])
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/6 [00:00<?, ?it/s]
+Cross Validation: 100%|██████████| 6/6 [00:00<00:00, 89.84it/s]
+________________ test_groot_medians_use_only_fold_columns[2-2] _________________
+tests/test_allrelevant_aggregation.py:125: in test_groot_medians_use_only_fold_columns
+    assert_allclose(
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 4 / 4 (100%)
+E   Max absolute difference among violations: 0.13666667
+E   Max relative difference among violations: 2.
+E    ACTUAL: array([0.433333, 0.05    , 0.366667, 0.15    ])
+E    DESIRED: array([0.57, 0.03, 0.35, 0.05])
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/6 [00:00<?, ?it/s]
+Cross Validation: 100%|██████████| 6/6 [00:00<00:00, 84.83it/s]
+_______________ test_groot_ranking_plot_and_equality_use_medians _______________
+tests/test_allrelevant_aggregation.py:155: in test_groot_ranking_plot_and_equality_use_medians
+    assert selector.sha_cutoff == pytest.approx(0.4)
+E   assert np.float64(2.0) == 0.4 ± 4.0e-07
+E
+E     comparison failed
+E     Obtained: 2.0
+E     Expected: 0.4 ± 4.0e-07
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/3 [00:00<?, ?it/s]
+Cross Validation: 100%|██████████| 3/3 [00:00<00:00, 88.46it/s]
+_____________ test_boost_maximum_shadow_mean_and_equality[1-shap] ______________
+tests/test_allrelevant_aggregation.py:177: in test_boost_maximum_shadow_mean_and_equality
+    assert selector.mean_shadow == pytest.approx(0.3 / cutoff)
+E   assert np.float64(0.45) == 0.3 ± 3.0e-07
+E
+E     comparison failed
+E     Obtained: 0.45
+E     Expected: 0.3 ± 3.0e-07
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+____________ test_boost_maximum_shadow_mean_and_equality[1-native] _____________
+tests/test_allrelevant_aggregation.py:177: in test_boost_maximum_shadow_mean_and_equality
+    assert selector.mean_shadow == pytest.approx(0.3 / cutoff)
+E   assert np.float64(0.45) == 0.3 ± 3.0e-07
+E
+E     comparison failed
+E     Obtained: 0.45
+E     Expected: 0.3 ± 3.0e-07
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+_____________ test_boost_maximum_shadow_mean_and_equality[1-pimp] ______________
+tests/test_allrelevant_aggregation.py:177: in test_boost_maximum_shadow_mean_and_equality
+    assert selector.mean_shadow == pytest.approx(0.3 / cutoff)
+E   assert np.float64(0.45) == 0.3 ± 3.0e-07
+E
+E     comparison failed
+E     Obtained: 0.45
+E     Expected: 0.3 ± 3.0e-07
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+_____________ test_boost_maximum_shadow_mean_and_equality[2-shap] ______________
+tests/test_allrelevant_aggregation.py:177: in test_boost_maximum_shadow_mean_and_equality
+    assert selector.mean_shadow == pytest.approx(0.3 / cutoff)
+E   assert np.float64(0.225) == 0.15 ± 1.5e-07
+E
+E     comparison failed
+E     Obtained: 0.225
+E     Expected: 0.15 ± 1.5e-07
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+____________ test_boost_maximum_shadow_mean_and_equality[2-native] _____________
+tests/test_allrelevant_aggregation.py:177: in test_boost_maximum_shadow_mean_and_equality
+    assert selector.mean_shadow == pytest.approx(0.3 / cutoff)
+E   assert np.float64(0.225) == 0.15 ± 1.5e-07
+E
+E     comparison failed
+E     Obtained: 0.225
+E     Expected: 0.15 ± 1.5e-07
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+_____________ test_boost_maximum_shadow_mean_and_equality[2-pimp] ______________
+tests/test_allrelevant_aggregation.py:177: in test_boost_maximum_shadow_mean_and_equality
+    assert selector.mean_shadow == pytest.approx(0.3 / cutoff)
+E   assert np.float64(0.225) == 0.15 ± 1.5e-07
+E
+E     comparison failed
+E     Obtained: 0.225
+E     Expected: 0.15 ± 1.5e-07
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+_________________ test_boost_single_iteration_strongest_shadow _________________
+tests/test_allrelevant_aggregation.py:192: in test_boost_single_iteration_strongest_shadow
+    assert threshold == pytest.approx(0.5)
+E   assert np.float64(0.3) == 0.5 ± 5.0e-07
+E
+E     comparison failed
+E     Obtained: 0.3
+E     Expected: 0.5 ± 5.0e-07
+=============================== warnings summary ===============================
+tests/test_allrelevant_aggregation.py::test_real_classification_objectives[2-binary]
+tests/test_allrelevant_aggregation.py::test_real_classification_objectives[2-binary]
+  /tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+    warnings.warn(
+
+tests/test_allrelevant_aggregation.py::test_boost_maximum_shadow_mean_and_equality[1-native]
+tests/test_allrelevant_aggregation.py::test_boost_maximum_shadow_mean_and_equality[2-native]
+  /tmp/arfs-r11/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1541: UserWarning: [BoostAGroota]: using native variable importance might break the FS
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_allrelevant_aggregation.py::test_real_classification_objectives[2-binary]
+FAILED tests/test_allrelevant_aggregation.py::test_real_classification_objectives[2-multiclass]
+FAILED tests/test_allrelevant_aggregation.py::test_real_classification_objectives[2-softmax]
+FAILED tests/test_allrelevant_aggregation.py::test_real_classification_objectives[2-multiclassova]
+FAILED tests/test_allrelevant_aggregation.py::test_real_classification_objectives[2-multiclass_ova]
+FAILED tests/test_allrelevant_aggregation.py::test_real_classification_objectives[2-ova]
+FAILED tests/test_allrelevant_aggregation.py::test_real_classification_objectives[2-ovr]
+FAILED tests/test_allrelevant_aggregation.py::test_real_classification_objectives[3-binary]
+FAILED tests/test_allrelevant_aggregation.py::test_real_classification_objectives[3-multiclass]
+FAILED tests/test_allrelevant_aggregation.py::test_real_classification_objectives[3-softmax]
+FAILED tests/test_allrelevant_aggregation.py::test_real_classification_objectives[3-multiclassova]
+FAILED tests/test_allrelevant_aggregation.py::test_real_classification_objectives[3-multiclass_ova]
+FAILED tests/test_allrelevant_aggregation.py::test_real_classification_objectives[3-ova]
+FAILED tests/test_allrelevant_aggregation.py::test_real_classification_objectives[3-ovr]
+FAILED tests/test_allrelevant_aggregation.py::test_objective_from_params_and_explicit_override
+FAILED tests/test_allrelevant_aggregation.py::test_shap_output_axes[array-False]
+FAILED tests/test_allrelevant_aggregation.py::test_shap_output_axes[array-True]
+FAILED tests/test_allrelevant_aggregation.py::test_shap_output_axes[list-False]
+FAILED tests/test_allrelevant_aggregation.py::test_shap_output_axes[list-True]
+FAILED tests/test_allrelevant_aggregation.py::test_shap_mismatched_axes_raise[shape0]
+FAILED tests/test_allrelevant_aggregation.py::test_shap_mismatched_axes_raise[shape1]
+FAILED tests/test_allrelevant_aggregation.py::test_shap_mismatched_axes_raise[shape2]
+FAILED tests/test_allrelevant_aggregation.py::test_shap_mismatched_axes_raise[shape3]
+FAILED tests/test_allrelevant_aggregation.py::test_groot_medians_use_only_fold_columns[1-1]
+FAILED tests/test_allrelevant_aggregation.py::test_groot_medians_use_only_fold_columns[1-2]
+FAILED tests/test_allrelevant_aggregation.py::test_groot_medians_use_only_fold_columns[2-1]
+FAILED tests/test_allrelevant_aggregation.py::test_groot_medians_use_only_fold_columns[2-2]
+FAILED tests/test_allrelevant_aggregation.py::test_groot_ranking_plot_and_equality_use_medians
+FAILED tests/test_allrelevant_aggregation.py::test_boost_maximum_shadow_mean_and_equality[1-shap]
+FAILED tests/test_allrelevant_aggregation.py::test_boost_maximum_shadow_mean_and_equality[1-native]
+FAILED tests/test_allrelevant_aggregation.py::test_boost_maximum_shadow_mean_and_equality[1-pimp]
+FAILED tests/test_allrelevant_aggregation.py::test_boost_maximum_shadow_mean_and_equality[2-shap]
+FAILED tests/test_allrelevant_aggregation.py::test_boost_maximum_shadow_mean_and_equality[2-native]
+FAILED tests/test_allrelevant_aggregation.py::test_boost_maximum_shadow_mean_and_equality[2-pimp]
+FAILED tests/test_allrelevant_aggregation.py::test_boost_single_iteration_strongest_shadow
+35 failed, 2 passed, 4 warnings in 8.00s

@@ -1,0 +1,50 @@
+[
+  {
+    "cwd": "/home/bsatom/Documents/arfs",
+    "command": "uv venv --python /tmp/arfs-r07/py312-newer/bin/python /tmp/arfs-r08/py312-newer"
+  },
+  {
+    "cwd": "/home/bsatom/Documents/arfs",
+    "command": "uv pip install --python /tmp/arfs-r08/py312-newer/bin/python -r /home/bsatom/Documents/arfs/.github/requirements/runtime-newer-py312.txt /tmp/arfs-r08/dist/arfs-3.0.0-py3-none-any.whl"
+  },
+  {
+    "cwd": "/home/bsatom/Documents/arfs",
+    "command": "uv pip check --python /tmp/arfs-r08/py312-newer/bin/python"
+  },
+  {
+    "cwd": "/home/bsatom/Documents/arfs",
+    "command": "/tmp/arfs-r08/py312-newer/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py"
+  },
+  {
+    "cwd": "/home/bsatom/Documents/arfs",
+    "command": "uv pip check --python /tmp/arfs-r08/py312-newer/bin/python"
+  },
+  {
+    "cwd": "/home/bsatom/Documents/arfs",
+    "command": "/tmp/arfs-r08/py312-newer/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py"
+  },
+  {
+    "cwd": "/tmp/arfs-r08/run-py312-newer",
+    "command": "/tmp/arfs-r08/py312-newer/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider"
+  },
+  {
+    "cwd": "/home/bsatom/Documents/arfs",
+    "command": "uv pip install --python /tmp/arfs-r08/py312-newer/bin/python --reinstall-package arfs /tmp/arfs-r08/dist/arfs-3.0.0-py3-none-any.whl"
+  },
+  {
+    "cwd": "/home/bsatom/Documents/arfs",
+    "command": "uv pip check --python /tmp/arfs-r08/py312-newer/bin/python"
+  },
+  {
+    "cwd": "/home/bsatom/Documents/arfs",
+    "command": "/tmp/arfs-r08/py312-newer/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py"
+  },
+  {
+    "cwd": "/tmp/arfs-r08/run-py312-newer",
+    "command": "/tmp/arfs-r08/py312-newer/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider"
+  },
+  {
+    "cwd": "/tmp/arfs-r08/run-py312-newer",
+    "command": "/tmp/arfs-r08/py312-newer/bin/python -I -m pytest /home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py -k 'numeric_f or constant_categorical or normalized_pearson or fractional_weights or grouped_statistics_translation or feature_named_target or frequency_weighted or weighted_pearson or unweighted_pearson' --runxfail -q --tb=short -p no:cacheprovider"
+  }
+]

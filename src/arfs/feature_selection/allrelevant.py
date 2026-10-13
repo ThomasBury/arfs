@@ -1,5 +1,9 @@
 """This module provides 3 different methods to perform 'all relevant feature selection'
 
+Selectors encode owned frames without changing the caller's values or dtypes.
+Categorical shadows retain the original's nominal role and missing values;
+categorical identities survive feature removal and fold splitting. Generated
+shadow names are unique. Transform returns selected columns of the raw input.
 
 Reference:
 ----------
@@ -64,7 +68,6 @@ from sklearn.utils.validation import check_is_fitted
 from sklearn.feature_selection._base import SelectorMixin
 from sklearn.model_selection import RepeatedKFold, train_test_split
 from sklearn.inspection import permutation_importance
-from sklearn.utils.validation import _check_sample_weight
 from matplotlib.lines import Line2D
 from lightgbm import early_stopping
 
@@ -73,9 +76,9 @@ from ..utils import (
     check_if_tree_based,
     is_lightgbm,
     is_catboost,
-    create_dtype_dict,
     get_pandas_cat_codes,
     validate_sample_weight,
+    validate_target,
 )
 
 ########################################################################################
@@ -172,7 +175,8 @@ class Leshy(SelectorMixin, BaseEstimator):
         importance) is biased towards numerical and large cardinality predictors, even
         if they are random. Shapley values and permutation imp. are robust w.r.t those predictors.
         Possible values: 'shap' (Shapley values), 'fastshap' (FastTreeShap implementation),
-        'pimp' (permutation importance) and 'native' (Gini/impurity)
+        'pimp' (permutation importance) and 'native' (Gini/impurity).
+        Permutation scoring uses validation sample weights and retains signed scores.
     two_step : Boolean, default = True
         If you want to use the original implementation of Boruta with Bonferroni
         correction only set this to False.
@@ -183,6 +187,9 @@ class Leshy(SelectorMixin, BaseEstimator):
         If RandomState instance, random_state is the random number generator;
         If None, the random number generator is the RandomState instance used
         by `np.random`.
+    keep_weak : bool, default=False
+        Include median-retained tentative features in the selected mask. Their
+        relative rank remains 2; confirmed features have rank 1.
     verbose : int, default=0
         Controls verbosity of output. 0: no output, 1: displays iteration number,
         2: which features have been selected already
@@ -193,7 +200,7 @@ class Leshy(SelectorMixin, BaseEstimator):
     n_features_ : int
         The number of selected features.
     support_ : array of shape [n_features]
-        The mask of selected features - only confirmed ones are True.
+        The mask of confirmed features, plus tentative features if keep_weak=True.
     support_weak_ : array of shape [n_features]
         The mask of selected tentative features, which haven't gained enough
         support during the max_iter number of iterations.
@@ -443,11 +450,11 @@ class Leshy(SelectorMixin, BaseEstimator):
         # only sklearn requires to fillna data
         # modern GBM implementations can handle this
         # X = X.fillna(0)
-        y = pd.Series(y).fillna(0) if not isinstance(y, pd.Series) else y.fillna(0)
+        y = validate_target(y, len(X))
 
         # check input params
         self._check_params(X, y)
-        sample_weight = validate_sample_weight(sample_weight)
+        sample_weight = validate_sample_weight(sample_weight, len(X))
         self.random_state = check_random_state(self.random_state)
 
         # setup variables for Boruta
@@ -549,9 +556,11 @@ class Leshy(SelectorMixin, BaseEstimator):
         # make sure there's at least 5 columns in the shadow matrix for
         while x_sha.shape[1] < 5:
             x_sha = pd.concat([x_sha, x_sha], axis=1)
-        # shuffle xSha
-        x_sha = x_sha.apply(self.random_state.permutation, axis=0)
-        x_sha.columns = [f"Shadow_{i}" for i in range(x_sha.shape[1])]
+        x_sha.columns = _make_shadow_names(
+            X.columns, [f"Shadow_{i}" for i in range(x_sha.shape[1])]
+        )
+        for col in x_sha.columns:
+            x_sha[col] = x_sha[col].array.take(self.random_state.permutation(len(x_sha)))
         # get importance of the merged matrix
         if self.importance == "shap":
             imp = _get_shap_imp(
@@ -981,14 +990,13 @@ class Leshy(SelectorMixin, BaseEstimator):
                 Boolean array indicating the tentatively selected features.
         """
         # basic result variables
-        self.n_features_ = confirmed.shape[0]
         self.support_ = np.zeros(n_feat, dtype=bool)
         self.support_weak_ = np.zeros(n_feat, dtype=bool)
         self.support_[confirmed] = 1
-        self.support_weak_ = np.zeros(n_feat, dtype=bool)
         self.support_weak_[tentative] = 1
         if self.keep_weak:
             self.support_[tentative] = 1
+        self.n_features_ = int(self.support_.sum())
 
     def _calculate_absolute_ranking(self):
         """
@@ -1027,7 +1035,7 @@ class Leshy(SelectorMixin, BaseEstimator):
             An array containing the indices of tentative features.
         confirmed : ndarray of shape (n_confirmed_features,)
             An array containing the indices of confirmed features.
-        imp_history : ndarray of shape (n_iterations + 1, n_features)
+        imp_history : ndarray of shape (n_iterations, n_features)
             An array containing the feature importances for each iteration.
 
         Returns
@@ -1043,7 +1051,7 @@ class Leshy(SelectorMixin, BaseEstimator):
         # all rejected features are sorted by importance history
         not_selected = np.setdiff1d(np.arange(n_feat), selected)
         # large importance values should rank higher = lower ranks -> *(-1)
-        imp_history_rejected = imp_history[1:, not_selected] * -1
+        imp_history_rejected = imp_history[:, not_selected] * -1
 
         # update rank for not_selected features
         if not_selected.shape[0] > 0:
@@ -1059,9 +1067,6 @@ class Leshy(SelectorMixin, BaseEstimator):
                 # and 2 otherwise
                 ranks = ranks - np.min(ranks) + 2
             self.ranking_[not_selected] = ranks
-        else:
-            # all are selected, thus we set feature supports to True
-            self.support_ = np.ones(n_feat, dtype=bool)
 
     def _print_result(self, dec_reg, _iter, start_time):
         """
@@ -1108,9 +1113,9 @@ def _select_tentative(tentative, imp_history, sha_max_history):
     ----------
     tentative: array-like of shape (n_tentative,)
         Array of indices representing tentative features.
-    imp_history: array-like of shape (n_iterations + 1, n_features)
+    imp_history: array-like of shape (n_iterations, n_features)
         Importance values for each feature in each iteration.
-    sha_max_history: array-like of shape (n_iterations + 1,)
+    sha_max_history: array-like of shape (n_iterations,)
         The history of the highest stability scores.
 
     Returns
@@ -1118,8 +1123,7 @@ def _select_tentative(tentative, imp_history, sha_max_history):
     tentative: array-like of shape (n_tentative_confirmed,)
         The confirmed tentative features based on their median importance values.
     """
-    # ignore the first row of zeros
-    tentative_median = np.median(imp_history[1:, tentative], axis=0)
+    tentative_median = np.median(imp_history[:, tentative], axis=0)
     # which tentative to keep
     tentative_confirmed = np.where(tentative_median > np.median(sha_max_history))[0]
     tentative = tentative[tentative_confirmed]
@@ -1151,9 +1155,11 @@ def _split_fit_estimator(estimator, X, y, sample_weight=None, cat_feature=None):
      y_tt : array [n_samples]
         the test split, target
     """
+    y = validate_target(y, len(X))
+    sample_weight = validate_sample_weight(sample_weight, len(X))
     if cat_feature is None:
         # detect, store and encode categorical predictors
-        X, _, cat_idx = get_pandas_cat_codes(X)
+        X, _, cat_idx = get_pandas_cat_codes(X.copy())
     else:
         cat_idx = cat_feature
 
@@ -1174,6 +1180,8 @@ def _split_fit_estimator(estimator, X, y, sample_weight=None, cat_feature=None):
             X_tr, X_tt, y_tr, y_tt = train_test_split(X, y, stratify=y, random_state=42)
         w_tr, w_tt = None, None
 
+    validate_sample_weight(w_tr, len(X_tr))
+    validate_sample_weight(w_tt, len(X_tt))
     if check_if_tree_based(estimator):
         try:
             # Handle LightGBM categorical features at initialization
@@ -1234,7 +1242,7 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
         # Pre-v0.45.0 format
         if is_classifier(estimator):
             if len(np.unique(y)) > 2:  # Multiclass
-                # Reconstruct the concatenated matrix like in _compute_importance
+                # Reconstruct the concatenated per-class matrix
                 shap_concat = np.concatenate(shap_values, axis=1)
                 n_feat = X_tt.shape[1]
                 shap_values = np.delete(
@@ -1244,7 +1252,7 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
                 )
                 shap_imp = np.abs(shap_values[:, :-1]).mean(axis=0)
             else:
-                # Binary - use positive class only (consistent with _compute_importance)
+                # Binary - use positive class only
                 shap_imp = np.abs(shap_values[1][:, :-1]).mean(axis=0)
         else:
             # Regression
@@ -1324,7 +1332,7 @@ def _get_shap_imp_fast(estimator, X, y, sample_weight=None, cat_feature=None):
 
 
 def _get_perm_imp(estimator, X, y, sample_weight, cat_feature=None):
-    """Private function, Get the SHAP feature importance
+    """Private function, get signed permutation importance with weighted scoring.
 
     Parameters
     ----------
@@ -1350,7 +1358,7 @@ def _get_perm_imp(estimator, X, y, sample_weight, cat_feature=None):
         estimator, X, y, sample_weight=sample_weight, cat_feature=cat_feature
     )
     perm_imp = permutation_importance(
-        model, X_tt, y_tt, n_repeats=5, random_state=42, n_jobs=-1
+        model, X_tt, y_tt, sample_weight=w_tt, n_repeats=5, random_state=42, n_jobs=-1
     )
     imp = perm_imp.importances_mean.ravel()
     return imp
@@ -1386,11 +1394,13 @@ def _get_imp(estimator, X, y, sample_weight=None, cat_feature=None):
     imp : array
         the permutation importance array
     """
+    y = validate_target(y, len(X))
+    sample_weight = validate_sample_weight(sample_weight, len(X))
     # be sure to use an non-fitted estimator
     estimator = clone(estimator)
     try:
         if cat_feature is None:
-            X, _, cat_idx = get_pandas_cat_codes(X)
+            X, _, cat_idx = get_pandas_cat_codes(X.copy())
         else:
             cat_idx = cat_feature
 
@@ -1437,7 +1447,9 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
     estimator : scikit-learn estimator
         The model to train, lightGBM recommended, see the reduce lightgbm method.
     cutoff : float
-        The value by which the max of shadow imp is divided, to compare to real importance.
+        Divide the maximum shadow mean importance by this value. In each round,
+        normalize importances per iteration, then average each real and shadow
+        feature across iterations. Keep real means at or above this threshold.
     iters : int (>0)
         The number of iterations to average for the feature importance (on the same split),
         to reduce the variance.
@@ -1451,6 +1463,9 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
     importance : str, default='shap'
         The kind of feature importance to use. Possible values: 'shap' (Shapley values),
         'pimp' (permutation importance), and 'native' (Gini/impurity).
+        Permutation scoring uses validation sample weights. Each iteration's
+        signed scores are divided by their absolute total; an all-zero vector
+        stays zero. Only positive mean permutation scores can be selected.
 
     Attributes
     ----------
@@ -1468,7 +1483,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
     sha_cutoff_df : dataframe
         Feature importance of the real+shadow predictors over iterations.
     mean_shadow : float
-        The threshold below which the predictors are rejected.
+        Maximum shadow mean divided by cutoff in the final round.
 
     Examples
     --------
@@ -1572,8 +1587,10 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         else:
             raise TypeError("X is not a dataframe")
 
+        y = validate_target(y, len(X))
+        sample_weight = validate_sample_weight(sample_weight, len(X))
         if sample_weight is not None:
-            sample_weight = pd.Series(_check_sample_weight(sample_weight, X))
+            sample_weight = pd.Series(sample_weight)
 
         # crit, keep_vars, df_vimp, mean_shadow
         _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _boostaroota(
@@ -1675,6 +1692,18 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
 ############################################
 
 
+def _make_shadow_names(columns, names):
+    """Keep generated names distinct from real columns and other shadows."""
+    used = set(columns)
+    shadow_names = []
+    for name in names:
+        while name in used:
+            name += "_"
+        shadow_names.append(name)
+        used.add(name)
+    return shadow_names
+
+
 def _create_shadow(X_train):
     """Create shadow features by making copies of all X variables and randomly shuffling them.
 
@@ -1692,18 +1721,12 @@ def _create_shadow(X_train):
     for c in X_shadow.columns:
         X_shadow[c] = X_shadow[c].array.take(np.random.permutation(len(X_shadow)))
     # Rename the shadow variables
-    shadow_names = [f"ShadowVar{i + 1}" for i in range(X_train.shape[1])]
+    shadow_names = _make_shadow_names(
+        X_train.columns, [f"ShadowVar{i + 1}" for i in range(X_train.shape[1])]
+    )
     X_shadow.columns = shadow_names
     # Combine to make one new dataframe
     new_x = pd.concat([X_train, X_shadow], axis=1)
-    # Separate the columns that start with 'ShadowVar' from the other columns
-    shadow_columns = [col for col in new_x.columns if col.startswith("ShadowVar")]
-    other_columns = [col for col in new_x.columns if not col.startswith("ShadowVar")]
-
-    # Concatenate the two lists of column names
-    new_column_order = other_columns + shadow_columns
-    # Reorder the DataFrame columns
-    new_x = new_x[new_column_order]
     return new_x, shadow_names
 
 
@@ -1741,7 +1764,7 @@ def _reduce_vars_sklearn(
         The number of times the core BoostARoota algorithm will run.
         Each round eliminates more and more features
     cutoff : float
-        the value by which the max of shadow imp is divided, to compare to real importance
+        Divide the maximum of per-shadow iteration means by this value.
     n_iterations : int
         The number of iterations to average for the feature importance (on the same split),
         to reduce the variance
@@ -1775,6 +1798,11 @@ def _reduce_vars_sklearn(
         error if the feature importance type is not
     """
     # Set up the parameters for running the model in XGBoost - split is on multi log loss
+    augmented_cat_feature = (
+        cat_feature + [idx + X.shape[1] for idx in cat_feature]
+        if cat_feature is not None
+        else None
+    )
     for i in range(1, n_iterations + 1):
         # Create the shadow variables and run the model to obtain importances
         new_x, shadow_names = _create_shadow(X)
@@ -1785,7 +1813,7 @@ def _reduce_vars_sklearn(
             "native": _get_imp,
         }
         importance = imp_func[imp_kind](
-            estimator, new_x, y, sample_weight=weight, cat_feature=cat_feature
+            estimator, new_x, y, sample_weight=weight, cat_feature=augmented_cat_feature
         )
 
         # Create a dataframe to store the feature importances
@@ -1795,26 +1823,26 @@ def _reduce_vars_sklearn(
         # Store the feature importances
         try:
             # Normalize the feature importances
-            df["fscore" + str(i)] = importance / importance.sum()
+            if imp_kind == "pimp":
+                total = np.abs(importance).sum()
+                df["fscore" + str(i)] = importance / total if total else importance
+            else:
+                df["fscore" + str(i)] = importance / importance.sum()
         except ValueError:
             print("Only Sklearn tree based methods allowed")
 
         # Print the iteration number if not silent
         if not silent:
             print("Round: ", this_round, " iteration: ", i)
-    df["Mean"] = df.select_dtypes(include=[np.number]).mean(axis=1, skipna=True)
+    df["Mean"] = df.filter(regex=r"^fscore\d+$").mean(axis=1)
     # Split them back out
     real_vars = df.loc[~df["feature"].isin(shadow_names)]
     shadow_vars = df.loc[df["feature"].isin(shadow_names)]
 
-    # Get mean value from the shadows (max, like in Boruta)
-    mean_shadow = (
-        shadow_vars.select_dtypes(include=[np.number])
-        .max(skipna=True, axis=1)
-        .mean(skipna=True)
-        / cutoff
-    )
+    mean_shadow = shadow_vars["Mean"].max() / cutoff
     real_vars = real_vars[(real_vars.Mean >= mean_shadow)]
+    if imp_kind == "pimp":
+        real_vars = real_vars[real_vars.Mean > 0]
 
     # Check for the stopping criteria
     # Compute the fraction of features selected in this round
@@ -1873,11 +1901,8 @@ def _boostaroota(
     start_time = time.time()
     new_x = X.copy()
 
-    # extract the categorical names for the first time, store it for next iterations
-    # In the below while loop this list will be update only once some of the predictors
-    # are removed. This way the encoding is done only every predictors update and not
-    # every iteration. The code will then be much faster since the encoding is done only once.
-    new_x, obj_feat, cat_idx = get_pandas_cat_codes(X)
+    # Keep categorical identities after their dtypes become integer codes.
+    new_x, obj_feat, cat_idx = get_pandas_cat_codes(new_x)
 
     # Run through loop until "crit" changes
     i = 0
@@ -1908,7 +1933,11 @@ def _boostaroota(
                 break
             else:
                 new_x = new_x[keep_vars].copy()
-                _, _, cat_idx = get_pandas_cat_codes(new_x)
+                cat_idx = [
+                    new_x.columns.get_loc(col)
+                    for col in (obj_feat or [])
+                    if col in new_x.columns
+                ]
 
                 pbar.update(1)
 
@@ -1934,14 +1963,17 @@ class GrootCV(SelectorMixin, BaseEstimator):
     GrootCV is a feature selection method based on cross-validation with lightGBM.
 
     A shuffled copy of the predictors matrix is added (shadows) to the original set of predictors.
-    The lightGBM is fitted using repeated cross-validation, the feature importance
-    is extracted each time and averaged to smooth out the noise.
-    If the feature importance is larger than the average shadow feature importance then the predictors are rejected, the others are kept.
+    LightGBM is fitted using repeated cross-validation. Each fold's SHAP
+    importance is the row mean of absolute contributions, summed over outputs
+    for multi-output models, then normalized across real and shadow features.
+    Each feature's median is computed across all folds and repeats. Keep real
+    medians at or above the maximum shadow median divided by cutoff.
+    Explanations use training rows; validation rows drive early stopping.
+    This empirical threshold does not establish false-discovery control.
         - Cross-validated feature importance to smooth out the noise, based on lightGBM only
           (which is, most of the time, the fastest and more accurate Boosting).
         - the feature importance is derived using SHAP importance
-        - Taking the max of median of the shadow var. imp over folds otherwise not enough conservative and
-          it improves the convergence (needs less evaluation to find a threshold)
+        - Compare feature medians with the maximum shadow median across folds
         - Not based on a given percentage of cols needed to be deleted
         - Plot method for var. imp
 
@@ -1949,8 +1981,10 @@ class GrootCV(SelectorMixin, BaseEstimator):
     ----------
     objective : str or callable, default=None
         The objective function to use in lightGBM. If None, it uses the objective specified in `lgbm_params`.
+        Recognized multiclass classification objectives resolve to softmax;
+        binary is also promoted to softmax when the target has more than two classes.
     cutoff : float, default=1
-        The value by which the max of shadow imp is divided, to compare to real importance.
+        Divide the maximum of per-shadow fold/repeat medians by this value.
     n_folds : int, default=5
         The number of folds for cross-validation.
     folds : Optional[Union[Iterable[Tuple[np.ndarray, np.ndarray]]
@@ -1959,7 +1993,8 @@ class GrootCV(SelectorMixin, BaseEstimator):
         splitter classes (https://scikit-learn.org/stable/modules/classes.html#splitter-classes) and have split method.
         This argument has highest priority over other data split arguments.
     n_iter : int, default=5
-        The number of iterations to average for the feature importance (on the same split), to reduce variance.
+        Number of cross-validation repeats; take each feature's median over
+        all folds and repeats.
     silent : bool, default=True
         Set to True if you don't want to see the GrootCV output printed.
     rf : bool, default=False
@@ -1976,7 +2011,8 @@ class GrootCV(SelectorMixin, BaseEstimator):
     selected_features_ : ndarray
         The list of columns to keep as selected features.
     cv_df : pd.DataFrame
-        DataFrame containing feature importance values for each fold and iteration.
+        Normalized importance per fold/repeat in fscore columns and each
+        feature's median in Med. Summary columns never enter the aggregation.
     sha_cutoff : float
         The threshold below which the predictors are rejected.
     ranking_absolutes_ : list
@@ -2064,11 +2100,10 @@ class GrootCV(SelectorMixin, BaseEstimator):
         self.feature_names_in_ = X.columns.to_numpy()
         y = pd.Series(y) if not isinstance(y, pd.Series) else y
 
+        y = validate_target(y, len(X))
+        sample_weight = validate_sample_weight(sample_weight, len(X))
         if sample_weight is not None:
-            sample_weight = pd.Series(_check_sample_weight(sample_weight, X))
-
-        # internal encoding (ordinal encoding)
-        X, obj_feat, cat_idx = get_pandas_cat_codes(X)
+            sample_weight = pd.Series(sample_weight)
 
         self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
             X,
@@ -2092,14 +2127,11 @@ class GrootCV(SelectorMixin, BaseEstimator):
         )
         self.ranking_ = np.where(self.support_, 2, 1)
 
-        b_df = self.cv_df.T.copy()
-        b_df.columns = b_df.iloc[0]
-        b_df = b_df.drop(b_df.index[0])
-        b_df = b_df.drop(b_df.index[-1])
-        b_df = b_df.convert_dtypes()
-        real_df = b_df.iloc[:, : int(b_df.shape[1] / 2)].copy()
         self.ranking_absolutes_ = list(
-            real_df.mean().sort_values(ascending=False).index
+            self.cv_df.set_index("feature")["Med"]
+            .loc[self.feature_names_in_]
+            .sort_values(ascending=False)
+            .index
         )
         return self
 
@@ -2150,23 +2182,14 @@ class GrootCV(SelectorMixin, BaseEstimator):
 
         b_df = self.cv_df.T.copy()
         b_df.columns = b_df.iloc[0]
-        # Separate the columns that start with 'ShadowVar' from the other columns
-        shadow_columns = [col for col in b_df.columns if col.startswith("ShadowVar")]
-        other_columns = [col for col in b_df.columns if not col.startswith("ShadowVar")]
-
-        # Concatenate the two lists of column names
-        new_column_order = other_columns + shadow_columns
-        # Reorder the DataFrame columns
-        b_df = b_df[new_column_order]
         b_df = b_df.drop(b_df.index[0])
         b_df = b_df.drop(b_df.index[-1])
         b_df = b_df.convert_dtypes()
-        real_df = b_df.iloc[:, : int(b_df.shape[1] / 2)].copy()
-        sha_df = b_df.iloc[:, int(b_df.shape[1] / 2) :].copy()
+        real_df = b_df.loc[:, self.feature_names_in_].copy()
 
         real_df = real_df.reindex(
             real_df.select_dtypes(include=[np.number])
-            .mean()
+            .median()
             .sort_values(ascending=True)
             .index,
             axis=1,
@@ -2245,7 +2268,7 @@ def _reduce_vars_lgb_cv(
     nfold : int
         Number of folds in CV.
     cutoff : float
-            the value by which the max of shadow imp is divided, to compare to real importance
+            Divide the maximum of per-shadow fold/repeat medians by this value.
     n_iter : int
             The number of repetition of the cross-validation, smooth out the feature importance noise
     silent : bool
@@ -2273,6 +2296,8 @@ def _reduce_vars_lgb_cv(
             the feature importance threshold, to reject or not the predictors
     """
 
+    X, category_cols, _ = get_pandas_cat_codes(X.copy())
+    category_cols = category_cols or []
     params = _set_lgb_parameters(
         X=X,
         y=y,
@@ -2282,10 +2307,6 @@ def _reduce_vars_lgb_cv(
         n_jobs=n_jobs,
         lgbm_params=lgbm_params,
     )
-
-    dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
-    category_cols = dtypes_dic["cat"] + dtypes_dic["time"] + dtypes_dic["unk"]
-    cat_idx = [X.columns.get_loc(col) for col in category_cols]
 
     if folds is None:
         folds = RepeatedKFold(n_splits=n_folds, n_repeats=n_iter, random_state=2652124)
@@ -2310,14 +2331,15 @@ def _reduce_vars_lgb_cv(
             new_x_val,
             y_val,
             weight_val,
-            category_cols=category_cols,
+            category_cols=category_cols
+            + [shadow_names[X.columns.get_loc(col)] for col in category_cols],
             early_stopping_rounds=20,
             fastshap=fastshap,
             **params,
         )
 
         importance = _compute_importance(
-            new_x_tr, shap_matrix, params, objective, fastshap
+            new_x_tr, shap_matrix, params, params["objective"], fastshap
         )
         df = _merge_importance_df(
             df=df,
@@ -2329,15 +2351,12 @@ def _reduce_vars_lgb_cv(
         )
         iter += 1
 
-    df["Med"] = df.select_dtypes(include=[np.number]).mean(axis=1)
+    df["Med"] = df.filter(regex=r"^fscore\d+$").median(axis=1)
     # Split them back out
     real_vars = df[~df["feature"].isin(shadow_names)]
     shadow_vars = df[df["feature"].isin(shadow_names)]
 
-    # Get median value from the shadows, comparing predictor by predictor. Not the same criteria
-    # max().max() like in Boruta but max of the median to mitigate.
-    # Otherwise too conservative (reject too often)
-    cutoff_shadow = shadow_vars.select_dtypes(include=[np.number]).max().mean() / cutoff
+    cutoff_shadow = shadow_vars["Med"].max() / cutoff
     real_vars = real_vars[(real_vars.Med.values >= cutoff_shadow)]
 
     return real_vars["feature"], df, cutoff_shadow
@@ -2379,28 +2398,12 @@ def _set_lgb_parameters(
 
     n_feat = X.shape[1]
 
-    params = lgbm_params if lgbm_params is not None else {}
+    params = lgbm_params.copy() if lgbm_params is not None else {}
+    if objective is None:
+        objective = params.get("objective")
 
     params["objective"] = objective
     params["verbosity"] = -1
-    if objective == "softmax":
-        params["num_class"] = len(np.unique(y))
-
-    if rf:
-        feat_frac = (
-            np.sqrt(n_feat) / n_feat
-            if objective in ["softmax", "binary"]
-            else n_feat / (3 * n_feat)
-        )
-        params.update(
-            {
-                "boosting_type": "rf",
-                "bagging_fraction": 0.7,
-                "feature_fraction": feat_frac,
-                "bagging_freq": 1,
-            }
-        )
-
     clf_losses = [
         "binary",
         "softmax",
@@ -2412,11 +2415,30 @@ def _set_lgb_parameters(
         "ovr",
         "binary_logloss",
     ]
+    if objective in clf_losses and objective not in ["binary", "binary_logloss"]:
+        params["objective"] = "softmax"
+        params["num_class"] = len(np.unique(y))
+
+    if rf:
+        feat_frac = (
+            np.sqrt(n_feat) / n_feat
+            if params["objective"] in ["softmax", "binary"]
+            else n_feat / (3 * n_feat)
+        )
+        params.update(
+            {
+                "boosting_type": "rf",
+                "bagging_fraction": 0.7,
+                "feature_fraction": feat_frac,
+                "bagging_freq": 1,
+            }
+        )
+
     if objective in clf_losses:
         y = y.astype(int)
         y_freq_table = pd.Series(y.fillna(0)).value_counts(normalize=True)
         n_classes = y_freq_table.size
-        if n_classes > 2 and objective != "softmax":
+        if n_classes > 2 and params["objective"] != "softmax":
             params["objective"] = "softmax"
             params["num_class"] = len(np.unique(y))
             if not silent:
@@ -2472,7 +2494,11 @@ def _split_data(X, y, tridx, validx, weight=None):
     tuple of pandas.DataFrame and pandas.Series
         X_train, X_val, y_train, y_val, weight_tr, weight_val
     """
+    y = validate_target(y, len(X))
+    checked_weight = validate_sample_weight(weight, len(X))
     if weight is not None:
+        if not isinstance(weight, pd.Series):
+            weight = pd.Series(checked_weight)
         X_train, y_train, weight_tr = (
             X.iloc[tridx, :],
             y.iloc[tridx],
@@ -2488,6 +2514,10 @@ def _split_data(X, y, tridx, validx, weight=None):
         X_val, y_val = X.iloc[validx, :], y.iloc[validx]
         weight_tr = None
         weight_val = None
+    validate_target(y_train, len(X_train))
+    validate_target(y_val, len(X_val))
+    validate_sample_weight(weight_tr, len(X_train))
+    validate_sample_weight(weight_val, len(X_val))
     return X_train, X_val, y_train, y_val, weight_tr, weight_val
 
 
@@ -2577,7 +2607,9 @@ def _compute_importance(new_x_tr, shap_matrix, param, objective, fastshap):
     new_x_tr : numpy.ndarray
         The training dataset after being processed.
     shap_matrix : numpy.ndarray
-        The matrix containing SHAP values computed by a LightGBM model.
+        TreeExplainer contributions with shape (rows, features) or
+        (rows, features, outputs), or a list of per-output matrices.
+        Expected values are separate; no feature column is removed.
     param : dict
         A dictionary containing the parameters for a LightGBM model.
     objective : str
@@ -2587,38 +2619,22 @@ def _compute_importance(new_x_tr, shap_matrix, param, objective, fastshap):
     -------
     list
         A list of tuples containing feature names and their corresponding importance scores.
+        Scores are row means of absolute contributions, summed over outputs
+        for multi-output models. Layout, not version/objective/backend, sets
+        the output axis.
     """
-    try:
-        from shap import __version__ as shap_version
-
-        new_shap = tuple(map(int, shap_version.split(".")[:2])) >= (0, 45)
-    except Exception:
-        new_shap = False  # Assume old version if can't check
-
-    if fastshap:
-        if not new_shap and objective == "softmax" and isinstance(shap_matrix, list):
-            shap_matrix = np.abs(np.concatenate(shap_matrix, axis=1))
-        shap_imp = np.mean(np.abs(shap_matrix), axis=0)
-    else:
-        if new_shap:
-            # the bias is now in a dedicated attribute, no more a column
-            if objective == "softmax":
-                shap_imp = np.mean(np.abs(shap_matrix).sum(axis=2), axis=0)
-            else:
-                shap_imp = np.mean(np.abs(shap_matrix), axis=0)
-        else:
-            if objective == "softmax":
-                n_feat = new_x_tr.shape[1]
-                shap_matrix = np.delete(
-                    shap_matrix,
-                    list(range(n_feat, (n_feat + 1) * param["num_class"], n_feat + 1)),
-                    axis=1,
-                )
-                shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
-            else:
-                if isinstance(shap_matrix, list):
-                    shap_matrix = shap_matrix[1]  # Positive class
-                shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
+    # TreeExplainer separates the expected value from feature contributions.
+    values = (
+        np.stack(shap_matrix, axis=-1)
+        if isinstance(shap_matrix, list)
+        else np.asarray(shap_matrix)
+    )
+    if values.ndim not in (2, 3) or values.shape[:2] != new_x_tr.shape:
+        raise ValueError("SHAP values must have shape (rows, features[, outputs]).")
+    values = np.abs(values)
+    if values.ndim == 3:
+        values = values.sum(axis=2)
+    shap_imp = values.mean(axis=0)
 
     importance = dict(zip(new_x_tr.columns, shap_imp))
     return sorted(importance.items(), key=operator.itemgetter(1))

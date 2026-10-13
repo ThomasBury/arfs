@@ -1,0 +1,19 @@
+............                                                             [100%]
+=============================== warnings summary ===============================
+reviews/evidence/01a-statistical-foundations/checks.py::test_constant_categorical_relevance_zero
+  /tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/association.py:244: RuntimeWarning: Rounded U = 1.0 to 1. This is probably due to floating point precision issues.
+    warnings.warn(
+
+reviews/evidence/01a-statistical-foundations/checks.py::test_constant_categorical_matrix_and_collinearity
+reviews/evidence/01a-statistical-foundations/checks.py::test_constant_categorical_matrix_and_collinearity
+reviews/evidence/01a-statistical-foundations/checks.py::test_constant_categorical_matrix_and_collinearity
+reviews/evidence/01a-statistical-foundations/checks.py::test_constant_categorical_matrix_and_collinearity
+reviews/evidence/01a-statistical-foundations/checks.py::test_constant_categorical_matrix_and_collinearity
+reviews/evidence/01a-statistical-foundations/checks.py::test_constant_categorical_matrix_and_collinearity
+reviews/evidence/01a-statistical-foundations/checks.py::test_constant_categorical_matrix_and_collinearity
+reviews/evidence/01a-statistical-foundations/checks.py::test_constant_categorical_matrix_and_collinearity
+  /tmp/arfs-r08/py312-locked/lib/python3.12/site-packages/arfs/association.py:244: RuntimeWarning: Rounded U = 0.0 to 0. This is probably due to floating point precision issues.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+12 passed, 30 deselected, 9 warnings in 8.54s

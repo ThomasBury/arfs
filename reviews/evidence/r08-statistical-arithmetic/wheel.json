@@ -1,0 +1,27 @@
+{
+  "payloads": {
+    "arfs/__init__.py": "d40991357507192d34389e64815bea5e481d8ae6b91c2ca5bd6ac08c16dd52de",
+    "arfs/association.py": "7a394ee40510714e95880a14f848f0c9ded8aef112ff43a22efc5b24fa67082a",
+    "arfs/benchmark.py": "19b785d434c7aa2feebbbac20d76ae350edf5e345efb6020607a0a9ac385385a",
+    "arfs/dataset/data/boston_bunch.joblib": "a846958600c5121ca59a4db70f0ee1b459f0c2ae4d35343bf46f575c4e84c8db",
+    "arfs/dataset/data/housing.zip": "c33d9522ba02d8bb3e1822a8ba3b3f76f4bf39c10b9ba7c1334e0c92886c56ed",
+    "arfs/dataset/descr/housing.rst": "aa1beedb98d3c2688fcfa333eb2ca206f93e121ac48ff89b52cbe6acc6985e2a",
+    "arfs/feature_selection/__init__.py": "11e64c06935bf6159ed526c76ebfa92dc4afc0062b03c59c2b28ecdf862034b5",
+    "arfs/feature_selection/allrelevant.py": "f51204dac8e75d21172390e55571ae2c587aa07ecab5cd07b3c7bd9e1d54af58",
+    "arfs/feature_selection/base.py": "8c78b167b7b8935bb55ea31b903c45d34f79445c333c3142e1a17bc2d499601c",
+    "arfs/feature_selection/lasso.py": "64e1ddef3ce13b02b1e0e62e04c7f1fdca4d16bc62da03b3539004c111d14e7a",
+    "arfs/feature_selection/mrmr.py": "4cd9cfe7d7701ce52342e70a4ec988b5897bf00706a66af4759b015076a3b7ca",
+    "arfs/feature_selection/summary.py": "b8c41586d496add8ee848a0f4aa1053fe437d195916f15ffee9ad3d1a02c1651",
+    "arfs/feature_selection/unsupervised.py": "61cadc4d6bb791514759dce210a4acbe93f3b29a3613a9d6fdca7f1ca98cb531",
+    "arfs/feature_selection/variable_importance.py": "3370955a62c8fd057a5f5b547d1798ad57dd0f53ded8a509a0d0690166faeb03",
+    "arfs/gbm.py": "3c46834be43731237417cf99ce46b43329281ded4ae54b2ac91891a7930dc659",
+    "arfs/parallel.py": "9fe944ab0543bd1c338025d92dede2aa7c5c008d36efd82f8af1e7da915862a7",
+    "arfs/preprocessing.py": "c7a4771d2925d67eb413a6e1996a5a4304dedbe65b471fdeed62a9e198b170e3",
+    "arfs/sampling.py": "3cc49b8433a4be4851cbe21d3a4f996f89bef52a20ab4f3720ecba45cb0c09af",
+    "arfs/utils.py": "5937df61224c6396e4da5559991867a01fee25547d97b832d4ee6a0559b10813"
+  },
+  "sdist": "/tmp/arfs-r08/dist/arfs-3.0.0.tar.gz",
+  "sdist_sha256": "210f2f4998d8802042e7f3871b2675fe7bb4be55caabdb30baec5e47153c8d35",
+  "wheel": "/tmp/arfs-r08/dist/arfs-3.0.0-py3-none-any.whl",
+  "wheel_sha256": "bae18c07f473363992b0b375c570187dc5ad828c0b7808f9385e05fd035eb14f"
+}

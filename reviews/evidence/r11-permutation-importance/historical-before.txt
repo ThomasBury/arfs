@@ -1,0 +1,24 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+____________ test_permutation_importance_matches_weighted_reference ____________
+reviews/evidence/01b-all-relevant/checks.py:100: in test_permutation_importance_matches_weighted_reference
+    assert_allclose(actual, expected)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 3 / 3 (100%)
+E   Max absolute difference among violations: 0.72772626
+E   Max relative difference among violations: 0.96841699
+E    ACTUAL: array([ 1.552487,  0.013375, -0.027775])
+E    DESIRED: array([ 2.280213,  0.105371, -0.01411 ])
+_________ test_boost_negative_importances_do_not_select_worst_feature __________
+reviews/evidence/01b-all-relevant/checks.py:110: in test_boost_negative_importances_do_not_select_worst_feature
+    assert "b" not in selected.values
+E   AssertionError: assert 'b' not in array(['b'], dtype=object)
+E    +  where array(['b'], dtype=object) = 1    b\nName: feature, dtype: object.values
+=========================== short test summary info ============================
+FAILED reviews/evidence/01b-all-relevant/checks.py::test_permutation_importance_matches_weighted_reference
+FAILED reviews/evidence/01b-all-relevant/checks.py::test_boost_negative_importances_do_not_select_worst_feature
+2 failed, 22 deselected in 6.14s
