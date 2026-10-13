@@ -1,6 +1,6 @@
 # ARFS remediation handoff
 
-**Status: R01–R15 complete; R16–R33 pending. Next implementation group: R16 alone.**
+**Status: R01–R16 complete; R17–R33 pending. Next implementation group: R17 alone.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
 a separate repair backlog. By default, a request to implement the next phase
@@ -74,9 +74,9 @@ record each outcome separately. Stop at a phase boundary if a new API or
 statistical decision, unresolved failure, or wider scope makes the batch too
 large. Session boundaries and repair phases are not published releases.
 
-R01–R15 are complete. The explicitly requested R02/R03 and R10/R11 batches
+R01–R16 are complete. The explicitly requested R02/R03 and R10/R11 batches
 were implemented and validated sequentially; R04–R09 were completed alone.
-Run **R16 alone** next, with R06/R08 complete. Later phases use the recorded grouping
+Run **R17 alone** next, with R03/R05/R06 complete. Later phases use the recorded grouping
 rules below; phases outside the three conditional pairs remain separate.
 
 | Phases | Session recommendation | Reason |
@@ -94,12 +94,13 @@ rules below; phases outside the three conditional pairs remain separate.
 | R13 | Complete; do not repeat | [R13](R13-glm-scoring.md) records negative response-scale deviance, BIC direction and independent weighted folds |
 | R14 | Complete; do not repeat | [R14](R14-glm-design.md) records fitted design/schema, input/support metadata, current family/link and fit return |
 | R15 | Complete; do not repeat | [R15](R15-glm-likelihood.md) records zero-row omission, corrected criterion dimensions and truthful unpenalized refits |
-| R16 | Run alone next | R06/R08 complete; repair threshold selector identity, equality and fitted state |
+| R16 | Complete; do not repeat | [R16](R16-threshold-contracts.md) records unique names, aligned callbacks, strict equality, empty stages, stable ties and fitted metadata |
+| R17 | Run alone next | R03/R05/R06 complete; repair cumulative importance selection and its training/output contracts |
 
 ### Recorded groups for next-batch requests
 
 When the user asks to "implement the next batch of RXX", read the current phase
-statuses in this file and use these groups. **The next batch is R16 alone.**
+statuses in this file and use these groups. **The next batch is R17 alone.**
 R10/R11 are complete; their separate handoffs record support/history consistency,
 weighted permutation scoring and the user-chosen absolute-total normalization.
 R12 is complete: GrootCV uses maximum shadow medians across folds/repeats;
@@ -112,7 +113,10 @@ metadata from generated-intercept output; fit uses current family/link and
 returns self. R15 is complete: zero-weight GLM rows are omitted before fitting,
 scoring and tuning; AIC/BIC use selected design rank and retained row count;
 nonfinite search criteria fail clearly. The unpenalized-refit contract replaces
-the near-ridge promise. R16's R06/R08 prerequisites are complete.
+the near-ridge promise. R16 is complete: unique feature names, labelled statistic
+alignment, fit-time parameter validation, valid empty collinearity stages, input-order
+ties and fitted feature counts/guards. Strict equality and named projection are
+preserved. R17's R03/R05/R06 prerequisites are complete.
 A request for the next batch authorizes that one group, its affected callers,
 tests, local phase commits and handoff update; stop after
 it. It does not authorize the following group or Git publication/release unless
@@ -495,9 +499,48 @@ callback label alignment, parameter validation, collinearity edge cases, stable
 ties and fitted metadata. Settle equality wording explicitly and preserve named
 projection if retained. R16–R33 remain pending; stop after this completed R15 group.
 
+## R16 result — 2026-10-13
+
+R16 is complete on `main` in local commit `2fa18e8`, based on clean `985b0a3`.
+The [handoff](R16-threshold-contracts.md) records duplicate-name rejection at
+fit/transform, aligned and validated callback statistics, current fit-time
+parameters, fitted feature counts and explicit support guards for all five
+selectors. Named projection remains permissive for extra/reordered columns
+and omitted rejected columns; missing selected names still raise KeyError.
+Strict threshold equality is preserved and documented. Unique/cardinality
+thresholds require integers >= 1; missingness/collinearity require finite real
+cutoffs in [0, 1]. No R16 policy choice remains unresolved.
+
+Collinearity handles zero/one candidates with correctly labelled zero matrices
+and boolean support while retaining existing observation/weight validation.
+Full matrices and tied elimination follow fitted input order. The shared name
+guard also reaches VariableImportance's fit/transform and metadata, leaving its
+importance arithmetic, iteration and optional-backend repairs to R17. API
+prose and the Unreleased changelog agree; historical evidence is preserved.
+Three repaired Ruff allowances are removed, with none added.
+
+Fresh installed-wheel suites pass outside the checkout without setuptools:
+**py39-locked 772 passed; py312-locked 772 passed; py312-newer 756 passed**.
+All **29** selected historical checks/controls pass unmasked in each 3.12
+snapshot. The 84 maintained R16 cases produce **73 failures and 11 passes**
+on the verified R15 wheel; final source/affected callers pass **321** tests.
+Dependency/provenance checks, eleven installed/source hashes, 19 source/sdist/
+wheel payloads and copied tests agree. `uv lock --check`, Ruff 0.17.0's gate
+(**414 total, zero new**), gate unit tests (**two passed**), new test/evidence
+lint and format, local links and `git diff --check` pass. Exact commands,
+versions and logs are in the handoff/evidence. Hosted CI, full docs/notebooks,
+full sklearn compliance, other platforms, optional backends, performance and
+statistical calibration were not checked.
+
+**Next group: R17 alone**, with R03/R05/R06 complete. Resume from
+`03 F1–F3/F11/F13`, `variable_importance.py` and its training/contribution callers.
+Settle crossing-prefix/zero-total selection, weighted explanation population
+and whether repeated identical fits should remain; test array multiclass and
+missing-backend errors. R17–R33 remain pending. Stop after this completed R16 group.
+
 ## Ordered phases
 
-R01–R15 are **Complete**; R16–R33 are **Pending**. The
+R01–R16 are **Complete**; R17–R33 are **Pending**. The
 [R01 handoff](R01-installed-package.md) records changes, decisions, exact checks,
 environment identities, inherited failures, and the resume point. Changes are
 committed as `6b675fd` on `fix/r01-installed-package` at checkpoint base `0270aca`;
@@ -527,8 +570,10 @@ Those uncommitted notes are historical; the R04–R12 delivery above records
 their merged commits. [R13](R13-glm-scoring.md) is complete in local commit
 `28b9529` on `main`, based on `64b0ce7`. [R14](R14-glm-design.md) is complete
 in local commit `3e3e7e3` on `main`, based on `fb942fc`. [R15](R15-glm-likelihood.md)
-is complete in local commit `51d44f2` on `main`, based on `2577289`. R16 alone is
-next, with R06/R08 complete. Hosted CI for R13–R15 and remaining release evidence
+is complete in local commit `51d44f2` on `main`, based on `2577289`.
+[R16](R16-threshold-contracts.md) is complete in local commit `2fa18e8` on `main`,
+based on `985b0a3`. R17 alone is next, with R03/R05/R06 complete.
+Hosted CI for R13–R16 and remaining release evidence
 are still pending. An ID such
 as `1A F3` means finding 3 in the linked original report. The complete ID-to-phase
 mapping follows the table.
@@ -550,7 +595,7 @@ mapping follows the table.
 | **R13 — Correct GLM scoring and independent CV (Complete)** | Compute response-scale deviance once, expose a higher-is-better sklearn score while minimizing BIC correctly, pass stratification targets, slice documented arrays, clone each fold. [1C F2–F4/F9/F12](01c-weighted-glm-lasso.md) | R03/R05 | Independent Poisson/binomial/Gamma losses, real external GridSearchCV, binary fold splits, array/frame parity, stateful-estimator isolation; rerun the Poisson signal counterexample |
 | **R14 — Stable GLM design and parameters (Complete)** | Use one fitted intercept/input-column contract across fit/predict/transform; derive the family/link at fit from current parameters; return self. [1C F5/F7/F8/F10](01c-weighted-glm-lasso.md) | R13 | Single-row prediction, existing constants, `fit_intercept=False`, reorder/missing/extra/duplicate names, arrays and support metadata, `set_params` vs fresh construction, chained fit/predict and summary integration |
 | **R15 — Honest likelihood and refit contract (Complete)** | Decide zero-weight likelihood handling, reject all-invalid candidate criteria, describe regularized selection followed by unpenalized refit, remove the near-ridge promise. [1C F6/F11](01c-weighted-glm-lasso.md) | R13/R14 | Zero-weight equivalence to omission or clear rejection; all-nonfinite search fails; independent weighted Gaussian/Poisson BIC comparisons; documented coefficient/refit behavior and post-selection inference limit |
-| **R16 — Threshold selector identity/state** | Reject duplicate names or adopt consistent positions, align labelled callbacks, validate parameters at fit, handle zero/one-feature collinearity, stabilize ties and fitted metadata. Resolve equality wording explicitly. [03 F5–F9/F12](03-selector-contracts.md) | R06/R08 | Masks/names/output agree, reordered callback labels, invalid `set_params`, empty pipeline stages, multiple hash seeds, correct feature counts and NotFittedError. Preserve legitimate named projection if retained as the API |
+| **R16 — Threshold selector identity/state (Complete)** | Reject duplicate names or adopt consistent positions, align labelled callbacks, validate parameters at fit, handle zero/one-feature collinearity, stabilize ties and fitted metadata. Resolve equality wording explicitly. [03 F5–F9/F12](03-selector-contracts.md) | R06/R08 | Masks/names/output agree, reordered callback labels, invalid `set_params`, empty pipeline stages, multiple hash seeds, correct feature counts and NotFittedError. Preserve legitimate named projection if retained as the API |
 | **R17 — Truthful cumulative importance selection** | Keep the crossing feature, reject nonfinite contributions, define zero-total selection, handle array multiclass targets, and raise the optional-backend error. Use one fit unless actual reproducible resampling is required. [03 F1–F3/F11/F13](03-selector-contracts.md) | R03/R05/R06 | Hand `[.6,.3,.1]` thresholds, constant-response real fit, threshold 1, invalid contributions, three-class array/Series parity, iteration behavior and missing fastshap error before wasted training |
 | **R18 — Ordinal encoder full schema** | Keep categorical encoder validation separate from full passthrough metadata, copy inverse input, honor changed output dtype. [02 F8/F13/F14](02-preprocessing.md) | R06 | Mixed categorical/numeric `get_feature_names_out` and pandas `set_output`; unknown/missing values, input preservation, inverse, clone/refit and `set_params(output_dtype=...)` |
 | **R19 — Actual fitted tree partitions** | Derive bins from real thresholds/leaf membership, avoid temporary-column collisions, derive copied one-tree parameters at fit, apply encoding in raw mode, define missing/all-missing behavior. [02 F1/F2/F4/F5/F9](02-preprocessing.md) | R05/R06/R18 | Equal-valued leaves, binary probabilities vs leaf IDs, values between observed extrema and fitted splits, `x`/`x_g`, category named `missing_added`, all-missing column, parameter aliases and native weighted one-tree reference |
@@ -572,7 +617,7 @@ mapping follows the table.
 R21's group/schema safeguards can be advanced immediately after R05/R06 if
 training-wrapper users are the priority; its dependencies do not require waiting
 for the intervening algorithm phases. Similarly independent R24–R28 work need
-not await GLM repairs. The default next group is now R16 alone. Do not parallelize
+not await GLM repairs. The default next group is now R17 alone. Do not parallelize
 edits to shared dtype/weight helpers without agreeing their contract first.
 
 ## Complete finding-to-phase map
