@@ -1,0 +1,14 @@
+{
+  "src/arfs/preprocessing.py": {
+    "removed": [
+      "cat_var"
+    ],
+    "retained_function_and_class_ASTs_unchanged": true
+  },
+  "src/arfs/utils.py": {
+    "removed": [
+      "validate_pandas_input"
+    ],
+    "retained_function_and_class_ASTs_unchanged": true
+  }
+}

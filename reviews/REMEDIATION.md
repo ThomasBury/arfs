@@ -1,6 +1,6 @@
 # ARFS remediation handoff
 
-**Status: R01–R18 complete; R19–R33 pending. Next phase in the authorized batch: R31.**
+**Status: R01–R18 and R31 complete; R19–R30 and R32–R33 pending. Next implementation group: R19 alone.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
 a separate repair backlog. By default, a request to implement the next phase
@@ -74,10 +74,10 @@ record each outcome separately. Stop at a phase boundary if a new API or
 statistical decision, unresolved failure, or wider scope makes the batch too
 large. Session boundaries and repair phases are not published releases.
 
-R01–R17 are complete. The explicitly requested R02/R03 and R10/R11 batches
-were implemented and validated sequentially; R04–R09 were completed alone.
-Run **R18 → R31** next, with R06 complete. Later phases use the recorded grouping
-rules below; phases outside the three conditional pairs remain separate.
+R01–R18 and R31 are complete. The explicitly requested R02/R03, R10/R11 and
+R18/R31 batches were implemented and validated sequentially; R04–R09 were
+completed alone. Run **R19 alone** next, with R05/R06/R18 complete. Later phases
+use the recorded grouping rules below; phases outside the three conditional pairs remain separate.
 
 | Phases | Session recommendation | Reason |
 | --- | --- | --- |
@@ -96,12 +96,13 @@ rules below; phases outside the three conditional pairs remain separate.
 | R15 | Complete; do not repeat | [R15](R15-glm-likelihood.md) records zero-row omission, corrected criterion dimensions and truthful unpenalized refits |
 | R16 | Complete; do not repeat | [R16](R16-threshold-contracts.md) records unique names, aligned callbacks, strict equality, empty stages, stable ties and fitted metadata |
 | R17 | Complete; do not repeat | [R17](R17-importance-selection.md) records the crossing prefix, zero/nonfinite policy, one fit, equal-row explanation population and multiclass/backend repair |
-| R18 → R31 | Run sequentially next | R06 complete; encoder schemas then the public legacy-helper decision |
+| R18 → R31 | Complete sequential batch; do not repeat | [R18](R18-ordinal-schema.md) and [R31](R31-legacy-helpers.md) record full encoder schema, owned inverse inputs and the approved legacy-helper removals |
+| R19 | Run alone next | R05/R06/R18 complete; actual fitted tree partitions and missing-value behavior |
 
 ### Recorded groups for next-batch requests
 
 When the user asks to "implement the next batch of RXX", read the current phase
-statuses in this file and use these groups. **The next batch is R18 → R31.**
+statuses in this file and use these groups. **The next group is R19 alone.**
 R10/R11 are complete; their separate handoffs record support/history consistency,
 weighted permutation scoring and the user-chosen absolute-total normalization.
 R12 is complete: GrootCV uses maximum shadow medians across folds/repeats;
@@ -120,8 +121,10 @@ ties and fitted feature counts/guards. Strict equality and named projection are
 preserved. R17 is complete: selection includes the crossing positive feature,
 zero total selects nothing, nonfinite contributions fail and model output determines
 multiclass axes. The user chose one fit/removal of n_iterations and equal validation-row
-importance averaging with weighted training/loss. R18 → R31 has R06 complete; the
-public legacy-helper decision remains required before R31.
+importance averaging with weighted training/loss. R18 → R31 is complete: full
+encoder metadata describes passthrough output, inverse owns writable codes, and
+current parameters apply at refit. The user chose removal of both public legacy
+helpers without shims. Next is R19 alone, with R05/R06/R18 complete.
 A request for the next batch authorizes that one group, its affected callers,
 tests, local phase commits and handoff update; stop after
 it. It does not authorize the following group or Git publication/release unless
@@ -130,11 +133,11 @@ the user also requests those actions.
 | Later two-phase group | Prerequisites | Why it fits one session | Decision to settle before the affected phase |
 | --- | --- | --- | --- |
 | R10 → R11 (complete) | R05/R07 complete | Leshy support/history and weighted permutation importance share selector code | Settled: absolute-total normalization, all-zero stays zero, only positive mean permutation scores eligible |
-| **R18 → R31** | R06 complete | Encoder schema repairs and related legacy helpers share dtype/schema checks | Retain or remove the public legacy helpers |
+| **R18 → R31 (complete)** | R06/R18 complete | Encoder schema repairs and related legacy helpers share dtype/schema checks | Settled: remove both public legacy helpers without compatibility shims |
 | **R25 → R26** | R05 and R24 complete | Sampling output repairs and bounded isolation retries mostly share one module | Define weighting, tiny-input, and exhaustion behavior |
 
-R18 → R31 is now the next group, with R06 complete. Complete and commit R18
-before R31; explicitly decide the public legacy-helper contract before its repair.
+R18 → R31 is complete in separate sequential local commits, with the explicit
+removal decision recorded in R31. R19 alone is next, with R05/R06/R18 complete.
 R10 → R11 has already been completed.
 R25 → R26 is larger and remains conditional on its scope and policy decisions
 being settled. These are sequential groups, not parallel agent assignments.
@@ -592,8 +595,8 @@ Stop after this completed R17 group; no following-group work or publication is a
 
 ## R18 result — 2026-10-13
 
-R18 is complete on `main`, based on clean `37cf6b2`; the local phase commit is
-recorded after committing this result. [R18](R18-ordinal-schema.md) records the
+R18 is complete in local commit `7df5daa` on `main`, based on clean `37cf6b2`.
+[R18](R18-ordinal-schema.md) records the
 owned native categorical encoder, full passthrough names/count, fitted-order
 schema, current dtype/unknown/missing parameters, nullable categorical input and
 non-mutating inverse. Native inverse receives writable owned codes to avoid the
@@ -618,9 +621,42 @@ the dead benchmark comment, add removal/migration checks and commit R31 separate
 Stop after R31; the next group then is R19 alone, with R05/R06/R18 complete.
 No following phase, publication, version bump or release is authorized.
 
+## R31 result — 2026-10-14
+
+R31 is complete on `main`, based on the completed R18 commit `7df5daa`; the
+separate local implementation commit is recorded after committing this result.
+The user explicitly chose **remove both public legacy helpers**, without shims.
+[R31](R31-legacy-helpers.md) records removal of `cat_var` and
+`validate_pandas_input`, the dead benchmark comment and cat_var-only tqdm import.
+There were no active internal callers or explicit exports/docs listings. The
+Unreleased changelog and handoff explain the encoder/array migration and the
+intentional tuple/code-policy differences. Every retained function/class AST is
+unchanged by R31; no unrelated unused helper is removed.
+
+Fresh installed-wheel suites pass: **Python 3.9 locked 862; Python 3.12 locked
+862; Python 3.12 newer 846**. Six maintained removal/migration cases report
+**2 failed, 4 passed** on the verified R18 wheel. The historical missing-category
+and declared-array failures reproduce before removal; original reports/scripts
+remain intact. The original preprocessing diagnostic module imports cat_var at
+load, so it is not recollected after the intentional removal; maintained ordinal
+and removal suites run unmasked, with no injected helper. Exact commands,
+versions, provenance, payloads and check limits are in the handoff and
+[evidence](evidence/r31-legacy-helpers/commands.txt). Dependency/provenance,
+19 source/sdist/wheel payloads, lock, Ruff (**397 total, zero new**, six removed
+allowances), gate unit tests (**2 passed**), test/evidence lint/format, local links
+and whitespace pass. Hosted CI, full docs/notebooks, full sklearn compliance,
+optional numerical backends, other platforms, performance and calibration are skipped.
+
+**R18 → R31 batch complete. Next group: R19 alone**, with R05/R06/R18 complete.
+Read `02 F1/F2/F4/F5/F9` and TreeDiscretizer's fit/transform, actual tree partitions,
+collision/missing-value handling and copied fit-time parameters. R19–R30 and
+R32–R33 remain pending. Stop here; no next phase, publication, version bump or
+release is authorized by this batch. Passing it does not establish release readiness.
+
 ## Ordered phases
 
-R01–R18 are **Complete**; R19–R33 are **Pending**. R31 is next in the current batch. The
+R01–R18 and R31 are **Complete**; R19–R30 and R32–R33 are **Pending**. R19 alone
+is next. The
 [R01 handoff](R01-installed-package.md) records changes, decisions, exact checks,
 environment identities, inherited failures, and the resume point. Changes are
 committed as `6b675fd` on `fix/r01-installed-package` at checkpoint base `0270aca`;
@@ -653,9 +689,11 @@ in local commit `3e3e7e3` on `main`, based on `fb942fc`. [R15](R15-glm-likelihoo
 is complete in local commit `51d44f2` on `main`, based on `2577289`.
 [R16](R16-threshold-contracts.md) is complete in local commit `2fa18e8` on `main`,
 based on `985b0a3`. [R17](R17-importance-selection.md) is complete in local commit
-`6f44345` on `main`, based on `1e88c54`. R18 → R31 is next, with R06 complete
-and the public legacy-helper decision required before R31.
-Hosted CI for R13–R17 and remaining release evidence
+`6f44345` on `main`, based on `1e88c54`. [R18](R18-ordinal-schema.md) is complete
+in local commit `7df5daa`, based on `37cf6b2`. [R31](R31-legacy-helpers.md) is complete
+in the separate local implementation commit recorded in its result entry above.
+R19 alone is next, with R05/R06/R18 complete.
+Hosted CI for R13–R18/R31 and remaining release evidence
 are still pending. An ID such
 as `1A F3` means finding 3 in the linked original report. The complete ID-to-phase
 mapping follows the table.
@@ -692,14 +730,14 @@ mapping follows the table.
 | **R28 — Parallel labels and bounded useful work** | Chunk original label objects without NumPy coercion; settle result order/empty schema and worker-count semantics, avoiding empty tasks. [05 F13 and resource boundaries](05-sampling-and-parallel.md) | R06/R08 | Integer/string and tuple/MultiIndex labels with one/two workers; propagated callback error; no-pair and empty work; supported negative counts; worker cap observed without a new execution framework |
 | **R29 — Plots match the data and selection** | Keep feature/subplot coordinates separate, color actual Leshy membership, include terminal importance thresholds, respect plot limits and linear feature positions, bypass singleton clustering. [06 F2–F7](06-utilities-and-workflows.md) | R03/R10/R17 | Render and inspect string/integer/single-panel target plots; masks disagreeing with importance order; threshold 1/one/no feature, plot_n limit, first cumulative point, input/figure ownership |
 | **R30 — Honest local dataset fixtures** | Use local RNG consistently, generate exactly the requested odd/even row count, correct Titanic's alone flag. [06 F8/F9/F15](06-utilities-and-workflows.md) | R04 | Caller RNG stream unchanged; reproducible features/targets/weights; strong/noise construction checks; odd size; network-free 0/1/2-relative fixture. Do not introduce a new data service |
-| **R31 — Retain or remove legacy helpers deliberately** | Decide the public status of `cat_var` and `validate_pandas_input`; if retained, preserve missingness/dtype and accept documented arrays. Remove truly obsolete duplicates/local-unused helpers only with an explicit API decision. [02 F15](02-preprocessing.md), [06 F10](06-utilities-and-workflows.md) | R06/R18 | Direct public helper tests and exports/docs updated; missing ≠ category; newer strings; arrays; active callers rechecked. No compatibility shim by default |
+| **R31 — Retain or remove legacy helpers deliberately (Complete)** | User chose removal of public `cat_var` and `validate_pandas_input`, without shims. Remove the dead benchmark comment and cat_var-only import; document encoder/array migration. [02 F15](02-preprocessing.md), [06 F10](06-utilities-and-workflows.md) | R06/R18 | Absent public helpers/exports; supported encoder keeps missing distinct, handles newer strings and owns inputs; active callers and retained function/class ASTs rechecked |
 | **R32 — Reproducible documentation workflows** | Repair classification/regression setup, sampling overwrite, time-series reduced-feature calls, README filename and local Sphinx source. Reconcile docs-extra/RTD/fastshap policy; qualify method/weight/backend claims after preceding choices. [05 F14](05-sampling-and-parallel.md), [06 F12–F14](06-utilities-and-workflows.md), [07 F1](07-final-assessment.md) | Relevant R01–R31 fixes for each example | Actual Sphinx build and local links; bounded clean-kernel basic/classification/regression/preprocessing examples; exact reduced-feature model input; size limit maintained. Record data substitutions, excluded optional cells, and remaining notebooks separately |
 | **R33 — Release evidence and remaining claims** | Run the repaired package gates and a justified support matrix. Reassess selection claims with meaningful held-out baselines and document remaining optional/performance limits; narrow unsupported claims instead of promising unbounded validation. | All release-blocking phases above | Fresh source/wheel/lock metadata agree; no workaround; established suite and promoted regressions pass; repeated-seed signal/null, weak/correlated/mixed/weighted cases appropriate to claims; fold-local preprocessing/selection; clean-process artifacts; docs build. Optional backends/platforms require their own tests before claiming support |
 
 R21's group/schema safeguards can be advanced immediately after R05/R06 if
 training-wrapper users are the priority; its dependencies do not require waiting
 for the intervening algorithm phases. Similarly independent R24–R28 work need
-not await GLM repairs. The default next group is now R18 → R31. Do not parallelize
+not await GLM repairs. The default next group is now R19 alone. Do not parallelize
 edits to shared dtype/weight helpers without agreeing their contract first.
 
 ## Complete finding-to-phase map

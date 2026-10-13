@@ -1,0 +1,57 @@
+Checkout: /home/bsatom/Documents/arfs; main @ 7df5daa (complete R18).
+R31 is the second and final phase in the explicitly requested R18 -> R31 batch.
+User chose removal of both public legacy helpers, without compatibility shims.
+Retained function/class ASTs match 7df5daa; scope.json. No other helper is removed.
+
+Runtime environment (full values in validate.py):
+UV_CACHE_DIR=/tmp/arfs-r04/cache MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 PYTHONHASHSEED=0
+PYTHONDONTWRITEBYTECODE=1; installed runs remove PYTHONPATH and use isolated Python.
+MPLCONFIGDIR is a per-cell disposable path.
+
+Before maintained removal/migration cases against verified R18 wheel:
+/tmp/arfs-r18/final/py312-locked/bin/python -I -m pytest /tmp/arfs-r31/before/tests/test_legacy_helpers.py -q --tb=short -p no:cacheprovider
+before.txt: 2 failed, 4 passed. Module hashes equal 7df5daa; before-provenance.json.
+Original unmasked legacy diagnostics (historical files untouched):
+/tmp/arfs-r18/final/py312-locked/bin/python -I -m pytest reviews/evidence/02-preprocessing/checks.py -k cat_var --runxfail -q --tb=short -p no:cacheprovider
+before-cat-var.txt: 1 failed, 1 passed, 38 deselected.
+/tmp/arfs-r18/final/py312-locked/bin/python -I -m pytest reviews/evidence/06-utilities-and-workflows/checks.py -k validate_pandas_input --runxfail -q --tb=short -p no:cacheprovider
+before-validator.txt: 1 failed, 24 deselected.
+
+Source (PYTHONPATH=src, checkout cwd):
+/tmp/arfs-r18/final/py312-locked/bin/python -m pytest tests/test_legacy_helpers.py tests/test_ordinal_schema.py tests/test_dependency_apis.py tests/test_category_identity.py -q --tb=short -p no:cacheprovider
+source.txt: 103 passed.
+rg -n 'cat_var|validate_pandas_input' src tests docs README.md CHANGELOG.md
+callers-before.txt: no active caller, one dead benchmark comment, definitions and new removal tests.
+rg -n 'cat_var|validate_pandas_input' src docs README.md
+callers-after.txt: no active reference. Changelog and historical evidence intentionally name removed APIs.
+
+Locked requirements copied from the checked R18 export of uv.lock.
+uv build --python /tmp/arfs-r18/final/py312-locked/bin/python --out-dir /tmp/arfs-r31/dist
+uv lock --check --python /tmp/arfs-r18/final/py312-locked/bin/python
+/tmp/arfs-r18/final/py312-locked/bin/python /tmp/arfs-r31/check_payloads.py
+payloads.json: all 19 source/sdist/wheel payloads match, three data files.
+
+Exact orchestrators validate.py, environment.py and check_payloads.py are retained here,
+copied to /tmp/arfs-r31 before running. Each cell creates a fresh environment
+from a verified R18 interpreter; copied tests and 12 installed source-module hashes match.
+No setuptools workaround. Requirements: uv.lock or .github/requirements/runtime-newer-py312.txt.
+/tmp/arfs-r18/final/py312-locked/bin/python /tmp/arfs-r31/validate.py py39-locked
+/tmp/arfs-r18/final/py312-locked/bin/python /tmp/arfs-r31/validate.py py312-locked
+/tmp/arfs-r18/final/py312-locked/bin/python /tmp/arfs-r31/validate.py py312-newer
+Final full suites: 862 / 862 / 846 passed.
+Per-cell manifests record exact commands, cwd, exit codes and full-suite results.
+Historical preprocessing diagnostics import cat_var at module load. They are not
+recollected after its intentional removal; no compatibility shim or fake is inserted.
+Original evidence stays intact; maintained ordinal/removal/migration tests run unmasked.
+
+uv tool run --from ruff==0.17.0 python .github/scripts/check_ruff_baseline.py
+Ruff: 397 total, zero new; six repaired preprocessing allowances removed, none added.
+/tmp/arfs-r18/final/py312-locked/bin/python -m unittest discover -s .github/scripts -p 'test_*.py'
+Two passed.
+uv tool run --from ruff==0.17.0 ruff check tests/test_legacy_helpers.py reviews/evidence/r31-legacy-helpers/*.py
+uv tool run --from ruff==0.17.0 ruff format --check tests/test_legacy_helpers.py reviews/evidence/r31-legacy-helpers/*.py
+Both pass. git diff --check passes. Local handoff links checked before commit.
+Skipped hosted CI, full docs/notebooks, full sklearn compliance, optional backend
+numerical equivalence, performance, statistical calibration and other platforms.
+No release-readiness claim. Stop after R31; next group R19 alone (R05/R06/R18 complete).

@@ -1,0 +1,16 @@
+FF....                                                                   [100%]
+=================================== FAILURES ===================================
+______ test_public_legacy_helpers_are_removed[arfs.preprocessing-cat_var] ______
+/tmp/arfs-r31/before/tests/test_legacy_helpers.py:20: in test_public_legacy_helpers_are_removed
+    assert not hasattr(public, name)
+E   AssertionError: assert not True
+E    +  where True = hasattr(<module 'arfs.preprocessing' from '/tmp/arfs-r18/final/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py'>, 'cat_var')
+___ test_public_legacy_helpers_are_removed[arfs.utils-validate_pandas_input] ___
+/tmp/arfs-r31/before/tests/test_legacy_helpers.py:20: in test_public_legacy_helpers_are_removed
+    assert not hasattr(public, name)
+E   AssertionError: assert not True
+E    +  where True = hasattr(<module 'arfs.utils' from '/tmp/arfs-r18/final/py312-locked/lib/python3.12/site-packages/arfs/utils.py'>, 'validate_pandas_input')
+=========================== short test summary info ============================
+FAILED ../../../../tmp/arfs-r31/before/tests/test_legacy_helpers.py::test_public_legacy_helpers_are_removed[arfs.preprocessing-cat_var]
+FAILED ../../../../tmp/arfs-r31/before/tests/test_legacy_helpers.py::test_public_legacy_helpers_are_removed[arfs.utils-validate_pandas_input]
+2 failed, 4 passed in 2.97s

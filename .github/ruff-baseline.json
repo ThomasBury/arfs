@@ -243,14 +243,12 @@
   },
   "src/arfs/preprocessing.py": {
     "B006": 2,
-    "C414": 5,
+    "C414": 1,
     "F401": 6,
     "FA100": 2,
     "I001": 1,
     "UP006": 2,
     "UP010": 1,
-    "UP030": 1,
-    "UP032": 1,
     "UP035": 3
   },
   "src/arfs/sampling.py": {

@@ -12,7 +12,6 @@ Module Structure:
 
 # Settings and libraries
 from __future__ import print_function
-from tqdm.auto import tqdm
 
 # pandas
 import pandas as pd
@@ -353,72 +352,6 @@ class dtype_column_selector:
             cols = cols[~cols.isin(self.exclude_cols)]
 
         return cols.tolist()
-
-
-def cat_var(data, col_excl=None, return_cat=True):
-    """Ad hoc categorical encoding (as integer). Automatically detect the non-numerical columns,
-    save the index and name of those columns, encode them as integer,
-    save the direct and inverse mappers as
-    dictionaries.
-    Return the data-set with the encoded columns with a data type either int or pandas categorical.
-
-    Parameters
-    ----------
-    data: pd.DataFrame
-        the dataset
-    col_excl: list of str, default=None
-        the list of columns names not being encoded (e.g. the ID column)
-    return_cat: bool, default=True
-        return encoded object columns as pandas categoricals or not.
-
-    Returns
-    -------
-    df: pd.DataFrame
-        the dataframe with encoded columns
-    cat_var_df: pd.DataFrame
-        the dataframe with the indices and names of the categorical columns
-    inv_mapper: dict
-        the dictionary to map integer --> category
-    mapper: dict
-        the dictionary to map category --> integer
-    """
-    df = data.copy()
-    if col_excl is None:
-        non_num_cols = list(
-            set(list(df.columns)) - set(list(df.select_dtypes(include=[np.number])))
-        )
-    else:
-        non_num_cols = list(
-            set(list(df.columns))
-            - set(list(df.select_dtypes(include=[np.number])))
-            - set(col_excl)
-        )
-    cat_var_index = [df.columns.get_loc(c) for c in non_num_cols if c in df]
-    cat_var_df = pd.DataFrame({"cat_ind": cat_var_index, "cat_name": non_num_cols})
-    # avoid having datetime objects as keys in the mapping dic
-    date_cols = [s for s in list(df) if "date" in s]
-    df.loc[:, date_cols] = df.loc[:, date_cols].astype(str)
-    cols_need_mapped = cat_var_df.cat_name.to_list()
-    inv_mapper = {
-        col: dict(enumerate(df[col].astype("category").cat.categories))
-        for col in df[cols_need_mapped]
-    }
-    mapper = {
-        col: {v: k for k, v in inv_mapper[col].items()} for col in df[cols_need_mapped]
-    }
-    progress_bar = tqdm(cols_need_mapped)
-    for c in progress_bar:
-        progress_bar.set_description("Processing {0:<30}".format(c))
-        df.loc[:, c] = df.loc[:, c].map(mapper[c]).fillna(0).astype(int)
-        # I could have use df[c].update(df[c].map(mapper[c])) while slower,
-        # prevents values not included in an incomplete map from being changed to nans.
-        # But then I could have outputs
-        # with mixed types in the case of different dtypes mapping (like str -> int).
-        # This would eventually break any flow.
-        # Map is faster than replace
-    if return_cat:
-        df.loc[:, non_num_cols] = df.loc[:, non_num_cols].astype("category")
-    return df, cat_var_df, inv_mapper, mapper
 
 
 class TreeDiscretizer(BaseEstimator, TransformerMixin):

@@ -279,23 +279,6 @@ def validate_target(y, n_samples):
     return target
 
 
-def validate_pandas_input(arg):
-    """Validate if pandas or numpy arrays are provided
-    Parameters
-    ----------
-    arg : pd.DataFrame or np.array
-        the object to validate
-    Raises
-    ------
-    TypeError
-        error if pandas or numpy arrays are not provided
-    """
-    try:
-        return arg.values
-    except AttributeError:
-        raise TypeError("input needs to be a numpy array or pandas data frame.")
-
-
 def check_if_tree_based(model):
     """check if estimator is tree based
 

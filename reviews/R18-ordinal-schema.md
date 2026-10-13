@@ -1,7 +1,7 @@
 # R18 — Ordinal encoder full schema
 
 **R18 complete on 2026-10-13**, based on clean `main` at `37cf6b2`.
-The local phase commit will be recorded in REMEDIATION.md before R31 starts.
+Local phase commit: `7df5daa`, completed before R31 started.
 
 ## Changes and decisions
 
@@ -75,7 +75,7 @@ Passing this phase does not establish release readiness.
 
 ## Resume
 
-Complete and commit R18 before R31. The user explicitly chose to remove both
+R18 was completed and committed before R31. The user explicitly chose to remove both
 public legacy helpers, cat_var and validate_pandas_input. R31 must trace their
 exports/docs and remove the commented benchmark call, record migration advice,
 and test the deliberate removals and the supported encoder alternative.

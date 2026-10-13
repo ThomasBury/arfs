@@ -56,7 +56,6 @@ def sklearn_pimp_bench(model, X, y, task="regression", sample_weight=None):
     # https://towardsdatascience.com/one-hot-encoding-is-making-
     # your-tree-based-ensembles-worse-heres-why-d64b282b5769
 
-    # X, cat_var_df, inv_mapper, mapper = cat_var(X)
     validate_target(y, len(X))
     sample_weight = validate_sample_weight(sample_weight, len(X))
     X = OrdinalEncoderPandas().fit_transform(X)
