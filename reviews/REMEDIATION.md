@@ -623,8 +623,8 @@ No following phase, publication, version bump or release is authorized.
 
 ## R31 result — 2026-10-14
 
-R31 is complete on `main`, based on the completed R18 commit `7df5daa`; the
-separate local implementation commit is recorded after committing this result.
+R31 is complete in local commit `ffb7388` on `main`, based on the completed R18
+commit `7df5daa`.
 The user explicitly chose **remove both public legacy helpers**, without shims.
 [R31](R31-legacy-helpers.md) records removal of `cat_var` and
 `validate_pandas_input`, the dead benchmark comment and cat_var-only tqdm import.
@@ -691,7 +691,7 @@ is complete in local commit `51d44f2` on `main`, based on `2577289`.
 based on `985b0a3`. [R17](R17-importance-selection.md) is complete in local commit
 `6f44345` on `main`, based on `1e88c54`. [R18](R18-ordinal-schema.md) is complete
 in local commit `7df5daa`, based on `37cf6b2`. [R31](R31-legacy-helpers.md) is complete
-in the separate local implementation commit recorded in its result entry above.
+in local commit `ffb7388`, based on `7df5daa`.
 R19 alone is next, with R05/R06/R18 complete.
 Hosted CI for R13–R18/R31 and remaining release evidence
 are still pending. An ID such

@@ -1,7 +1,7 @@
 # R31 — Remove legacy helpers deliberately
 
 **R31 complete on 2026-10-14**, on `main` after the complete R18 commit
-`7df5daa`. Its separate local implementation commit is recorded in REMEDIATION.md. The user explicitly chose **remove both public legacy
+`7df5daa`. Separate local implementation commit: `ffb7388`. The user explicitly chose **remove both public legacy
 helpers**. This is an intentional breaking API decision, with no aliases,
 deprecation wrappers or compatibility shims.
 
