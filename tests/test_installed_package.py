@@ -85,7 +85,9 @@ def test_dataset_streams_from_zip(tmp_path, monkeypatch):
             archive.writestr(f"arfs/{name}", root.joinpath(name).read_bytes())
 
     with ZipFile(archive_path) as archive:
-        monkeypatch.setattr(utils, "files", lambda package: ZipPath(archive, "arfs/"))
+        # Python 3.9 paths share the ZipFile handle; retain one root until loading ends.
+        zip_root = ZipPath(archive, "arfs/")
+        monkeypatch.setattr(utils, "files", lambda package: zip_root)
         boston = utils.load_data("Boston")
         housing = utils.load_data("housing")
         frame = utils._load_housing(as_frame=True)

@@ -14,7 +14,7 @@ class TestLeshy:
     Test suite for all-relevant FS boruta-like method: Leshy
     """
 
-    def test_borutaPy_vs_leshy_with_rfc_and_native_feature_importance(self):
+    def test_leshy_clf_with_lightforest_and_native_feature_importance(self):
         # too slow for circleci to run them in a reasonable time
         # takes 2 min on laptop, 1h or more on circleci
         # sklearn random forest implementation
@@ -39,7 +39,7 @@ class TestLeshy:
             "expect non-empty intersection"
         )
 
-    def test_borutaPy_vs_leshy_with_rfr_and_native_feature_importance(self):
+    def test_leshy_regr_with_lightforest_and_native_feature_importance(self):
         # too slow for circleci to run them in a reasonable time
         # takes 2 min on laptop, 1h or more on circleci
         # # sklearn random forest implementation
@@ -64,7 +64,7 @@ class TestLeshy:
             "expect non-empty intersection"
         )
 
-    def test_borutaPy_vs_leshy_with_rfc_and_shap_feature_importance(self):
+    def test_leshy_clf_with_lightforest_and_shap_feature_importance(self):
         # too slow for circleci to run them in a reasonable time
         # takes 2 min on laptop, 1h or more on circleci
         # # sklearn random forest implementation
@@ -88,7 +88,7 @@ class TestLeshy:
             "expect non-empty intersection"
         )
 
-    def test_borutaPy_vs_leshy_with_rfr_and_shap_feature_importance(self):
+    def test_leshy_regr_with_lightforest_and_shap_feature_importance(self):
         # too slow for circleci to run them in a reasonable time
         # takes 2 min on laptop, 1h or more on circleci
         # # sklearn random forest implementation
@@ -128,7 +128,7 @@ class TestLeshy:
     def test_leshy_regr_with_lgb_and_shap_feature_importance_and_sample_weight(self):
         baseline_list = ["var0", "var1", "var2", "var3", "var4", "var5"]
 
-        X, y, w = _make_corr_dataset_classification(size=500)
+        X, y, w = _make_corr_dataset_regression(size=500)
         model = lgb.LGBMRegressor(verbose=-1, force_col_wise=True, n_estimators=10)
         arfs = Leshy(model, verbose=0, max_iter=10, random_state=42, importance="shap")
         arfs.fit(X, y, w)

@@ -1,0 +1,56 @@
+name: Installed wheel
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  runtime:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - python: "3.9"
+            dependencies: locked
+          - python: "3.12"
+            dependencies: locked
+          - python: "3.12"
+            dependencies: newer
+    env:
+      MPLBACKEND: Agg
+      OPENBLAS_NUM_THREADS: "1"
+      OMP_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
+      NUMBA_NUM_THREADS: "1"
+      LOKY_MAX_CPU_COUNT: "1"
+      PYTHONHASHSEED: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: "0.12.15"
+          python-version: ${{ matrix.python }}
+      - name: Check lock and build sdist then wheel
+        run: |
+          uv lock --check
+          uv build --out-dir "$RUNNER_TEMP/dist"
+      - name: Choose reproducible runtime dependencies
+        run: |
+          if [ "${{ matrix.dependencies }}" = locked ]; then
+            uv export --locked --extra test --no-emit-project --output-file "$RUNNER_TEMP/requirements.txt"
+          else
+            cp .github/requirements/runtime-newer-py312.txt "$RUNNER_TEMP/requirements.txt"
+          fi
+      - name: Install wheel in a clean environment
+        run: |
+          uv venv --python '${{ matrix.python }}' "$RUNNER_TEMP/runtime"
+          uv pip install --python "$RUNNER_TEMP/runtime/bin/python" -r "$RUNNER_TEMP/requirements.txt" "$RUNNER_TEMP"/dist/*.whl
+          uv pip check --python "$RUNNER_TEMP/runtime/bin/python"
+      - name: Check installed imports, exports, resources and runtime tests
+        run: |
+          mkdir -p "$RUNNER_TEMP/run"
+          cp -r tests "$RUNNER_TEMP/run/tests"
+          cd "$RUNNER_TEMP/run"
+          "$RUNNER_TEMP/runtime/bin/python" -I -c 'import arfs, importlib.metadata as m, importlib.util as u, pathlib, sys; assert pathlib.Path(arfs.__file__).is_relative_to(pathlib.Path(sys.prefix)); assert arfs.__version__ == m.version("arfs"); assert u.find_spec("setuptools") is None; print(arfs.__version__, arfs.__file__)'
+          "$RUNNER_TEMP/runtime/bin/python" -I -m pytest tests -q --tb=short -p no:cacheprovider

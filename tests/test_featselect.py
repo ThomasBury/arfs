@@ -37,12 +37,12 @@ class TestFeatSelectZeroVariance:
     def test_identify_single_unique_classification(self):
         # not task dependent (same for clf and regr)
         X, y, w = _make_corr_dataset_classification(size=10)
-        fs = UniqueValuesThreshold(threshold=2)
+        fs = UniqueValuesThreshold(threshold=1)
         fs.fit(X)
         message = "Expected: {0}, Actual: {1}".format(
             "var10", fs.not_selected_features_
         )
-        assert fs.not_selected_features_ == ["var10"], message
+        np.testing.assert_array_equal(fs.not_selected_features_, ["var10"], err_msg=message)
 
 
 class TestFeatSelectHighCardinality:
