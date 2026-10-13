@@ -1,0 +1,162 @@
+FFFFFFFFFFFFFFFF                                                         [100%]
+=================================== FAILURES ===================================
+_____________________ test_invalid_weights_rejected[zero] ______________________
+reviews/evidence/01a-statistical-foundations/checks.py:230: in test_invalid_weights_rejected
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+___________________ test_invalid_weights_rejected[negative] ____________________
+reviews/evidence/01a-statistical-foundations/checks.py:230: in test_invalid_weights_rejected
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_________________________ test_list_weights_supported __________________________
+reviews/evidence/01a-statistical-foundations/checks.py:236: in test_list_weights_supported
+    result = a.association_series(numeric_pair(), "y", sample_weight=[1., 1., 1., 1.])
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1136: in association_series
+    X, sample_weight = _check_association_input(X, sample_weight, handle_na)
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:2018: in _check_association_input
+    X, sample_weight = X.loc[na_mask, :], sample_weight[na_mask]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+______ test_zero_weight_category_equivalent_to_removal[correlation_ratio] ______
+reviews/evidence/01a-statistical-foundations/checks.py:248: in test_zero_weight_category_equivalent_to_removal
+    assert_allclose(statistic(x, y, weights), statistic(x.iloc[:4], y.iloc[:4], weights[:4]))
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   nan location mismatch:
+E    ACTUAL: array(nan)
+E    DESIRED: array(0.911322)
+______ test_zero_weight_category_equivalent_to_removal[f_cat_regression] _______
+reviews/evidence/01a-statistical-foundations/checks.py:248: in test_zero_weight_category_equivalent_to_removal
+    assert_allclose(statistic(x, y, weights), statistic(x.iloc[:4], y.iloc[:4], weights[:4]))
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   nan location mismatch:
+E    ACTUAL: array(nan)
+E    DESIRED: array(9.8)
+__________ test_zero_weight_category_equivalent_to_removal[cramer_v] ___________
+reviews/evidence/01a-statistical-foundations/checks.py:248: in test_zero_weight_category_equivalent_to_removal
+    assert_allclose(statistic(x, y, weights), statistic(x.iloc[:4], y.iloc[:4], weights[:4]))
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:390: in cramer_v
+    chi2 = ss.chi2_contingency(weighted_tab, correction=False)[0]
+/tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/scipy/stats/contingency.py:340: in chi2_contingency
+    raise ValueError("The internally computed table of expected "
+E   ValueError: The internally computed table of expected frequencies has a zero element at (np.int64(0), np.int64(0)).
+________________________ test_no_complete_rows_rejected ________________________
+reviews/evidence/01a-statistical-foundations/checks.py:254: in test_no_complete_rows_rejected
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+__________ test_handle_na_none_passes_target_missingness_to_callable ___________
+reviews/evidence/01a-statistical-foundations/checks.py:266: in test_handle_na_none_passes_target_missingness_to_callable
+    assert any(seen), seen
+E   AssertionError: [np.False_, np.False_]
+E   assert False
+E    +  where False = any([np.False_, np.False_])
+_____________________ test_leshy_rejects_missing_response ______________________
+reviews/evidence/01b-all-relevant/checks.py:257: in test_leshy_rejects_missing_response
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+All relevant predictors selected in 00:00:00.02
+----------------------------- Captured stderr call -----------------------------
+
+Leshy iteration:   0%|          | 0/2 [00:00<?, ?it/s]
+Leshy iteration: 100%|██████████| 2/2 [00:00<00:00, 116.86it/s]
+______________________ test_invalid_targets_rejected[nan] ______________________
+reviews/evidence/04-training-and-benchmarks/checks.py:270: in test_invalid_targets_rejected
+    with pytest.raises((ValueError, lgb.basic.LightGBMError)):
+E   Failed: DID NOT RAISE (<class 'ValueError'>, <class 'lightgbm.basic.LightGBMError'>)
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+______________________ test_invalid_targets_rejected[inf] ______________________
+reviews/evidence/04-training-and-benchmarks/checks.py:270: in test_invalid_targets_rejected
+    with pytest.raises((ValueError, lgb.basic.LightGBMError)):
+E   Failed: DID NOT RAISE (<class 'ValueError'>, <class 'lightgbm.basic.LightGBMError'>)
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+_____________________ test_invalid_targets_rejected[-inf] ______________________
+reviews/evidence/04-training-and-benchmarks/checks.py:270: in test_invalid_targets_rejected
+    with pytest.raises((ValueError, lgb.basic.LightGBMError)):
+E   Failed: DID NOT RAISE (<class 'ValueError'>, <class 'lightgbm.basic.LightGBMError'>)
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+___________________ test_invalid_weights_rejected[negative] ____________________
+reviews/evidence/04-training-and-benchmarks/checks.py:291: in test_invalid_weights_rejected
+    with pytest.raises((ValueError, lgb.basic.LightGBMError)):
+E   Failed: DID NOT RAISE (<class 'ValueError'>, <class 'lightgbm.basic.LightGBMError'>)
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+______________________ test_invalid_weights_rejected[nan] ______________________
+reviews/evidence/04-training-and-benchmarks/checks.py:291: in test_invalid_weights_rejected
+    with pytest.raises((ValueError, lgb.basic.LightGBMError)):
+E   Failed: DID NOT RAISE (<class 'ValueError'>, <class 'lightgbm.basic.LightGBMError'>)
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+___________________ test_invalid_weights_rejected[infinite] ____________________
+reviews/evidence/04-training-and-benchmarks/checks.py:291: in test_invalid_weights_rejected
+    with pytest.raises((ValueError, lgb.basic.LightGBMError)):
+E   Failed: DID NOT RAISE (<class 'ValueError'>, <class 'lightgbm.basic.LightGBMError'>)
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+___________________ test_invalid_weights_rejected[all_zero] ____________________
+reviews/evidence/04-training-and-benchmarks/checks.py:291: in test_invalid_weights_rejected
+    with pytest.raises((ValueError, lgb.basic.LightGBMError)):
+E   Failed: DID NOT RAISE (<class 'ValueError'>, <class 'lightgbm.basic.LightGBMError'>)
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+=============================== warnings summary ===============================
+reviews/evidence/01a-statistical-foundations/checks.py::test_invalid_weights_rejected[zero]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:763: RuntimeWarning: invalid value encountered in scalar divide
+    return np.sum(x * w) / np.sum(w)
+
+reviews/evidence/01a-statistical-foundations/checks.py::test_zero_weight_category_equivalent_to_removal[correlation_ratio]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:554: RuntimeWarning: invalid value encountered in scalar divide
+    ssbn = sum(np.square(s) / w for s, w in zip(sums_args, weight_per_class))
+
+reviews/evidence/01a-statistical-foundations/checks.py::test_zero_weight_category_equivalent_to_removal[f_cat_regression]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:1455: RuntimeWarning: invalid value encountered in scalar divide
+    ssbn += square_of_sums_args[k] / weight_per_class[k]
+
+reviews/evidence/01a-statistical-foundations/checks.py::test_zero_weight_category_equivalent_to_removal[cramer_v]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:389: FutureWarning: The provided callable <built-in function sum> is currently using DataFrameGroupBy.sum. In a future version of pandas, the provided callable will be used directly. To keep current behavior pass the string "sum" instead.
+    weighted_tab = pd.crosstab(x, y, sample_weight, aggfunc=sum).fillna(0)
+
+reviews/evidence/01a-statistical-foundations/checks.py::test_no_complete_rows_rejected
+reviews/evidence/01a-statistical-foundations/checks.py::test_no_complete_rows_rejected
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:2007: UserWarning: {'y'} columns have been removed (single unique values)
+    warnings.warn(
+
+reviews/evidence/01a-statistical-foundations/checks.py::test_no_complete_rows_rejected
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/association.py:803: RuntimeWarning: invalid value encountered in scalar divide
+    return wcov(x, y, w) / np.sqrt(wcov(x, x, w) * wcov(y, y, w))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_invalid_weights_rejected[zero]
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_invalid_weights_rejected[negative]
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_list_weights_supported
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_zero_weight_category_equivalent_to_removal[correlation_ratio]
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_zero_weight_category_equivalent_to_removal[f_cat_regression]
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_zero_weight_category_equivalent_to_removal[cramer_v]
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_no_complete_rows_rejected
+FAILED reviews/evidence/01a-statistical-foundations/checks.py::test_handle_na_none_passes_target_missingness_to_callable
+FAILED reviews/evidence/01b-all-relevant/checks.py::test_leshy_rejects_missing_response
+FAILED reviews/evidence/04-training-and-benchmarks/checks.py::test_invalid_targets_rejected[nan]
+FAILED reviews/evidence/04-training-and-benchmarks/checks.py::test_invalid_targets_rejected[inf]
+FAILED reviews/evidence/04-training-and-benchmarks/checks.py::test_invalid_targets_rejected[-inf]
+FAILED reviews/evidence/04-training-and-benchmarks/checks.py::test_invalid_weights_rejected[negative]
+FAILED reviews/evidence/04-training-and-benchmarks/checks.py::test_invalid_weights_rejected[nan]
+FAILED reviews/evidence/04-training-and-benchmarks/checks.py::test_invalid_weights_rejected[infinite]
+FAILED reviews/evidence/04-training-and-benchmarks/checks.py::test_invalid_weights_rejected[all_zero]
+16 failed, 121 deselected, 7 warnings in 3.87s

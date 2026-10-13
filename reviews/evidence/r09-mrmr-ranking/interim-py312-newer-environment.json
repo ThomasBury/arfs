@@ -1,0 +1,81 @@
+{
+  "arfs_version": "3.0.0",
+  "executable": "/tmp/arfs-r09/py312-newer/bin/python",
+  "modules": {
+    "arfs.association": {
+      "path": "/tmp/arfs-r09/py312-newer/lib/python3.12/site-packages/arfs/association.py",
+      "sha256": "0f1df7db34c573b42783086519dd600c1f012dc5c75a23f48a50257a697e2d39"
+    },
+    "arfs.benchmark": {
+      "path": "/tmp/arfs-r09/py312-newer/lib/python3.12/site-packages/arfs/benchmark.py",
+      "sha256": "19b785d434c7aa2feebbbac20d76ae350edf5e345efb6020607a0a9ac385385a"
+    },
+    "arfs.feature_selection.allrelevant": {
+      "path": "/tmp/arfs-r09/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py",
+      "sha256": "f51204dac8e75d21172390e55571ae2c587aa07ecab5cd07b3c7bd9e1d54af58"
+    },
+    "arfs.feature_selection.lasso": {
+      "path": "/tmp/arfs-r09/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/lasso.py",
+      "sha256": "64e1ddef3ce13b02b1e0e62e04c7f1fdca4d16bc62da03b3539004c111d14e7a"
+    },
+    "arfs.feature_selection.mrmr": {
+      "path": "/tmp/arfs-r09/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py",
+      "sha256": "2103c622af6090248b316c642f823061cc6c5a52f98d163e26b6a2bb1855d118"
+    },
+    "arfs.gbm": {
+      "path": "/tmp/arfs-r09/py312-newer/lib/python3.12/site-packages/arfs/gbm.py",
+      "sha256": "3c46834be43731237417cf99ce46b43329281ded4ae54b2ac91891a7930dc659"
+    },
+    "arfs.parallel": {
+      "path": "/tmp/arfs-r09/py312-newer/lib/python3.12/site-packages/arfs/parallel.py",
+      "sha256": "9fe944ab0543bd1c338025d92dede2aa7c5c008d36efd82f8af1e7da915862a7"
+    },
+    "arfs.utils": {
+      "path": "/tmp/arfs-r09/py312-newer/lib/python3.12/site-packages/arfs/utils.py",
+      "sha256": "5937df61224c6396e4da5559991867a01fee25547d97b832d4ee6a0559b10813"
+    }
+  },
+  "packages": {
+    "Jinja2": "3.1.6",
+    "MarkupSafe": "3.0.3",
+    "Pygments": "2.21.0",
+    "arfs": "3.0.0",
+    "cloudpickle": "3.1.2",
+    "contourpy": "1.4.0",
+    "coverage": "7.16.2",
+    "cycler": "0.12.1",
+    "fonttools": "4.66.1",
+    "formulaic": "1.2.2",
+    "iniconfig": "2.3.1",
+    "interface_meta": "2.0.1",
+    "joblib": "1.6.0",
+    "kiwisolver": "1.5.1",
+    "lightgbm": "4.7.0",
+    "matplotlib": "3.11.2",
+    "narwhals": "2.27.1",
+    "numpy": "2.5.4",
+    "packaging": "26.3",
+    "pandas": "3.0.6",
+    "patsy": "1.0.3",
+    "pillow": "12.3.0",
+    "pluggy": "1.6.0",
+    "pyparsing": "3.3.3",
+    "pytest": "9.1.1",
+    "pytest-cov": "7.1.0",
+    "python-dateutil": "2.9.0.post0",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1",
+    "seaborn": "0.13.2",
+    "shap": "0.53.0",
+    "six": "1.17.0",
+    "slicer": "0.0.8",
+    "statsmodels": "0.15.0",
+    "threadpoolctl": "3.7.0",
+    "tqdm": "4.70.1",
+    "typing_extensions": "4.16.0",
+    "wrapt": "2.5.0"
+  },
+  "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+  "python": "3.12.7 (main, Oct  8 2024, 00:20:25) [Clang 18.1.8 ]",
+  "setuptools_installed": false
+}

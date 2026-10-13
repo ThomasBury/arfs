@@ -14,10 +14,18 @@ historical handoffs.
 
 [Final assessment](07-final-assessment.md): review complete, release blockers
 remain; keep one distribution. [Remediation](REMEDIATION.md) is a separate repair
-backlog: [R01](R01-installed-package.md) and [R02/R03](R02-R03-compatibility.md)
-are complete; R04 is next, pending. Follow its
+backlog: [R01](R01-installed-package.md), [R02/R03](R02-R03-compatibility.md),
+[R04](R04-runtime-baseline.md), [R05](R05-observation-boundaries.md),
+[R06](R06-category-identity.md), [R07](R07-shadow-contracts.md),
+[R08](R08-statistical-arithmetic.md), [R09](R09-mrmr-ranking.md),
+[R10](R10-leshy-support.md), [R11](R11-permutation-importance.md) and
+[R12](R12-all-relevant-aggregation.md) are complete.
+**R13 alone is next**, with R03/R05 complete. Follow the
 [session batching and handoff guidance](REMEDIATION.md#session-batching-and-handoffs):
-run R04 alone. Later concurrent tracks require completed prerequisites and a
+repair GLM response-scale scoring and independent cross-validation in R13.
+Future "implement the next batch" requests follow the
+[recorded groups](REMEDIATION.md#recorded-groups-for-next-batch-requests).
+Later concurrent tracks require completed prerequisites and a
 check for shared files; the default remains one phase per session.
 
 | Order | Review item | Status | Read |

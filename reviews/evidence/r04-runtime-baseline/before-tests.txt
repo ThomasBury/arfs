@@ -1,0 +1,18 @@
+.FF                                                                      [100%]
+=================================== FAILURES ===================================
+____ TestFeatSelectZeroVariance.test_identify_single_unique_classification _____
+tests/test_featselect.py:45: in test_identify_single_unique_classification
+    assert fs.not_selected_features_ == ["var10"], message
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+_ TestFeatSelectHighCardinality.test_identify_high_cardinality_classification __
+tests/test_featselect.py:61: in test_identify_high_cardinality_classification
+    assert actual == expected, message
+E   AssertionError: Expected: ['dummy', 'nice_guys'], Actual: ['dummy']
+E   assert ['dummy'] == ['dummy', 'nice_guys']
+E
+E     Right contains one more item: 'nice_guys'
+E     Use -v to get more diff
+=========================== short test summary info ============================
+FAILED tests/test_featselect.py::TestFeatSelectZeroVariance::test_identify_single_unique_classification
+FAILED tests/test_featselect.py::TestFeatSelectHighCardinality::test_identify_high_cardinality_classification
+2 failed, 1 passed in 5.57s

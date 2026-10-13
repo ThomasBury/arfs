@@ -1,0 +1,118 @@
+Checkout: /home/bsatom/Documents/arfs
+Base: main @ 170b3e95fee635e8243ed8cdc740ecb80c4738ad.
+Pre-existing R04–R07 work preserved; R08 changes uncommitted.
+uv 0.12.15. All commands use the recorded dependency snapshots.
+
+Runtime commands below have these environment variables:
+UV_CACHE_DIR=/tmp/arfs-r04/cache MPLBACKEND=Agg
+MPLCONFIGDIR=/tmp/arfs-r08/mpl-$cell
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 PYTHONHASHSEED=0
+
+From checkout, before repairs against installed R07:
+env MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 /tmp/arfs-r07/py312-locked/bin/python -I -m pytest reviews/evidence/01a-statistical-foundations/checks.py -k 'numeric_f or constant_categorical or normalized_pearson or fractional_weights or grouped_statistics_translation or feature_named_target' --runxfail -q --tb=short -p no:cacheprovider
+env MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 /tmp/arfs-r07/py312-locked/bin/python -I -m pytest tests/test_statistical_arithmetic.py -q --tb=short -p no:cacheprovider
+The maintained before log contains the initial 83 arithmetic/identity cases.
+Two direct matrix-to-long cases were added after the interim newer failures:
+env MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 /tmp/arfs-r07/py312-newer/bin/python -I -m pytest tests/test_statistical_arithmetic.py -k matrix_to_xy -q --tb=short -p no:cacheprovider
+
+Build from checkout (repeated for the final output repairs):
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv lock --check --python /tmp/arfs-r07/py312-locked/bin/python
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv export --locked --extra test --no-emit-project --output-file /tmp/arfs-r08/locked-requirements.txt
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv build --python /tmp/arfs-r07/py312-locked/bin/python --out-dir /tmp/arfs-r08/dist
+
+Per-cell installation, environment and test commands follow.
+The first recorder retry follows Matplotlib's one-time font-cache log;
+no dependencies changed. The final install replaces only arfs after rebuilding.
+Each cell's tests are copied from the checkout to its run directory.
+
+py39-locked:
+cwd=/home/bsatom/Documents/arfs
+uv venv --python /tmp/arfs-r07/py39-locked/bin/python /tmp/arfs-r08/py39-locked
+cwd=/home/bsatom/Documents/arfs
+uv pip install --python /tmp/arfs-r08/py39-locked/bin/python -r /tmp/arfs-r08/locked-requirements.txt /tmp/arfs-r08/dist/arfs-3.0.0-py3-none-any.whl
+cwd=/home/bsatom/Documents/arfs
+uv pip check --python /tmp/arfs-r08/py39-locked/bin/python
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r08/py39-locked/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+cwd=/home/bsatom/Documents/arfs
+uv pip check --python /tmp/arfs-r08/py39-locked/bin/python
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r08/py39-locked/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+cwd=/tmp/arfs-r08/run-py39-locked
+/tmp/arfs-r08/py39-locked/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider
+cwd=/home/bsatom/Documents/arfs
+uv pip install --python /tmp/arfs-r08/py39-locked/bin/python --reinstall-package arfs /tmp/arfs-r08/dist/arfs-3.0.0-py3-none-any.whl
+cwd=/home/bsatom/Documents/arfs
+uv pip check --python /tmp/arfs-r08/py39-locked/bin/python
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r08/py39-locked/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+cwd=/tmp/arfs-r08/run-py39-locked
+/tmp/arfs-r08/py39-locked/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider
+
+py312-locked:
+cwd=/home/bsatom/Documents/arfs
+uv venv --python /tmp/arfs-r07/py312-locked/bin/python /tmp/arfs-r08/py312-locked
+cwd=/home/bsatom/Documents/arfs
+uv pip install --python /tmp/arfs-r08/py312-locked/bin/python -r /tmp/arfs-r08/locked-requirements.txt /tmp/arfs-r08/dist/arfs-3.0.0-py3-none-any.whl
+cwd=/home/bsatom/Documents/arfs
+uv pip check --python /tmp/arfs-r08/py312-locked/bin/python
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r08/py312-locked/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+cwd=/home/bsatom/Documents/arfs
+uv pip check --python /tmp/arfs-r08/py312-locked/bin/python
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r08/py312-locked/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+cwd=/tmp/arfs-r08/run-py312-locked
+/tmp/arfs-r08/py312-locked/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider
+cwd=/tmp/arfs-r08/run-py312-locked
+/tmp/arfs-r08/py312-locked/bin/python -I -m pytest /home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py -k 'numeric_f or constant_categorical or normalized_pearson or fractional_weights or grouped_statistics_translation or feature_named_target or frequency_weighted or weighted_pearson or unweighted_pearson' --runxfail -q --tb=short -p no:cacheprovider
+cwd=/home/bsatom/Documents/arfs
+uv pip install --python /tmp/arfs-r08/py312-locked/bin/python --reinstall-package arfs /tmp/arfs-r08/dist/arfs-3.0.0-py3-none-any.whl
+cwd=/home/bsatom/Documents/arfs
+uv pip check --python /tmp/arfs-r08/py312-locked/bin/python
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r08/py312-locked/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+cwd=/tmp/arfs-r08/run-py312-locked
+/tmp/arfs-r08/py312-locked/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider
+cwd=/tmp/arfs-r08/run-py312-locked
+/tmp/arfs-r08/py312-locked/bin/python -I -m pytest /home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py -k 'numeric_f or constant_categorical or normalized_pearson or fractional_weights or grouped_statistics_translation or feature_named_target or frequency_weighted or weighted_pearson or unweighted_pearson' --runxfail -q --tb=short -p no:cacheprovider
+
+py312-newer:
+cwd=/home/bsatom/Documents/arfs
+uv venv --python /tmp/arfs-r07/py312-newer/bin/python /tmp/arfs-r08/py312-newer
+cwd=/home/bsatom/Documents/arfs
+uv pip install --python /tmp/arfs-r08/py312-newer/bin/python -r /home/bsatom/Documents/arfs/.github/requirements/runtime-newer-py312.txt /tmp/arfs-r08/dist/arfs-3.0.0-py3-none-any.whl
+cwd=/home/bsatom/Documents/arfs
+uv pip check --python /tmp/arfs-r08/py312-newer/bin/python
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r08/py312-newer/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+cwd=/home/bsatom/Documents/arfs
+uv pip check --python /tmp/arfs-r08/py312-newer/bin/python
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r08/py312-newer/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+cwd=/tmp/arfs-r08/run-py312-newer
+/tmp/arfs-r08/py312-newer/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider
+cwd=/home/bsatom/Documents/arfs
+uv pip install --python /tmp/arfs-r08/py312-newer/bin/python --reinstall-package arfs /tmp/arfs-r08/dist/arfs-3.0.0-py3-none-any.whl
+cwd=/home/bsatom/Documents/arfs
+uv pip check --python /tmp/arfs-r08/py312-newer/bin/python
+cwd=/home/bsatom/Documents/arfs
+/tmp/arfs-r08/py312-newer/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+cwd=/tmp/arfs-r08/run-py312-newer
+/tmp/arfs-r08/py312-newer/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider
+cwd=/tmp/arfs-r08/run-py312-newer
+/tmp/arfs-r08/py312-newer/bin/python -I -m pytest /home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py -k 'numeric_f or constant_categorical or normalized_pearson or fractional_weights or grouped_statistics_translation or feature_named_target or frequency_weighted or weighted_pearson or unweighted_pearson' --runxfail -q --tb=short -p no:cacheprovider
+
+From checkout:
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv tool run --from ruff==0.17.0 python .github/scripts/check_ruff_baseline.py
+/tmp/arfs-r07/py312-locked/bin/python -m unittest discover -s .github/scripts -p 'test_*.py'
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv tool run --from ruff==0.17.0 ruff check tests/test_statistical_arithmetic.py
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv tool run --from ruff==0.17.0 ruff format --check tests/test_statistical_arithmetic.py
+git diff --check
+
+All recorded installed module hashes and copied maintained tests match final sources.
+All 19 packaged payloads match source, sdist and final wheel (wheel.json).
+Ten unrelated pre-existing tracked diff sections remain byte-for-byte unchanged.
+Historical evidence is unchanged. Hosted CI, docs/notebooks, optional backends,
+performance, full sklearn compliance and statistical calibration were not run.

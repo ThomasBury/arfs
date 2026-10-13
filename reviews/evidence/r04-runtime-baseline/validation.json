@@ -1,0 +1,48 @@
+{
+  "phase": "R04",
+  "status": "complete",
+  "source_base": "170b3e95fee635e8243ed8cdc740ecb80c4738ad",
+  "branch": "main",
+  "changes": "uncommitted",
+  "uv": "0.12.15",
+  "suite": {
+    "py39-locked": {
+      "passed": 64,
+      "log": "py39-locked-tests.txt",
+      "environment": "py39-locked-environment.json"
+    },
+    "py312-locked": {
+      "passed": 64,
+      "log": "py312-locked-tests.txt",
+      "environment": "py312-locked-environment.json"
+    },
+    "py312-newer": {
+      "passed": 60,
+      "log": "py312-newer-tests.txt",
+      "environment": "py312-newer-environment.json"
+    }
+  },
+  "suite_command": "env MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=1 PYTHONHASHSEED=0 /tmp/arfs-r04/CELL/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider",
+  "py39_final_command_note": "Final rerun used absolute /tmp/arfs-r04/run/tests from the checkout, with isolated Python and installed arfs.",
+  "lock_check": "passed on Python 3.9 and 3.12",
+  "dependency_versions_and_hashes": "unchanged",
+  "wheel_source_payloads": 19,
+  "installed_identity_and_dependency_checks": "passed in all three cells; no runtime setuptools",
+  "select_all_probe": "3 expected failures at noise bound",
+  "ruff": {
+    "diagnostics": 429,
+    "new": 0,
+    "gate_tests": 2
+  },
+  "skipped": [
+    "hosted GitHub Actions execution",
+    "Python 3.10/3.11 and other platforms",
+    "docs/notebooks",
+    "optional backends",
+    "broad statistical/performance validation"
+  ],
+  "next_group": "R05 alone",
+  "prerequisites": [
+    "R01 complete"
+  ]
+}

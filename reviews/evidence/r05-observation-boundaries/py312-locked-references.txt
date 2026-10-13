@@ -1,0 +1,8 @@
+..........................                                               [100%]
+=============================== warnings summary ===============================
+reviews/evidence/01a-statistical-foundations/checks.py::test_no_complete_rows_rejected
+  /tmp/arfs-r05/py312-locked/lib/python3.12/site-packages/arfs/association.py:2040: UserWarning: {'y'} columns have been removed (single unique values)
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+26 passed, 111 deselected, 1 warning in 14.50s

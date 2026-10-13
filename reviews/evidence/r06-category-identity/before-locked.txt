@@ -1,0 +1,40 @@
+FF..FFF                                                                  [100%]
+=================================== FAILURES ===================================
+________________ test_boolean_series_matches_categorical_matrix ________________
+/home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py:288: in test_boolean_series_matches_categorical_matrix
+    assert_allclose(a.association_series(X, "b1")["b2"], 0.)
+arfs-r05/py312-locked/lib/python3.12/site-packages/arfs/association.py:1193: in association_series
+    return assoc_series.sort_values(ascending=False)
+E   AttributeError: 'NoneType' object has no attribute 'sort_values'
+___________________ test_cardinality_string_extension_dtype ____________________
+/home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py:143: in test_cardinality_string_extension_dtype
+    assert selector.statistic_series_['text'] == 3
+E   assert np.int64(0) == 3
+_______________ test_encoding_preserves_distinct_values[values0] _______________
+/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py:84: in test_encoding_preserves_distinct_values
+    assert encoded.category.nunique() == 2
+E   assert 1 == 2
+E    +  where 1 = nunique()
+E    +    where nunique = 0    0\n1    0\nName: category, dtype: int64.nunique
+E    +      where 0    0\n1    0\nName: category, dtype: int64 =    category\n0         0\n1         0.category
+_______________ test_encoding_preserves_distinct_values[values1] _______________
+/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py:84: in test_encoding_preserves_distinct_values
+    assert encoded.category.nunique() == 2
+E   assert 1 == 2
+E    +  where 1 = nunique()
+E    +    where nunique = 0    0\n1    0\nName: category, dtype: int64.nunique
+E    +      where 0    0\n1    0\nName: category, dtype: int64 =    category\n0         0\n1         0.category
+_______________ test_encoding_preserves_distinct_values[values2] _______________
+/home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py:84: in test_encoding_preserves_distinct_values
+    assert encoded.category.nunique() == 2
+E   assert 1 == 2
+E    +  where 1 = nunique()
+E    +    where nunique = 0    0\n1    0\nName: category, dtype: int64.nunique
+E    +      where 0    0\n1    0\nName: category, dtype: int64 =    category\n0         0\n1         0.category
+=========================== short test summary info ============================
+FAILED ../home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py::test_boolean_series_matches_categorical_matrix
+FAILED ../home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py::test_cardinality_string_extension_dtype
+FAILED ../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_encoding_preserves_distinct_values[values0]
+FAILED ../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_encoding_preserves_distinct_values[values1]
+FAILED ../home/bsatom/Documents/arfs/reviews/evidence/06-utilities-and-workflows/checks.py::test_encoding_preserves_distinct_values[values2]
+5 failed, 2 passed, 212 deselected in 5.26s

@@ -1,0 +1,12 @@
+...........                                                              [100%]
+=============================== warnings summary ===============================
+reviews/evidence/01a-statistical-foundations/checks.py::test_mixed_singletons_can_be_selected[classification]
+  /tmp/arfs-r09/py312-locked/lib/python3.12/site-packages/arfs/association.py:244: RuntimeWarning: Rounded U = 0.0 to 0. This is probably due to floating point precision issues.
+    warnings.warn(
+
+reviews/evidence/01a-statistical-foundations/checks.py::test_mixed_singletons_can_be_selected[classification]
+  /tmp/arfs-r09/py312-locked/lib/python3.12/site-packages/arfs/association.py:244: RuntimeWarning: Rounded U = 1.0 to 1. This is probably due to floating point precision issues.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+11 passed, 31 deselected, 2 warnings in 5.13s

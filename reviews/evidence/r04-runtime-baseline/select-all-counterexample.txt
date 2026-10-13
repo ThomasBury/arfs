@@ -1,0 +1,28 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+____________ test_selector_recovers_signal_and_rejects_noise[leshy] ____________
+tests/test_runtime_baseline.py:82: in test_selector_recovers_signal_and_rejects_noise
+    assert len(selected - {"signal"}) <= 2
+E   AssertionError: assert 8 <= 2
+E    +  where 8 = len(({'noise0', 'noise1', 'noise2', 'noise3', 'noise4', 'noise5', ...} - {'signal'}))
+________ test_selector_recovers_signal_and_rejects_noise[boostagroota] _________
+tests/test_runtime_baseline.py:82: in test_selector_recovers_signal_and_rejects_noise
+    assert len(selected - {"signal"}) <= 2
+E   AssertionError: assert 8 <= 2
+E    +  where 8 = len(({'noise0', 'noise1', 'noise2', 'noise3', 'noise4', 'noise5', ...} - {'signal'}))
+___________ test_selector_recovers_signal_and_rejects_noise[grootcv] ___________
+tests/test_runtime_baseline.py:82: in test_selector_recovers_signal_and_rejects_noise
+    assert len(selected - {"signal"}) <= 2
+E   AssertionError: assert 8 <= 2
+E    +  where 8 = len(({'noise0', 'noise1', 'noise2', 'noise3', 'noise4', 'noise5', ...} - {'signal'}))
+=============================== warnings summary ===============================
+arfs-r04/run/tests/test_runtime_baseline.py::test_selector_recovers_signal_and_rejects_noise[boostagroota]
+  /tmp/arfs-r04/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1528: UserWarning: [BoostAGroota]: using native variable importance might break the FS
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_runtime_baseline.py::test_selector_recovers_signal_and_rejects_noise[leshy]
+FAILED tests/test_runtime_baseline.py::test_selector_recovers_signal_and_rejects_noise[boostagroota]
+FAILED tests/test_runtime_baseline.py::test_selector_recovers_signal_and_rejects_noise[grootcv]
+3 failed, 3 deselected, 1 warning in 0.86s

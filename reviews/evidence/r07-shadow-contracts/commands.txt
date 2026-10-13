@@ -1,0 +1,45 @@
+Checkout: /home/bsatom/Documents/arfs
+Base: main @ 170b3e95fee635e8243ed8cdc740ecb80c4738ad.
+Pre-existing R04–R06 work preserved; R07 changes uncommitted.
+uv 0.12.15; fresh runtime environments under /tmp/arfs-r07.
+
+Before, once per cell=py312-locked, py312-newer, against the installed R06 wheel:
+env MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 /tmp/arfs-r06/$cell/bin/python -I -m pytest reviews/evidence/01b-all-relevant/checks.py -k 'fit_preserves_categorical_input or preserves_categorical_roles or numeric_category_shadow_matches_original_role or shadow_names_do_not_change_real_feature_identity' --runxfail -q --tb=short -p no:cacheprovider
+
+Final promoted before check, from checkout:
+env MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 /tmp/arfs-r06/py312-newer/bin/python -I -m pytest tests/test_shadow_contracts.py -q --tb=short -p no:cacheprovider
+
+Build/check from checkout:
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv lock --check --python /tmp/arfs-r06/py312-locked/bin/python
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv export --locked --extra test --no-emit-project --output-file /tmp/arfs-r07/locked-requirements.txt
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv build --python /tmp/arfs-r06/py312-locked/bin/python --out-dir /tmp/arfs-r07/dist
+
+Install once per cell=py39-locked, py312-locked, py312-newer:
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv venv --python /tmp/arfs-r06/$cell/bin/python /tmp/arfs-r07/$cell
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv pip install --python /tmp/arfs-r07/$cell/bin/python -r /tmp/arfs-r07/locked-requirements.txt /tmp/arfs-r07/dist/arfs-3.0.0-py3-none-any.whl
+For py312-newer, replace the locked requirements with .github/requirements/runtime-newer-py312.txt.
+mkdir -p /tmp/arfs-r07/run
+cp -r tests /tmp/arfs-r07/run/
+
+Full maintained suite cwd=/tmp/arfs-r07/run; once per cell above:
+env MPLBACKEND=Agg MPLCONFIGDIR=/tmp/arfs-r07/mpl-$cell OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 PYTHONHASHSEED=0 /tmp/arfs-r07/$cell/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider
+
+Historical after cwd=/tmp/arfs-r07/run; once per cell=py312-locked, py312-newer:
+env MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 /tmp/arfs-r07/$cell/bin/python -I -m pytest /home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py -k 'fit_preserves_categorical_input or preserves_categorical_roles or numeric_category_shadow_matches_original_role or shadow_names_do_not_change_real_feature_identity or shadow_preserves_values_index_and_input or fold_splitting_keeps_weights_aligned' --runxfail -q --tb=short -p no:cacheprovider
+
+Per-cell provenance and dependency checks from checkout:
+/tmp/arfs-r07/$cell/bin/python -I reviews/evidence/r05-observation-boundaries/environment.py
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv pip check --python /tmp/arfs-r07/$cell/bin/python
+All package versions match the corresponding recorded R06 environment JSON.
+The pre-edit allrelevant.py hash matches the R06 installed module hash.
+wheel.json hashes all packaged arfs/ payloads; all match src/, and all source .py files are present.
+All copied test .py files match the final maintained suite byte for byte.
+
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv tool run --from ruff==0.17.0 python .github/scripts/check_ruff_baseline.py
+/tmp/arfs-r07/py312-locked/bin/python -m unittest discover -s .github/scripts -p 'test_*.py'
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv tool run --from ruff==0.17.0 ruff check tests/test_shadow_contracts.py
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv tool run --from ruff==0.17.0 ruff format --check tests/test_shadow_contracts.py
+git diff --check
+
+All unrelated pre-existing tracked diff sections remain byte-for-byte unchanged.
+Hosted CI, docs/notebooks, optional backends, performance, visual image review and statistical calibration not run.

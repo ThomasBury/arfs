@@ -1,0 +1,57 @@
+Working checkout: /home/bsatom/Documents/arfs
+
+Base: main @ 170b3e95fee635e8243ed8cdc740ecb80c4738ad; R04 and R05 changes uncommitted.
+
+Before: /tmp/arfs-r04/py312-locked imports the unchanged R04 installed wheel.
+
+env MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 /tmp/arfs-r04/py312-locked/bin/python -m pytest reviews/evidence/01a-statistical-foundations/checks.py reviews/evidence/01b-all-relevant/checks.py reviews/evidence/04-training-and-benchmarks/checks.py --import-mode=importlib -k 'invalid_weights_rejected or list_weights_supported or zero_weight_category_equivalent_to_removal or no_complete_rows_rejected or handle_na_none_passes_target_missingness_to_callable or leshy_rejects_missing_response or invalid_targets_rejected' --runxfail -q --tb=short -p no:cacheprovider
+
+env MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 /tmp/arfs-r04/py312-locked/bin/python -m pytest tests/test_observation_boundaries.py -q --tb=short -p no:cacheprovider
+
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv build --python /tmp/arfs-r04/py312-locked/bin/python --out-dir /tmp/arfs-r05/dist
+
+Runtime cell: py312-locked; full tests cwd=/tmp/arfs-r05/run; dependencies as recorded in py312-locked-environment.json.
+
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv pip install --python /tmp/arfs-r05/py312-locked/bin/python --reinstall --no-deps /tmp/arfs-r05/dist/arfs-3.0.0-py3-none-any.whl
+
+env MPLBACKEND=Agg MPLCONFIGDIR=/tmp/arfs-r05/mpl-py312-locked OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 PYTHONHASHSEED=0 /tmp/arfs-r05/py312-locked/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider
+
+/tmp/arfs-r05/py312-locked/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv pip check --python /tmp/arfs-r05/py312-locked/bin/python
+
+Runtime cell: py312-newer; full tests cwd=/tmp/arfs-r05/run; dependencies as recorded in py312-newer-environment.json.
+
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv pip install --python /tmp/arfs-r05/py312-newer/bin/python --reinstall --no-deps /tmp/arfs-r05/dist/arfs-3.0.0-py3-none-any.whl
+
+env MPLBACKEND=Agg MPLCONFIGDIR=/tmp/arfs-r05/mpl-py312-newer OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 PYTHONHASHSEED=0 /tmp/arfs-r05/py312-newer/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider
+
+/tmp/arfs-r05/py312-newer/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv pip check --python /tmp/arfs-r05/py312-newer/bin/python
+
+Runtime cell: py39-locked; full tests cwd=/tmp/arfs-r05/run; dependencies as recorded in py39-locked-environment.json.
+
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv pip install --python /tmp/arfs-r05/py39-locked/bin/python --reinstall --no-deps /tmp/arfs-r05/dist/arfs-3.0.0-py3-none-any.whl
+
+env MPLBACKEND=Agg MPLCONFIGDIR=/tmp/arfs-r05/mpl-py39-locked OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 PYTHONHASHSEED=0 /tmp/arfs-r05/py39-locked/bin/python -I -m pytest tests -q --tb=short -p no:cacheprovider
+
+/tmp/arfs-r05/py39-locked/bin/python -I /home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py
+
+env UV_CACHE_DIR=/tmp/arfs-r04/cache uv pip check --python /tmp/arfs-r05/py39-locked/bin/python
+
+cwd=/tmp/arfs-r05/run; env MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 /tmp/arfs-r05/py312-locked/bin/python -I -m pytest /home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py /home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py /home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py --import-mode=importlib -k 'invalid_weights_rejected or list_weights_supported or zero_weight_category_equivalent_to_removal or no_complete_rows_rejected or handle_na_none_passes_target_missingness_to_callable or leshy_rejects_missing_response or invalid_targets_rejected or weighted_native_reference or fold_splitting_keeps_weights_aligned or complete_case_mask_preserves_weights_and_input or unweighted_correlation_reference or weighted_pearson_frequency_reference or weighted_ranks_hand_reference' --runxfail -q --tb=short -p no:cacheprovider
+
+cwd=/tmp/arfs-r05/run; env MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 /tmp/arfs-r05/py312-newer/bin/python -I -m pytest /home/bsatom/Documents/arfs/reviews/evidence/01a-statistical-foundations/checks.py /home/bsatom/Documents/arfs/reviews/evidence/01b-all-relevant/checks.py /home/bsatom/Documents/arfs/reviews/evidence/04-training-and-benchmarks/checks.py --import-mode=importlib -k 'invalid_weights_rejected or list_weights_supported or zero_weight_category_equivalent_to_removal or no_complete_rows_rejected or handle_na_none_passes_target_missingness_to_callable or leshy_rejects_missing_response or invalid_targets_rejected or weighted_native_reference or fold_splitting_keeps_weights_aligned or complete_case_mask_preserves_weights_and_input or unweighted_correlation_reference or weighted_pearson_frequency_reference or weighted_ranks_hand_reference' --runxfail -q --tb=short -p no:cacheprovider
+
+First historical-reference runs also selected benchmark_weighted_reference_and_feature_labels; their two mock-keyword failures are retained separately.
+
+ruff 0.17.0 on PATH; python .github/scripts/check_ruff_baseline.py
+
+python -m unittest discover -s .github/scripts -p 'test_*.py'
+
+ruff check tests/test_observation_boundaries.py reviews/evidence/r05-observation-boundaries/environment.py
+
+ruff format --check tests/test_observation_boundaries.py reviews/evidence/r05-observation-boundaries/environment.py
+
+git diff --check

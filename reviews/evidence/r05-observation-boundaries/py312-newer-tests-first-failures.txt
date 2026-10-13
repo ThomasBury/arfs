@@ -1,0 +1,111 @@
+....................FFFF..............................................F. [ 31%]
+........................................................................ [ 62%]
+........................................................................ [ 93%]
+..............                                                           [100%]
+=================================== FAILURES ===================================
+_______________ test_parallel_relevance_agrees[regression-False] _______________
+tests/test_dependency_apis.py:150: in test_parallel_relevance_agrees
+    fn(X, y, sample_weight=w, n_jobs=1), fn(X, y, sample_weight=w, n_jobs=2)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../py312-newer/lib/python3.12/site-packages/arfs/association.py:1573: in f_cat_regression_parallel
+    return parallel_df(
+../py312-newer/lib/python3.12/site-packages/arfs/parallel.py:101: in parallel_df
+    return pd.concat(lst).sort_values(ascending=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: DataFrame.sort_values() missing 1 required positional argument: 'by'
+_______________ test_parallel_relevance_agrees[regression-True] ________________
+tests/test_dependency_apis.py:150: in test_parallel_relevance_agrees
+    fn(X, y, sample_weight=w, n_jobs=1), fn(X, y, sample_weight=w, n_jobs=2)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../py312-newer/lib/python3.12/site-packages/arfs/association.py:1573: in f_cat_regression_parallel
+    return parallel_df(
+../py312-newer/lib/python3.12/site-packages/arfs/parallel.py:101: in parallel_df
+    return pd.concat(lst).sort_values(ascending=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: DataFrame.sort_values() missing 1 required positional argument: 'by'
+_____________ test_parallel_relevance_agrees[classification-False] _____________
+tests/test_dependency_apis.py:150: in test_parallel_relevance_agrees
+    fn(X, y, sample_weight=w, n_jobs=1), fn(X, y, sample_weight=w, n_jobs=2)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../py312-newer/lib/python3.12/site-packages/arfs/association.py:1814: in f_cont_classification_parallel
+    return parallel_df(
+../py312-newer/lib/python3.12/site-packages/arfs/parallel.py:101: in parallel_df
+    return pd.concat(lst).sort_values(ascending=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: DataFrame.sort_values() missing 1 required positional argument: 'by'
+_____________ test_parallel_relevance_agrees[classification-True] ______________
+tests/test_dependency_apis.py:150: in test_parallel_relevance_agrees
+    fn(X, y, sample_weight=w, n_jobs=1), fn(X, y, sample_weight=w, n_jobs=2)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../py312-newer/lib/python3.12/site-packages/arfs/association.py:1814: in f_cont_classification_parallel
+    return parallel_df(
+../py312-newer/lib/python3.12/site-packages/arfs/parallel.py:101: in parallel_df
+    return pd.concat(lst).sort_values(ascending=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: DataFrame.sort_values() missing 1 required positional argument: 'by'
+______ test_zero_weight_category_equivalent_to_removal[correlation_ratio] ______
+tests/test_observation_boundaries.py:87: in test_zero_weight_category_equivalent_to_removal
+    statistic(x, y, [1, 1, 1, 1, 0]),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../py312-newer/lib/python3.12/site-packages/arfs/association.py:611: in correlation_ratio
+    raise TypeError(
+E   TypeError: One of the series must be categorical and the other numerical.
+=============================== warnings summary ===============================
+arfs-r05/run/tests/test_allrelevant.py: 56 warnings
+arfs-r05/run/tests/test_featselect.py: 1 warning
+  /tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/utils.py:155: Pandas4Warning: For backward compatibility, 'str' dtypes are included by select_dtypes when 'object' dtype is specified. This behavior is deprecated and will be removed in a future version. Explicitly pass 'str' to `include` to select them, or to `exclude` to remove them and silence this warning.
+  See https://pandas.pydata.org/docs/user_guide/migration-3-strings.html#string-migration-select-dtypes for details on how to write code that works with pandas 2 and 3.
+    categorical_cols = df.select_dtypes(include=["object", "category", "bool"]).columns
+
+arfs-r05/run/tests/test_allrelevant.py: 38 warnings
+  /tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/shap/explainers/_tree.py:579: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+    warnings.warn(
+
+arfs-r05/run/tests/test_dependency_apis.py::test_public_lasso_selector_fits
+  /tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:197: ConvergenceWarning: Regularized fitting did not converge
+    self.result = self.model.fit_regularized(
+
+arfs-r05/run/tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/benchmark.py:99: MatplotlibDeprecationWarning: vert: bool was deprecated in Matplotlib 3.11 and will be removed in 3.13. Use orientation: {'vertical', 'horizontal'} instead.
+    ax.boxplot(
+
+arfs-r05/run/tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/benchmark.py:104: UserWarning: Tight layout not applied. The bottom and top margins cannot be made large enough to accommodate all Axes decorations.
+    fig.tight_layout()
+
+arfs-r05/run/tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/benchmark.py:109: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+    plt.show()
+
+arfs-r05/run/tests/test_observation_boundaries.py::test_zero_weight_category_equivalent_to_removal[weighted_theils_u]
+  /tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:228: RuntimeWarning: Rounded U = 0.0 to 0. This is probably due to floating point precision issues.
+    warnings.warn(
+
+arfs-r05/run/tests/test_observation_boundaries.py::test_no_usable_observations_rejected[X0-None]
+  /tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:2040: UserWarning: {'y'} columns have been removed (single unique values)
+    warnings.warn(
+
+arfs-r05/run/tests/test_observation_boundaries.py::test_no_usable_observations_rejected[X1-weights1]
+  /tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:2040: UserWarning: {'x'} columns have been removed (single unique values)
+    warnings.warn(
+
+arfs-r05/run/tests/test_observation_boundaries.py: 12 warnings
+arfs-r05/run/tests/test_runtime_baseline.py: 1 warning
+  /tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1534: UserWarning: [BoostAGroota]: using native variable importance might break the FS
+    warnings.warn(
+
+arfs-r05/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+arfs-r05/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+arfs-r05/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+arfs-r05/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+  /tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/gbm.py:343: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_dependency_apis.py::test_parallel_relevance_agrees[regression-False]
+FAILED tests/test_dependency_apis.py::test_parallel_relevance_agrees[regression-True]
+FAILED tests/test_dependency_apis.py::test_parallel_relevance_agrees[classification-False]
+FAILED tests/test_dependency_apis.py::test_parallel_relevance_agrees[classification-True]
+FAILED tests/test_observation_boundaries.py::test_zero_weight_category_equivalent_to_removal[correlation_ratio]
+5 failed, 225 passed, 119 warnings in 133.36s (0:02:13)

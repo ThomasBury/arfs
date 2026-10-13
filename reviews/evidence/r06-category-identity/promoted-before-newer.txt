@@ -1,0 +1,694 @@
+F..F...FFFFFFFFFFFF..FFFF..FFFFFFFF..FF.FFFFFFFFFF                       [100%]
+=================================== FAILURES ===================================
+______ test_shared_dtype_groups_preserve_numeric_time_and_interval_roles _______
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:38: in test_shared_dtype_groups_preserve_numeric_time_and_interval_roles
+    assert groups == {
+E   assert {'cat': ["<cl...'delta'], ...} == {'cat': ["<cl...terval'], ...}
+E
+E     Omitting 3 identical items, use -vv to show
+E     Differing items:
+E     {'unk': ['string', 'unknown']} != {'unk': ['unknown']}
+E     {'cat': ["<class 'object'>", 'category', 'None', "<class 'bool'>", 'boolean', 'numeric_category']} != {'cat': ["<class 'object'>", 'category', 'string', 'None', "<class 'bool'>", 'boolean', ...]}
+E     Use -v to get more diff
+____________ test_cardinality_counts_all_categorical_dtypes[string] ____________
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:57: in test_cardinality_counts_all_categorical_dtypes
+    assert selector.statistic_series_.to_dict() == {"cat": 2, "num": 0}
+E   AssertionError: assert {'cat': 0, 'num': 0} == {'cat': 2, 'num': 0}
+E
+E     Omitting 1 identical items, use -vv to show
+E     Differing items:
+E     {'cat': 0} != {'cat': 2}
+E     Use -v to get more diff
+_ test_encoding_preserves_original_identity_and_missingness[values0-expected0-object] _
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:79: in test_encoding_preserves_original_identity_and_missingness
+    assert_array_equal(X.cat, expected)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 2 / 4 (50%)
+E   Mismatch at indices:
+E    [1]: 0 (ACTUAL), 1 (DESIRED)
+E    [3]: 0 (ACTUAL), 1 (DESIRED)
+E   Max absolute difference among violations: 1
+E   Max relative difference among violations: 1.
+E    ACTUAL: array([0, 0, 0, 0])
+E    DESIRED: array([0, 1, 0, 1])
+_ test_encoding_preserves_original_identity_and_missingness[values0-expected0-category] _
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:79: in test_encoding_preserves_original_identity_and_missingness
+    assert_array_equal(X.cat, expected)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 2 / 4 (50%)
+E   Mismatch at indices:
+E    [1]: 0 (ACTUAL), 1 (DESIRED)
+E    [3]: 0 (ACTUAL), 1 (DESIRED)
+E   Max absolute difference among violations: 1
+E   Max relative difference among violations: 1.
+E    ACTUAL: array([0, 0, 0, 0])
+E    DESIRED: array([0, 1, 0, 1])
+_ test_encoding_preserves_original_identity_and_missingness[values1-expected1-object] _
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:76: in test_encoding_preserves_original_identity_and_missingness
+    encoded, names, positions = utils.get_pandas_cat_codes(X)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/utils.py:221: in get_pandas_cat_codes
+    _, inverse = np.unique(column, return_inverse=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:296: in unique
+    ret = _unique1d(ar, return_index, return_inverse, return_counts,
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:382: in _unique1d
+    perm = ar.argsort(kind='mergesort' if return_index else 'quicksort')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: '<' not supported between instances of 'str' and 'float'
+_ test_encoding_preserves_original_identity_and_missingness[values1-expected1-category] _
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:76: in test_encoding_preserves_original_identity_and_missingness
+    encoded, names, positions = utils.get_pandas_cat_codes(X)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/utils.py:221: in get_pandas_cat_codes
+    _, inverse = np.unique(column, return_inverse=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:296: in unique
+    ret = _unique1d(ar, return_index, return_inverse, return_counts,
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:382: in _unique1d
+    perm = ar.argsort(kind='mergesort' if return_index else 'quicksort')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: '<' not supported between instances of 'str' and 'float'
+_ test_encoding_preserves_original_identity_and_missingness[values2-expected2-object] _
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:79: in test_encoding_preserves_original_identity_and_missingness
+    assert_array_equal(X.cat, expected)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 4 / 4 (100%)
+E   Mismatch at indices:
+E    [0]: 2 (ACTUAL), 0 (DESIRED)
+E    [1]: 0 (ACTUAL), 1 (DESIRED)
+E    [2]: 2 (ACTUAL), 0 (DESIRED)
+E    [3]: 1 (ACTUAL), 2 (DESIRED)
+E   Max absolute difference among violations: 2
+E   Max relative difference among violations: 1.
+E    ACTUAL: array([2, 0, 2, 1])
+E    DESIRED: array([0, 1, 0, 2])
+_ test_encoding_preserves_original_identity_and_missingness[values2-expected2-category] _
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:79: in test_encoding_preserves_original_identity_and_missingness
+    assert_array_equal(X.cat, expected)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 4 / 4 (100%)
+E   Mismatch at indices:
+E    [0]: 2 (ACTUAL), 0 (DESIRED)
+E    [1]: 0 (ACTUAL), 1 (DESIRED)
+E    [2]: 2 (ACTUAL), 0 (DESIRED)
+E    [3]: 1 (ACTUAL), 2 (DESIRED)
+E   Max absolute difference among violations: 2
+E   Max relative difference among violations: 1.
+E    ACTUAL: array([2, 0, 2, 1])
+E    DESIRED: array([0, 1, 0, 2])
+_______ test_encoding_nullable_dtypes_and_unused_category_levels[object] _______
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:92: in test_encoding_nullable_dtypes_and_unused_category_levels
+    encoded, names, positions = utils.get_pandas_cat_codes(X)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/utils.py:221: in get_pandas_cat_codes
+    _, inverse = np.unique(column, return_inverse=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:296: in unique
+    ret = _unique1d(ar, return_index, return_inverse, return_counts,
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:382: in _unique1d
+    perm = ar.argsort(kind='mergesort' if return_index else 'quicksort')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: '<' not supported between instances of 'float' and 'str'
+______ test_encoding_nullable_dtypes_and_unused_category_levels[category] ______
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:92: in test_encoding_nullable_dtypes_and_unused_category_levels
+    encoded, names, positions = utils.get_pandas_cat_codes(X)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/utils.py:221: in get_pandas_cat_codes
+    _, inverse = np.unique(column, return_inverse=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:296: in unique
+    ret = _unique1d(ar, return_index, return_inverse, return_counts,
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:382: in _unique1d
+    perm = ar.argsort(kind='mergesort' if return_index else 'quicksort')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: '<' not supported between instances of 'float' and 'str'
+_______ test_encoding_nullable_dtypes_and_unused_category_levels[string] _______
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:92: in test_encoding_nullable_dtypes_and_unused_category_levels
+    encoded, names, positions = utils.get_pandas_cat_codes(X)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/utils.py:221: in get_pandas_cat_codes
+    _, inverse = np.unique(column, return_inverse=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:296: in unique
+    ret = _unique1d(ar, return_index, return_inverse, return_counts,
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:382: in _unique1d
+    perm = ar.argsort(kind='mergesort' if return_index else 'quicksort')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: '<' not supported between instances of 'float' and 'str'
+________ test_encoding_nullable_dtypes_and_unused_category_levels[None] ________
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:92: in test_encoding_nullable_dtypes_and_unused_category_levels
+    encoded, names, positions = utils.get_pandas_cat_codes(X)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/utils.py:221: in get_pandas_cat_codes
+    _, inverse = np.unique(column, return_inverse=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:296: in unique
+    ret = _unique1d(ar, return_index, return_inverse, return_counts,
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:382: in _unique1d
+    perm = ar.argsort(kind='mergesort' if return_index else 'quicksort')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: '<' not supported between instances of 'float' and 'str'
+______ test_encoding_nullable_dtypes_and_unused_category_levels[boolean] _______
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:92: in test_encoding_nullable_dtypes_and_unused_category_levels
+    encoded, names, positions = utils.get_pandas_cat_codes(X)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/utils.py:221: in get_pandas_cat_codes
+    _, inverse = np.unique(column, return_inverse=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:296: in unique
+    ret = _unique1d(ar, return_index, return_inverse, return_counts,
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:382: in _unique1d
+    perm = ar.argsort(kind='mergesort' if return_index else 'quicksort')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: '<' not supported between instances of 'float' and 'str'
+________ test_encoder_time_unknown_passthrough_and_no_category_metadata ________
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:107: in test_encoder_time_unknown_passthrough_and_no_category_metadata
+    encoded, names, positions = utils.get_pandas_cat_codes(X)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/utils.py:221: in get_pandas_cat_codes
+    _, inverse = np.unique(column, return_inverse=True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:296: in unique
+    ret = _unique1d(ar, return_index, return_inverse, return_counts,
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:382: in _unique1d
+    perm = ar.argsort(kind='mergesort' if return_index else 'quicksort')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: '<' not supported between instances of 'float' and 'str'
+_______ test_series_matrix_and_workers_agree_on_category_roles[1-string] _______
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:135: in test_series_matrix_and_workers_agree_on_category_roles
+    result = a.association_series(X, target, sample_weight=weights, n_jobs=jobs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:1184: in association_series
+    assoc_series_complement = _callable_association_series_fn(
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:1322: in _callable_association_series_fn
+    raise TypeError(
+E   TypeError: Target column is not categorical for 'nom-nom' association
+________ test_series_matrix_and_workers_agree_on_category_roles[1-None] ________
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:127: in test_series_matrix_and_workers_agree_on_category_roles
+    matrix = a.association_matrix(X, sample_weight=weights, n_jobs=jobs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:1253: in association_matrix
+    w_nom_num = _callable_association_matrix_fn(
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:1412: in _callable_association_matrix_fn
+    return parallel_matrix_entries(
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/parallel.py:46: in parallel_matrix_entries
+    lst = func(X=df, sample_weight=sample_weight, comb_list=comb_list)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/parallel.py:163: in _compute_matrix_entries
+    func_xyw(x=X[comb[0]], y=X[comb[1]], sample_weight=sample_weight, as_frame=True)
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:611: in correlation_ratio
+    raise TypeError(
+E   TypeError: One of the series must be categorical and the other numerical.
+________ test_series_matrix_and_workers_agree_on_category_roles[1-bool] ________
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:136: in test_series_matrix_and_workers_agree_on_category_roles
+    result = result.drop(target)
+             ^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/pandas/core/series.py:5780: in drop
+    return super().drop(
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/pandas/core/generic.py:4632: in drop
+    obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/pandas/core/generic.py:4674: in _drop_axis
+    new_axis = axis.drop(labels, errors=errors)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/pandas/core/indexes/base.py:7268: in drop
+    raise KeyError(f"{labels[mask].tolist()} not found in axis")
+E   KeyError: "['cat'] not found in axis"
+______ test_series_matrix_and_workers_agree_on_category_roles[1-boolean] _______
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:127: in test_series_matrix_and_workers_agree_on_category_roles
+    matrix = a.association_matrix(X, sample_weight=weights, n_jobs=jobs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:1253: in association_matrix
+    w_nom_num = _callable_association_matrix_fn(
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:1412: in _callable_association_matrix_fn
+    return parallel_matrix_entries(
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/parallel.py:46: in parallel_matrix_entries
+    lst = func(X=df, sample_weight=sample_weight, comb_list=comb_list)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/parallel.py:163: in _compute_matrix_entries
+    func_xyw(x=X[comb[0]], y=X[comb[1]], sample_weight=sample_weight, as_frame=True)
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:611: in correlation_ratio
+    raise TypeError(
+E   TypeError: One of the series must be categorical and the other numerical.
+_______ test_series_matrix_and_workers_agree_on_category_roles[2-string] _______
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:135: in test_series_matrix_and_workers_agree_on_category_roles
+    result = a.association_series(X, target, sample_weight=weights, n_jobs=jobs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:1184: in association_series
+    assoc_series_complement = _callable_association_series_fn(
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:1322: in _callable_association_series_fn
+    raise TypeError(
+E   TypeError: Target column is not categorical for 'nom-nom' association
+________ test_series_matrix_and_workers_agree_on_category_roles[2-None] ________
+joblib.externals.loky.process_executor._RemoteTraceback:
+"""
+Traceback (most recent call last):
+  File "/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/externals/loky/process_executor.py", line 490, in _process_worker
+    r = call_item()
+        ^^^^^^^^^^^
+  File "/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/externals/loky/process_executor.py", line 291, in __call__
+    return self.fn(*self.args, **self.kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/parallel.py", line 607, in __call__
+    return [func(*args, **kwargs) for func, args, kwargs in self.items]
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/parallel.py", line 163, in _compute_matrix_entries
+    func_xyw(x=X[comb[0]], y=X[comb[1]], sample_weight=sample_weight, as_frame=True)
+  File "/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py", line 611, in correlation_ratio
+    raise TypeError(
+TypeError: One of the series must be categorical and the other numerical.
+"""
+
+The above exception was the direct cause of the following exception:
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:127: in test_series_matrix_and_workers_agree_on_category_roles
+    matrix = a.association_matrix(X, sample_weight=weights, n_jobs=jobs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:1253: in association_matrix
+    w_nom_num = _callable_association_matrix_fn(
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:1412: in _callable_association_matrix_fn
+    return parallel_matrix_entries(
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/parallel.py:50: in parallel_matrix_entries
+    lst = Parallel(n_jobs=n_jobs)(
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/parallel.py:2098: in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/parallel.py:1704: in _get_outputs
+    yield from self._retrieve()
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/parallel.py:1806: in _retrieve
+    self._raise_error_fast()
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/parallel.py:1885: in _raise_error_fast
+    error_job.get_result(self.timeout)
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/parallel.py:780: in get_result
+    return self._return_or_raise()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/parallel.py:795: in _return_or_raise
+    raise self._result
+E   TypeError: One of the series must be categorical and the other numerical.
+________ test_series_matrix_and_workers_agree_on_category_roles[2-bool] ________
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:136: in test_series_matrix_and_workers_agree_on_category_roles
+    result = result.drop(target)
+             ^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/pandas/core/series.py:5780: in drop
+    return super().drop(
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/pandas/core/generic.py:4632: in drop
+    obj = obj._drop_axis(labels, axis, level=level, errors=errors)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/pandas/core/generic.py:4674: in _drop_axis
+    new_axis = axis.drop(labels, errors=errors)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/pandas/core/indexes/base.py:7268: in drop
+    raise KeyError(f"{labels[mask].tolist()} not found in axis")
+E   KeyError: "['cat'] not found in axis"
+______ test_series_matrix_and_workers_agree_on_category_roles[2-boolean] _______
+joblib.externals.loky.process_executor._RemoteTraceback:
+"""
+Traceback (most recent call last):
+  File "/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/externals/loky/process_executor.py", line 490, in _process_worker
+    r = call_item()
+        ^^^^^^^^^^^
+  File "/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/externals/loky/process_executor.py", line 291, in __call__
+    return self.fn(*self.args, **self.kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/parallel.py", line 607, in __call__
+    return [func(*args, **kwargs) for func, args, kwargs in self.items]
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/parallel.py", line 163, in _compute_matrix_entries
+    func_xyw(x=X[comb[0]], y=X[comb[1]], sample_weight=sample_weight, as_frame=True)
+  File "/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py", line 611, in correlation_ratio
+    raise TypeError(
+TypeError: One of the series must be categorical and the other numerical.
+"""
+
+The above exception was the direct cause of the following exception:
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:127: in test_series_matrix_and_workers_agree_on_category_roles
+    matrix = a.association_matrix(X, sample_weight=weights, n_jobs=jobs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:1253: in association_matrix
+    w_nom_num = _callable_association_matrix_fn(
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:1412: in _callable_association_matrix_fn
+    return parallel_matrix_entries(
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/parallel.py:50: in parallel_matrix_entries
+    lst = Parallel(n_jobs=n_jobs)(
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/parallel.py:2098: in __call__
+    return output if self.return_generator else list(output)
+                                                ^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/parallel.py:1704: in _get_outputs
+    yield from self._retrieve()
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/parallel.py:1806: in _retrieve
+    self._raise_error_fast()
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/parallel.py:1885: in _raise_error_fast
+    error_job.get_result(self.timeout)
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/parallel.py:780: in get_result
+    return self._return_or_raise()
+           ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/joblib/parallel.py:795: in _return_or_raise
+    raise self._result
+E   TypeError: One of the series must be categorical and the other numerical.
+______________ test_boolean_series_uses_nominal_statistic[1-bool] ______________
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:150: in test_boolean_series_uses_nominal_statistic
+    assert_allclose(a.association_series(X, "b1", n_jobs=jobs)["b2"], 0.0)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:1193: in association_series
+    return assoc_series.sort_values(ascending=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'NoneType' object has no attribute 'sort_values'
+____________ test_boolean_series_uses_nominal_statistic[1-boolean] _____________
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:150: in test_boolean_series_uses_nominal_statistic
+    assert_allclose(a.association_series(X, "b1", n_jobs=jobs)["b2"], 0.0)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:1193: in association_series
+    return assoc_series.sort_values(ascending=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'NoneType' object has no attribute 'sort_values'
+______________ test_boolean_series_uses_nominal_statistic[2-bool] ______________
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:150: in test_boolean_series_uses_nominal_statistic
+    assert_allclose(a.association_series(X, "b1", n_jobs=jobs)["b2"], 0.0)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:1193: in association_series
+    return assoc_series.sort_values(ascending=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'NoneType' object has no attribute 'sort_values'
+____________ test_boolean_series_uses_nominal_statistic[2-boolean] _____________
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:150: in test_boolean_series_uses_nominal_statistic
+    assert_allclose(a.association_series(X, "b1", n_jobs=jobs)["b2"], 0.0)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:1193: in association_series
+    return assoc_series.sort_values(ascending=False)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'NoneType' object has no attribute 'sort_values'
+__ test_correlation_ratio_accepts_shared_dtypes_in_either_orientation[string] __
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:158: in test_correlation_ratio_accepts_shared_dtypes_in_either_orientation
+    assert_allclose(a.correlation_ratio(x, y), expected)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:611: in correlation_ratio
+    raise TypeError(
+E   TypeError: One of the series must be categorical and the other numerical.
+___ test_correlation_ratio_accepts_shared_dtypes_in_either_orientation[None] ___
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:158: in test_correlation_ratio_accepts_shared_dtypes_in_either_orientation
+    assert_allclose(a.correlation_ratio(x, y), expected)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:611: in correlation_ratio
+    raise TypeError(
+E   TypeError: One of the series must be categorical and the other numerical.
+_ test_correlation_ratio_accepts_shared_dtypes_in_either_orientation[boolean] __
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:158: in test_correlation_ratio_accepts_shared_dtypes_in_either_orientation
+    assert_allclose(a.correlation_ratio(x, y), expected)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:611: in correlation_ratio
+    raise TypeError(
+E   TypeError: One of the series must be categorical and the other numerical.
+__ test_mixed_category_values_group_without_sorting[correlation_ratio-object] __
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:168: in test_mixed_category_values_group_without_sorting
+    assert_allclose(statistic(x, y), statistic(reference, y))
+                    ^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:616: in correlation_ratio
+    unique_categories = np.unique(categorical)
+                        ^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:296: in unique
+    ret = _unique1d(ar, return_index, return_inverse, return_counts,
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:385: in _unique1d
+    ar.sort()
+E   TypeError: '<' not supported between instances of 'str' and 'int'
+_ test_mixed_category_values_group_without_sorting[correlation_ratio-category] _
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:168: in test_mixed_category_values_group_without_sorting
+    assert_allclose(statistic(x, y), statistic(reference, y))
+                    ^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:616: in correlation_ratio
+    unique_categories = np.unique(categorical)
+                        ^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:296: in unique
+    ret = _unique1d(ar, return_index, return_inverse, return_counts,
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:385: in _unique1d
+    ar.sort()
+E   TypeError: '<' not supported between instances of 'str' and 'int'
+__ test_mixed_category_values_group_without_sorting[f_cat_regression-object] ___
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:168: in test_mixed_category_values_group_without_sorting
+    assert_allclose(statistic(x, y), statistic(reference, y))
+                    ^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:1511: in f_cat_regression
+    for k in np.unique(x)
+             ^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:296: in unique
+    ret = _unique1d(ar, return_index, return_inverse, return_counts,
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:385: in _unique1d
+    ar.sort()
+E   TypeError: '<' not supported between instances of 'str' and 'int'
+_ test_mixed_category_values_group_without_sorting[f_cat_regression-category] __
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:168: in test_mixed_category_values_group_without_sorting
+    assert_allclose(statistic(x, y), statistic(reference, y))
+                    ^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:1511: in f_cat_regression
+    for k in np.unique(x)
+             ^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:296: in unique
+    ret = _unique1d(ar, return_index, return_inverse, return_counts,
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/numpy/lib/_arraysetops_impl.py:385: in _unique1d
+    ar.sort()
+E   TypeError: '<' not supported between instances of 'str' and 'int'
+__________ test_shared_encoder_callers_receive_distinct_codes[native] __________
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:192: in checked_encode
+    assert_array_equal(out.mixed, np.tile([0, 1], 40))
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 40 / 80 (50%)
+E   First 5 mismatches are at indices:
+E    [1]: 0 (ACTUAL), 1 (DESIRED)
+E    [3]: 0 (ACTUAL), 1 (DESIRED)
+E    [5]: 0 (ACTUAL), 1 (DESIRED)
+E    [7]: 0 (ACTUAL), 1 (DESIRED)
+E    [9]: 0 (ACTUAL), 1 (DESIRED)
+E   Max absolute difference among violations: 1
+E   Max relative difference among violations: 1.
+E    ACTUAL: array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+E          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+E          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+E          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+E    DESIRED: array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+E          0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+E          0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+E          0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1])
+
+During handling of the above exception, another exception occurred:
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:215: in test_shared_encoder_callers_receive_distinct_codes
+    result = fn[caller](model, X, y, sample_weight=None)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1414: in _get_imp
+    raise ValueError(f"Estimator fitting failed: {str(e)}")
+E   ValueError: Estimator fitting failed:
+E   Arrays are not equal
+E
+E   Mismatched elements: 40 / 80 (50%)
+E   First 5 mismatches are at indices:
+E    [1]: 0 (ACTUAL), 1 (DESIRED)
+E    [3]: 0 (ACTUAL), 1 (DESIRED)
+E    [5]: 0 (ACTUAL), 1 (DESIRED)
+E    [7]: 0 (ACTUAL), 1 (DESIRED)
+E    [9]: 0 (ACTUAL), 1 (DESIRED)
+E   Max absolute difference among violations: 1
+E   Max relative difference among violations: 1.
+E    ACTUAL: array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+E          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+E          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+E          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+E    DESIRED: array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+E          0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+E          0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+E          0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1])
+___________ test_shared_encoder_callers_receive_distinct_codes[shap] ___________
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:215: in test_shared_encoder_callers_receive_distinct_codes
+    result = fn[caller](model, X, y, sample_weight=None)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1230: in _get_shap_imp
+    model, X_tt, y_tt, w_tt = _split_fit_estimator(
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1158: in _split_fit_estimator
+    X, _, cat_idx = get_pandas_cat_codes(X)
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:192: in checked_encode
+    assert_array_equal(out.mixed, np.tile([0, 1], 40))
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 40 / 80 (50%)
+E   First 5 mismatches are at indices:
+E    [1]: 0 (ACTUAL), 1 (DESIRED)
+E    [3]: 0 (ACTUAL), 1 (DESIRED)
+E    [5]: 0 (ACTUAL), 1 (DESIRED)
+E    [7]: 0 (ACTUAL), 1 (DESIRED)
+E    [9]: 0 (ACTUAL), 1 (DESIRED)
+E   Max absolute difference among violations: 1
+E   Max relative difference among violations: 1.
+E    ACTUAL: array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+E          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+E          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+E          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+E    DESIRED: array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+E          0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+E          0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+E          0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1])
+___________ test_shared_encoder_callers_receive_distinct_codes[pimp] ___________
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:215: in test_shared_encoder_callers_receive_distinct_codes
+    result = fn[caller](model, X, y, sample_weight=None)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1353: in _get_perm_imp
+    model, X_tt, y_tt, w_tt = _split_fit_estimator(
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1158: in _split_fit_estimator
+    X, _, cat_idx = get_pandas_cat_codes(X)
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:192: in checked_encode
+    assert_array_equal(out.mixed, np.tile([0, 1], 40))
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 40 / 80 (50%)
+E   First 5 mismatches are at indices:
+E    [1]: 0 (ACTUAL), 1 (DESIRED)
+E    [3]: 0 (ACTUAL), 1 (DESIRED)
+E    [5]: 0 (ACTUAL), 1 (DESIRED)
+E    [7]: 0 (ACTUAL), 1 (DESIRED)
+E    [9]: 0 (ACTUAL), 1 (DESIRED)
+E   Max absolute difference among violations: 1
+E   Max relative difference among violations: 1.
+E    ACTUAL: array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+E          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+E          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+E          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+E    DESIRED: array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+E          0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+E          0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+E          0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1])
+__________ test_shared_encoder_callers_receive_distinct_codes[boost] ___________
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:204: in test_shared_encoder_callers_receive_distinct_codes
+    ).fit(X, y)
+      ^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1587: in fit
+    _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _boostaroota(
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1888: in _boostaroota
+    new_x, obj_feat, cat_idx = get_pandas_cat_codes(X)
+                               ^^^^^^^^^^^^^^^^^^^^^^^
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:192: in checked_encode
+    assert_array_equal(out.mixed, np.tile([0, 1], 40))
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 40 / 80 (50%)
+E   First 5 mismatches are at indices:
+E    [1]: 0 (ACTUAL), 1 (DESIRED)
+E    [3]: 0 (ACTUAL), 1 (DESIRED)
+E    [5]: 0 (ACTUAL), 1 (DESIRED)
+E    [7]: 0 (ACTUAL), 1 (DESIRED)
+E    [9]: 0 (ACTUAL), 1 (DESIRED)
+E   Max absolute difference among violations: 1
+E   Max relative difference among violations: 1.
+E    ACTUAL: array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+E          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+E          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+E          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+E    DESIRED: array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+E          0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+E          0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+E          0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1])
+__________ test_shared_encoder_callers_receive_distinct_codes[groot] ___________
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:212: in test_shared_encoder_callers_receive_distinct_codes
+    ).fit(X, y)
+      ^^^^^^^^^
+/tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2081: in fit
+    X, obj_feat, cat_idx = get_pandas_cat_codes(X)
+                           ^^^^^^^^^^^^^^^^^^^^^^^
+/home/bsatom/Documents/arfs/tests/test_category_identity.py:192: in checked_encode
+    assert_array_equal(out.mixed, np.tile([0, 1], 40))
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 40 / 80 (50%)
+E   First 5 mismatches are at indices:
+E    [1]: 0 (ACTUAL), 1 (DESIRED)
+E    [3]: 0 (ACTUAL), 1 (DESIRED)
+E    [5]: 0 (ACTUAL), 1 (DESIRED)
+E    [7]: 0 (ACTUAL), 1 (DESIRED)
+E    [9]: 0 (ACTUAL), 1 (DESIRED)
+E   Max absolute difference among violations: 1
+E   Max relative difference among violations: 1.
+E    ACTUAL: array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+E          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+E          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+E          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+E    DESIRED: array([0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+E          0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+E          0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
+E          0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1])
+=============================== warnings summary ===============================
+tests/test_category_identity.py::test_shared_dtype_groups_preserve_numeric_time_and_interval_roles
+tests/test_category_identity.py::test_cardinality_counts_all_categorical_dtypes[None]
+tests/test_category_identity.py::test_encoding_nullable_dtypes_and_unused_category_levels[None]
+tests/test_category_identity.py::test_series_matrix_and_workers_agree_on_category_roles[1-None]
+tests/test_category_identity.py::test_series_matrix_and_workers_agree_on_category_roles[1-None]
+tests/test_category_identity.py::test_series_matrix_and_workers_agree_on_category_roles[1-None]
+tests/test_category_identity.py::test_series_matrix_and_workers_agree_on_category_roles[2-None]
+tests/test_category_identity.py::test_series_matrix_and_workers_agree_on_category_roles[2-None]
+tests/test_category_identity.py::test_series_matrix_and_workers_agree_on_category_roles[2-None]
+  /tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/utils.py:155: Pandas4Warning: For backward compatibility, 'str' dtypes are included by select_dtypes when 'object' dtype is specified. This behavior is deprecated and will be removed in a future version. Explicitly pass 'str' to `include` to select them, or to `exclude` to remove them and silence this warning.
+  See https://pandas.pydata.org/docs/user_guide/migration-3-strings.html#string-migration-select-dtypes for details on how to write code that works with pandas 2 and 3.
+    categorical_cols = df.select_dtypes(include=["object", "category", "bool"]).columns
+
+tests/test_category_identity.py::test_series_matrix_and_workers_agree_on_category_roles[1-object]
+tests/test_category_identity.py::test_series_matrix_and_workers_agree_on_category_roles[1-object]
+tests/test_category_identity.py::test_series_matrix_and_workers_agree_on_category_roles[1-category]
+tests/test_category_identity.py::test_series_matrix_and_workers_agree_on_category_roles[1-category]
+  /tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/association.py:228: RuntimeWarning: Rounded U = 1.0 to 1. This is probably due to floating point precision issues.
+    warnings.warn(
+
+tests/test_category_identity.py::test_shared_encoder_callers_receive_distinct_codes[boost]
+  /tmp/arfs-r05/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1534: UserWarning: [BoostAGroota]: using native variable importance might break the FS
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_shared_dtype_groups_preserve_numeric_time_and_interval_roles
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_cardinality_counts_all_categorical_dtypes[string]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_encoding_preserves_original_identity_and_missingness[values0-expected0-object]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_encoding_preserves_original_identity_and_missingness[values0-expected0-category]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_encoding_preserves_original_identity_and_missingness[values1-expected1-object]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_encoding_preserves_original_identity_and_missingness[values1-expected1-category]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_encoding_preserves_original_identity_and_missingness[values2-expected2-object]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_encoding_preserves_original_identity_and_missingness[values2-expected2-category]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_encoding_nullable_dtypes_and_unused_category_levels[object]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_encoding_nullable_dtypes_and_unused_category_levels[category]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_encoding_nullable_dtypes_and_unused_category_levels[string]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_encoding_nullable_dtypes_and_unused_category_levels[None]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_encoding_nullable_dtypes_and_unused_category_levels[boolean]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_encoder_time_unknown_passthrough_and_no_category_metadata
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_series_matrix_and_workers_agree_on_category_roles[1-string]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_series_matrix_and_workers_agree_on_category_roles[1-None]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_series_matrix_and_workers_agree_on_category_roles[1-bool]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_series_matrix_and_workers_agree_on_category_roles[1-boolean]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_series_matrix_and_workers_agree_on_category_roles[2-string]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_series_matrix_and_workers_agree_on_category_roles[2-None]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_series_matrix_and_workers_agree_on_category_roles[2-bool]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_series_matrix_and_workers_agree_on_category_roles[2-boolean]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_boolean_series_uses_nominal_statistic[1-bool]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_boolean_series_uses_nominal_statistic[1-boolean]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_boolean_series_uses_nominal_statistic[2-bool]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_boolean_series_uses_nominal_statistic[2-boolean]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_correlation_ratio_accepts_shared_dtypes_in_either_orientation[string]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_correlation_ratio_accepts_shared_dtypes_in_either_orientation[None]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_correlation_ratio_accepts_shared_dtypes_in_either_orientation[boolean]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_mixed_category_values_group_without_sorting[correlation_ratio-object]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_mixed_category_values_group_without_sorting[correlation_ratio-category]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_mixed_category_values_group_without_sorting[f_cat_regression-object]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_mixed_category_values_group_without_sorting[f_cat_regression-category]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_shared_encoder_callers_receive_distinct_codes[native]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_shared_encoder_callers_receive_distinct_codes[shap]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_shared_encoder_callers_receive_distinct_codes[pimp]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_shared_encoder_callers_receive_distinct_codes[boost]
+FAILED ../../../home/bsatom/Documents/arfs/tests/test_category_identity.py::test_shared_encoder_callers_receive_distinct_codes[groot]
+38 failed, 12 passed, 14 warnings in 16.36s

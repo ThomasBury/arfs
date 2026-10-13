@@ -1,0 +1,6 @@
+Using Python 3.12.7 environment at: /tmp/arfs-r09/py312-locked
+Resolved 32 packages in 43ms
+Prepared 1 package in 0.48ms
+Uninstalled 1 package in 9ms
+Installed 1 package in 5ms
+ ~ arfs==3.0.0 (from file:///tmp/arfs-r09/dist/arfs-3.0.0-py3-none-any.whl)

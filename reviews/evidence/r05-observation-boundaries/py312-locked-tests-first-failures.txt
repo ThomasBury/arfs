@@ -1,0 +1,108 @@
+....................FFFF................................................ [ 30%]
+........................................................................ [ 61%]
+........................................................................ [ 92%]
+..................                                                       [100%]
+=================================== FAILURES ===================================
+_______________ test_parallel_relevance_agrees[regression-False] _______________
+tests/test_dependency_apis.py:150: in test_parallel_relevance_agrees
+    fn(X, y, sample_weight=w, n_jobs=1), fn(X, y, sample_weight=w, n_jobs=2)
+../py312-locked/lib/python3.12/site-packages/arfs/association.py:1573: in f_cat_regression_parallel
+    return parallel_df(
+../py312-locked/lib/python3.12/site-packages/arfs/parallel.py:101: in parallel_df
+    return pd.concat(lst).sort_values(ascending=False)
+E   TypeError: DataFrame.sort_values() missing 1 required positional argument: 'by'
+_______________ test_parallel_relevance_agrees[regression-True] ________________
+tests/test_dependency_apis.py:150: in test_parallel_relevance_agrees
+    fn(X, y, sample_weight=w, n_jobs=1), fn(X, y, sample_weight=w, n_jobs=2)
+../py312-locked/lib/python3.12/site-packages/arfs/association.py:1573: in f_cat_regression_parallel
+    return parallel_df(
+../py312-locked/lib/python3.12/site-packages/arfs/parallel.py:101: in parallel_df
+    return pd.concat(lst).sort_values(ascending=False)
+E   TypeError: DataFrame.sort_values() missing 1 required positional argument: 'by'
+_____________ test_parallel_relevance_agrees[classification-False] _____________
+tests/test_dependency_apis.py:150: in test_parallel_relevance_agrees
+    fn(X, y, sample_weight=w, n_jobs=1), fn(X, y, sample_weight=w, n_jobs=2)
+../py312-locked/lib/python3.12/site-packages/arfs/association.py:1814: in f_cont_classification_parallel
+    return parallel_df(
+../py312-locked/lib/python3.12/site-packages/arfs/parallel.py:101: in parallel_df
+    return pd.concat(lst).sort_values(ascending=False)
+E   TypeError: DataFrame.sort_values() missing 1 required positional argument: 'by'
+_____________ test_parallel_relevance_agrees[classification-True] ______________
+tests/test_dependency_apis.py:150: in test_parallel_relevance_agrees
+    fn(X, y, sample_weight=w, n_jobs=1), fn(X, y, sample_weight=w, n_jobs=2)
+../py312-locked/lib/python3.12/site-packages/arfs/association.py:1814: in f_cont_classification_parallel
+    return parallel_df(
+../py312-locked/lib/python3.12/site-packages/arfs/parallel.py:101: in parallel_df
+    return pd.concat(lst).sort_values(ascending=False)
+E   TypeError: DataFrame.sort_values() missing 1 required positional argument: 'by'
+=============================== warnings summary ===============================
+arfs-r05/run/tests/test_allrelevant.py: 38 warnings
+  /tmp/arfs-r05/py312-locked/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+    warnings.warn(
+
+arfs-r05/run/tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight
+arfs-r05/run/tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight
+arfs-r05/run/tests/test_allrelevant.py::TestBoostAGroota::test_boostagroota_clf_with_lgb_and_pimp_feature_importance_and_sample_weight
+  /tmp/arfs-r05/py312-locked/lib/python3.12/site-packages/joblib/externals/loky/backend/fork_exec.py:38: DeprecationWarning: This process (pid=3979442) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    pid = os.fork()
+
+arfs-r05/run/tests/test_dependency_apis.py::test_public_lasso_selector_fits
+  /tmp/arfs-r05/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1464: UserWarning: Elastic net fitting did not converge
+    warnings.warn("Elastic net fitting did not converge")
+
+arfs-r05/run/tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+arfs-r05/run/tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+  /tmp/arfs-r05/py312-locked/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The MissingValueThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+arfs-r05/run/tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+arfs-r05/run/tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+arfs-r05/run/tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+arfs-r05/run/tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+  /tmp/arfs-r05/py312-locked/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The UniqueValuesThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+arfs-r05/run/tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /tmp/arfs-r05/py312-locked/lib/python3.12/site-packages/arfs/benchmark.py:104: UserWarning: Tight layout not applied. The bottom and top margins cannot be made large enough to accommodate all Axes decorations.
+    fig.tight_layout()
+
+arfs-r05/run/tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /tmp/arfs-r05/py312-locked/lib/python3.12/site-packages/arfs/benchmark.py:109: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+    plt.show()
+
+arfs-r05/run/tests/test_observation_boundaries.py::test_zero_weight_category_equivalent_to_removal[weighted_theils_u]
+arfs-r05/run/tests/test_observation_boundaries.py::test_zero_weight_category_equivalent_to_removal[weighted_theils_u]
+  /tmp/arfs-r05/py312-locked/lib/python3.12/site-packages/arfs/association.py:228: RuntimeWarning: Rounded U = 0.0 to 0. This is probably due to floating point precision issues.
+    warnings.warn(
+
+arfs-r05/run/tests/test_observation_boundaries.py::test_no_usable_observations_rejected[X0-None]
+  /tmp/arfs-r05/py312-locked/lib/python3.12/site-packages/arfs/association.py:2040: UserWarning: {'y'} columns have been removed (single unique values)
+    warnings.warn(
+
+arfs-r05/run/tests/test_observation_boundaries.py::test_no_usable_observations_rejected[X1-weights1]
+  /tmp/arfs-r05/py312-locked/lib/python3.12/site-packages/arfs/association.py:2040: UserWarning: {'x'} columns have been removed (single unique values)
+    warnings.warn(
+
+arfs-r05/run/tests/test_observation_boundaries.py: 12 warnings
+arfs-r05/run/tests/test_runtime_baseline.py: 1 warning
+  /tmp/arfs-r05/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:1534: UserWarning: [BoostAGroota]: using native variable importance might break the FS
+    warnings.warn(
+
+arfs-r05/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[False]
+arfs-r05/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[False]
+arfs-r05/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[False]
+arfs-r05/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[False]
+arfs-r05/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+arfs-r05/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+arfs-r05/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+arfs-r05/run/tests/test_pandas_writes.py::test_tree_midpoint_pipeline[True]
+  /tmp/arfs-r05/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:343: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_dependency_apis.py::test_parallel_relevance_agrees[regression-False]
+FAILED tests/test_dependency_apis.py::test_parallel_relevance_agrees[regression-True]
+FAILED tests/test_dependency_apis.py::test_parallel_relevance_agrees[classification-False]
+FAILED tests/test_dependency_apis.py::test_parallel_relevance_agrees[classification-True]
+4 failed, 230 passed, 75 warnings in 115.47s (0:01:55)

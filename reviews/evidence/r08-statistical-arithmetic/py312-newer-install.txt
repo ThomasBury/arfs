@@ -1,0 +1,41 @@
+Using Python 3.12.7 environment at: /tmp/arfs-r08/py312-newer
+Resolved 38 packages in 405ms
+Installed 38 packages in 324ms
+ + arfs==3.0.0 (from file:///tmp/arfs-r08/dist/arfs-3.0.0-py3-none-any.whl)
+ + cloudpickle==3.1.2
+ + contourpy==1.4.0
+ + coverage==7.16.2
+ + cycler==0.12.1
+ + fonttools==4.66.1
+ + formulaic==1.2.2
+ + iniconfig==2.3.1
+ + interface-meta==2.0.1
+ + jinja2==3.1.6
+ + joblib==1.6.0
+ + kiwisolver==1.5.1
+ + lightgbm==4.7.0
+ + markupsafe==3.0.3
+ + matplotlib==3.11.2
+ + narwhals==2.27.1
+ + numpy==2.5.4
+ + packaging==26.3
+ + pandas==3.0.6
+ + patsy==1.0.3
+ + pillow==12.3.0
+ + pluggy==1.6.0
+ + pygments==2.21.0
+ + pyparsing==3.3.3
+ + pytest==9.1.1
+ + pytest-cov==7.1.0
+ + python-dateutil==2.9.0.post0
+ + scikit-learn==1.9.1
+ + scipy==1.18.1
+ + seaborn==0.13.2
+ + shap==0.53.0
+ + six==1.17.0
+ + slicer==0.0.8
+ + statsmodels==0.15.0
+ + threadpoolctl==3.7.0
+ + tqdm==4.70.1
+ + typing-extensions==4.16.0
+ + wrapt==2.5.0

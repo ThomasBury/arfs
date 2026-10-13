@@ -1,0 +1,12 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+________________ test_classification_fixture_schema_and_signal _________________
+tests/test_runtime_baseline.py:14: in test_classification_fixture_schema_and_signal
+    assert frame.columns.tolist() == [
+E   AssertionError: assert ['var0', 'var..., 'var5', ...] == ['var0', 'var..., 'var5', ...]
+E
+E     Right contains one more item: 'nice_guys'
+E     Use -v to get more diff
+=========================== short test summary info ============================
+FAILED tests/test_runtime_baseline.py::test_classification_fixture_schema_and_signal
+1 failed, 5 deselected in 5.43s
