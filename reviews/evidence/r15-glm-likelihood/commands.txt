@@ -1,0 +1,58 @@
+Checkout: /home/bsatom/Documents/arfs; clean main @ 2577289.
+R15 runs alone. Zero-weight GLM policy: omit rows before fitting/scoring/tuning.
+No publication, release, dependency or configuration change.
+
+Runtime environment:
+UV_CACHE_DIR=/tmp/arfs-r04/cache MPLBACKEND=Agg
+MPLCONFIGDIR=/tmp/arfs-r15/mpl-$cell OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 PYTHONHASHSEED=0
+PYTHONDONTWRITEBYTECODE=1; installed-wheel runs omit PYTHONPATH.
+
+Before (maintained tests against verified installed R14 wheel):
+/tmp/arfs-r14/py312-locked/bin/python -I -m pytest tests/test_glm_likelihood.py -q --tb=short -p no:cacheprovider
+Result: 41 failed, 11 passed, exit 1 in before.txt.
+The earlier independent criterion/refit subset is recorded in before-core.txt:
+18 failed, 1 passed. Before-provenance verifies installed lasso.py equals 2577289.
+
+Source (PYTHONPATH=src):
+/tmp/arfs-r14/py312-locked/bin/python -m pytest tests/test_glm_likelihood.py tests/test_glm_design.py tests/test_glm_scoring.py tests/test_observation_boundaries.py tests/test_dependency_apis.py -q --tb=short -p no:cacheprovider
+Result: 339 passed in source-final.txt. source.txt preserves the first reference
+run (8 failed, 325 passed): independent BIC exposed the backend refit's extra
+parameter/row; the old zero-fold assertion needed alignment with row omission.
+
+uv build --python /tmp/arfs-r14/py312-locked/bin/python --out-dir /tmp/arfs-r15/dist
+uv export --locked --extra test --no-emit-project --output-file /tmp/arfs-r15/locked-requirements.txt
+uv lock --check --python /tmp/arfs-r14/py312-locked/bin/python
+uv tool run --from ruff==0.17.0 ruff check tests/test_glm_likelihood.py tests/test_observation_boundaries.py
+uv tool run --from ruff==0.17.0 ruff format --check tests/test_glm_likelihood.py
+uv tool run --from ruff==0.17.0 python .github/scripts/check_ruff_baseline.py
+/tmp/arfs-r14/py312-locked/bin/python -m unittest discover -s .github/scripts -p 'test_*.py'
+git diff --check
+
+Per-cell JSON records exact fresh venv/install/dependency/provenance/test
+commands, working directories and exit codes. Locked requirements come from the
+current uv.lock; newer pins are .github/requirements/runtime-newer-py312.txt.
+Tests copied outside the checkout must match source bytes. Eight installed module
+hashes must match source; all 19 source/sdist/wheel payloads match. Python -I and
+provenance checks exclude a source-path import or setuptools workaround.
+
+Before historical command selects:
+zero_weights_are_excluded or documented_near_ridge or poisson_rate_weights
+or poisson_bic_differences
+from reviews/evidence/01c-weighted-glm-lasso/checks.py with --runxfail.
+Result on R14 wheel: 2 failed, 2 passed. The old near-ridge assertion remains
+historical; maintained tests assert the actual unpenalized-refit contract.
+Repaired historical commands select:
+zero_weights_are_excluded or poisson_rate_weights or poisson_bic_differences
+or bic_grid_matches or supported_family_predict or clone_preserves
+or numpy_bic_selector
+with --runxfail in each installed R15 Python 3.12 cell: 12 passed in each.
+Full suites: py39-locked 688 passed, py312-locked 688 passed, py312-newer 672 passed.
+
+Context7 documentation lookup: statsmodels GLM.fit_regularized penalty/refit,
+GLM variance-weight likelihood caveats and info_criteria's parameter convention.
+Installed backend source was traced for its refit df_model/df_resid bookkeeping.
+Notebook preservation JSON checks that only the first markdown cell changed;
+all code, outputs and other cells match 2577289. Original historical scripts and
+logs are unchanged. New terminal carriage returns/trailing whitespace are
+removed from completed logs before commit.

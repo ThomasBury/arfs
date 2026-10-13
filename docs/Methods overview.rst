@@ -130,6 +130,19 @@ inputs; ``design_feature_names_`` and ``design_support_`` describe the selector'
 coefficient design. Named inference inputs align to the fitted names; missing,
 extra and duplicate columns are rejected. Arrays require fitted input width
 and order. Family/link parameters are resolved at each fit.
+Zero-weight rows are omitted after response/weight validation, before fitting,
+scoring and forming GLM validation folds. Positive weights are not normalized.
+``alpha`` is penalty strength; ``L1_wt`` is the L1 fraction of the selection
+penalty. Surviving columns are refit without regularization, so returned
+coefficients do not retain ridge shrinkage. Pure ridge (``L1_wt=0``) is unsupported.
+Summary p-values do not account for using the same data to select variables.
+The wrapper's AIC/BIC use the returned log-likelihood, retained row count and
+selected design rank, counting mean parameters without dispersion. Backend
+summary information criteria are unchanged and can differ from these corrected
+attributes. A nonfinite candidate score aborts the search with its penalty value;
+invalid candidates are not silently discarded. Variance-weighted fixed-scale
+likelihoods are quasi-likelihoods; finite BIC does not establish calibrated
+selection or post-selection significance.
 The loss function can belong to the exponential family, as seen in the statsmodels GLM documentation.
 Using the bic metric is faster since it is evaluated on the training data, making it unsuitable for the test data, whereas the deviance is cross-validated.
 

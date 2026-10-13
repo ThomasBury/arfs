@@ -253,12 +253,16 @@ def test_split_weight_mass_checked_before_training(zero_split):
         ar._split_fit_estimator(DecisionTreeRegressor(), X.copy(), y, weights)
 
 
-def test_glm_cross_validation_rejects_zero_mass_fold():
+def test_glm_cross_validation_omits_zero_rows_before_forming_folds():
     X = pd.DataFrame({"x": np.arange(30.0)})
     weights = np.ones(30)
     weights[:6] = 0
-    with pytest.raises(ValueError, match="positive"):
-        weighted_cross_val_score(EnetGLM(), X, X.x, weights, n_jobs=1)
+    y = X.x.to_numpy() + np.sin(X.x.to_numpy())
+    actual = weighted_cross_val_score(EnetGLM(), X, y, weights, n_jobs=1)
+    expected = weighted_cross_val_score(
+        EnetGLM(), X.iloc[6:], y[6:], weights[6:], n_jobs=1
+    )
+    assert_allclose(actual, expected)
 
 
 def test_split_preserves_positional_alignment_and_inputs():

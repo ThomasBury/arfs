@@ -1,0 +1,8 @@
+............                                                             [100%]
+=============================== warnings summary ===============================
+reviews/evidence/01c-weighted-glm-lasso/checks.py::test_supported_family_predict_matches_direct_response_mean[negativebinomial-None]
+  /tmp/arfs-r15/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:72: ValueWarning: Negative binomial dispersion parameter alpha not set. Using default value alpha=1.0.
+    objective = family_mapping[family]()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+12 passed, 21 deselected, 1 warning in 4.02s

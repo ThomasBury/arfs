@@ -6,6 +6,7 @@
  - Correct MRMR ranking, categorical shadow controls, Leshy support/history, weighted permutation scoring, and GrootCV output/threshold aggregation.
  - Return negative response-scale GLM deviance for sklearn scoring, preserve BIC minimization, and repair weighted CV splits, NumPy inputs and fold isolation.
  - Reuse fitted GLM designs for single-row inference, align named schemas, preserve supplied constants and resolve current family/link parameters at fit. Input/support metadata now excludes generated intercepts.
+ - Omit zero-weight GLM rows before fitting/scoring/tuning, correct AIC/BIC dimensions and reject nonfinite search criteria. Document unpenalized post-selection refits and reject unsupported pure ridge fits.
  - Test installed wheels on Python 3.9 and 3.12 with locked dependencies, plus a newer Python 3.12 snapshot.
  - Keep the next version and release pending the remaining remediation blockers and R33 release checks.
 

@@ -41,6 +41,14 @@ def _glm_frame(X):
     return X
 
 
+def _positive_weight_rows(X, y, sample_weight):
+    if sample_weight is not None and np.any(sample_weight == 0):
+        keep = sample_weight > 0
+        X = X.iloc[keep] if isinstance(X, pd.DataFrame) else np.asarray(X)[keep]
+        return X, np.asarray(y)[keep], sample_weight[keep]
+    return X, y, sample_weight
+
+
 def _map_family_link(family: str = "gaussian", link: Optional[str] = None):
     family_mapping = {
         "gaussian": sm.families.Gaussian,
@@ -67,7 +75,16 @@ def _map_family_link(family: str = "gaussian", link: Optional[str] = None):
 
 class EnetGLM(BaseEstimator, RegressorMixin):
     """
-    Elastic Net Generalized Linear Model.
+    Elastic-net variable selection followed by an unpenalized GLM refit.
+
+    The penalty chooses nonzero coefficients; returned coefficients and
+    predictions use an unpenalized refit on those columns. Summary statistics
+    use the selection data and do not provide valid post-selection inference.
+    Zero-weight rows are omitted before fitting and scoring, after response
+    and weight validation. AIC/BIC count the rank of selected mean parameters,
+    excluding dispersion, and use the retained observation count. Variance-
+    weighted fixed-scale families have a quasi-likelihood interpretation;
+    finite information criteria do not establish calibrated model selection.
 
     Parameters
     ----------
@@ -77,17 +94,14 @@ class EnetGLM(BaseEstimator, RegressorMixin):
     link : str, optional
         the GLM link function. It can be any of the: "identity", "log", "logit", "probit", "cloglog", "inverse_squared"
     alpha : float, optional (default=0.0)
-        The elastic net mixing parameter. 0 <= alpha <= 1.
-        alpha = 0 is equivalent to ridge regression, alpha = 1 is equivalent to lasso regression.
-    L1_wt : float, optional (default=0.0)
-        The weight of the L1 penalty term. 0 <= L1_wt <= 1.
-        The `L1_wt` parameter represents the weight of the L1 penalty term in the model and
-        should be within the range 0 to 1. A value of 0 corresponds to ridge regression,
-        while a value of 1 corresponds to lasso regression. However, for obtaining statistics,
-        `L1_wt` should be set to a value greater than 0. If it is set to 0.0, statsmodels returns
-        a ridge regularized wrapper without refitting the model, making the statistics unavailable
-        and breaking the class. Nevertheless, you can set `L1_wt` to a very small value, such as 1e-9,
-        to obtain close-to-ridge behavior while still obtaining the necessary statistics.
+        Penalty strength, not the mixing fraction. Zero uses a tiny positive
+        fitting penalty (1e-9) to retain the backend refit/statistics path.
+    L1_wt : float, optional (default=1e-6)
+        L1 fraction of the selection penalty, with 0 < L1_wt <= 1.
+        One selects using lasso; smaller values mix L1 and L2 penalties before
+        refitting. Returned coefficients do not retain ridge shrinkage. Pure
+        ridge (zero) is unsupported because its backend result lacks refit
+        statistics required by this wrapper.
     fit_intercept : bool, optional (default=True)
         Add an intercept only when training inputs have no nonzero constant.
         Supplied columns, including constants, are always preserved. The fitted
@@ -128,13 +142,8 @@ class EnetGLM(BaseEstimator, RegressorMixin):
             The penalty weight. If a scalar, the same penalty weight applies to all variables in the model.
             If a vector, it must have the same length as params, and contains a penalty weight for each coefficient.
         L1_wt :
-            The `L1_wt` parameter represents the weight of the L1 penalty term in the model and
-            should be within the range 0 to 1. A value of 0 corresponds to ridge regression,
-            while a value of 1 corresponds to lasso regression. However, for obtaining statistics,
-            `L1_wt` should be set to a value greater than 0. If it is set to 0.0, statsmodels returns
-            a ridge regularized wrapper without refitting the model, making the statistics unavailable
-            and breaking the class. Nevertheless, you can set `L1_wt` to a very small value, such as 1e-9,
-            to obtain close-to-ridge behavior while still obtaining the necessary statistics.
+            L1 fraction of the selection penalty, with 0 < L1_wt <= 1.
+            The surviving columns are then refit without regularization.
 
         fit_intercept :
             Add an intercept only if no nonzero constant was supplied.
@@ -158,23 +167,14 @@ class EnetGLM(BaseEstimator, RegressorMixin):
 
         Notes
         -----
-        In statsmodels and GLMs in general, you can use either an offset or a weight to account for
-        differences in exposure between observations. However, if you choose to use an offset,
-        you need to pass the number of cases (ncl) instead of the frequency and set the offset to
-        the logarithm of the exposure due to the log link function. It is recommended to use the frequency
-        and the weights instead of the offset because this ensures that all models have the same inputs.
-        To use the frequency and the weights, you can fit the model using the following code:
-
-        ```python
-        self.model = sm.GLM(endog=y, exog=X, var_weights=sample_weight, family=self.family)
-        ```
-
-        This is equivalent to using the exposure and the log of the exposure internally, which can be done using the following code:
-
-        ```python
-        self.model = sm.GLM(endog=y, exog=sm.add_constant(X), exposure=sample_weight, family=sm.families.Poisson())
-        self.result = self.model.fit()
-        ```
+        For Poisson rates with a log link, positive exposure as a variance
+        weight gives corresponding coefficient estimates and prediction loss
+        to counts with log-exposure as an offset. This equivalence does not
+        extend to arbitrary family/weight combinations. Fixed-scale variance-
+        weighted likelihoods have a quasi-likelihood interpretation; ordinary
+        likelihood-based significance claims are not justified by finite BIC.
+        Zero-weight rows do not determine the design, penalty scaling or
+        likelihood observation count. Positive weights are not normalized.
 
         Parameters
         ----------
@@ -197,10 +197,13 @@ class EnetGLM(BaseEstimator, RegressorMixin):
         # https://www.statsmodels.org/dev/_modules/statsmodels/genmod/generalized_linear_model.html#GLM.fit_regularized
         # workaround to get the statistics
         alpha = 1e-9 if self.alpha == 0.0 else self.alpha
+        if not 0 < self.L1_wt <= 1:
+            raise ValueError("L1_wt must satisfy 0 < L1_wt <= 1 for an unpenalized refit.")
 
         y = validate_target(y, len(X)).to_numpy()
         sample_weight = validate_sample_weight(sample_weight, len(X))
         X = _glm_frame(X)
+        X, y, sample_weight = _positive_weight_rows(X, y, sample_weight)
         input_names = X.columns.to_numpy(copy=True)
         added_intercept = None
         if self.fit_intercept:
@@ -230,8 +233,11 @@ class EnetGLM(BaseEstimator, RegressorMixin):
         self.bse_ = self.result.bse
         self.deviance_ = self.result.deviance
         self.pseudo_rsquared_ = self.result.pseudo_rsquared()
-        self.aic_ = self.result.aic
-        self.bic_ = self.result.bic_llf
+        selected = np.asarray(self.coef_) != 0
+        k_params = np.linalg.matrix_rank(model.exog[:, selected]) if selected.any() else 0
+        # The backend refit's IC bookkeeping counts an extra parameter and row.
+        self.aic_ = -2 * self.result.llf + 2 * k_params
+        self.bic_ = -2 * self.result.llf + np.log(model.nobs) * k_params
         self.pvalues_ = self.result.pvalues
         self.tvalues_ = self.result.tvalues
         self.pearson_chi2_ = self.result.pearson_chi2
@@ -316,8 +322,9 @@ class EnetGLM(BaseEstimator, RegressorMixin):
         score : float
             Negative total deviance, using variance weights and unit scale.
         """
-        validate_target(y, len(X))
+        y = validate_target(y, len(X)).to_numpy()
         sample_weight = validate_sample_weight(sample_weight, len(X))
+        X, y, sample_weight = _positive_weight_rows(X, y, sample_weight)
         mu = self.predict(X)
 
         var_weights = sample_weight if sample_weight is not None else 1.0
@@ -331,6 +338,13 @@ class EnetGLM(BaseEstimator, RegressorMixin):
         -------
         summary : str
             The summary of the fitted model.
+
+        Notes
+        -----
+        These statistics use the same data as variable selection and do not
+        account for that selection; ordinary p-values are not selection-adjusted.
+        The backend summary is returned unchanged. Its information criteria
+        can differ from the wrapper's rank/count-corrected aic_ and bic_.
         """
         return self.result.summary()
 
@@ -348,7 +362,9 @@ def weighted_cross_val_score(estimator, X, y, sample_weight=None, cv=5, n_jobs=-
     y : array-like of shape (n_samples,)
         The target variable.
     sample_weight : array-like of shape (n_samples,), optional
-        The sample weights for each data point.
+        The sample weights for each data point. For an EnetGLM argument,
+        zero-weight rows are omitted before splitting. Other estimators retain
+        their existing zero-weight and positive-fold-mass contracts.
     cv : int, default=5
         The number of cross-validation folds. Classifiers and binomial GLMs
         with discrete targets use stratified folds; other targets use KFold.
@@ -365,6 +381,8 @@ def weighted_cross_val_score(estimator, X, y, sample_weight=None, cv=5, n_jobs=-
 
     validate_target(y, len(X))
     sample_weight = validate_sample_weight(sample_weight, len(X))
+    if isinstance(estimator, EnetGLM):
+        X, y, sample_weight = _positive_weight_rows(X, y, sample_weight)
     splitter = check_cv(
         cv,
         y,
@@ -412,7 +430,7 @@ def _fit_and_score(
     test_index : np.ndarray
         Array of indices representing the test data.
     sample_weight : Optional[Union[pd.Series, np.ndarray]], default=None
-        Sample weights to be used during training. Can be either a pandas Series or a numpy array.
+        Sample weights for the chosen estimator, as a pandas Series or NumPy array.
 
     Returns
     -------
@@ -470,7 +488,8 @@ def grid_search_cv(
     y : Union[pd.Series, np.ndarray]
         The target values, can be either a pandas Series or a numpy array.
     sample_weight : Optional[Union[pd.Series, np.ndarray]], default=None
-        Sample weights to be used during training. Can be either a pandas Series or a numpy array.
+        Variance weights, as a pandas Series or NumPy array. Zero-weight rows
+        are omitted before fitting or forming validation folds.
     n_iterations : int, default=10
         Number of iterations for the grid search.
     family : str, default="gaussian"
@@ -494,7 +513,8 @@ def grid_search_cv(
     Raises
     ------
     ValueError
-        If the input data is not of the correct format or if an invalid family or score value is provided.
+        If the inputs, family or score are invalid, or any candidate criterion
+        is nonfinite. The search fails without discarding invalid candidates.
     """
     estimator = EnetGLM(
         family=family, link=link, L1_wt=1.0, fit_intercept=fit_intercept
@@ -508,6 +528,7 @@ def grid_search_cv(
     if score not in ["bic", "deviance"]:
         raise ValueError("Invalid score value. Options are: 'bic' or 'deviance'.")
 
+    X, y, sample_weight = _positive_weight_rows(X, y, sample_weight)
     grid = np.logspace(-3, 3, n_iterations)
     param_score = []
 
@@ -530,6 +551,10 @@ def grid_search_cv(
                 estimator, X, y, sample_weight=sample_weight, cv=5, n_jobs=n_jobs
             )
             param_score.append(np.mean(scores))
+        if not np.isfinite(param_score[-1]):
+            raise ValueError(
+                f"{score} for alpha={param:g} is not finite; cannot compare penalty candidates."
+            )
     best_index = np.argmin(param_score) if score == "bic" else np.argmax(param_score)
     best_alpha_value = grid[best_index]
     best_estimator = clone(estimator)
@@ -548,7 +573,10 @@ def grid_search_cv(
 
 class LassoFeatureSelection(BaseEstimator, TransformerMixin):
     """
-    LassoFeatureSelection performs feature selection using GLM Lasso regularization.
+    LassoFeatureSelection selects variables with a penalty and refits surviving
+    columns in an unpenalized GLM. Returned coefficients do not retain shrinkage.
+    Zero-weight rows are omitted before fitting and tuning. Any nonfinite search
+    criterion raises an error rather than returning an arbitrary penalty.
 
     Parameters
     ----------

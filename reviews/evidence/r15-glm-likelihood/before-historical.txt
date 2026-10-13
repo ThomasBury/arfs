@@ -1,0 +1,57 @@
+..FF                                                                     [100%]
+=================================== FAILURES ===================================
+____________ test_zero_weights_are_excluded_or_rejected_explicitly _____________
+reviews/evidence/01c-weighted-glm-lasso/checks.py:216: in test_zero_weights_are_excluded_or_rejected_explicitly
+    assert np.isfinite(selector.best_estimator_.bic_)
+E   AssertionError: assert np.False_
+E    +  where np.False_ = <ufunc 'isfinite'>(np.float64(inf))
+E    +    where <ufunc 'isfinite'> = np.isfinite
+E    +    and   np.float64(inf) = EnetGLM(L1_wt=1.0, alpha=np.float64(0.001)).bic_
+E    +      where EnetGLM(L1_wt=1.0, alpha=np.float64(0.001)) = LassoFeatureSelection(n_iterations=4).best_estimator_
+_______________ test_documented_near_ridge_matches_penalized_fit _______________
+reviews/evidence/01c-weighted-glm-lasso/checks.py:266: in test_documented_near_ridge_matches_penalized_fit
+    assert_allclose(model.coef_, penalized.params, atol=1e-5)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-05
+E
+E   Mismatched elements: 4 / 4 (100%)
+E   Max absolute difference among violations: 2.77088705
+E   Max relative difference among violations: 8.65256035
+E    ACTUAL: array([ 1.996622,  3.094933,  0.102861, -0.020231])
+E    DESIRED: array([0.206849, 0.324046, 0.051253, 0.003278])
+=============================== warnings summary ===============================
+reviews/evidence/01c-weighted-glm-lasso/checks.py: 10 warnings
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:648: RuntimeWarning: divide by zero encountered in divide
+    ll_obs += -np.log(scale / var_weights) - np.log(2 * np.pi)
+
+reviews/evidence/01c-weighted-glm-lasso/checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+reviews/evidence/01c-weighted-glm-lasso/checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+reviews/evidence/01c-weighted-glm-lasso/checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+reviews/evidence/01c-weighted-glm-lasso/checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+reviews/evidence/01c-weighted-glm-lasso/checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:578: RuntimeWarning: invalid value encountered in divide
+    tmp /= self.iweights * self.n_trials
+
+reviews/evidence/01c-weighted-glm-lasso/checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+reviews/evidence/01c-weighted-glm-lasso/checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+reviews/evidence/01c-weighted-glm-lasso/checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+reviews/evidence/01c-weighted-glm-lasso/checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+reviews/evidence/01c-weighted-glm-lasso/checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1464: UserWarning: Elastic net fitting did not converge
+    warnings.warn("Elastic net fitting did not converge")
+
+reviews/evidence/01c-weighted-glm-lasso/checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+reviews/evidence/01c-weighted-glm-lasso/checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+reviews/evidence/01c-weighted-glm-lasso/checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+reviews/evidence/01c-weighted-glm-lasso/checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+reviews/evidence/01c-weighted-glm-lasso/checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1891: RuntimeWarning: invalid value encountered in scalar subtract
+    prsq = 1 - np.exp((self.llnull - self.llf) * (2 / self.nobs))
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED reviews/evidence/01c-weighted-glm-lasso/checks.py::test_zero_weights_are_excluded_or_rejected_explicitly
+FAILED reviews/evidence/01c-weighted-glm-lasso/checks.py::test_documented_near_ridge_matches_penalized_fit
+2 failed, 2 passed, 29 deselected, 25 warnings in 3.37s
