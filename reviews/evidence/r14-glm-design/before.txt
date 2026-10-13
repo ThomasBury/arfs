@@ -1,0 +1,438 @@
+FFFFFFFFFFFFFFFF.FFF.F.FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF          [100%]
+=================================== FAILURES ===================================
+_ test_fitted_design_matches_weighted_least_squares_and_single_row[False-False] _
+tests/test_glm_design.py:35: in test_fitted_design_matches_weighted_least_squares_and_single_row
+    assert model.fit(features, y, w) is model
+E   assert None is EnetGLM(L1_wt=1, alpha=0.001, fit_intercept=False)
+E    +  where None = fit(           a         b         c\n0  -0.395301  0.263915  0.607128\n1  -0.972160  0.767664  0.255058\n2   0.782980  0.272...  0.831295  0.741412 -0.924753\n88  1.069739 -0.151307  0.184502\n89  0.866213  1.346539  0.173605\n\n[90 rows x 3 columns], array([ 0.74227643,  0.06820349,  4.97740424, -0.54425266, -0.39873261,\n       -3.63126504,  2.07782568,  2.21191463, ...195604,  1.16512515, -0.6460022 ,  4.85966579,\n        2.39168317,  2.01683334,  3.2102438 ,  6.44582193,  5.46180616]), array([1.87073452, 1.00512302, 1.01452193, 1.30923208, 1.65237921,\n       0.67160913, 1.23787315, 0.27509999, 0.528114...15, 0.74973526, 0.7332814 , 0.20553757, 0.37641173,\n       1.58244163, 1.52884373, 1.60162683, 1.04335672, 1.89796667]))
+E    +    where fit = EnetGLM(L1_wt=1, alpha=0.001, fit_intercept=False).fit
+_ test_fitted_design_matches_weighted_least_squares_and_single_row[False-True] _
+tests/test_glm_design.py:35: in test_fitted_design_matches_weighted_least_squares_and_single_row
+    assert model.fit(features, y, w) is model
+E   assert None is EnetGLM(L1_wt=1, alpha=0.001, fit_intercept=False)
+E    +  where None = fit(array([[-3.95301289e-01,  2.63914885e-01,  6.07128269e-01],\n       [-9.72159800e-01,  7.67664253e-01,  2.55058122e-01]...      [ 1.06973882e+00, -1.51307222e-01,  1.84502202e-01],\n       [ 8.66213206e-01,  1.34653861e+00,  1.73604815e-01]]), array([ 0.74227643,  0.06820349,  4.97740424, -0.54425266, -0.39873261,\n       -3.63126504,  2.07782568,  2.21191463, ...195604,  1.16512515, -0.6460022 ,  4.85966579,\n        2.39168317,  2.01683334,  3.2102438 ,  6.44582193,  5.46180616]), array([1.87073452, 1.00512302, 1.01452193, 1.30923208, 1.65237921,\n       0.67160913, 1.23787315, 0.27509999, 0.528114...15, 0.74973526, 0.7332814 , 0.20553757, 0.37641173,\n       1.58244163, 1.52884373, 1.60162683, 1.04335672, 1.89796667]))
+E    +    where fit = EnetGLM(L1_wt=1, alpha=0.001, fit_intercept=False).fit
+_ test_fitted_design_matches_weighted_least_squares_and_single_row[True-False] _
+tests/test_glm_design.py:35: in test_fitted_design_matches_weighted_least_squares_and_single_row
+    assert model.fit(features, y, w) is model
+E   assert None is EnetGLM(L1_wt=1, alpha=0.001)
+E    +  where None = fit(           a         b         c\n0  -0.395301  0.263915  0.607128\n1  -0.972160  0.767664  0.255058\n2   0.782980  0.272...  0.831295  0.741412 -0.924753\n88  1.069739 -0.151307  0.184502\n89  0.866213  1.346539  0.173605\n\n[90 rows x 3 columns], array([ 0.74227643,  0.06820349,  4.97740424, -0.54425266, -0.39873261,\n       -3.63126504,  2.07782568,  2.21191463, ...195604,  1.16512515, -0.6460022 ,  4.85966579,\n        2.39168317,  2.01683334,  3.2102438 ,  6.44582193,  5.46180616]), array([1.87073452, 1.00512302, 1.01452193, 1.30923208, 1.65237921,\n       0.67160913, 1.23787315, 0.27509999, 0.528114...15, 0.74973526, 0.7332814 , 0.20553757, 0.37641173,\n       1.58244163, 1.52884373, 1.60162683, 1.04335672, 1.89796667]))
+E    +    where fit = EnetGLM(L1_wt=1, alpha=0.001).fit
+_ test_fitted_design_matches_weighted_least_squares_and_single_row[True-True] __
+tests/test_glm_design.py:35: in test_fitted_design_matches_weighted_least_squares_and_single_row
+    assert model.fit(features, y, w) is model
+E   assert None is EnetGLM(L1_wt=1, alpha=0.001)
+E    +  where None = fit(array([[-3.95301289e-01,  2.63914885e-01,  6.07128269e-01],\n       [-9.72159800e-01,  7.67664253e-01,  2.55058122e-01]...      [ 1.06973882e+00, -1.51307222e-01,  1.84502202e-01],\n       [ 8.66213206e-01,  1.34653861e+00,  1.73604815e-01]]), array([ 0.74227643,  0.06820349,  4.97740424, -0.54425266, -0.39873261,\n       -3.63126504,  2.07782568,  2.21191463, ...195604,  1.16512515, -0.6460022 ,  4.85966579,\n        2.39168317,  2.01683334,  3.2102438 ,  6.44582193,  5.46180616]), array([1.87073452, 1.00512302, 1.01452193, 1.30923208, 1.65237921,\n       0.67160913, 1.23787315, 0.27509999, 0.528114...15, 0.74973526, 0.7332814 , 0.20553757, 0.37641173,\n       1.58244163, 1.52884373, 1.60162683, 1.04335672, 1.89796667]))
+E    +    where fit = EnetGLM(L1_wt=1, alpha=0.001).fit
+_ test_supplied_constant_is_preserved_without_duplicate_intercept[False-const] _
+tests/test_glm_design.py:56: in test_supplied_constant_is_preserved_without_duplicate_intercept
+    assert_array_equal(model.design_feature_names_, X.columns)
+E   AttributeError: 'NoneType' object has no attribute 'design_feature_names_'
+_ test_supplied_constant_is_preserved_without_duplicate_intercept[False-Intercept] _
+tests/test_glm_design.py:56: in test_supplied_constant_is_preserved_without_duplicate_intercept
+    assert_array_equal(model.design_feature_names_, X.columns)
+E   AttributeError: 'NoneType' object has no attribute 'design_feature_names_'
+_ test_supplied_constant_is_preserved_without_duplicate_intercept[False-intercept] _
+tests/test_glm_design.py:56: in test_supplied_constant_is_preserved_without_duplicate_intercept
+    assert_array_equal(model.design_feature_names_, X.columns)
+E   AttributeError: 'NoneType' object has no attribute 'design_feature_names_'
+_ test_supplied_constant_is_preserved_without_duplicate_intercept[False-constant] _
+tests/test_glm_design.py:56: in test_supplied_constant_is_preserved_without_duplicate_intercept
+    assert_array_equal(model.design_feature_names_, X.columns)
+E   AttributeError: 'NoneType' object has no attribute 'design_feature_names_'
+_ test_supplied_constant_is_preserved_without_duplicate_intercept[True-const] __
+tests/test_glm_design.py:56: in test_supplied_constant_is_preserved_without_duplicate_intercept
+    assert_array_equal(model.design_feature_names_, X.columns)
+E   AttributeError: 'NoneType' object has no attribute 'design_feature_names_'
+_ test_supplied_constant_is_preserved_without_duplicate_intercept[True-Intercept] _
+tests/test_glm_design.py:56: in test_supplied_constant_is_preserved_without_duplicate_intercept
+    assert_array_equal(model.design_feature_names_, X.columns)
+E   AttributeError: 'NoneType' object has no attribute 'design_feature_names_'
+_ test_supplied_constant_is_preserved_without_duplicate_intercept[True-intercept] _
+tests/test_glm_design.py:56: in test_supplied_constant_is_preserved_without_duplicate_intercept
+    assert_array_equal(model.design_feature_names_, X.columns)
+E   AttributeError: 'NoneType' object has no attribute 'design_feature_names_'
+_ test_supplied_constant_is_preserved_without_duplicate_intercept[True-constant] _
+tests/test_glm_design.py:56: in test_supplied_constant_is_preserved_without_duplicate_intercept
+    assert_array_equal(model.design_feature_names_, X.columns)
+E   AttributeError: 'NoneType' object has no attribute 'design_feature_names_'
+_ test_varying_intercept_names_are_predictors_and_generated_name_cannot_collide[const] _
+tests/test_glm_design.py:71: in test_varying_intercept_names_are_predictors_and_generated_name_cannot_collide
+    assert model.added_intercept_ not in X.columns
+E   AttributeError: 'NoneType' object has no attribute 'added_intercept_'
+_ test_varying_intercept_names_are_predictors_and_generated_name_cannot_collide[Intercept] _
+tests/test_glm_design.py:71: in test_varying_intercept_names_are_predictors_and_generated_name_cannot_collide
+    assert model.added_intercept_ not in X.columns
+E   AttributeError: 'NoneType' object has no attribute 'added_intercept_'
+_ test_varying_intercept_names_are_predictors_and_generated_name_cannot_collide[Intercept_1] _
+tests/test_glm_design.py:71: in test_varying_intercept_names_are_predictors_and_generated_name_cannot_collide
+    assert model.added_intercept_ not in X.columns
+E   AttributeError: 'NoneType' object has no attribute 'added_intercept_'
+_ test_named_schema_alignment_and_positional_array_inference[False-None-False] _
+tests/test_glm_design.py:92: in test_named_schema_alignment_and_positional_array_inference
+    method = model.predict
+E   AttributeError: 'NoneType' object has no attribute 'predict'
+_ test_named_schema_alignment_and_positional_array_inference[False-const-False] _
+tests/test_glm_design.py:92: in test_named_schema_alignment_and_positional_array_inference
+    method = model.predict
+E   AttributeError: 'NoneType' object has no attribute 'predict'
+_ test_named_schema_alignment_and_positional_array_inference[False-const-True] _
+tests/test_glm_design.py:95: in test_named_schema_alignment_and_positional_array_inference
+    array = method(X.to_numpy())
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:647: in transform
+    X.columns = self.feature_names_in_
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/generic.py:6313: in __setattr__
+    return object.__setattr__(self, name, value)
+properties.pyx:69: in pandas._libs.properties.AxisProperty.__set__
+    ???
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/generic.py:814: in _set_axis
+    self._mgr.set_axis(axis, labels)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/internals/managers.py:238: in set_axis
+    self._validate_set_axis(axis, new_labels)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/internals/base.py:98: in _validate_set_axis
+    raise ValueError(
+E   ValueError: Length mismatch: Expected axis has 4 elements, new values have 3 elements
+_ test_named_schema_alignment_and_positional_array_inference[False-constant-False] _
+tests/test_glm_design.py:92: in test_named_schema_alignment_and_positional_array_inference
+    method = model.predict
+E   AttributeError: 'NoneType' object has no attribute 'predict'
+_ test_named_schema_alignment_and_positional_array_inference[True-None-False] __
+tests/test_glm_design.py:92: in test_named_schema_alignment_and_positional_array_inference
+    method = model.predict
+E   AttributeError: 'NoneType' object has no attribute 'predict'
+_ test_named_schema_alignment_and_positional_array_inference[True-const-False] _
+tests/test_glm_design.py:92: in test_named_schema_alignment_and_positional_array_inference
+    method = model.predict
+E   AttributeError: 'NoneType' object has no attribute 'predict'
+_ test_named_schema_alignment_and_positional_array_inference[True-const-True] __
+tests/test_glm_design.py:88: in test_named_schema_alignment_and_positional_array_inference
+    model = LassoFeatureSelection(n_iterations=3, fit_intercept=fit_intercept).fit(X, y, w)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:621: in fit
+    self.selected_features_ = self.feature_names_in_[self.support_]
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:5416: in __getitem__
+    result = getitem(key)
+E   IndexError: boolean index did not match indexed array along axis 0; size of axis is 5 but size of corresponding boolean axis is 4
+_ test_named_schema_alignment_and_positional_array_inference[True-constant-False] _
+tests/test_glm_design.py:92: in test_named_schema_alignment_and_positional_array_inference
+    method = model.predict
+E   AttributeError: 'NoneType' object has no attribute 'predict'
+_ test_named_schema_alignment_and_positional_array_inference[True-constant-True] _
+tests/test_glm_design.py:88: in test_named_schema_alignment_and_positional_array_inference
+    model = LassoFeatureSelection(n_iterations=3, fit_intercept=fit_intercept).fit(X, y, w)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:621: in fit
+    self.selected_features_ = self.feature_names_in_[self.support_]
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:5416: in __getitem__
+    result = getitem(key)
+E   IndexError: boolean index did not match indexed array along axis 0; size of axis is 5 but size of corresponding boolean axis is 4
+______ test_inference_rejects_changed_or_ambiguous_schema[missing-False] _______
+tests/test_glm_design.py:113: in test_inference_rejects_changed_or_ambiguous_schema
+    method = model.predict
+E   AttributeError: 'NoneType' object has no attribute 'predict'
+_______ test_inference_rejects_changed_or_ambiguous_schema[missing-True] _______
+tests/test_glm_design.py:123: in test_inference_rejects_changed_or_ambiguous_schema
+    with pytest.raises(ValueError, match="columns|features|two-dimensional"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_______ test_inference_rejects_changed_or_ambiguous_schema[extra-False] ________
+tests/test_glm_design.py:113: in test_inference_rejects_changed_or_ambiguous_schema
+    method = model.predict
+E   AttributeError: 'NoneType' object has no attribute 'predict'
+________ test_inference_rejects_changed_or_ambiguous_schema[extra-True] ________
+tests/test_glm_design.py:124: in test_inference_rejects_changed_or_ambiguous_schema
+    method(bad)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:650: in transform
+    return X[self.selected_features_]
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:4108: in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6200: in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6252: in _raise_if_missing
+    raise KeyError(f"{not_found} not in index")
+E   KeyError: "['Intercept'] not in index"
+____ test_inference_rejects_changed_or_ambiguous_schema[replacement-False] _____
+tests/test_glm_design.py:113: in test_inference_rejects_changed_or_ambiguous_schema
+    method = model.predict
+E   AttributeError: 'NoneType' object has no attribute 'predict'
+_____ test_inference_rejects_changed_or_ambiguous_schema[replacement-True] _____
+tests/test_glm_design.py:123: in test_inference_rejects_changed_or_ambiguous_schema
+    with pytest.raises(ValueError, match="columns|features|two-dimensional"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_____ test_inference_rejects_changed_or_ambiguous_schema[duplicate-False] ______
+tests/test_glm_design.py:113: in test_inference_rejects_changed_or_ambiguous_schema
+    method = model.predict
+E   AttributeError: 'NoneType' object has no attribute 'predict'
+______ test_inference_rejects_changed_or_ambiguous_schema[duplicate-True] ______
+tests/test_glm_design.py:123: in test_inference_rejects_changed_or_ambiguous_schema
+    with pytest.raises(ValueError, match="columns|features|two-dimensional"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_______ test_inference_rejects_changed_or_ambiguous_schema[narrow-False] _______
+tests/test_glm_design.py:113: in test_inference_rejects_changed_or_ambiguous_schema
+    method = model.predict
+E   AttributeError: 'NoneType' object has no attribute 'predict'
+_______ test_inference_rejects_changed_or_ambiguous_schema[narrow-True] ________
+tests/test_glm_design.py:124: in test_inference_rejects_changed_or_ambiguous_schema
+    method(bad)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:647: in transform
+    X.columns = self.feature_names_in_
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/generic.py:6313: in __setattr__
+    return object.__setattr__(self, name, value)
+properties.pyx:69: in pandas._libs.properties.AxisProperty.__set__
+    ???
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/generic.py:814: in _set_axis
+    self._mgr.set_axis(axis, labels)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/internals/managers.py:238: in set_axis
+    self._validate_set_axis(axis, new_labels)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/internals/base.py:98: in _validate_set_axis
+    raise ValueError(
+E   ValueError: Length mismatch: Expected axis has 3 elements, new values have 4 elements
+
+During handling of the above exception, another exception occurred:
+tests/test_glm_design.py:123: in test_inference_rejects_changed_or_ambiguous_schema
+    with pytest.raises(ValueError, match="columns|features|two-dimensional"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'columns|features|two-dimensional'
+E    Input: 'Length mismatch: Expected axis has 3 elements, new values have 4 elements'
+________ test_inference_rejects_changed_or_ambiguous_schema[wide-False] ________
+tests/test_glm_design.py:113: in test_inference_rejects_changed_or_ambiguous_schema
+    method = model.predict
+E   AttributeError: 'NoneType' object has no attribute 'predict'
+________ test_inference_rejects_changed_or_ambiguous_schema[wide-True] _________
+tests/test_glm_design.py:123: in test_inference_rejects_changed_or_ambiguous_schema
+    with pytest.raises(ValueError, match="columns|features|two-dimensional"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_______ test_inference_rejects_changed_or_ambiguous_schema[onedim-False] _______
+tests/test_glm_design.py:113: in test_inference_rejects_changed_or_ambiguous_schema
+    method = model.predict
+E   AttributeError: 'NoneType' object has no attribute 'predict'
+_______ test_inference_rejects_changed_or_ambiguous_schema[onedim-True] ________
+tests/test_glm_design.py:124: in test_inference_rejects_changed_or_ambiguous_schema
+    method(bad)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:647: in transform
+    X.columns = self.feature_names_in_
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/generic.py:6313: in __setattr__
+    return object.__setattr__(self, name, value)
+properties.pyx:69: in pandas._libs.properties.AxisProperty.__set__
+    ???
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/generic.py:814: in _set_axis
+    self._mgr.set_axis(axis, labels)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/internals/managers.py:238: in set_axis
+    self._validate_set_axis(axis, new_labels)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/internals/base.py:98: in _validate_set_axis
+    raise ValueError(
+E   ValueError: Length mismatch: Expected axis has 2 elements, new values have 4 elements
+
+During handling of the above exception, another exception occurred:
+tests/test_glm_design.py:123: in test_inference_rejects_changed_or_ambiguous_schema
+    with pytest.raises(ValueError, match="columns|features|two-dimensional"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'columns|features|two-dimensional'
+E    Input: 'Length mismatch: Expected axis has 2 elements, new values have 4 elements'
+______________ test_duplicate_training_names_are_rejected[False] _______________
+tests/test_glm_design.py:132: in test_duplicate_training_names_are_rejected
+    with pytest.raises(ValueError, match="duplicate"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_______________ test_duplicate_training_names_are_rejected[True] _______________
+tests/test_glm_design.py:132: in test_duplicate_training_names_are_rejected
+    with pytest.raises(ValueError, match="duplicate"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_selector_metadata_describes_inputs_and_actual_selected_design[False-None-False] _
+tests/test_glm_design.py:149: in test_selector_metadata_describes_inputs_and_actual_selected_design
+    assert selector.n_features_in_ == X.shape[1]
+E   AttributeError: 'LassoFeatureSelection' object has no attribute 'n_features_in_'
+_ test_selector_metadata_describes_inputs_and_actual_selected_design[False-None-True] _
+tests/test_glm_design.py:149: in test_selector_metadata_describes_inputs_and_actual_selected_design
+    assert selector.n_features_in_ == X.shape[1]
+E   AttributeError: 'LassoFeatureSelection' object has no attribute 'n_features_in_'
+_ test_selector_metadata_describes_inputs_and_actual_selected_design[False-const-False] _
+tests/test_glm_design.py:149: in test_selector_metadata_describes_inputs_and_actual_selected_design
+    assert selector.n_features_in_ == X.shape[1]
+E   AttributeError: 'LassoFeatureSelection' object has no attribute 'n_features_in_'
+_ test_selector_metadata_describes_inputs_and_actual_selected_design[False-const-True] _
+tests/test_glm_design.py:149: in test_selector_metadata_describes_inputs_and_actual_selected_design
+    assert selector.n_features_in_ == X.shape[1]
+E   AttributeError: 'LassoFeatureSelection' object has no attribute 'n_features_in_'
+_ test_selector_metadata_describes_inputs_and_actual_selected_design[False-constant-False] _
+tests/test_glm_design.py:149: in test_selector_metadata_describes_inputs_and_actual_selected_design
+    assert selector.n_features_in_ == X.shape[1]
+E   AttributeError: 'LassoFeatureSelection' object has no attribute 'n_features_in_'
+_ test_selector_metadata_describes_inputs_and_actual_selected_design[False-constant-True] _
+tests/test_glm_design.py:149: in test_selector_metadata_describes_inputs_and_actual_selected_design
+    assert selector.n_features_in_ == X.shape[1]
+E   AttributeError: 'LassoFeatureSelection' object has no attribute 'n_features_in_'
+_ test_selector_metadata_describes_inputs_and_actual_selected_design[True-None-False] _
+tests/test_glm_design.py:149: in test_selector_metadata_describes_inputs_and_actual_selected_design
+    assert selector.n_features_in_ == X.shape[1]
+E   AttributeError: 'LassoFeatureSelection' object has no attribute 'n_features_in_'
+_ test_selector_metadata_describes_inputs_and_actual_selected_design[True-None-True] _
+tests/test_glm_design.py:149: in test_selector_metadata_describes_inputs_and_actual_selected_design
+    assert selector.n_features_in_ == X.shape[1]
+E   AttributeError: 'LassoFeatureSelection' object has no attribute 'n_features_in_'
+_ test_selector_metadata_describes_inputs_and_actual_selected_design[True-const-False] _
+tests/test_glm_design.py:146: in test_selector_metadata_describes_inputs_and_actual_selected_design
+    selector = LassoFeatureSelection(n_iterations=3, fit_intercept=fit_intercept).fit(features, y, w)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:621: in fit
+    self.selected_features_ = self.feature_names_in_[self.support_]
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:5416: in __getitem__
+    result = getitem(key)
+E   IndexError: boolean index did not match indexed array along axis 0; size of axis is 5 but size of corresponding boolean axis is 4
+_ test_selector_metadata_describes_inputs_and_actual_selected_design[True-const-True] _
+tests/test_glm_design.py:146: in test_selector_metadata_describes_inputs_and_actual_selected_design
+    selector = LassoFeatureSelection(n_iterations=3, fit_intercept=fit_intercept).fit(features, y, w)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:621: in fit
+    self.selected_features_ = self.feature_names_in_[self.support_]
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:5416: in __getitem__
+    result = getitem(key)
+E   IndexError: boolean index did not match indexed array along axis 0; size of axis is 5 but size of corresponding boolean axis is 4
+_ test_selector_metadata_describes_inputs_and_actual_selected_design[True-constant-False] _
+tests/test_glm_design.py:146: in test_selector_metadata_describes_inputs_and_actual_selected_design
+    selector = LassoFeatureSelection(n_iterations=3, fit_intercept=fit_intercept).fit(features, y, w)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:621: in fit
+    self.selected_features_ = self.feature_names_in_[self.support_]
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:5416: in __getitem__
+    result = getitem(key)
+E   IndexError: boolean index did not match indexed array along axis 0; size of axis is 5 but size of corresponding boolean axis is 4
+_ test_selector_metadata_describes_inputs_and_actual_selected_design[True-constant-True] _
+tests/test_glm_design.py:146: in test_selector_metadata_describes_inputs_and_actual_selected_design
+    selector = LassoFeatureSelection(n_iterations=3, fit_intercept=fit_intercept).fit(features, y, w)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:621: in fit
+    self.selected_features_ = self.feature_names_in_[self.support_]
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:5416: in __getitem__
+    result = getitem(key)
+E   IndexError: boolean index did not match indexed array along axis 0; size of axis is 5 but size of corresponding boolean axis is 4
+________ test_set_params_objective_matches_fresh_construction[params0] _________
+tests/test_glm_design.py:167: in test_set_params_objective_matches_fresh_construction
+    assert type(model.objective) is type(fresh.objective)
+E   AttributeError: 'NoneType' object has no attribute 'objective'
+________ test_set_params_objective_matches_fresh_construction[params1] _________
+tests/test_glm_design.py:167: in test_set_params_objective_matches_fresh_construction
+    assert type(model.objective) is type(fresh.objective)
+E   AttributeError: 'NoneType' object has no attribute 'objective'
+___ test_successful_refit_replaces_design_and_uses_current_parameters[False] ___
+tests/test_glm_design.py:181: in test_successful_refit_replaces_design_and_uses_current_parameters
+    assert_allclose(model.predict(X), old_prediction)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:241: in predict
+    return self.result.predict(X)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/statsmodels/base/model.py:1174: in predict
+    predict_results = self.model.predict(self.params, exog, *args,
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1012: in predict
+    linpred = np.dot(exog, params) + offset + exposure
+E   ValueError: shapes (90,3) and (4,) not aligned: 3 (dim 1) != 4 (dim 0)
+___ test_successful_refit_replaces_design_and_uses_current_parameters[True] ____
+tests/test_glm_design.py:192: in test_successful_refit_replaces_design_and_uses_current_parameters
+    assert model.n_features_in_ == 2
+E   AttributeError: 'LassoFeatureSelection' object has no attribute 'n_features_in_'
+__________ test_zero_alpha_fit_does_not_modify_constructor_parameters __________
+tests/test_glm_design.py:203: in test_zero_alpha_fit_does_not_modify_constructor_parameters
+    assert model.get_params() == before
+E   AssertionError: assert {'L1_wt': 1e-...t': True, ...} == {'L1_wt': 1e-...t': True, ...}
+E
+E     Omitting 4 identical items, use -vv to show
+E     Differing items:
+E     {'alpha': 1e-09} != {'alpha': 0.0}
+E     Use -v to get more diff
+________________ test_inference_before_fit_is_actionable[False] ________________
+tests/test_glm_design.py:211: in test_inference_before_fit_is_actionable
+    (model.transform if selector else model.predict)(X)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:231: in predict
+    raise ValueError("Fit the model first.")
+E   ValueError: Fit the model first.
+________________ test_inference_before_fit_is_actionable[True] _________________
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:3805: in get_loc
+    return self._engine.get_loc(casted_key)
+index.pyx:167: in pandas._libs.index.IndexEngine.get_loc
+    ???
+index.pyx:196: in pandas._libs.index.IndexEngine.get_loc
+    ???
+pandas/_libs/hashtable_class_helper.pxi:7081: in pandas._libs.hashtable.PyObjectHashTable.get_item
+    ???
+pandas/_libs/hashtable_class_helper.pxi:7089: in pandas._libs.hashtable.PyObjectHashTable.get_item
+    ???
+E   KeyError: None
+
+The above exception was the direct cause of the following exception:
+tests/test_glm_design.py:211: in test_inference_before_fit_is_actionable
+    (model.transform if selector else model.predict)(X)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:650: in transform
+    return X[self.selected_features_]
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:4102: in __getitem__
+    indexer = self.columns.get_loc(key)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:3812: in get_loc
+    raise KeyError(key) from err
+E   KeyError: None
+__________ test_real_pipeline_feature_names_summary_and_pandas_output __________
+tests/test_glm_design.py:224: in test_real_pipeline_feature_names_summary_and_pandas_output
+    assert_array_equal(output.columns, pipe.get_feature_names_out())
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/sklearn/pipeline.py:1281: in get_feature_names_out
+    feature_names_out = transform.get_feature_names_out(feature_names_out)
+E   TypeError: LassoFeatureSelection.get_feature_names_out() takes 1 positional argument but 2 were given
+=========================== short test summary info ============================
+FAILED tests/test_glm_design.py::test_fitted_design_matches_weighted_least_squares_and_single_row[False-False]
+FAILED tests/test_glm_design.py::test_fitted_design_matches_weighted_least_squares_and_single_row[False-True]
+FAILED tests/test_glm_design.py::test_fitted_design_matches_weighted_least_squares_and_single_row[True-False]
+FAILED tests/test_glm_design.py::test_fitted_design_matches_weighted_least_squares_and_single_row[True-True]
+FAILED tests/test_glm_design.py::test_supplied_constant_is_preserved_without_duplicate_intercept[False-const]
+FAILED tests/test_glm_design.py::test_supplied_constant_is_preserved_without_duplicate_intercept[False-Intercept]
+FAILED tests/test_glm_design.py::test_supplied_constant_is_preserved_without_duplicate_intercept[False-intercept]
+FAILED tests/test_glm_design.py::test_supplied_constant_is_preserved_without_duplicate_intercept[False-constant]
+FAILED tests/test_glm_design.py::test_supplied_constant_is_preserved_without_duplicate_intercept[True-const]
+FAILED tests/test_glm_design.py::test_supplied_constant_is_preserved_without_duplicate_intercept[True-Intercept]
+FAILED tests/test_glm_design.py::test_supplied_constant_is_preserved_without_duplicate_intercept[True-intercept]
+FAILED tests/test_glm_design.py::test_supplied_constant_is_preserved_without_duplicate_intercept[True-constant]
+FAILED tests/test_glm_design.py::test_varying_intercept_names_are_predictors_and_generated_name_cannot_collide[const]
+FAILED tests/test_glm_design.py::test_varying_intercept_names_are_predictors_and_generated_name_cannot_collide[Intercept]
+FAILED tests/test_glm_design.py::test_varying_intercept_names_are_predictors_and_generated_name_cannot_collide[Intercept_1]
+FAILED tests/test_glm_design.py::test_named_schema_alignment_and_positional_array_inference[False-None-False]
+FAILED tests/test_glm_design.py::test_named_schema_alignment_and_positional_array_inference[False-const-False]
+FAILED tests/test_glm_design.py::test_named_schema_alignment_and_positional_array_inference[False-const-True]
+FAILED tests/test_glm_design.py::test_named_schema_alignment_and_positional_array_inference[False-constant-False]
+FAILED tests/test_glm_design.py::test_named_schema_alignment_and_positional_array_inference[True-None-False]
+FAILED tests/test_glm_design.py::test_named_schema_alignment_and_positional_array_inference[True-const-False]
+FAILED tests/test_glm_design.py::test_named_schema_alignment_and_positional_array_inference[True-const-True]
+FAILED tests/test_glm_design.py::test_named_schema_alignment_and_positional_array_inference[True-constant-False]
+FAILED tests/test_glm_design.py::test_named_schema_alignment_and_positional_array_inference[True-constant-True]
+FAILED tests/test_glm_design.py::test_inference_rejects_changed_or_ambiguous_schema[missing-False]
+FAILED tests/test_glm_design.py::test_inference_rejects_changed_or_ambiguous_schema[missing-True]
+FAILED tests/test_glm_design.py::test_inference_rejects_changed_or_ambiguous_schema[extra-False]
+FAILED tests/test_glm_design.py::test_inference_rejects_changed_or_ambiguous_schema[extra-True]
+FAILED tests/test_glm_design.py::test_inference_rejects_changed_or_ambiguous_schema[replacement-False]
+FAILED tests/test_glm_design.py::test_inference_rejects_changed_or_ambiguous_schema[replacement-True]
+FAILED tests/test_glm_design.py::test_inference_rejects_changed_or_ambiguous_schema[duplicate-False]
+FAILED tests/test_glm_design.py::test_inference_rejects_changed_or_ambiguous_schema[duplicate-True]
+FAILED tests/test_glm_design.py::test_inference_rejects_changed_or_ambiguous_schema[narrow-False]
+FAILED tests/test_glm_design.py::test_inference_rejects_changed_or_ambiguous_schema[narrow-True]
+FAILED tests/test_glm_design.py::test_inference_rejects_changed_or_ambiguous_schema[wide-False]
+FAILED tests/test_glm_design.py::test_inference_rejects_changed_or_ambiguous_schema[wide-True]
+FAILED tests/test_glm_design.py::test_inference_rejects_changed_or_ambiguous_schema[onedim-False]
+FAILED tests/test_glm_design.py::test_inference_rejects_changed_or_ambiguous_schema[onedim-True]
+FAILED tests/test_glm_design.py::test_duplicate_training_names_are_rejected[False]
+FAILED tests/test_glm_design.py::test_duplicate_training_names_are_rejected[True]
+FAILED tests/test_glm_design.py::test_selector_metadata_describes_inputs_and_actual_selected_design[False-None-False]
+FAILED tests/test_glm_design.py::test_selector_metadata_describes_inputs_and_actual_selected_design[False-None-True]
+FAILED tests/test_glm_design.py::test_selector_metadata_describes_inputs_and_actual_selected_design[False-const-False]
+FAILED tests/test_glm_design.py::test_selector_metadata_describes_inputs_and_actual_selected_design[False-const-True]
+FAILED tests/test_glm_design.py::test_selector_metadata_describes_inputs_and_actual_selected_design[False-constant-False]
+FAILED tests/test_glm_design.py::test_selector_metadata_describes_inputs_and_actual_selected_design[False-constant-True]
+FAILED tests/test_glm_design.py::test_selector_metadata_describes_inputs_and_actual_selected_design[True-None-False]
+FAILED tests/test_glm_design.py::test_selector_metadata_describes_inputs_and_actual_selected_design[True-None-True]
+FAILED tests/test_glm_design.py::test_selector_metadata_describes_inputs_and_actual_selected_design[True-const-False]
+FAILED tests/test_glm_design.py::test_selector_metadata_describes_inputs_and_actual_selected_design[True-const-True]
+FAILED tests/test_glm_design.py::test_selector_metadata_describes_inputs_and_actual_selected_design[True-constant-False]
+FAILED tests/test_glm_design.py::test_selector_metadata_describes_inputs_and_actual_selected_design[True-constant-True]
+FAILED tests/test_glm_design.py::test_set_params_objective_matches_fresh_construction[params0]
+FAILED tests/test_glm_design.py::test_set_params_objective_matches_fresh_construction[params1]
+FAILED tests/test_glm_design.py::test_successful_refit_replaces_design_and_uses_current_parameters[False]
+FAILED tests/test_glm_design.py::test_successful_refit_replaces_design_and_uses_current_parameters[True]
+FAILED tests/test_glm_design.py::test_zero_alpha_fit_does_not_modify_constructor_parameters
+FAILED tests/test_glm_design.py::test_inference_before_fit_is_actionable[False]
+FAILED tests/test_glm_design.py::test_inference_before_fit_is_actionable[True]
+FAILED tests/test_glm_design.py::test_real_pipeline_feature_names_summary_and_pandas_output
+60 failed, 3 passed in 8.67s

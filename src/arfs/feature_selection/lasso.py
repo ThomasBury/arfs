@@ -24,9 +24,21 @@ import statsmodels.api as sm
 from sklearn.base import BaseEstimator, TransformerMixin, RegressorMixin
 from sklearn.base import clone, is_classifier
 from sklearn.model_selection import check_cv
+from sklearn.utils.validation import check_is_fitted
 from joblib import Parallel, delayed
 from typing import Union, Optional
 from ..utils import validate_sample_weight, validate_target
+
+
+def _glm_frame(X):
+    if not isinstance(X, pd.DataFrame):
+        X = np.asarray(X)
+        if X.ndim != 2:
+            raise ValueError("X must be two-dimensional.")
+        X = pd.DataFrame(X, columns=[f"pred_{i}" for i in range(X.shape[1])])
+    if not X.columns.is_unique:
+        raise ValueError("X must not contain duplicate columns.")
+    return X
 
 
 def _map_family_link(family: str = "gaussian", link: Optional[str] = None):
@@ -77,7 +89,22 @@ class EnetGLM(BaseEstimator, RegressorMixin):
         and breaking the class. Nevertheless, you can set `L1_wt` to a very small value, such as 1e-9,
         to obtain close-to-ridge behavior while still obtaining the necessary statistics.
     fit_intercept : bool, optional (default=True)
-        Whether to fit an intercept term in the model.
+        Add an intercept only when training inputs have no nonzero constant.
+        Supplied columns, including constants, are always preserved. The fitted
+        design governs prediction; named inputs are aligned to training names,
+        while arrays must have the fitted input width and order.
+
+    Attributes
+    ----------
+    feature_names_in_ : ndarray
+        Original input names; arrays receive names pred_0, pred_1, etc.
+    n_features_in_ : int
+        Number of original input columns.
+    design_feature_names_ : ndarray
+        Actual coefficient names, including an automatically added intercept.
+    added_intercept_ : str or None
+        Name of the generated column, or None when none was added. The name
+        is Intercept, with a numbered suffix if an input already uses it.
     """
 
     def __init__(
@@ -110,7 +137,7 @@ class EnetGLM(BaseEstimator, RegressorMixin):
             to obtain close-to-ridge behavior while still obtaining the necessary statistics.
 
         fit_intercept :
-            Whether to fit an intercept term in the model.
+            Add an intercept only if no nonzero constant was supplied.
         """
         self.family = family
         self.link = link
@@ -119,7 +146,6 @@ class EnetGLM(BaseEstimator, RegressorMixin):
         self.model = None
         self.result = None
         self.fit_intercept = fit_intercept
-        self.objective = _map_family_link(family=family, link=link)
 
     def fit(
         self,
@@ -128,7 +154,7 @@ class EnetGLM(BaseEstimator, RegressorMixin):
         sample_weight: Optional[Union[np.ndarray, pd.Series]] = None,
     ):
         """
-        Fit the model to the data.
+        Fit using the current family/link parameters and record one design.
 
         Notes
         -----
@@ -170,33 +196,36 @@ class EnetGLM(BaseEstimator, RegressorMixin):
         # see the if kwargs.get("L1_wt", 1) == 0 condition in
         # https://www.statsmodels.org/dev/_modules/statsmodels/genmod/generalized_linear_model.html#GLM.fit_regularized
         # workaround to get the statistics
-        if self.alpha == 0.0:
-            self.alpha = 1e-9
+        alpha = 1e-9 if self.alpha == 0.0 else self.alpha
 
-        validate_target(y, len(X))
+        y = validate_target(y, len(X)).to_numpy()
         sample_weight = validate_sample_weight(sample_weight, len(X))
-        if not isinstance(X, pd.DataFrame):
-            X = pd.DataFrame(X)
-            X.columns = [f"pred_{i}" for i in range(X.shape[1])]
-
+        X = _glm_frame(X)
+        input_names = X.columns.to_numpy(copy=True)
+        added_intercept = None
         if self.fit_intercept:
-            X = sm.add_constant(X)
-            X = X.rename(columns={"const": "Intercept"})
-        else:
-            X = drop_existing_sm_constant_from_df(X)
+            design = sm.add_constant(X, has_constant="skip")
+            if design.shape[1] > X.shape[1]:
+                added_intercept = "Intercept"
+                suffix = 1
+                while added_intercept in X.columns:
+                    added_intercept = f"Intercept_{suffix}"
+                    suffix += 1
+                design.columns = [added_intercept, *X.columns]
+            X = design
 
-        self.n_features_in_ = X.shape[1]
-
-        self.model = sm.GLM(
+        objective = _map_family_link(family=self.family, link=self.link)
+        model = sm.GLM(
             endog=y,
             exog=X,
             var_weights=sample_weight,
-            family=self.objective,
+            family=objective,
         )
 
-        self.result = self.model.fit_regularized(
-            method="elastic_net", alpha=self.alpha, L1_wt=self.L1_wt, refit=True
+        result = model.fit_regularized(
+            method="elastic_net", alpha=alpha, L1_wt=self.L1_wt, refit=True
         )
+        self.model, self.result, self.objective = model, result, objective
         self.coef_ = self.result.params
         self.bse_ = self.result.bse
         self.deviance_ = self.result.deviance
@@ -206,6 +235,28 @@ class EnetGLM(BaseEstimator, RegressorMixin):
         self.pvalues_ = self.result.pvalues
         self.tvalues_ = self.result.tvalues
         self.pearson_chi2_ = self.result.pearson_chi2
+        self.feature_names_in_ = input_names
+        self.n_features_in_ = len(input_names)
+        self.design_feature_names_ = X.columns.to_numpy(copy=True)
+        self.added_intercept_ = added_intercept
+        return self
+
+    def _prepare_design(self, X):
+        check_is_fitted(self, "design_feature_names_")
+        named = isinstance(X, pd.DataFrame)
+        X = _glm_frame(X)
+        if X.shape[1] != self.n_features_in_:
+            raise ValueError("X must have the fitted number of input features.")
+        if named:
+            if not X.columns.isin(self.feature_names_in_).all():
+                raise ValueError("X columns must match the fitted input columns.")
+            X = X.loc[:, self.feature_names_in_]
+        else:
+            X.columns = self.feature_names_in_
+        if self.added_intercept_ is not None:
+            X = X.copy()
+            X.insert(0, self.added_intercept_, 1.0)
+        return X
 
     def predict(self, X):
         """
@@ -224,20 +275,12 @@ class EnetGLM(BaseEstimator, RegressorMixin):
 
         Raises
         ------
-        ValueError
+        NotFittedError
             If the model has not been fit.
+        ValueError
+            If input columns are duplicated or differ from the fitted schema.
         """
-        if self.model is None:
-            raise ValueError("Fit the model first.")
-
-        if not isinstance(X, pd.DataFrame):
-            X = pd.DataFrame(X)
-            X.columns = [f"pred_{i}" for i in range(X.shape[1])]
-
-        if self.fit_intercept:
-            X = sm.add_constant(X)
-            X = X.rename(columns={"const": "Intercept"})
-
+        X = self._prepare_design(X)
         return self.result.predict(X)
 
     def get_coef(self):
@@ -437,6 +480,9 @@ def grid_search_cv(
     score : str, default="bic"
         Options: "bic" minimizes training BIC; "deviance" minimizes the mean
         total validation deviance across five folds (maximizes negative scores).
+    fit_intercept : bool, default=True
+        Add an intercept when no nonzero training constant exists. Supplied
+        columns are preserved.
     n_jobs:
         the number of processes
 
@@ -518,6 +564,10 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
         total validation deviance across five folds (maximizes negative scores).
     n_jobs: int, default=-1
         the number of processes. -1 means all the processes
+    fit_intercept : bool, default=True
+        Add an intercept when no nonzero training constant exists. Supplied
+        columns are preserved. A selected generated intercept is included in
+        transform output, but not in input metadata or support_.
 
     Attributes
     ----------
@@ -530,9 +580,16 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
     selected_features_ : ndarray
         The selected feature names.
     support_ : ndarray
-        The support of selected features (True for selected, False otherwise).
+        Support for original input columns, excluding a generated intercept.
+    design_feature_names_ : ndarray
+        Names of the fitted design, including a generated intercept if needed.
+    design_support_ : ndarray
+        Nonzero-coefficient support for the fitted design. A selected generated
+        intercept remains in transform output and selected_features_.
     feature_names_in_ : ndarray
         The input feature names.
+    n_features_in_ : int
+        Number of original input columns, excluding a generated intercept.
     score : str
         The score used for model selection.
     n_jobs: int
@@ -543,8 +600,8 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
     fit(X, y=None, sample_weight=None)
         Fit the LassoFeatureSelection model and select the best features.
     transform(X)
-        Transform the input data to keep only the selected features.
-    get_feature_names_out()
+        Apply the fitted design and retain its selected columns.
+    get_feature_names_out(input_features=None)
         Get the names of the selected features.
 
     """
@@ -561,10 +618,6 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
         self.family = family
         self.link = link
         self.n_iterations = n_iterations
-        self.best_estimator_ = None
-        self.selected_features_ = None
-        self.support_ = None
-        self.feature_names_in_ = None
         self.score = score
         self.fit_intercept = fit_intercept
         self.n_jobs = n_jobs
@@ -593,19 +646,7 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
             The fitted LassoFeatureSelection model.
 
         """
-        if not isinstance(X, pd.DataFrame):
-            X = pd.DataFrame(X)
-            X.columns = [f"pred_{i}" for i in range(X.shape[1])]
-
-        if not self.fit_intercept:
-            X = drop_existing_sm_constant_from_df(X)
-
-        self.feature_names_in_ = (
-            X.columns.insert(0, "Intercept")
-            if self.fit_intercept and "Intercept" not in X.columns
-            else X.columns
-        )
-
+        X = _glm_frame(X)
         self.best_estimator_ = grid_search_cv(
             family=self.family,
             link=self.link,
@@ -617,13 +658,23 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
             fit_intercept=self.fit_intercept,
             n_jobs=self.n_jobs,
         )
-        self.support_ = self.best_estimator_.coef_ != 0
-        self.selected_features_ = self.feature_names_in_[self.support_]
+        self.feature_names_in_ = self.best_estimator_.feature_names_in_.copy()
+        self.n_features_in_ = self.best_estimator_.n_features_in_
+        self.design_feature_names_ = self.best_estimator_.design_feature_names_.copy()
+        self.design_support_ = np.asarray(self.best_estimator_.coef_) != 0
+        self.support_ = self.design_support_[
+            pd.Index(self.design_feature_names_).get_indexer(self.feature_names_in_)
+        ]
+        self.selected_features_ = self.design_feature_names_[self.design_support_]
         return self
 
     def transform(self, X: Union[pd.DataFrame, np.ndarray]) -> pd.DataFrame:
         """
-        Transform the input data to keep only the selected features.
+        Apply the fitted design and retain its selected columns.
+
+        Named inputs are aligned to the complete fitted input schema; missing,
+        extra or duplicate columns are rejected. Arrays use fitted input order.
+        A generated intercept is recreated even for a single row.
 
         Parameters
         ----------
@@ -632,26 +683,22 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
 
         Returns
         -------
-        Union[pd.DataFrame, np.ndarray]
+        pd.DataFrame
             The transformed data with only the selected features.
 
         """
 
-        if self.fit_intercept:
-            X = sm.add_constant(X)
+        check_is_fitted(self, "selected_features_")
+        return self.best_estimator_._prepare_design(X)[self.selected_features_]
 
-        if not isinstance(X, pd.DataFrame):
-            X = pd.DataFrame(X)
-            # if not a DF, assuming the col orders is
-            # the same, as required anyway
-            X.columns = self.feature_names_in_
-
-        X = X.rename(columns={"const": "Intercept"}) if "const" in X.columns else X
-        return X[self.selected_features_]
-
-    def get_feature_names_out(self) -> np.ndarray:
+    def get_feature_names_out(self, input_features=None) -> np.ndarray:
         """
         Get the names of the selected features.
+
+        Parameters
+        ----------
+        input_features : array-like, optional
+            If supplied, must match the original input names and order.
 
         Returns
         -------
@@ -659,7 +706,12 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
             The names of the selected features.
 
         """
-        return self.feature_names_in_[self.support_]
+        check_is_fitted(self, "selected_features_")
+        if input_features is not None and not np.array_equal(
+            input_features, self.feature_names_in_
+        ):
+            raise ValueError("input_features must match feature_names_in_.")
+        return self.selected_features_.copy()
 
 
 def drop_existing_sm_constant_from_df(X):

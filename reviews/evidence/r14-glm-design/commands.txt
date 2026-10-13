@@ -1,0 +1,51 @@
+Checkout: /home/bsatom/Documents/arfs; clean main @ fb942fc.
+R14 runs alone. No publication, release, dependency or configuration change.
+
+Runtime environment:
+UV_CACHE_DIR=/tmp/arfs-r04/cache MPLBACKEND=Agg
+MPLCONFIGDIR=/tmp/arfs-r14/mpl-$cell OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 PYTHONHASHSEED=0
+PYTHONDONTWRITEBYTECODE=1; installed-wheel runs omit PYTHONPATH.
+
+Before (final maintained tests against verified installed R13 wheel):
+/tmp/arfs-r13/py312-locked/bin/python -I -m pytest tests/test_glm_design.py -q --tb=short -p no:cacheprovider
+Result: 67 failed, 3 passed, exit 1. before-final.txt records the final 70 cases;
+before.txt records the earlier 63-case test set (60 failed, 3 passed).
+Before-provenance JSON verifies installed lasso.py equals fb942fc's source.
+
+Source (PYTHONPATH=src):
+/tmp/arfs-r13/py312-locked/bin/python -m pytest tests/test_glm_design.py tests/test_glm_scoring.py tests/test_observation_boundaries.py tests/test_dependency_apis.py -q --tb=short -p no:cacheprovider
+Result: 287 passed, exit 0 in source-final.txt. source.txt records the earlier
+63-case R14 test set plus callers (280 passed).
+
+uv build --python /tmp/arfs-r13/py312-locked/bin/python --out-dir /tmp/arfs-r14/dist
+uv export --locked --extra test --no-emit-project --output-file /tmp/arfs-r14/locked-requirements.txt
+uv lock --check --python /tmp/arfs-r13/py312-locked/bin/python
+uv tool run --from ruff==0.17.0 ruff check tests/test_glm_design.py
+uv tool run --from ruff==0.17.0 ruff format --check tests/test_glm_design.py
+uv tool run --from ruff==0.17.0 python .github/scripts/check_ruff_baseline.py
+/tmp/arfs-r13/py312-locked/bin/python -m unittest discover -s .github/scripts -p 'test_*.py'
+git diff --check
+
+Per-cell JSON records exact fresh venv/install/dependency/provenance/test
+commands, working directories and exit codes. Locked requirements come from the
+current uv.lock; newer pins are .github/requirements/runtime-newer-py312.txt.
+Tests copied outside the checkout must match source bytes. Eight installed module
+hashes must match source; all 19 source/sdist/wheel payloads match. Python -I and
+provenance checks exclude a source-path import or setuptools workaround.
+
+Historical commands select:
+single_row_prediction or single_row_transform or existing_constant_preserves
+or no_intercept_predict or set_params_rebuilds or reordered_prediction
+or estimator_fit_returns or numpy_bic_selector or clone_preserves
+or supported_family_predict
+from reviews/evidence/01c-weighted-glm-lasso/checks.py with --runxfail.
+Before-historical runs against the verified R13 wheel: 9 failed, 8 passed.
+Repaired historical runs use each fresh installed R14 Python 3.12 cell:
+17 passed in each. Full suites: py39-locked 636 passed, py312-locked 636 passed,
+py312-newer 620 passed.
+
+Context7 documentation lookup: statsmodels add_constant skip/add semantics;
+sklearn fitted input metadata, parameter preservation, fit return and refitting.
+Original historical scripts and logs are unchanged. New terminal carriage
+returns/trailing whitespace are removed from completed logs before commit.

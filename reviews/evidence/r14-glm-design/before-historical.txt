@@ -1,0 +1,114 @@
+.......FFFFFFFFF.                                                        [100%]
+=================================== FAILURES ===================================
+___________________ test_single_row_prediction_matches_batch ___________________
+reviews/evidence/01c-weighted-glm-lasso/checks.py:178: in test_single_row_prediction_matches_batch
+    assert_allclose(model.predict(X.iloc[[0]]), model.predict(X).iloc[[0]])
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:241: in predict
+    return self.result.predict(X)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/statsmodels/base/model.py:1174: in predict
+    predict_results = self.model.predict(self.params, exog, *args,
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1012: in predict
+    linpred = np.dot(exog, params) + offset + exposure
+E   ValueError: shapes (1,3) and (4,) not aligned: 3 (dim 1) != 4 (dim 0)
+___________________ test_single_row_transform_matches_batch ____________________
+reviews/evidence/01c-weighted-glm-lasso/checks.py:185: in test_single_row_transform_matches_batch
+    assert_frame_equal(selector.transform(X.iloc[[0]]), selector.transform(X).iloc[[0]])
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:650: in transform
+    return X[self.selected_features_]
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:4108: in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6200: in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6252: in _raise_if_missing
+    raise KeyError(f"{not_found} not in index")
+E   KeyError: "['Intercept'] not in index"
+_____ test_existing_constant_preserves_design_and_support_alignment[const] _____
+reviews/evidence/01c-weighted-glm-lasso/checks.py:193: in test_existing_constant_preserves_design_and_support_alignment
+    selector = LassoFeatureSelection(n_iterations=3).fit(X, y, w)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:621: in fit
+    self.selected_features_ = self.feature_names_in_[self.support_]
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:5416: in __getitem__
+    result = getitem(key)
+E   IndexError: boolean index did not match indexed array along axis 0; size of axis is 5 but size of corresponding boolean axis is 4
+___ test_existing_constant_preserves_design_and_support_alignment[constant] ____
+reviews/evidence/01c-weighted-glm-lasso/checks.py:193: in test_existing_constant_preserves_design_and_support_alignment
+    selector = LassoFeatureSelection(n_iterations=3).fit(X, y, w)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:621: in fit
+    self.selected_features_ = self.feature_names_in_[self.support_]
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:5416: in __getitem__
+    result = getitem(key)
+E   IndexError: boolean index did not match indexed array along axis 0; size of axis is 5 but size of corresponding boolean axis is 4
+______________ test_no_intercept_predict_uses_same_columns_as_fit ______________
+reviews/evidence/01c-weighted-glm-lasso/checks.py:203: in test_no_intercept_predict_uses_same_columns_as_fit
+    assert np.isfinite(model.predict(X)).all()
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:241: in predict
+    return self.result.predict(X)
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/statsmodels/base/model.py:1174: in predict
+    predict_results = self.model.predict(self.params, exog, *args,
+/tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1012: in predict
+    linpred = np.dot(exog, params) + offset + exposure
+E   ValueError: shapes (150,4) and (3,) not aligned: 4 (dim 1) != 3 (dim 0)
+______________ test_set_params_rebuilds_model_objective[params0] _______________
+reviews/evidence/01c-weighted-glm-lasso/checks.py:227: in test_set_params_rebuilds_model_objective
+    assert type(model.objective) is type(fresh.objective)
+E   AssertionError: assert <class 'statsmodels.genmod.families.family.Gaussian'> is <class 'statsmodels.genmod.families.family.Poisson'>
+E    +  where <class 'statsmodels.genmod.families.family.Gaussian'> = type(<statsmodels.genmod.families.family.Gaussian object at 0x71f7c4ce1790>)
+E    +    where <statsmodels.genmod.families.family.Gaussian object at 0x71f7c4ce1790> = EnetGLM(L1_wt=1, alpha=0.001, family='poisson').objective
+E    +  and   <class 'statsmodels.genmod.families.family.Poisson'> = type(<statsmodels.genmod.families.family.Poisson object at 0x71f7c779b500>)
+E    +    where <statsmodels.genmod.families.family.Poisson object at 0x71f7c779b500> = EnetGLM(L1_wt=1, alpha=0.001, family='poisson').objective
+______________ test_set_params_rebuilds_model_objective[params1] _______________
+reviews/evidence/01c-weighted-glm-lasso/checks.py:228: in test_set_params_rebuilds_model_objective
+    assert type(model.objective.link) is type(fresh.objective.link)
+E   AssertionError: assert <class 'statsmodels.genmod.families.links.Identity'> is <class 'statsmodels.genmod.families.links.Log'>
+E    +  where <class 'statsmodels.genmod.families.links.Identity'> = type(<statsmodels.genmod.families.links.Identity object at 0x71f7c77f38f0>)
+E    +    where <statsmodels.genmod.families.links.Identity object at 0x71f7c77f38f0> = <statsmodels.genmod.families.family.Gaussian object at 0x71f7c77f3380>.link
+E    +      where <statsmodels.genmod.families.family.Gaussian object at 0x71f7c77f3380> = EnetGLM(L1_wt=1, alpha=0.001, link='log').objective
+E    +  and   <class 'statsmodels.genmod.families.links.Log'> = type(<statsmodels.genmod.families.links.Log object at 0x71f7c77f1eb0>)
+E    +    where <statsmodels.genmod.families.links.Log object at 0x71f7c77f1eb0> = <statsmodels.genmod.families.family.Gaussian object at 0x71f7c77f13d0>.link
+E    +      where <statsmodels.genmod.families.family.Gaussian object at 0x71f7c77f13d0> = EnetGLM(L1_wt=1, alpha=0.001, link='log').objective
+__________ test_reordered_prediction_columns_are_aligned_or_rejected ___________
+reviews/evidence/01c-weighted-glm-lasso/checks.py:241: in test_reordered_prediction_columns_are_aligned_or_rejected
+    assert_allclose(actual, model.predict(X))
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 150 / 150 (100%)
+E   Max absolute difference among violations: 11.31634719
+E   Max relative difference among violations: 23.22408468
+E    ACTUAL: array([ 3.910788,  2.884641,  5.60514 ,  5.919602,  3.453191,  0.281395,
+E           0.614827, -2.820351, -2.069243,  4.044077, -0.624998,  2.145942,
+E           6.670404,  1.203863,  3.259277, -0.326931, -0.15624 ,  1.988432,...
+E    DESIRED: array([ 0.788055, -0.938345,  4.424405, -0.747306,  0.1987  , -3.333332,
+E           1.169546,  2.260129,  1.052376,  0.998038,  0.068911,  2.534373,
+E           4.1427  , -4.429137,  3.915826, -1.750465,  4.686518,  2.490159,...
+_______________________ test_estimator_fit_returns_self ________________________
+reviews/evidence/01c-weighted-glm-lasso/checks.py:255: in test_estimator_fit_returns_self
+    assert model.fit(X, y, w) is model
+E   assert None is EnetGLM(alpha=1e-09)
+E    +  where None = fit(            a         b         c\n0   -0.395301  0.263915  0.607128\n1   -0.972160  0.767664  0.255058\n2    0.782980  0....387618  0.526513 -1.008304\n148 -0.462584 -1.052812  0.343507\n149 -1.283641  1.236605  0.863167\n\n[150 rows x 3 columns], array([ 0.68763241, -3.05333689,  4.92127174, -1.7006048 ,  1.95776893,\n       -3.52692966,  3.5149915 ,  2.87141506, ...838576,  5.81255617,  7.31857835,  5.83337227,\n        3.33820459,  3.64921024,  6.37075375,  0.03688831, -1.76638988]), array([1.71884518, 0.79207215, 0.40356442, 1.75358968, 1.44593544,\n       0.39451232, 0.76369801, 1.62021627, 0.862768...42, 1.60729541, 1.60588001, 0.56239318, 0.73035468,\n       1.14809348, 0.43480234, 1.55258712, 1.01332225, 1.83384778]))
+E    +    where fit = EnetGLM(alpha=1e-09).fit
+=============================== warnings summary ===============================
+reviews/evidence/01c-weighted-glm-lasso/checks.py::test_supported_family_predict_matches_direct_response_mean[negativebinomial-None]
+  /tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:1367: ValueWarning: Negative binomial dispersion parameter alpha not set. Using default value alpha=1.0.
+    warnings.warn("Negative binomial dispersion parameter alpha not "
+
+reviews/evidence/01c-weighted-glm-lasso/checks.py::test_set_params_rebuilds_model_objective[params1]
+  /tmp/arfs-r13/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1464: UserWarning: Elastic net fitting did not converge
+    warnings.warn("Elastic net fitting did not converge")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED reviews/evidence/01c-weighted-glm-lasso/checks.py::test_single_row_prediction_matches_batch
+FAILED reviews/evidence/01c-weighted-glm-lasso/checks.py::test_single_row_transform_matches_batch
+FAILED reviews/evidence/01c-weighted-glm-lasso/checks.py::test_existing_constant_preserves_design_and_support_alignment[const]
+FAILED reviews/evidence/01c-weighted-glm-lasso/checks.py::test_existing_constant_preserves_design_and_support_alignment[constant]
+FAILED reviews/evidence/01c-weighted-glm-lasso/checks.py::test_no_intercept_predict_uses_same_columns_as_fit
+FAILED reviews/evidence/01c-weighted-glm-lasso/checks.py::test_set_params_rebuilds_model_objective[params0]
+FAILED reviews/evidence/01c-weighted-glm-lasso/checks.py::test_set_params_rebuilds_model_objective[params1]
+FAILED reviews/evidence/01c-weighted-glm-lasso/checks.py::test_reordered_prediction_columns_are_aligned_or_rejected
+FAILED reviews/evidence/01c-weighted-glm-lasso/checks.py::test_estimator_fit_returns_self
+9 failed, 8 passed, 16 deselected, 2 warnings in 16.12s

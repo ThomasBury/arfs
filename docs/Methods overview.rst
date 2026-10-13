@@ -120,6 +120,16 @@ and is not divided by fold size or weight mass.
 Each fold fits an independent clone. Classifiers and binomial GLMs with discrete
 targets use stratified folds; regressions, including two-valued numeric responses,
 and fractional binomial responses use ordinary folds. Splits do not shuffle rows.
+Fit records one design for prediction and transformation. Nonzero training
+constants are preserved without adding another intercept; ``fit_intercept=False``
+disables automatic addition and preserves supplied columns. A generated column
+is named ``Intercept`` (with a numbered suffix to avoid input-name collisions).
+It is still penalized and, if selected, included in transformed output.
+``feature_names_in_``, ``n_features_in_`` and ``support_`` describe original
+inputs; ``design_feature_names_`` and ``design_support_`` describe the selector's
+coefficient design. Named inference inputs align to the fitted names; missing,
+extra and duplicate columns are rejected. Arrays require fitted input width
+and order. Family/link parameters are resolved at each fit.
 The loss function can belong to the exponential family, as seen in the statsmodels GLM documentation.
 Using the bic metric is faster since it is evaluated on the training data, making it unsuitable for the test data, whereas the deviance is cross-validated.
 
