@@ -1,6 +1,6 @@
 # ARFS remediation handoff
 
-**Status: R01–R16 complete; R17–R33 pending. Next implementation group: R17 alone.**
+**Status: R01–R17 complete; R18–R33 pending. Next implementation group: R18 → R31.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
 a separate repair backlog. By default, a request to implement the next phase
@@ -74,9 +74,9 @@ record each outcome separately. Stop at a phase boundary if a new API or
 statistical decision, unresolved failure, or wider scope makes the batch too
 large. Session boundaries and repair phases are not published releases.
 
-R01–R16 are complete. The explicitly requested R02/R03 and R10/R11 batches
+R01–R17 are complete. The explicitly requested R02/R03 and R10/R11 batches
 were implemented and validated sequentially; R04–R09 were completed alone.
-Run **R17 alone** next, with R03/R05/R06 complete. Later phases use the recorded grouping
+Run **R18 → R31** next, with R06 complete. Later phases use the recorded grouping
 rules below; phases outside the three conditional pairs remain separate.
 
 | Phases | Session recommendation | Reason |
@@ -95,12 +95,13 @@ rules below; phases outside the three conditional pairs remain separate.
 | R14 | Complete; do not repeat | [R14](R14-glm-design.md) records fitted design/schema, input/support metadata, current family/link and fit return |
 | R15 | Complete; do not repeat | [R15](R15-glm-likelihood.md) records zero-row omission, corrected criterion dimensions and truthful unpenalized refits |
 | R16 | Complete; do not repeat | [R16](R16-threshold-contracts.md) records unique names, aligned callbacks, strict equality, empty stages, stable ties and fitted metadata |
-| R17 | Run alone next | R03/R05/R06 complete; repair cumulative importance selection and its training/output contracts |
+| R17 | Complete; do not repeat | [R17](R17-importance-selection.md) records the crossing prefix, zero/nonfinite policy, one fit, equal-row explanation population and multiclass/backend repair |
+| R18 → R31 | Run sequentially next | R06 complete; encoder schemas then the public legacy-helper decision |
 
 ### Recorded groups for next-batch requests
 
 When the user asks to "implement the next batch of RXX", read the current phase
-statuses in this file and use these groups. **The next batch is R17 alone.**
+statuses in this file and use these groups. **The next batch is R18 → R31.**
 R10/R11 are complete; their separate handoffs record support/history consistency,
 weighted permutation scoring and the user-chosen absolute-total normalization.
 R12 is complete: GrootCV uses maximum shadow medians across folds/repeats;
@@ -116,7 +117,11 @@ nonfinite search criteria fail clearly. The unpenalized-refit contract replaces
 the near-ridge promise. R16 is complete: unique feature names, labelled statistic
 alignment, fit-time parameter validation, valid empty collinearity stages, input-order
 ties and fitted feature counts/guards. Strict equality and named projection are
-preserved. R17's R03/R05/R06 prerequisites are complete.
+preserved. R17 is complete: selection includes the crossing positive feature,
+zero total selects nothing, nonfinite contributions fail and model output determines
+multiclass axes. The user chose one fit/removal of n_iterations and equal validation-row
+importance averaging with weighted training/loss. R18 → R31 has R06 complete; the
+public legacy-helper decision remains required before R31.
 A request for the next batch authorizes that one group, its affected callers,
 tests, local phase commits and handoff update; stop after
 it. It does not authorize the following group or Git publication/release unless
@@ -128,8 +133,9 @@ the user also requests those actions.
 | **R18 → R31** | R06 complete | Encoder schema repairs and related legacy helpers share dtype/schema checks | Retain or remove the public legacy helpers |
 | **R25 → R26** | R05 and R24 complete | Sampling output repairs and bounded isolation retries mostly share one module | Define weighting, tiny-input, and exhaustion behavior |
 
-R18 → R31 is the earliest eligible two-phase group after R06 and may be selected
-explicitly at that point. R10 → R11 has already been completed.
+R18 → R31 is now the next group, with R06 complete. Complete and commit R18
+before R31; explicitly decide the public legacy-helper contract before its repair.
+R10 → R11 has already been completed.
 R25 → R26 is larger and remains conditional on its scope and policy decisions
 being settled. These are sequential groups, not parallel agent assignments.
 
@@ -538,9 +544,55 @@ Settle crossing-prefix/zero-total selection, weighted explanation population
 and whether repeated identical fits should remain; test array multiclass and
 missing-backend errors. R17–R33 remain pending. Stop after this completed R16 group.
 
+## R17 result — 2026-10-13
+
+R17 is complete on `main` in local commit `6f44345`, based on clean `1e88c54`.
+The [handoff](R17-importance-selection.md) records the user-chosen one fit and
+removal of `n_iterations`, with no compatibility shim or new resampling mode.
+Training/validation loss retain observation weights; global importance averages
+validation rows equally, as the user chose. `verbose` uses native training-metric
+logging. None resolves the same default model parameters without mutable defaults.
+No R17 policy choice remains unresolved.
+
+Cumulative selection retains the crossing positive feature, excludes zeros,
+selects nothing at cutoff zero or zero total, and retains every positive feature
+at cutoff one despite rounding. Current finite [0, 1] thresholds validate at fit.
+Native output blocks exclude their bias columns and infer output count without
+pandas-only target calls. Native and optional outputs reuse the existing mean
+absolute/sum-over-outputs helper. Invalid native shapes/nonfinite contributions
+and totals fail clearly; missing fasttreeshap fails before encoding/training.
+API/changelog and one notebook paragraph agree. Notebook code, outputs,
+metadata and all other cells are preserved. Seven Ruff allowances are removed;
+none are added. Plot correctness remains R29.
+
+Fresh installed-wheel full suites pass outside the checkout without setuptools:
+**py39-locked 821 passed; py312-locked 821 passed; py312-newer 805 passed**.
+All **24** selected historical assertions/controls pass unmasked in both 3.12
+snapshots after an explicitly recorded disposable adaptation removing exactly
+two retired `n_iterations=1` arguments; original scripts/logs remain unchanged.
+Obsolete repeated-fit/iteration-average assertions are excluded, with the new
+one-fit contract tested directly. Original checks reproduce **11 failures and
+13 passes** before repair. The 49 maintained R17 cases produce **36 failures
+and 13 passes** on the verified R16 wheel; final source/affected callers pass
+**354** tests. Dependency/provenance, eleven installed/source hashes, 19 source/
+sdist/wheel payloads, copied tests, `uv lock --check`, Ruff 0.17.0's gate
+(**407 total, zero new**), gate unit tests (**two passed**), new/affected test
+and evidence lint/format, notebook preservation, links and `git diff --check`
+pass. Exact commands, versions and evidence are in the handoff. Hosted CI,
+full docs/notebooks, full sklearn compliance, other platforms, installed optional
+backend equivalence, performance and statistical calibration were not checked.
+
+**Next group: R18 → R31**, with R06 complete. Read `02 F8/F13/F14`,
+`OrdinalEncoderPandas` and its full schema/inverse/output-dtype callers for R18.
+Complete, validate and commit R18 before R31. Before R31, decide whether to
+retain or remove public `cat_var` and `validate_pandas_input`, tracing callers,
+exports and docs from `02 F15` and `06 F10`. Stop at that phase boundary if the
+API decision or wider scope remains unresolved. R18–R33 remain pending.
+Stop after this completed R17 group; no following-group work or publication is authorized.
+
 ## Ordered phases
 
-R01–R16 are **Complete**; R17–R33 are **Pending**. The
+R01–R17 are **Complete**; R18–R33 are **Pending**. The
 [R01 handoff](R01-installed-package.md) records changes, decisions, exact checks,
 environment identities, inherited failures, and the resume point. Changes are
 committed as `6b675fd` on `fix/r01-installed-package` at checkpoint base `0270aca`;
@@ -572,8 +624,10 @@ their merged commits. [R13](R13-glm-scoring.md) is complete in local commit
 in local commit `3e3e7e3` on `main`, based on `fb942fc`. [R15](R15-glm-likelihood.md)
 is complete in local commit `51d44f2` on `main`, based on `2577289`.
 [R16](R16-threshold-contracts.md) is complete in local commit `2fa18e8` on `main`,
-based on `985b0a3`. R17 alone is next, with R03/R05/R06 complete.
-Hosted CI for R13–R16 and remaining release evidence
+based on `985b0a3`. [R17](R17-importance-selection.md) is complete in local commit
+`6f44345` on `main`, based on `1e88c54`. R18 → R31 is next, with R06 complete
+and the public legacy-helper decision required before R31.
+Hosted CI for R13–R17 and remaining release evidence
 are still pending. An ID such
 as `1A F3` means finding 3 in the linked original report. The complete ID-to-phase
 mapping follows the table.
@@ -596,7 +650,7 @@ mapping follows the table.
 | **R14 — Stable GLM design and parameters (Complete)** | Use one fitted intercept/input-column contract across fit/predict/transform; derive the family/link at fit from current parameters; return self. [1C F5/F7/F8/F10](01c-weighted-glm-lasso.md) | R13 | Single-row prediction, existing constants, `fit_intercept=False`, reorder/missing/extra/duplicate names, arrays and support metadata, `set_params` vs fresh construction, chained fit/predict and summary integration |
 | **R15 — Honest likelihood and refit contract (Complete)** | Decide zero-weight likelihood handling, reject all-invalid candidate criteria, describe regularized selection followed by unpenalized refit, remove the near-ridge promise. [1C F6/F11](01c-weighted-glm-lasso.md) | R13/R14 | Zero-weight equivalence to omission or clear rejection; all-nonfinite search fails; independent weighted Gaussian/Poisson BIC comparisons; documented coefficient/refit behavior and post-selection inference limit |
 | **R16 — Threshold selector identity/state (Complete)** | Reject duplicate names or adopt consistent positions, align labelled callbacks, validate parameters at fit, handle zero/one-feature collinearity, stabilize ties and fitted metadata. Resolve equality wording explicitly. [03 F5–F9/F12](03-selector-contracts.md) | R06/R08 | Masks/names/output agree, reordered callback labels, invalid `set_params`, empty pipeline stages, multiple hash seeds, correct feature counts and NotFittedError. Preserve legitimate named projection if retained as the API |
-| **R17 — Truthful cumulative importance selection** | Keep the crossing feature, reject nonfinite contributions, define zero-total selection, handle array multiclass targets, and raise the optional-backend error. Use one fit unless actual reproducible resampling is required. [03 F1–F3/F11/F13](03-selector-contracts.md) | R03/R05/R06 | Hand `[.6,.3,.1]` thresholds, constant-response real fit, threshold 1, invalid contributions, three-class array/Series parity, iteration behavior and missing fastshap error before wasted training |
+| **R17 — Truthful cumulative importance selection (Complete)** | Keep the crossing feature, reject nonfinite contributions, define zero-total selection, handle array multiclass targets, and raise the optional-backend error. Use one fit unless actual reproducible resampling is required. [03 F1–F3/F11/F13](03-selector-contracts.md) | R03/R05/R06 | Hand `[.6,.3,.1]` thresholds, constant-response real fit, threshold 1, invalid contributions, three-class array/Series parity, iteration behavior and missing fastshap error before wasted training |
 | **R18 — Ordinal encoder full schema** | Keep categorical encoder validation separate from full passthrough metadata, copy inverse input, honor changed output dtype. [02 F8/F13/F14](02-preprocessing.md) | R06 | Mixed categorical/numeric `get_feature_names_out` and pandas `set_output`; unknown/missing values, input preservation, inverse, clone/refit and `set_params(output_dtype=...)` |
 | **R19 — Actual fitted tree partitions** | Derive bins from real thresholds/leaf membership, avoid temporary-column collisions, derive copied one-tree parameters at fit, apply encoding in raw mode, define missing/all-missing behavior. [02 F1/F2/F4/F5/F9](02-preprocessing.md) | R05/R06/R18 | Equal-valued leaves, binary probabilities vs leaf IDs, values between observed extrema and fitted splits, `x`/`x_g`, category named `missing_added`, all-missing column, parameter aliases and native weighted one-tree reference |
 | **R20 — Reusable transformer inputs and Patsy rows** | Separate constructor options from fitted state; normalize documented fit/transform inputs identically; honor Patsy `NA_action` and intercept choice; treat scalar midpoint name as one name. [02 F6/F7/F10–F12](02-preprocessing.md) | R02/R18/R19 | Refit different schemas, ndarray fit_transform, named dict formula, midpoint second fit/scalar name, Patsy raise/drop branches and row alignment. Document that a transformer cannot also drop y/weight rows |
@@ -617,7 +671,7 @@ mapping follows the table.
 R21's group/schema safeguards can be advanced immediately after R05/R06 if
 training-wrapper users are the priority; its dependencies do not require waiting
 for the intervening algorithm phases. Similarly independent R24–R28 work need
-not await GLM repairs. The default next group is now R17 alone. Do not parallelize
+not await GLM repairs. The default next group is now R18 → R31. Do not parallelize
 edits to shared dtype/weight helpers without agreeing their contract first.
 
 ## Complete finding-to-phase map
@@ -648,7 +702,7 @@ Cross-cutting side effects are tested in the affected phase as described above.
 | Shadow threshold rule and error control | R10–R12/R33; decide axes/mean/median/max explicitly. Correct binomial arithmetic or signal recovery is not whole-procedure calibration |
 | Threshold equality/empty output | R16/R17/R24; keep undefined/no-positive-mass distinct from zero effect. Document any intentional change in selected sets |
 | GLM intercept/likelihood/refit | R14/R15; fit-time design must govern inference. Weight-valid prediction loss does not automatically justify every likelihood/BIC or post-selection p-value |
-| Weighted global explanations | R17; ordinary mean absolute contributions currently average validation rows equally. Choose the population being summarized before changing that rule |
+| Weighted global explanations | R17 complete: the user chose equal averaging over validation rows, with weights retained in training and validation loss. API/docs and native references record that population |
 | Named schemas, optional features, legacy files/helpers | R01/R16/R21/R22/R31/R32; record permissive projection vs strict schema, styling/backend install policy, and old artifact/public-API behavior |
 | Sampling meaning | R24–R27; cluster representatives are synthetic rows, isolation returns sampled original rows. KS acceptance is not 95% representativeness or proven outlier removal |
 
