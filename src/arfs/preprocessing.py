@@ -27,6 +27,7 @@ import re
 # sklearn
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.utils.validation import check_is_fitted
 
 # patsy
 from patsy import dmatrix, EvalEnvironment, ModelDesc, INTERCEPT
@@ -44,7 +45,6 @@ np.random.seed(7)
 
 
 class OrdinalEncoderPandas(OrdinalEncoder):
-    # class OrdinalEncoderPandas(BaseEstimator, TransformerMixin):
     """Encode categorical features as an integer array and returns a pandas DF.
     The features are converted to ordinal integers. This results in
     a single column of integers (0 to n_categories - 1) per feature.
@@ -64,14 +64,15 @@ class OrdinalEncoderPandas(OrdinalEncoder):
     exclude_cols : list of str, optional
         columns to not encode
     output_dtype : number type, default np.float64
-        Desired dtype of output.
-    handle_unknown : {'error', 'use_encoded_value'}, default='error'
+        Desired dtype of encoded columns, resolved at fit. Passthrough columns
+        keep their dtype.
+    handle_unknown : {'error', 'use_encoded_value'}, default='use_encoded_value'
         When set to 'error' an error will be raised in case an unknown
         categorical feature is present during transform. When set to
         'use_encoded_value', the encoded value of unknown categories will be
         set to the value given for the parameter `unknown_value`. In
         `inverse_transform`, an unknown category will be denoted as None.
-    unknown_value : int or np.nan, default=None
+    unknown_value : int or np.nan, default=np.nan
         When the parameter handle_unknown is set to 'use_encoded_value', this
         parameter is required and will set the encoded value of unknown
         categories. It has to be distinct from the values used to encode any of
@@ -80,18 +81,20 @@ class OrdinalEncoderPandas(OrdinalEncoder):
     encoded_missing_value : int or np.nan, default=np.nan
         Encoded value of missing categories. If set to `np.nan`, then the `dtype`
         parameter must be a float dtype.
-    return_pandas_categorical : bool, defult=False
+    return_pandas_categorical : bool, default=False
         return encoded columns as pandas category dtype or as float
 
     Attributes
     ----------
     categories_ : list of arrays
-        The categories of each feature determined during ``fit`` (in order of
-        the features in X and corresponding with the output of ``transform``).
+        The categories of encoded features determined during ``fit``, in
+        ``categorical_features_`` order. Passthrough columns have no entry.
         This does not include categories that weren't seen during ``fit``.
     feature_names_in_ : ndarray of shape (`n_features_in_`,)
-        Names of features seen during :term:`fit`. Defined only when `X`
-        has feature names that are all strings.
+        Full input column names, including passthrough columns. Transform and
+        inverse_transform require these same columns in the fitted order.
+    n_features_in_ : int
+        Full input width, including passthrough columns.
 
     Examples
     --------
@@ -104,7 +107,7 @@ class OrdinalEncoderPandas(OrdinalEncoder):
 
     def __init__(
         self,
-        dtype_include=["category", "object", "bool"],
+        dtype_include=["category", "object", "string", "bool"],
         dtype_exclude=[np.number],
         pattern=None,
         exclude_cols=None,
@@ -156,12 +159,35 @@ class OrdinalEncoderPandas(OrdinalEncoder):
             exclude_cols=self.exclude_cols,
         )
 
-        self.feature_names_in_ = X.columns.to_numpy()
+        if not isinstance(X, pd.DataFrame):
+            raise TypeError("X must be a pandas DataFrame.")
+        if not X.columns.is_unique:
+            raise ValueError("X columns must be unique.")
         self.categorical_features_ = cat_features_selector(X)
-
-        super(OrdinalEncoderPandas, self).fit(X[self.categorical_features_])
-        # self.feature_names_in_ = X.columns.to_numpy()
+        # The categorical encoder owns its subset schema; ours describes all output.
+        self.encoder_ = OrdinalEncoder(
+            dtype=self.output_dtype,
+            handle_unknown=self.handle_unknown,
+            unknown_value=self.unknown_value,
+            encoded_missing_value=self.encoded_missing_value,
+        )
+        self.encoder_.fit(
+            X[self.categorical_features_].astype(object).where(
+                X[self.categorical_features_].notna(), np.nan
+            )
+        )
+        self.categories_ = self.encoder_.categories_
+        self.feature_names_in_ = X.columns.to_numpy(copy=True)
+        self.n_features_in_ = X.shape[1]
+        self.dtype = self.output_dtype
         return self
+
+    def _check_schema(self, X):
+        check_is_fitted(self, "n_features_in_")
+        if not isinstance(X, pd.DataFrame):
+            raise TypeError("X must be a pandas DataFrame.")
+        if not X.columns.equals(pd.Index(self.feature_names_in_)):
+            raise ValueError("X columns must match the fitted columns in order.")
 
     def transform(self, X, y=None, sample_weight=None):
         """
@@ -177,10 +203,13 @@ class OrdinalEncoderPandas(OrdinalEncoder):
         X_out : pd.DataFrame (n_samples, n_features)
             Transformed input.
         """
+        self._check_schema(X)
         X_trans = X.copy()
-        X_trans[self.categorical_features_] = super(
-            OrdinalEncoderPandas, self
-        ).transform(X_trans[self.categorical_features_])
+        X_trans[self.categorical_features_] = self.encoder_.transform(
+            X[self.categorical_features_].astype(object).where(
+                X[self.categorical_features_].notna(), np.nan
+            )
+        )
 
         if self.return_pandas_categorical:
             X_trans[self.categorical_features_] = X_trans[
@@ -195,7 +224,7 @@ class OrdinalEncoderPandas(OrdinalEncoder):
         and returns a transformed version of `X`.
         Parameters
         ----------
-        X : array-like of shape (n_samples, n_features)
+        X : pd.DataFrame of shape (n_samples, n_features)
             Input samples.
         y :  array-like of shape (n_samples,) or (n_samples, n_outputs), \
                 default=None
@@ -204,21 +233,18 @@ class OrdinalEncoderPandas(OrdinalEncoder):
             Additional fit parameters.
         Returns
         -------
-        X_new : ndarray array of shape (n_samples, n_features_new)
-            Transformed array.
+        X_new : pd.DataFrame of shape (n_samples, n_features)
+            Encoded columns and unchanged passthrough columns.
         """
-        self = self.fit(X)
+        self.fit(X, y)
         return self.transform(X)
 
     def inverse_transform(self, X):
         """
         Convert the data back to the original representation.
-        When unknown categories are encountered (all zeros in the
-        one-hot encoding), ``None`` is used to represent this category. If the
-        feature with the unknown category has a dropped category, the dropped
-        category will be its inverse.
-        For a given input feature, if there is an infrequent category,
-        'infrequent_sklearn' will be used to represent the infrequent category.
+        Distinct unknown codes decode to None; fitted missing codes decode to
+        np.nan. When both codes are np.nan (the default), they decode as missing.
+        Returns a copy and leaves passthrough columns unchanged.
 
         Parameters
         ----------
@@ -230,10 +256,14 @@ class OrdinalEncoderPandas(OrdinalEncoder):
             Inverse transformed array.
         """
 
-        X[self.categorical_features_] = super(
-            OrdinalEncoderPandas, self
-        ).inverse_transform(X[self.categorical_features_])
-        return X
+        self._check_schema(X)
+        X_trans = X.copy()
+        if self.categorical_features_:
+            # Native inverse decoding writes into codes; pandas may expose read-only arrays.
+            X_trans[self.categorical_features_] = self.encoder_.inverse_transform(
+                X[self.categorical_features_].to_numpy(copy=True)
+            )
+        return X_trans
 
 
 class dtype_column_selector:

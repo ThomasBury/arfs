@@ -1,0 +1,57 @@
+Checkout: /home/bsatom/Documents/arfs; clean main @ 37cf6b2.
+R18 -> R31 batch, sequential local phase commits. User chose removal of both helpers.
+R18 full named schemas require the fitted order; native inverse gets owned codes.
+
+Runtime environment (full values in validate.py):
+UV_CACHE_DIR=/tmp/arfs-r04/cache MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 PYTHONHASHSEED=0
+PYTHONDONTWRITEBYTECODE=1; installed runs remove PYTHONPATH and use isolated Python.
+MPLCONFIGDIR is a per-cell disposable path.
+
+Before final maintained regressions (verified installed R17 source):
+/tmp/arfs-r17/py312-locked/bin/python -I -m pytest /tmp/arfs-r18/before/tests/test_ordinal_schema.py -q --tb=short -p no:cacheprovider
+before-final.txt: 32 failed, 3 passed. Module hash equals 37cf6b2; before-provenance.json.
+Historical before, original evidence untouched:
+/tmp/arfs-r17/py312-locked/bin/python -I -m pytest reviews/evidence/02-preprocessing/checks.py -k ordinal --runxfail -q --tb=short -p no:cacheprovider
+before-historical.txt: 4 failed, 3 passed, 33 deselected.
+
+Source (PYTHONPATH=src, checkout cwd):
+/tmp/arfs-r17/py312-locked/bin/python -m pytest tests/test_ordinal_schema.py tests/test_dependency_apis.py tests/test_importance_selection.py tests/test_threshold_contracts.py -q --tb=short -p no:cacheprovider
+source-final.txt: 180 passed. Initial source log retains failed draft assertions.
+/tmp/arfs-r17/py312-newer/bin/python -m pytest tests/test_ordinal_schema.py reviews/evidence/02-preprocessing/checks.py -k ordinal --runxfail -q --tb=short -p no:cacheprovider
+source-newer-final.txt: 42 passed, 33 deselected, after the owned-array repair.
+Decoded label dtype is inferred by pandas; compare label values and exact passthrough dtypes.
+
+uv export --locked --extra test --no-emit-project --output-file /tmp/arfs-r18/locked-requirements.txt
+Copy locked requirements to /tmp/arfs-r18/final/locked-requirements.txt.
+uv build --python /tmp/arfs-r17/py312-locked/bin/python --out-dir /tmp/arfs-r18/final/dist
+uv lock --check --python /tmp/arfs-r17/py312-locked/bin/python
+/tmp/arfs-r17/py312-locked/bin/python /tmp/arfs-r18/final/check_payloads.py
+payloads.json: all 19 source/sdist/wheel payloads match, three data files.
+
+Exact orchestrators validate.py, environment.py and check_payloads.py are retained here,
+copied to /tmp/arfs-r18/final before running. Each cell creates a fresh environment
+from a verified R17 interpreter; tests and 12 installed source-module hashes match.
+No setuptools workaround. Requirements: uv.lock or .github/requirements/runtime-newer-py312.txt.
+/tmp/arfs-r17/py312-locked/bin/python /tmp/arfs-r18/final/validate.py py39-locked
+/tmp/arfs-r17/py312-locked/bin/python /tmp/arfs-r18/final/validate.py py312-locked
+/tmp/arfs-r17/py312-locked/bin/python /tmp/arfs-r18/final/validate.py py312-newer
+Final full suites: 856 / 856 / 840 passed; original historical ordinal checks: 7 passed
+unmasked in both Python 3.12 cells.
+Per-cell manifests record exact commands, cwd, exit codes, full-suite and original
+historical ordinal checks unmasked. No historical adaptation is needed for R18.
+Interim matrix logs preserve 856/856 locked passes and the pandas 3 inverse failure
+(3 failed, 837 passed); the final matrix runs the owned writable-code fix.
+
+uv tool run --from ruff==0.17.0 python .github/scripts/check_ruff_baseline.py
+Ruff: 403 total, zero new; four repaired preprocessing allowances removed, none added.
+/tmp/arfs-r17/py312-locked/bin/python -m unittest discover -s .github/scripts -p 'test_*.py'
+Two passed.
+uv tool run --from ruff==0.17.0 ruff check tests/test_ordinal_schema.py reviews/evidence/r18-ordinal-schema/*.py
+uv tool run --from ruff==0.17.0 ruff format --check tests/test_ordinal_schema.py reviews/evidence/r18-ordinal-schema/*.py
+Both pass. git diff --check passes. Local handoff links checked before commit.
+
+Context7: sklearn get_feature_names_out, set_output and missing-category behavior.
+Skipped hosted CI, full docs/notebooks, full sklearn compliance, optional backend
+numerical equivalence, performance, statistical calibration and other platforms.
+No release-readiness claim. Complete and commit R18 before R31 removal.

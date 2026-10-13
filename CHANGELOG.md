@@ -2,6 +2,7 @@
 
 # Unreleased
 
+ - Keep OrdinalEncoderPandas full input/output names separate from categorical validation, preserve inverse inputs and honor output_dtype on refit. Nullable strings and booleans are encoded with native missing/unknown handling; transforms require the fitted column order.
  - Validate response and observation-weight inputs, preserve category identity, and correct weighted association arithmetic.
  - Correct MRMR ranking, categorical shadow controls, Leshy support/history, weighted permutation scoring, and GrootCV output/threshold aggregation.
  - Return negative response-scale GLM deviance for sklearn scoring, preserve BIC minimization, and repair weighted CV splits, NumPy inputs and fold isolation.

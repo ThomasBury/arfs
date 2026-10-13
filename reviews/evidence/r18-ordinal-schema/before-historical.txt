@@ -1,0 +1,63 @@
+...FFFF                                                                  [100%]
+=================================== FAILURES ===================================
+_______________ test_ordinal_feature_names_describe_full_output ________________
+reviews/evidence/02-preprocessing/checks.py:95: in test_ordinal_feature_names_describe_full_output
+    assert_array_equal(encoder.get_feature_names_out(), encoder.transform(X).columns)
+/tmp/arfs-r17/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   (shapes (1,), (2,) mismatch)
+E    ACTUAL: array(['cat'], dtype=object)
+E    DESIRED: array(['cat', 'num'], dtype=object)
+_______________________ test_ordinal_pandas_output_mode ________________________
+reviews/evidence/02-preprocessing/checks.py:101: in test_ordinal_pandas_output_mode
+    actual = OrdinalEncoderPandas().set_output(transform='pandas').fit_transform(X)
+/tmp/arfs-r17/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r17/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:211: in fit_transform
+    return self.transform(X)
+/tmp/arfs-r17/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:332: in wrapped
+    return _wrap_data_with_container(method, data_to_wrap, X, self)
+/tmp/arfs-r17/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:307: in _wrap_data_with_container
+    return adapter.create_container(
+/tmp/arfs-r17/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:140: in create_container
+    return self.rename_columns(X_output, columns)
+/tmp/arfs-r17/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:150: in rename_columns
+    X.columns = columns
+/tmp/arfs-r17/py312-locked/lib/python3.12/site-packages/pandas/core/generic.py:6313: in __setattr__
+    return object.__setattr__(self, name, value)
+properties.pyx:69: in pandas._libs.properties.AxisProperty.__set__
+    ???
+/tmp/arfs-r17/py312-locked/lib/python3.12/site-packages/pandas/core/generic.py:814: in _set_axis
+    self._mgr.set_axis(axis, labels)
+/tmp/arfs-r17/py312-locked/lib/python3.12/site-packages/pandas/core/internals/managers.py:238: in set_axis
+    self._validate_set_axis(axis, new_labels)
+/tmp/arfs-r17/py312-locked/lib/python3.12/site-packages/pandas/core/internals/base.py:98: in _validate_set_axis
+    raise ValueError(
+E   ValueError: Length mismatch: Expected axis has 2 elements, new values have 1 elements
+_____________________ test_ordinal_inverse_preserves_input _____________________
+reviews/evidence/02-preprocessing/checks.py:112: in test_ordinal_inverse_preserves_input
+    assert_frame_equal(encoded, before)
+E   AssertionError: Attributes of DataFrame.iloc[:, 0] (column name="cat") are different
+E
+E   Attribute "dtype" are different
+E   [left]:  object
+E   [right]: float64
+________________________ test_ordinal_set_params_dtype _________________________
+reviews/evidence/02-preprocessing/checks.py:119: in test_ordinal_set_params_dtype
+    assert actual.cat.dtype == np.dtype('float32')
+E   AssertionError: assert dtype('float64') == dtype('float32')
+E    +  where dtype('float64') = 0      0.0\n1      1.0\n2      2.0\n3      3.0\n4      0.0\n      ... \n235    3.0\n236    0.0\n237    1.0\n238    2.0\n239    3.0\nName: cat, Length: 240, dtype: float64.dtype
+E    +    where 0      0.0\n1      1.0\n2      2.0\n3      3.0\n4      0.0\n      ... \n235    3.0\n236    0.0\n237    1.0\n238    2.0\n239    3.0\nName: cat, Length: 240, dtype: float64 =      cat\n0    0.0\n1    1.0\n2    2.0\n3    3.0\n4    0.0\n..   ...\n235  3.0\n236  0.0\n237  1.0\n238  2.0\n239  3.0\n\n[240 rows x 1 columns].cat
+E    +  and   dtype('float32') = <class 'numpy.dtype'>('float32')
+E    +    where <class 'numpy.dtype'> = np.dtype
+=========================== short test summary info ============================
+FAILED reviews/evidence/02-preprocessing/checks.py::test_ordinal_feature_names_describe_full_output
+FAILED reviews/evidence/02-preprocessing/checks.py::test_ordinal_pandas_output_mode
+FAILED reviews/evidence/02-preprocessing/checks.py::test_ordinal_inverse_preserves_input
+FAILED reviews/evidence/02-preprocessing/checks.py::test_ordinal_set_params_dtype
+4 failed, 3 passed, 33 deselected in 2.35s

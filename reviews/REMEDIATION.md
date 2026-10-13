@@ -1,6 +1,6 @@
 # ARFS remediation handoff
 
-**Status: R01–R17 complete; R18–R33 pending. Next implementation group: R18 → R31.**
+**Status: R01–R18 complete; R19–R33 pending. Next phase in the authorized batch: R31.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
 a separate repair backlog. By default, a request to implement the next phase
@@ -590,9 +590,37 @@ exports and docs from `02 F15` and `06 F10`. Stop at that phase boundary if the
 API decision or wider scope remains unresolved. R18–R33 remain pending.
 Stop after this completed R17 group; no following-group work or publication is authorized.
 
+## R18 result — 2026-10-13
+
+R18 is complete on `main`, based on clean `37cf6b2`; the local phase commit is
+recorded after committing this result. [R18](R18-ordinal-schema.md) records the
+owned native categorical encoder, full passthrough names/count, fitted-order
+schema, current dtype/unknown/missing parameters, nullable categorical input and
+non-mutating inverse. Native inverse receives writable owned codes to avoid the
+pandas 3 read-only-array failure. Decoded label dtypes are inferred by pandas;
+passthrough dtypes stay intact. No separate mapping or compatibility layer is added.
+
+Fresh installed-wheel suites pass: **Python 3.9 locked 856; Python 3.12 locked
+856; Python 3.12 newer 840**. All **7** original historical ordinal checks pass
+unmasked in both 3.12 cells. The 35 maintained cases fail on the verified R17
+wheel (**32 failed, 3 passed**). Exact commands, versions, provenance, interim
+pandas 3 failure, final payload hashes and check limits are in the handoff and
+[evidence](evidence/r18-ordinal-schema/commands.txt). Dependency/provenance,
+19 source/sdist/wheel payloads, lock, Ruff (**403 total, zero new**, four removed
+allowances), gate unit tests (**2 passed**), new-test/evidence lint/format, local
+links and whitespace pass. Hosted CI, full docs/notebooks, full sklearn compliance,
+optional numerical backends, other platforms, performance and calibration are skipped.
+
+**Next phase in this authorized batch: R31**, with R06/R18 complete. The user
+explicitly chose **remove both public legacy helpers** (`cat_var` and
+`validate_pandas_input`), without compatibility shims. Trace exports/docs, remove
+the dead benchmark comment, add removal/migration checks and commit R31 separately.
+Stop after R31; the next group then is R19 alone, with R05/R06/R18 complete.
+No following phase, publication, version bump or release is authorized.
+
 ## Ordered phases
 
-R01–R17 are **Complete**; R18–R33 are **Pending**. The
+R01–R18 are **Complete**; R19–R33 are **Pending**. R31 is next in the current batch. The
 [R01 handoff](R01-installed-package.md) records changes, decisions, exact checks,
 environment identities, inherited failures, and the resume point. Changes are
 committed as `6b675fd` on `fix/r01-installed-package` at checkpoint base `0270aca`;
@@ -651,7 +679,7 @@ mapping follows the table.
 | **R15 — Honest likelihood and refit contract (Complete)** | Decide zero-weight likelihood handling, reject all-invalid candidate criteria, describe regularized selection followed by unpenalized refit, remove the near-ridge promise. [1C F6/F11](01c-weighted-glm-lasso.md) | R13/R14 | Zero-weight equivalence to omission or clear rejection; all-nonfinite search fails; independent weighted Gaussian/Poisson BIC comparisons; documented coefficient/refit behavior and post-selection inference limit |
 | **R16 — Threshold selector identity/state (Complete)** | Reject duplicate names or adopt consistent positions, align labelled callbacks, validate parameters at fit, handle zero/one-feature collinearity, stabilize ties and fitted metadata. Resolve equality wording explicitly. [03 F5–F9/F12](03-selector-contracts.md) | R06/R08 | Masks/names/output agree, reordered callback labels, invalid `set_params`, empty pipeline stages, multiple hash seeds, correct feature counts and NotFittedError. Preserve legitimate named projection if retained as the API |
 | **R17 — Truthful cumulative importance selection (Complete)** | Keep the crossing feature, reject nonfinite contributions, define zero-total selection, handle array multiclass targets, and raise the optional-backend error. Use one fit unless actual reproducible resampling is required. [03 F1–F3/F11/F13](03-selector-contracts.md) | R03/R05/R06 | Hand `[.6,.3,.1]` thresholds, constant-response real fit, threshold 1, invalid contributions, three-class array/Series parity, iteration behavior and missing fastshap error before wasted training |
-| **R18 — Ordinal encoder full schema** | Keep categorical encoder validation separate from full passthrough metadata, copy inverse input, honor changed output dtype. [02 F8/F13/F14](02-preprocessing.md) | R06 | Mixed categorical/numeric `get_feature_names_out` and pandas `set_output`; unknown/missing values, input preservation, inverse, clone/refit and `set_params(output_dtype=...)` |
+| **R18 — Ordinal encoder full schema (Complete)** | Keep categorical encoder validation separate from full passthrough metadata, copy inverse input, honor changed output dtype. [02 F8/F13/F14](02-preprocessing.md) | R06 | Mixed categorical/numeric `get_feature_names_out` and pandas `set_output`; unknown/missing values, input preservation, inverse, clone/refit and `set_params(output_dtype=...)` |
 | **R19 — Actual fitted tree partitions** | Derive bins from real thresholds/leaf membership, avoid temporary-column collisions, derive copied one-tree parameters at fit, apply encoding in raw mode, define missing/all-missing behavior. [02 F1/F2/F4/F5/F9](02-preprocessing.md) | R05/R06/R18 | Equal-valued leaves, binary probabilities vs leaf IDs, values between observed extrema and fitted splits, `x`/`x_g`, category named `missing_added`, all-missing column, parameter aliases and native weighted one-tree reference |
 | **R20 — Reusable transformer inputs and Patsy rows** | Separate constructor options from fitted state; normalize documented fit/transform inputs identically; honor Patsy `NA_action` and intercept choice; treat scalar midpoint name as one name. [02 F6/F7/F10–F12](02-preprocessing.md) | R02/R18/R19 | Refit different schemas, ndarray fit_transform, named dict formula, midpoint second fit/scalar name, Patsy raise/drop branches and row alignment. Document that a transformer cannot also drop y/weight rows |
 | **R21 — GBM prediction and split contracts** | Reject or explicitly prioritize incompatible group/stratification options; validate prediction schemas and objective aliases; state real categorical support/disable behavior; define multiclass offset input; reset fitted state. [04 F1–F5/F8/F9](04-training-and-benchmarks.md) | R05/R06 | Disjoint groups, reorder/replacement columns, label/probability shapes across aliases, explicit category disable, object/string/time error or fitted mapping, offset shapes, refits clearing flags/validation data/curves |
