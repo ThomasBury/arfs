@@ -19,11 +19,11 @@ backlog: [R01](R01-installed-package.md), [R02/R03](R02-R03-compatibility.md),
 [R06](R06-category-identity.md), [R07](R07-shadow-contracts.md),
 [R08](R08-statistical-arithmetic.md), [R09](R09-mrmr-ranking.md),
 [R10](R10-leshy-support.md), [R11](R11-permutation-importance.md),
-[R12](R12-all-relevant-aggregation.md), [R13](R13-glm-scoring.md) and
-[R14](R14-glm-design.md) are complete.
-**R15 alone is next**, with R13/R14 complete. Follow the
+[R12](R12-all-relevant-aggregation.md), [R13](R13-glm-scoring.md),
+[R14](R14-glm-design.md) and [R15](R15-glm-likelihood.md) are complete.
+**R16 alone is next**, with R06/R08 complete. Follow the
 [session batching and handoff guidance](REMEDIATION.md#session-batching-and-handoffs):
-settle GLM zero-weight likelihood, invalid criteria and refit claims in R15.
+repair threshold selector identity, equality and fitted state in R16.
 Future "implement the next batch" requests follow the
 [recorded groups](REMEDIATION.md#recorded-groups-for-next-batch-requests).
 Later concurrent tracks require completed prerequisites and a

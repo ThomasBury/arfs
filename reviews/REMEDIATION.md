@@ -1,6 +1,6 @@
 # ARFS remediation handoff
 
-**Status: R01–R14 complete; R15–R33 pending. Next implementation group: R15 alone.**
+**Status: R01–R15 complete; R16–R33 pending. Next implementation group: R16 alone.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
 a separate repair backlog. By default, a request to implement the next phase
@@ -74,9 +74,9 @@ record each outcome separately. Stop at a phase boundary if a new API or
 statistical decision, unresolved failure, or wider scope makes the batch too
 large. Session boundaries and repair phases are not published releases.
 
-R01–R14 are complete. The explicitly requested R02/R03 and R10/R11 batches
+R01–R15 are complete. The explicitly requested R02/R03 and R10/R11 batches
 were implemented and validated sequentially; R04–R09 were completed alone.
-Run **R15 alone** next, with R13/R14 complete. Later phases use the recorded grouping
+Run **R16 alone** next, with R06/R08 complete. Later phases use the recorded grouping
 rules below; phases outside the three conditional pairs remain separate.
 
 | Phases | Session recommendation | Reason |
@@ -93,12 +93,13 @@ rules below; phases outside the three conditional pairs remain separate.
 | R12 | Complete; do not repeat | [R12](R12-all-relevant-aggregation.md) records resolved objectives/output axes and the user-chosen median/mean shadow rules |
 | R13 | Complete; do not repeat | [R13](R13-glm-scoring.md) records negative response-scale deviance, BIC direction and independent weighted folds |
 | R14 | Complete; do not repeat | [R14](R14-glm-design.md) records fitted design/schema, input/support metadata, current family/link and fit return |
-| R15 | Run alone next | R13/R14 complete; settle zero-weight likelihood, invalid criteria and refit claims |
+| R15 | Complete; do not repeat | [R15](R15-glm-likelihood.md) records zero-row omission, corrected criterion dimensions and truthful unpenalized refits |
+| R16 | Run alone next | R06/R08 complete; repair threshold selector identity, equality and fitted state |
 
 ### Recorded groups for next-batch requests
 
 When the user asks to "implement the next batch of RXX", read the current phase
-statuses in this file and use these groups. **The next batch is R15 alone.**
+statuses in this file and use these groups. **The next batch is R16 alone.**
 R10/R11 are complete; their separate handoffs record support/history consistency,
 weighted permutation scoring and the user-chosen absolute-total normalization.
 R12 is complete: GrootCV uses maximum shadow medians across folds/repeats;
@@ -108,7 +109,10 @@ selection still minimizes BIC, and weighted CV clones each fold with positional
 array/frame slicing and task-aware splits. R14 is complete: one fitted design
 aligns named schemas, preserves supplied constants and separates input/support
 metadata from generated-intercept output; fit uses current family/link and
-returns self. R15's R13/R14 prerequisites are complete.
+returns self. R15 is complete: zero-weight GLM rows are omitted before fitting,
+scoring and tuning; AIC/BIC use selected design rank and retained row count;
+nonfinite search criteria fail clearly. The unpenalized-refit contract replaces
+the near-ridge promise. R16's R06/R08 prerequisites are complete.
 A request for the next batch authorizes that one group, its affected callers,
 tests, local phase commits and handoff update; stop after
 it. It does not authorize the following group or Git publication/release unless
@@ -448,9 +452,52 @@ all-invalid candidate criteria, document regularized selection followed by
 unpenalized refit and remove the near-ridge promise. Preserve R13 scoring and R14
 fitted design. R15–R33 remain pending; stop after this completed R14 group.
 
+## R15 result — 2026-10-13
+
+R15 is complete on `main`, committed separately as `51d44f2` from the clean
+`2577289` checkout. The [handoff](R15-glm-likelihood.md) records the chosen
+zero-weight policy: omit aligned rows before GLM fitting/scoring/tuning and
+before direct GLM CV splits. Positive weights stay unnormalized, responses and
+weights still validate before omission, and generic CV keeps its existing fold
+mass guards. Any nonfinite candidate criterion now fails with score/alpha
+context; backend exceptions propagate without silent candidate dropping.
+
+Independent likelihood checks exposed the backend refit's extra parameter/row
+in information-criterion bookkeeping. Wrapper AIC/BIC now use returned
+log-likelihood, retained observation count and selected design rank, counting
+mean parameters without dispersion. Raw backend summaries/results remain
+unchanged. The documented contract is regularized selection followed by
+unpenalized refitting; the near-ridge claim is removed, pure ridge/invalid
+mixtures fail clearly, and post-selection/variance-weight likelihood limits
+are explicit. API/method prose and two notebook explanatory sentences agree;
+notebook code, outputs and other cells are preserved. No R15 policy choice
+remains unresolved.
+
+Fresh installed-wheel full suites pass: **py39-locked 688 passed;
+py312-locked 688 passed; py312-newer 672 passed**, including 52 maintained R15
+cases. Those cases produce **41 failures and 11 passes** on the verified R14
+wheel; source and affected R05/R13/R14/API callers pass **339** tests. Original
+R15 likelihood/near-ridge diagnostics reproduce two failures before repair;
+all **12** selected historical checks/controls pass unmasked in both repaired
+3.12 snapshots. The old near-ridge expectation remains historical, replaced
+by independent checks of the truthful refit contract. Dependency/provenance,
+eight installed/source hashes, 19 source/sdist/wheel payloads, copied tests,
+`uv lock --check`, Ruff 0.17.0 baseline (**417 total, zero new**), gate unit
+tests (**two passed**), affected/new-test lint, new-test format, notebook
+preservation, handoff links and `git diff --check` pass. Exact commands, versions
+and results are in the handoff/evidence. Hosted CI, full docs/notebooks, other
+platforms, optional backends, performance, full sklearn compliance and
+statistical calibration were not checked.
+
+**Next group: R16 alone**, with R06/R08 complete. Resume from `03 F5–F9/F12`,
+`BaseThresholdSelector` in `base.py`, threshold selectors in `unsupervised.py`,
+callback label alignment, parameter validation, collinearity edge cases, stable
+ties and fitted metadata. Settle equality wording explicitly and preserve named
+projection if retained. R16–R33 remain pending; stop after this completed R15 group.
+
 ## Ordered phases
 
-R01–R14 are **Complete**; R15–R33 are **Pending**. The
+R01–R15 are **Complete**; R16–R33 are **Pending**. The
 [R01 handoff](R01-installed-package.md) records changes, decisions, exact checks,
 environment identities, inherited failures, and the resume point. Changes are
 committed as `6b675fd` on `fix/r01-installed-package` at checkpoint base `0270aca`;
@@ -479,9 +526,10 @@ R04–R09 changes remain uncommitted; the commits rely on that checkout state.
 Those uncommitted notes are historical; the R04–R12 delivery above records
 their merged commits. [R13](R13-glm-scoring.md) is complete in local commit
 `28b9529` on `main`, based on `64b0ce7`. [R14](R14-glm-design.md) is complete
-in local commit `3e3e7e3` on `main`, based on `fb942fc`. R15 alone is next, with
-R13/R14 complete. Hosted CI for R13/R14 and remaining release evidence are
-still pending. An ID such
+in local commit `3e3e7e3` on `main`, based on `fb942fc`. [R15](R15-glm-likelihood.md)
+is complete in local commit `51d44f2` on `main`, based on `2577289`. R16 alone is
+next, with R06/R08 complete. Hosted CI for R13–R15 and remaining release evidence
+are still pending. An ID such
 as `1A F3` means finding 3 in the linked original report. The complete ID-to-phase
 mapping follows the table.
 
@@ -501,7 +549,7 @@ mapping follows the table.
 | **R12 — Explicit all-relevant aggregation (Complete)** | Resolve GrootCV objective/output-axis handling, then choose the intended fold/shadow statistic for GrootCV and BoostAGroota and align prose. [1B F7–F9](01b-all-relevant.md) | R07 | Binary-to-multiclass and objective-alias real fits; exact hand examples with fold columns only; documented cutoff axes/order. Calibration remains a separate claim |
 | **R13 — Correct GLM scoring and independent CV (Complete)** | Compute response-scale deviance once, expose a higher-is-better sklearn score while minimizing BIC correctly, pass stratification targets, slice documented arrays, clone each fold. [1C F2–F4/F9/F12](01c-weighted-glm-lasso.md) | R03/R05 | Independent Poisson/binomial/Gamma losses, real external GridSearchCV, binary fold splits, array/frame parity, stateful-estimator isolation; rerun the Poisson signal counterexample |
 | **R14 — Stable GLM design and parameters (Complete)** | Use one fitted intercept/input-column contract across fit/predict/transform; derive the family/link at fit from current parameters; return self. [1C F5/F7/F8/F10](01c-weighted-glm-lasso.md) | R13 | Single-row prediction, existing constants, `fit_intercept=False`, reorder/missing/extra/duplicate names, arrays and support metadata, `set_params` vs fresh construction, chained fit/predict and summary integration |
-| **R15 — Honest likelihood and refit contract** | Decide zero-weight likelihood handling, reject all-invalid candidate criteria, describe regularized selection followed by unpenalized refit, remove the near-ridge promise. [1C F6/F11](01c-weighted-glm-lasso.md) | R13/R14 | Zero-weight equivalence to omission or clear rejection; all-nonfinite search fails; independent weighted Gaussian/Poisson BIC comparisons; documented coefficient/refit behavior and post-selection inference limit |
+| **R15 — Honest likelihood and refit contract (Complete)** | Decide zero-weight likelihood handling, reject all-invalid candidate criteria, describe regularized selection followed by unpenalized refit, remove the near-ridge promise. [1C F6/F11](01c-weighted-glm-lasso.md) | R13/R14 | Zero-weight equivalence to omission or clear rejection; all-nonfinite search fails; independent weighted Gaussian/Poisson BIC comparisons; documented coefficient/refit behavior and post-selection inference limit |
 | **R16 — Threshold selector identity/state** | Reject duplicate names or adopt consistent positions, align labelled callbacks, validate parameters at fit, handle zero/one-feature collinearity, stabilize ties and fitted metadata. Resolve equality wording explicitly. [03 F5–F9/F12](03-selector-contracts.md) | R06/R08 | Masks/names/output agree, reordered callback labels, invalid `set_params`, empty pipeline stages, multiple hash seeds, correct feature counts and NotFittedError. Preserve legitimate named projection if retained as the API |
 | **R17 — Truthful cumulative importance selection** | Keep the crossing feature, reject nonfinite contributions, define zero-total selection, handle array multiclass targets, and raise the optional-backend error. Use one fit unless actual reproducible resampling is required. [03 F1–F3/F11/F13](03-selector-contracts.md) | R03/R05/R06 | Hand `[.6,.3,.1]` thresholds, constant-response real fit, threshold 1, invalid contributions, three-class array/Series parity, iteration behavior and missing fastshap error before wasted training |
 | **R18 — Ordinal encoder full schema** | Keep categorical encoder validation separate from full passthrough metadata, copy inverse input, honor changed output dtype. [02 F8/F13/F14](02-preprocessing.md) | R06 | Mixed categorical/numeric `get_feature_names_out` and pandas `set_output`; unknown/missing values, input preservation, inverse, clone/refit and `set_params(output_dtype=...)` |
@@ -524,7 +572,7 @@ mapping follows the table.
 R21's group/schema safeguards can be advanced immediately after R05/R06 if
 training-wrapper users are the priority; its dependencies do not require waiting
 for the intervening algorithm phases. Similarly independent R24–R28 work need
-not await GLM repairs. The default next group is now R15 alone. Do not parallelize
+not await GLM repairs. The default next group is now R16 alone. Do not parallelize
 edits to shared dtype/weight helpers without agreeing their contract first.
 
 ## Complete finding-to-phase map
