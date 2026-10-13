@@ -127,6 +127,15 @@ def set_my_plt_style(height=3, width=5, linewidth=2):
     mpl.rcParams.update(params)
 
 
+def _is_categorical_dtype(dtype):
+    """Use pandas dtype semantics for nominal columns, including strings/bools."""
+    return (
+        isinstance(dtype, pd.CategoricalDtype)
+        or pd.api.types.is_string_dtype(dtype)
+        or pd.api.types.is_bool_dtype(dtype)
+    )
+
+
 def create_dtype_dict(df: pd.DataFrame, dic_keys: str = "col_names") -> dict:
     """Create a custom dictionary of data type for adding suffixes
     to column names in the plotting utility for association matrix.
@@ -152,7 +161,9 @@ def create_dtype_dict(df: pd.DataFrame, dic_keys: str = "col_names") -> dict:
     if not isinstance(df, pd.DataFrame):
         raise TypeError("df should be a pandas DataFrame")
 
-    categorical_cols = df.select_dtypes(include=["object", "category", "bool"]).columns
+    categorical_cols = df.columns[
+        [_is_categorical_dtype(dtype) for dtype in df.dtypes]
+    ]
     time_cols = df.select_dtypes(
         include=["datetime", "timedelta", "datetimetz"]
     ).columns
@@ -206,6 +217,9 @@ def get_pandas_cat_codes(X):
     -------
     X : pandas DataFrame
         The modified input DataFrame with categorical and time features replaced by numerical codes.
+        Codes follow first occurrence of the original values (pandas equality
+        semantics); all missing values receive -1. This mutates X in place and
+        does not retain a vocabulary for transforming new data.
     obj_feat : list or None
         List of column names that were converted to numerical codes. Returns None if no categorical or time features found.
     cat_idx : list or None
@@ -216,10 +230,7 @@ def get_pandas_cat_codes(X):
 
     if obj_feat:
         for obj_column in obj_feat:
-            column = X[obj_column].astype("str").astype("category")
-            # performs label encoding
-            _, inverse = np.unique(column, return_inverse=True)
-            X[obj_column] = inverse
+            X[obj_column] = pd.factorize(X[obj_column], sort=False)[0]
         cat_idx = [X.columns.get_loc(col) for col in obj_feat]
     else:
         obj_feat = None
@@ -228,47 +239,44 @@ def get_pandas_cat_codes(X):
     return X, obj_feat, cat_idx
 
 
-def validate_sample_weight(sample_weight):
-    """Ensures sample_weight parameter is a numpy array."""
-    if isinstance(sample_weight, pd.Series):
-        return sample_weight.values
-    elif isinstance(sample_weight, np.ndarray):
-        return sample_weight
-    elif sample_weight is None:
-        return None
-    else:
-        raise ValueError("sample_weight must be an array-like object or None.")
+def validate_sample_weight(sample_weight, n_samples=None):
+    """Return positional float weights, without normalizing their meaning.
 
-
-def validate_sample_weight(sample_weight):
+    Weights must be one-dimensional, finite and nonnegative, match n_samples
+    when given, and contain positive mass. Individual zero weights are valid.
+    None leaves the caller's unweighted path unchanged.
     """
-    Validate the sample_weight parameter.
-
-    Parameters
-    ----------
-    sample_weight : array-like or None
-        Input sample weights.
-
-    Returns
-    -------
-    np.ndarray or None
-        If sample_weight is a Pandas Series, its values are returned as a
-        numpy array. If sample_weight is already a numpy array, it is
-        returned unmodified. If sample_weight is None, None is returned.
-
-    Raises
-    ------
-    ValueError
-        If sample_weight is not an array-like object or None.
-    """
-    if isinstance(sample_weight, pd.Series):
-        return sample_weight.values
-    elif isinstance(sample_weight, np.ndarray):
-        return sample_weight
-    elif sample_weight is None:
+    if sample_weight is None:
         return None
-    else:
-        raise ValueError("sample_weight must be an array-like object or None.")
+    weights = np.asarray(sample_weight, dtype=float)
+    if weights.ndim != 1 or (n_samples is not None and len(weights) != n_samples):
+        raise ValueError(
+            "sample_weight must be one-dimensional and match the number of observations."
+        )
+    if not np.isfinite(weights).all() or (weights < 0).any():
+        raise ValueError("sample_weight must contain finite, nonnegative values.")
+    if not (weights > 0).any():
+        raise ValueError(
+            "sample_weight must have positive mass in every retained sample or split."
+        )
+    return weights
+
+
+def validate_target(y, n_samples):
+    """Validate a nonempty, one-dimensional response without imputing outcomes.
+
+    Alignment is positional. Numeric responses must be finite; categorical
+    labels remain supported but cannot be missing. The caller's Series is kept.
+    """
+    values = np.asarray(y)
+    if values.ndim != 1 or len(values) != n_samples or n_samples == 0:
+        raise ValueError(
+            "y must be one-dimensional, nonempty and match the number of observations."
+        )
+    target = y if isinstance(y, pd.Series) else pd.Series(y)
+    if target.isna().any() or target.isin([np.inf, -np.inf]).any():
+        raise ValueError("y must contain finite, nonmissing responses.")
+    return target
 
 
 def validate_pandas_input(arg):
@@ -923,5 +931,6 @@ def _make_corr_dataset_classification(size=1000):
         "Bane",
         "MarkZ",
     ]
+    X["nice_guys"] = np.random.choice(nice_guys, size)
 
     return X, y, w

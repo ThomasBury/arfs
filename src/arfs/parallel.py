@@ -123,19 +123,12 @@ def _compute_series(
         takes two mandatory inputs (x and y) and an optional input w, sample_weights
     """
 
-    def _closure_compute_series(x, y, sample_weight):
-        x_not_na = ~x.isna()
-        if x_not_na.sum() == 0:
-            return 0
-        return func_xyw(
-            x=x[x_not_na],
-            y=y[x_not_na],
-            sample_weight=sample_weight[x_not_na],
-            as_frame=False,
-        )
-
+    # Empty worker chunks still need a Series result; pandas cannot infer it.
+    if X.shape[1] == 0:
+        return pd.Series(dtype=float)
+    # The association boundary owns the missing-value policy and aligned rows.
     return X.apply(
-        lambda col: _closure_compute_series(x=col, y=y, sample_weight=sample_weight)
+        lambda col: func_xyw(x=col, y=y, sample_weight=sample_weight, as_frame=False)
     ).fillna(0.0)
 
 

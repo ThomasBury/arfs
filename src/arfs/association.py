@@ -3,7 +3,25 @@
 This module provides parallelized methods for computing associations.
 Namely, correlation, correlation ratio, Theil's U, Cramer's V
 
-They are the basis of the MRmr feature selection
+They are the basis of the MRmr feature selection.
+
+Observation weights are positional, finite and nonnegative, with positive
+mass after the frame's missing-value policy. Weights are not normalized.
+Direct pairwise statistics require complete one-dimensional observations.
+Grouped statistics omit zero-mass groups and contingency margins; ANOVA and
+Cramer's V reject inputs with fewer than two usable groups/categories.
+Relevance functions reject missing/nonfinite responses before applying any
+predictor missing-value policy. handle_na=None passes all rows to custom
+association callbacks unchanged.
+
+Relevance scores use frequency weights: N is retained weight mass, not stored
+row count. Regression/information scores require N > 2; grouped ANOVA requires
+N > the number of positive-mass groups. Integer counts reproduce row replication.
+Fractional frequency mass is accepted for scoring, but does not represent literal
+replication or establish an F null distribution. Relative/exposure weights are
+supported by association coefficients, not given scale-invariant relevance.
+The categorical classification U-to-F transform is a ranking heuristic, not an
+ANOVA test. Mixed score normalization and ranking policy remain separate.
 """
 
 import math
@@ -19,11 +37,10 @@ import scipy.stats as ss
 
 
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-from sklearn.utils import as_float_array, safe_sqr, safe_mask
+from sklearn.utils import safe_mask
 
 from multiprocessing import cpu_count
 from itertools import combinations, permutations, product
-from pandas.api.types import is_numeric_dtype
 from scipy.stats import rankdata
 from scipy.spatial.distance import pdist
 from functools import partial
@@ -34,7 +51,12 @@ from .parallel import (
     _compute_series,
     _compute_matrix_entries,
 )
-from .utils import create_dtype_dict
+from .utils import (
+    _is_categorical_dtype,
+    create_dtype_dict,
+    validate_sample_weight,
+    validate_target,
+)
 
 _PRECISION = 1e-13
 
@@ -121,13 +143,7 @@ def weighted_conditional_entropy(x, y, sample_weight=None):
         Weighted conditional entropy.
     """
 
-    # Handle sample_weight
-    if sample_weight is None:
-        sample_weight = np.ones(len(x))
-    elif np.count_nonzero(sample_weight) == 0:
-        raise ValueError(
-            "All elements in sample_weight are zero. Cannot divide by zero."
-        )
+    x, y, sample_weight = _check_association_pair(x, y, sample_weight)
 
     # Integer encoding for categorical data
     y_encoded, _ = pd.factorize(y)
@@ -184,10 +200,14 @@ def weighted_theils_u(x, y, sample_weight=None, as_frame=False):
     -------
     pd.DataFrame or float
         Predictor names and value of the Theil's U statistic.
+
+    Notes
+    -----
+    U(x, y) is one when x has zero entropy, including a constant x. This
+    association convention does not make a constant predictor relevant.
     """
 
-    if sample_weight is None:
-        sample_weight = np.ones(len(x))
+    x, y, sample_weight = _check_association_pair(x, y, sample_weight)
 
     tot_weight = np.sum(sample_weight)
 
@@ -215,13 +235,11 @@ def weighted_theils_u(x, y, sample_weight=None, as_frame=False):
         valid_mask = (p_xy != 0) & (p_y != 0)
         h_xy += np.sum(p_xy[valid_mask] * np.log(p_y[valid_mask] / p_xy[valid_mask]))
 
-    if h_x == 0:
-        return 1.0
-
-    u = (h_x - h_xy) / h_x
+    # A constant first argument has no uncertainty left to explain.
+    u = 1.0 if h_x == 0 else (h_x - h_xy) / h_x
 
     # Check for floating point precision issues
-    if abs(u) < _PRECISION or abs(u - 1.0) < _PRECISION:
+    if h_x != 0 and (abs(u) < _PRECISION or abs(u - 1.0) < _PRECISION):
         rounded_u = round(u)
         warnings.warn(
             f"Rounded U = {u} to {rounded_u}. This is probably due to floating point precision issues.",
@@ -379,14 +397,18 @@ def cramer_v(x, y, sample_weight=None, as_frame=False):
         Single row DataFrame with the predictor names and the statistic value, or the statistic as a float.
     """
 
-    if sample_weight is None:
-        sample_weight = np.ones(len(x))
-    else:
-        sample_weight = np.asarray(sample_weight)
-        if sample_weight.sum() == 0:
-            raise ValueError("Sum of sample weights cannot be zero.")
+    x, y, sample_weight = _check_association_pair(x, y, sample_weight)
 
-    weighted_tab = pd.crosstab(x, y, sample_weight, aggfunc=sum).fillna(0)
+    weighted_tab = pd.crosstab(
+        x.to_numpy(), y.to_numpy(), sample_weight, aggfunc="sum"
+    ).fillna(0)
+    weighted_tab = weighted_tab.loc[
+        weighted_tab.sum(axis=1) > 0, weighted_tab.sum(axis=0) > 0
+    ]
+    if min(weighted_tab.shape) < 2:
+        raise ValueError(
+            "Cramer's V requires at least two positive-mass categories per variable."
+        )
     chi2 = ss.chi2_contingency(weighted_tab, correction=False)[0]
     tot_weight = sample_weight.sum()
     phi2 = chi2 / tot_weight
@@ -540,32 +562,10 @@ def _weighted_correlation_ratio(*args):
         value of the correlation ratio
     """
     # Convert to float array and compute weights
-    args = [(np.asarray(a[0], dtype=float), np.asarray(a[1])) for a in args]
-    weight_per_class = np.array([a[1].sum() for a in args])
-    tot_weight = weight_per_class.sum()
-
-    # Weighted sum of squares and list of weighted sums
-    ss_alldata = sum((a[1] * np.square(a[0])).sum(axis=0) for a in args)
-    sums_args = [np.sum(a[0] * a[1], axis=0) for a in args]
-    square_of_sums_alldata = sum(sums_args) ** 2
-
-    # Total sum of squares and between-classes sum of squares
-    sstot = ss_alldata - square_of_sums_alldata / tot_weight
-    ssbn = sum(np.square(s) / w for s, w in zip(sums_args, weight_per_class))
-    ssbn -= square_of_sums_alldata / tot_weight
-
-    # Ensure sstot and ssbn are at least 1D arrays to avoid shape issues
-    sstot = np.atleast_1d(sstot)
-    ssbn = np.atleast_1d(ssbn)
-
-    # Handle constant features
-    constant_features_idx = np.where(sstot == 0.0)[0]
-    if np.any(ssbn) and constant_features_idx.size:
-        warnings.warn("Features %s are constant." % constant_features_idx, UserWarning)
-
-    # Correlation Ratio calculation
-    etasq = np.divide(ssbn, sstot, out=np.zeros_like(sstot), where=sstot != 0)
-    return np.sqrt(etasq).ravel()
+    args = _check_weighted_groups(args)
+    ssbn, sswn = _weighted_group_sums(args)
+    sstot = ssbn + sswn
+    return np.array([np.sqrt(ssbn / sstot) if sstot != 0 else 0.0])
 
 
 @symmetric_function
@@ -594,13 +594,12 @@ def correlation_ratio(x, y, sample_weight=None, as_frame=False):
             f"Both x and y must be pandas Series. The type of x: {type(x)} and The type of y: {type(y)}"
         )
 
-    if sample_weight is None:
-        sample_weight = np.ones_like(y)
+    x, y, sample_weight = _check_association_pair(x, y, sample_weight)
 
     # Determine the categorical and continuous variables
-    if x.dtype in ["category", "object", "bool"]:
+    if _is_categorical_dtype(x.dtype):
         categorical, continuous = x, y
-    elif y.dtype in ["category", "object", "bool"]:
+    elif _is_categorical_dtype(y.dtype):
         categorical, continuous = y, x
     else:
         raise TypeError(
@@ -608,9 +607,9 @@ def correlation_ratio(x, y, sample_weight=None, as_frame=False):
         )
 
     # Prepare arguments for the weighted correlation ratio calculation
-    unique_categories = np.unique(categorical)
+    unique_categories = pd.unique(categorical)
     args = [
-        (continuous[categorical == category], sample_weight[categorical == category])
+        (continuous.to_numpy()[categorical == category], sample_weight[categorical == category])
         for category in unique_categories
     ]
 
@@ -760,6 +759,10 @@ def wm(x, w):
     float
         weighted mean
     """
+    x = validate_target(x, np.size(x)).to_numpy()
+    w = validate_sample_weight(w, len(x))
+    if w is None:
+        w = np.ones(len(x))
     return np.sum(x * w) / np.sum(w)
 
 
@@ -780,6 +783,8 @@ def wcov(x, y, w):
     float
         weighted covariance
     """
+    x, y, w = _check_association_pair(x, y, w)
+    x, y = x.to_numpy(), y.to_numpy()
     return np.sum(w * (x - wm(x, w)) * (y - wm(y, w))) / np.sum(w)
 
 
@@ -818,6 +823,10 @@ def wrank(x, w):
     float
         weighted rank
     """
+    x = validate_target(x, np.size(x)).to_numpy()
+    w = validate_sample_weight(w, len(x))
+    if w is None:
+        w = np.ones(len(x))
     (unique, arr_inv, counts) = np.unique(
         rankdata(x), return_counts=True, return_inverse=True
     )
@@ -867,8 +876,7 @@ def weighted_corr(x, y, sample_weight=None, as_frame=False, method="spearman"):
     float or pd.DataFrame
         weighted correlation coefficient
     """
-    if sample_weight is None:
-        sample_weight = np.ones_like(y)
+    x, y, sample_weight = _check_association_pair(x, y, sample_weight)
 
     if method == "pearson":
         c = wcorr(x, y, sample_weight)
@@ -1028,9 +1036,6 @@ def weighted_correlation_1cpu(X, sample_weight=None, handle_na="drop"):
     """
     # sanity checks
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
-    # degree of freedom for the second moment estimator
-    ddof = 1
-
     col_dtypes_dic = create_dtype_dict(X)
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
 
@@ -1045,9 +1050,8 @@ def weighted_correlation_1cpu(X, sample_weight=None, handle_na="drop"):
         weighted_mean = weighted_sum / sum_weights
         demeaned = data - weighted_mean
         sum_of_squares = np.dot((demeaned**2).T, sample_weight)
-        weighted_std = np.sqrt(sum_of_squares / (sum_weights - ddof))
+        weighted_std = np.sqrt(sum_of_squares)
         weighted_cov = np.dot(sample_weight * demeaned.T, demeaned)
-        weighted_cov /= sum_weights - ddof
         weighted_corcoef = pd.DataFrame(
             weighted_cov / weighted_std / weighted_std[:, None],
             index=col_idx,
@@ -1142,16 +1146,14 @@ def association_series(
         data = X.copy()
 
     # Determine the data types
-    is_numeric = pd.api.types.is_numeric_dtype
-    numeric_cols = data.select_dtypes(include=[np.number]).columns.tolist()
-    categorical_cols = data.select_dtypes(exclude=[np.number]).columns.tolist()
+    dtypes_dic = create_dtype_dict(data, dic_keys="dtypes")
 
     # Compute associations based on data types
-    if all(is_numeric(data[col]) for col in data.columns):
+    if len(dtypes_dic["num"]) == len(data.columns):
         assoc_series = _callable_association_series_fn(
             num_num_assoc, data, target, sample_weight, n_jobs, "num-num"
         )
-    elif all(not is_numeric(data[col]) for col in data.columns):
+    elif len(dtypes_dic["cat"]) == len(data.columns):
         assoc_series = _callable_association_series_fn(
             nom_nom_assoc, data, target, sample_weight, n_jobs, "nom-nom"
         )
@@ -1161,12 +1163,12 @@ def association_series(
         )
 
         # Additional association for target-specific types
-        if is_numeric(data[target]):
+        if target in dtypes_dic["num"]:
             assoc_series_complement = _callable_association_series_fn(
                 num_num_assoc, data, target, sample_weight, n_jobs, "num-num"
             )
             assoc_series = pd.concat([assoc_series, assoc_series_complement])
-        elif not is_numeric(data[target]):
+        elif target in dtypes_dic["cat"]:
             assoc_series_complement = _callable_association_series_fn(
                 nom_nom_assoc, data, target, sample_weight, n_jobs, "nom-nom"
             )
@@ -1292,8 +1294,7 @@ def _callable_association_series_fn(
     ValueError
         if kind is not 'num-num' or 'nom-nom' or 'nom-num'
     """
-    X, sample_weight = _check_association_input(X, sample_weight, handle_na="drop")
-
+    # X and weights were validated by association_series with its row policy.
     # Validate 'kind' parameter
     valid_kinds = ["num-num", "nom-nom", "nom-num"]
     if kind not in valid_kinds:
@@ -1430,38 +1431,39 @@ def f_oneway_weighted(*args):
 
     Notes
     -----
+    Weights are frequency mass, not normalized proportions. N is the retained
+    total weight and must exceed K, the number of positive-mass groups. Integer
+    weights agree with literal row replication; fractional mass only defines
+    a score. One group is rejected. Constant observations return NaN; distinct
+    constant group levels return infinity. Both outputs have shape (1,).
+
     The F-statistic is calculated as:
 
     .. math::
-        F(rf) = \\frac{\\sum_i (\\bar{Y}_{i \\bullet} - \\bar{Y})^2 / (K-1)}{\\sum_i \\sum_k (\\bar{Y}_{ij} - \\bar{Y}_{i\\bullet})^2 / (N - K)}
+        F = \\frac{SS_B / (K-1)}{SS_W / (N-K)}
+
+    SS_B sums group mass times squared group-mean deviations from the global
+    mean. SS_W sums frequency-weighted squared deviations from each group mean.
     """
-    # how many levels (predictor)
+    args = _check_weighted_groups(args)
     n_classes = len(args)
-    # convert to float 2-tuple array
-    args = [as_float_array(a) for a in args]
+    if n_classes < 2:
+        raise ValueError("ANOVA requires at least two positive-mass groups.")
     # compute the total weight per level
     weight_per_class = np.array([a[1].sum() for a in args])
     # total weight
     tot_weight = np.sum(weight_per_class)
-    # weighted sum of squares
-    ss_alldata = sum((a[1] * safe_sqr(a[0])).sum(axis=0) for a in args)
-    # list of weighted sums
-    sums_args = [np.asarray((a[0] * a[1]).sum(axis=0)) for a in args]
-    square_of_sums_alldata = sum(sums_args) ** 2
-    square_of_sums_args = [s**2 for s in sums_args]
-    sstot = ss_alldata - square_of_sums_alldata / float(tot_weight)
-    ssbn = 0.0
-    for k, _ in enumerate(args):
-        ssbn += square_of_sums_args[k] / weight_per_class[k]
-    ssbn -= square_of_sums_alldata / float(tot_weight)
-    sswn = sstot - ssbn
+    if tot_weight <= n_classes:
+        raise ValueError("Frequency weight total must exceed the number of ANOVA groups.")
+    ssbn, sswn = _weighted_group_sums(args)
     dfbn = n_classes - 1
     dfwn = tot_weight - n_classes
     msb = ssbn / float(dfbn)
     msw = sswn / float(dfwn)
     if msw == 0.0 and msb == 0.0:
         warnings.warn("Features [0] are constant.", UserWarning)
-    f = msb / msw
+    with np.errstate(divide="ignore", invalid="ignore"):
+        f = msb / msw
     # flatten matrix to vector in sparse case
     f = np.asarray(f).ravel()
     return f
@@ -1487,8 +1489,7 @@ def f_cat_regression(x, y, sample_weight=None, as_frame=False):
     float
         value of the F-statistic
     """
-    if sample_weight is None:
-        sample_weight = np.ones_like(y)
+    x, y, sample_weight = _check_association_pair(x, y, sample_weight)
 
     # one 2-uple per level of the categorical feature x
     args = [
@@ -1496,7 +1497,7 @@ def f_cat_regression(x, y, sample_weight=None, as_frame=False):
             y[safe_mask(y, x == k)],
             sample_weight[safe_mask(sample_weight, x == k)],
         )
-        for k in np.unique(x)
+        for k in pd.unique(x)
     ]
 
     if as_frame:
@@ -1531,6 +1532,12 @@ def f_cat_regression_parallel(X, y, sample_weight=None, n_jobs=1, handle_na="dro
     -------
     pd.Series
         the value of the F-statistic for each predictor
+
+    Notes
+    -----
+    Uses the frequency-weighted ANOVA contract of f_oneway_weighted. Predictors
+    constant on retained positive-weight rows score zero in this relevance
+    wrapper; the direct ANOVA API still rejects fewer than two usable groups.
     """
 
     # Cramer's V only for categorical columns
@@ -1538,33 +1545,25 @@ def f_cat_regression_parallel(X, y, sample_weight=None, n_jobs=1, handle_na="dro
 
     cat_cols = dtypes_dic["cat"]
 
-    if not isinstance(y, pd.Series):
-        y = pd.Series(y)
-        y.name = "target"
-
+    X, y, sample_weight = _check_relevance_input(X, y, sample_weight, handle_na)
     target = y.name
-    X = X.copy()
-    X[target] = y.values
-    # sanity checks
-    X, sample_weight = _check_association_input(X, sample_weight, handle_na)
 
-    y = X[target].copy()
-
-    # Ensure 'target' is a valid column in X
-    if target in X.columns:
-        X = X.drop(columns=[target])
+    X = X.drop(columns=[target])
 
     # define the number of cores
     n_jobs = min(cpu_count(), X.shape[1]) if n_jobs == -1 else min(cpu_count(), n_jobs)
     # parallelize jobs
     _f_stat_cat = partial(_compute_series, func_xyw=f_cat_regression)
-    return parallel_df(
+    varying_cols = [c for c in cat_cols if X.loc[sample_weight > 0, c].nunique() > 1]
+    constants = pd.Series(0.0, index=[c for c in cat_cols if c not in varying_cols])
+    result = parallel_df(
         func=_f_stat_cat,
-        df=X[cat_cols],
+        df=X[varying_cols],
         series=y,
         sample_weight=sample_weight,
         n_jobs=n_jobs,
     )
+    return pd.concat([result, constants]).sort_values(ascending=False)
 
 
 def f_cont_regression_parallel(
@@ -1613,21 +1612,29 @@ def f_cont_regression_parallel(
     -------
     f_statistic : array-like of shape (n_features,)
         F-statistic for each feature.
+
+    Notes
+    -----
+    Uses Pearson correlation and retained frequency mass N, with N - 2 degrees
+    of freedom; N <= 2 is rejected. Integer weights reproduce row replication.
+    Weights are never normalized. Fractional mass defines a score only.
     """
-    if not isinstance(y, pd.Series):
-        y = pd.Series(y)
-        y.name = "target"
-
+    X, y, sample_weight = _check_relevance_input(X, y, sample_weight, handle_na)
     target = y.name
-    X = X.copy()
-    X[target] = y.values
-    # sanity checks
-    X, sample_weight = _check_association_input(X, sample_weight, handle_na)
 
-    correlation_coefficient = wcorr_series(X, target, sample_weight, n_jobs, handle_na)
+    deg_of_freedom = sample_weight.sum() - 2
+    if deg_of_freedom <= 0:
+        raise ValueError("Frequency weight total must exceed 2 for regression relevance.")
+    correlation_coefficient = wcorr_series(
+        X, target, sample_weight, n_jobs, handle_na, method="pearson"
+    )
+    constant = X.loc[sample_weight > 0].nunique() <= 1
+    constant_cols = constant[constant].index.intersection(correlation_coefficient.index)
+    correlation_coefficient.loc[constant_cols] = np.nan
+    if constant[target]:
+        correlation_coefficient[:] = np.nan
 
-    deg_of_freedom = y.size - 2
-    corr_coef_squared = correlation_coefficient**2
+    corr_coef_squared = (correlation_coefficient**2).clip(upper=1.0)
 
     with np.errstate(divide="ignore", invalid="ignore"):
         f_statistic = corr_coef_squared / (1 - corr_coef_squared) * deg_of_freedom
@@ -1648,36 +1655,23 @@ def f_cont_regression_parallel(
 def f_stat_regression_parallel(
     X, y, sample_weight=None, n_jobs=-1, force_finite=True, handle_na="drop"
 ):
-    """
-    Compute the weighted explained variance for the provided categorical and numerical predictors using parallelization.
+    """Bounded mixed regression relevance for ranking.
 
-    Parameters
-    ----------
-    X : array-like of shape (n_samples, n_features)
-        The predictor dataframe.
-    y : array-like of shape (n_samples,)
-        The target vector.
-    sample_weight : array-like of shape (n_samples,), optional
-        The weight vector, by default None.
-    n_jobs : int, optional
-        The number of cores to use for the computation, by default -1.
-    handle_na : str, optional
-        Either drop rows with NA, fill NA with 0, or do nothing, by default "drop".
-    force_finite : bool, optional
-        Whether or not to force the F-statistics and associated p-values to be finite.
-        There are two cases where the F-statistic is expected to not be finite:
-        - When the target `y` or some features in `X` are constant. In this case,
-          the Pearson's R correlation is not defined leading to obtain `np.nan`
-          values in the F-statistic and p-value. When `force_finite=True`, the
-          F-statistic is set to `0.0` and the associated p-value is set to `1.0`.
-        - When a feature in `X` is perfectly correlated (or anti-correlated)
-          with the target `y`. In this case, the F-statistic is expected to be `np.inf`.
-          When `force_finite=True`, the F-statistic is set to `np.finfo(dtype).max`.
+    Applies F / (1 + F) to both numeric and categorical F-style scores, without
+    centering or rescaling by the other predictors. Returns a labelled Series
+    on [0, 1]: zero means no relevance and perfect dependence maps to one.
+    This shared bounded scale is a ranking heuristic, not a common effect size
+    or calibrated mixed-type significance. Large F values may round to one.
 
-    Returns
-    -------
-    pd.Series
-        The value of the F-statistic for each predictor.
+    X is a predictor DataFrame; y and sample_weight are positional array-like
+    vectors. Weights retain the frequency-mass contract of the underlying
+    relevance functions, including their degrees-of-freedom checks. n_jobs
+    controls workers; handle_na is 'drop', 'fill', or None.
+
+    With force_finite=True (default), undefined constant scores map to zero.
+    With False, undefined scores remain NaN; infinity maps to one in either
+    case. The primitive f_cont_* and f_cat_* APIs still return raw scores.
+    Underlying validation is preserved, including one-class ANOVA rejection.
     """
     f_stat_cont_series = f_cont_regression_parallel(
         X,
@@ -1691,24 +1685,13 @@ def f_stat_regression_parallel(
         X, y, sample_weight, n_jobs, handle_na=handle_na
     )
 
-    # normalize the scores
-    # correlation coefficient varies in the range [-1, 1]
-    # correlation ratio varies in the range [0, 1]
-    # Cramer's V varies in the range [0, 1]
-    # Theil's U varies in the range [0, 1]
-    # F-statistic varies in the range [0, +inf] but both kind of F stat are not necessary on the same scale
-    # in order to have a similar scale and compare both kind, one can studentize them
-    if X.shape[1] > 1:
-        f_stat_cont_series = (
-            f_stat_cont_series - f_stat_cont_series.mean()
-        ) / f_stat_cont_series.std()
-        f_stat_cat_series = (
-            f_stat_cat_series - f_stat_cat_series.mean()
-        ) / f_stat_cat_series.std()
-
-    return pd.concat([f_stat_cont_series, f_stat_cat_series]).sort_values(
-        ascending=False
+    scores = pd.concat([f_stat_cont_series, f_stat_cat_series]).replace(
+        np.inf, np.finfo(float).max
     )
+    if force_finite:
+        scores = scores.fillna(0.0)
+    relevance = scores / (1 + scores)
+    return relevance.sort_values(ascending=False, kind="stable")
 
 
 def f_cont_classification(x, y, sample_weight=None, as_frame=False):
@@ -1731,8 +1714,7 @@ def f_cont_classification(x, y, sample_weight=None, as_frame=False):
     float :
         value of the F-statistic
     """
-    if sample_weight is None:
-        sample_weight = np.ones_like(y)
+    x, y, sample_weight = _check_association_pair(x, y, sample_weight)
 
     # one 2-uple per level of the categorical target y, continuous predictor x
     args = [
@@ -1740,7 +1722,7 @@ def f_cont_classification(x, y, sample_weight=None, as_frame=False):
             x[safe_mask(x, y == k)],
             sample_weight[safe_mask(sample_weight, y == k)],
         )
-        for k in np.unique(y)
+        for k in pd.unique(y)
     ]
 
     if as_frame:
@@ -1783,17 +1765,8 @@ def f_cont_classification_parallel(
 
     num_cols = dtypes_dic["num"]
 
-    if not isinstance(y, pd.Series):
-        y = pd.Series(y)
-        y.name = "target"
-
+    X, y, sample_weight = _check_relevance_input(X, y, sample_weight, handle_na)
     target = y.name
-    X = X.copy()
-    X[target] = y.values
-    # sanity checks
-    X, sample_weight = _check_association_input(X, sample_weight, handle_na)
-
-    y = X[target].copy()
     X = X.drop(target, axis=1)
 
     # define the number of cores
@@ -1818,7 +1791,7 @@ def f_cat_classification_parallel(
     handle_na="drop",
 ):
     """
-    Univariate information dependence.
+    Univariate information dependence, expressed as a ranking heuristic.
 
     It ranks features in the same order if all the features are positively correlated with the target.
     Note that it is therefore recommended as a feature selection criterion to identify
@@ -1854,19 +1827,23 @@ def f_cat_classification_parallel(
     Returns
     -------
     f_statistic : array-like of shape (n_features,)
-        F-statistic for each feature.
+        U-to-F ranking score for each feature; it has no asserted F null law.
+
+    Notes
+    -----
+    Uses U(x, y)**2 / (1 - U(x, y)**2) * (N - 2), where N is retained frequency
+    mass and must exceed 2. Integer counts reproduce replication. Fractional
+    mass defines a score only; relative weights are not normalized. Predictors
+    constant on positive-weight retained rows, or a constant response, score
+    zero regardless of the association API's zero-entropy convention. Perfect
+    nonconstant dependence returns infinity, or maximum float with force_finite.
     """
-    if not isinstance(y, pd.Series):
-        y = pd.Series(y)
-        y.name = "target"
-
+    X, y, sample_weight = _check_relevance_input(X, y, sample_weight, handle_na)
     target = y.name
-    X = X.copy()
-    X[target] = y.values
-    # sanity checks
-    X, sample_weight = _check_association_input(X, sample_weight, handle_na)
 
-    deg_of_freedom = y.size - 2
+    deg_of_freedom = sample_weight.sum() - 2
+    if deg_of_freedom <= 0:
+        raise ValueError("Frequency weight total must exceed 2 for categorical relevance.")
 
     theils_u_coef = theils_u_series(X, target, sample_weight, n_jobs, handle_na)
     theils_u_coef_squared = theils_u_coef**2
@@ -1886,42 +1863,37 @@ def f_cat_classification_parallel(
         mask_nan = np.isnan(f_statistic)
         f_statistic[mask_nan] = 0.0
 
+    # The entropy convention U(constant, y)=1 is not predictive information.
+    constant = X.loc[sample_weight > 0].nunique() <= 1
+    constant_cols = constant[constant].index.intersection(f_statistic.index)
+    f_statistic.loc[constant_cols] = 0.0
+    if constant[target]:
+        f_statistic[:] = 0.0
+
+    f_statistic = f_statistic.reindex(X.columns[X.columns.isin(f_statistic.index)])
     return f_statistic.drop(labels=[target]).sort_values(ascending=False)
 
 
 def f_stat_classification_parallel(
     X, y, sample_weight=None, n_jobs=1, force_finite=True, handle_na="drop"
 ):
-    """
-    Compute the weighted ANOVA F-value for the provided categorical and numerical predictors using parallelization.
+    """Bounded mixed classification relevance for ranking.
 
-    Parameters
-    ----------
-    X : array-like of shape (n_samples, n_features)
-        The predictor dataframe.
-    y : array-like of shape (n_samples,)
-        The target vector.
-    sample_weight : array-like of shape (n_samples,), optional
-        The weight vector, by default None.
-    n_jobs : int, optional
-        The number of cores to use for the computation, by default 1.
-    handle_na : str, optional
-        Either drop rows with NA, fill NA with 0, or do nothing, by default "drop".
-    force_finite : bool, optional
-        Whether or not to force the F-statistics and associated p-values to be finite.
-        There are two cases where the F-statistic is expected to not be finite:
-        - When the target `y` or some features in `X` are constant. In this case,
-          the Pearson's R correlation is not defined leading to obtain `np.nan`
-          values in the F-statistic and p-value. When `force_finite=True`, the
-          F-statistic is set to `0.0` and the associated p-value is set to `1.0`.
-        - When a feature in `X` is perfectly correlated (or anti-correlated)
-          with the target `y`. In this case, the F-statistic is expected to be `np.inf`.
-          When `force_finite=True`, the F-statistic is set to `np.finfo(dtype).max`.
+    Applies F / (1 + F) to both numeric and categorical F-style scores, without
+    centering or rescaling by the other predictors. Returns a labelled Series
+    on [0, 1]: zero means no relevance and perfect dependence maps to one.
+    This shared bounded scale is a ranking heuristic, not a common effect size
+    or calibrated mixed-type significance. Large F values may round to one.
 
-    Returns
-    -------
-    pd.Series
-        The value of the F-statistic for each predictor.
+    X is a predictor DataFrame; y and sample_weight are positional array-like
+    vectors. Weights retain the frequency-mass contract of the underlying
+    relevance functions, including their degrees-of-freedom checks. n_jobs
+    controls workers; handle_na is 'drop', 'fill', or None.
+
+    With force_finite=True (default), undefined constant scores map to zero.
+    With False, undefined scores remain NaN; infinity maps to one in either
+    case. The primitive f_cont_* and f_cat_* APIs still return raw scores.
+    Underlying validation is preserved, including one-class ANOVA rejection.
     """
     f_stat_cont_series = f_cont_classification_parallel(
         X, y, sample_weight, n_jobs, handle_na=handle_na
@@ -1935,29 +1907,69 @@ def f_stat_classification_parallel(
         force_finite=force_finite,
     )
 
-    # normalize the scores
-    # correlation ratio varies in the range [0, 1]
-    # Cramer's V varies in the range [0, 1]
-    # Theil's U varies in the range [0, 1]
-    # F-statistic varies in the range [0, +inf]
-    # Both kind of F stat are not necessarily on the same scale
-    # one can studentize them
-    if X.shape[1] > 1:
-        f_stat_cont_series = (
-            f_stat_cont_series - f_stat_cont_series.mean()
-        ) / f_stat_cont_series.std()
-        f_stat_cat_series = (
-            f_stat_cat_series - f_stat_cat_series.mean()
-        ) / f_stat_cat_series.std()
-
-    return pd.concat([f_stat_cont_series, f_stat_cat_series]).sort_values(
-        ascending=False
+    scores = pd.concat([f_stat_cont_series, f_stat_cat_series]).replace(
+        np.inf, np.finfo(float).max
     )
+    if force_finite:
+        scores = scores.fillna(0.0)
+    relevance = scores / (1 + scores)
+    return relevance.sort_values(ascending=False, kind="stable")
 
 
 ############
 # Utilities
 ############
+
+
+def _check_relevance_input(X, y, sample_weight, handle_na):
+    """Apply one row policy without overwriting a predictor with the response."""
+    y = validate_target(y, len(X))
+    target = y.name if y.name is not None else "target"
+    while target in X.columns:
+        target = f"{target}_"
+    X = X.copy()
+    X[target] = y.array
+    X, sample_weight = _check_association_input(X, sample_weight, handle_na)
+    return X, X[target].copy(), sample_weight
+
+
+def _weighted_group_sums(args):
+    """Center before squaring, and accumulate within-group residuals directly."""
+    origin = args[0][0][0]
+    centered = [(v - origin, w) for v, w in args]
+    masses = np.array([w.sum() for _, w in centered])
+    means = np.array([np.average(v, weights=w) for v, w in centered])
+    mean = np.average(means, weights=masses)
+    between = np.sum(masses * (means - mean) ** 2)
+    within = sum(np.sum(w * (v - m) ** 2) for (v, w), m in zip(centered, means))
+    return between, within
+
+
+def _check_association_pair(x, y, sample_weight):
+    """Direct statistics require complete inputs; zero-weight rows add no groups."""
+    x = validate_target(x, np.size(x))
+    y = validate_target(y, len(x))
+    weights = validate_sample_weight(sample_weight, len(x))
+    if weights is None:
+        weights = np.ones(len(x))
+    return x, y, weights
+
+
+def _check_weighted_groups(args):
+    """Validate every group, then omit groups without positive weight mass."""
+    groups = []
+    for values, weights in args:
+        values = np.asarray(values, dtype=float)
+        weights = np.asarray(weights, dtype=float)
+        if values.ndim != 1 or weights.ndim != 1 or len(values) != len(weights):
+            raise ValueError(
+                "Each group must contain aligned one-dimensional observations and weights."
+            )
+        if not np.isfinite(values).all():
+            raise ValueError("Group observations must be finite.")
+        groups.append((values, weights))
+    validate_sample_weight(np.concatenate([w for _, w in groups]) if groups else [])
+    return [(v[w > 0], w[w > 0]) for v, w in groups if (w > 0).any()]
 
 
 def _check_association_input(X, sample_weight=None, handle_na="drop"):
@@ -1989,24 +2001,9 @@ def _check_association_input(X, sample_weight=None, handle_na="drop"):
     if not isinstance(X, pd.DataFrame):
         X = pd.DataFrame(X, columns=[f"pred_{i}" for i in range(X.shape[1])])
 
-    # sanity checks
+    sample_weight = validate_sample_weight(sample_weight, len(X))
     if sample_weight is None:
         sample_weight = np.ones(len(X))
-    elif ~np.isfinite(sample_weight).all():
-        raise ValueError("sample weights contains nans or nulls")
-
-    if isinstance(sample_weight, pd.Series):
-        sample_weight = sample_weight.to_numpy()
-
-    single_value_columns_set = set()
-    for c in X.columns:
-        if X[c].nunique() == 1:
-            single_value_columns_set.add(c)
-
-    if single_value_columns_set:
-        warnings.warn(
-            f"{single_value_columns_set} columns have been removed (single unique values)"
-        )
 
     # handle nans
     if handle_na is None:
@@ -2014,10 +2011,12 @@ def _check_association_input(X, sample_weight=None, handle_na="drop"):
     elif handle_na == "drop":
         # mask the na
         na_mask = (~X.isnull().any(axis=1)).values
-        if na_mask.any():
-            X, sample_weight = X.loc[na_mask, :], sample_weight[na_mask]
+        X, sample_weight = X.loc[na_mask, :], sample_weight[na_mask]
     else:
         X = X.fillna(0)
+    if len(X) == 0:
+        raise ValueError("No observations remain after the missing-value policy.")
+    sample_weight = validate_sample_weight(sample_weight, len(X))
     return X, sample_weight
 
 
@@ -2060,12 +2059,9 @@ def matrix_to_xy(df, columns=None, reset_index=False):
         the long format of the association matrix
     """
     bool_index = np.tril(np.ones(df.shape), 0).astype(bool)
-    xy = (
-        df.where(bool_index).stack().reset_index()
-        if reset_index
-        else df.where(bool_index).stack()
-    )
+    xy = df.where(bool_index).stack().dropna()
     if reset_index:
+        xy = xy.reset_index()
         xy.columns = columns or ["row", "col", "val"]
     return xy
 

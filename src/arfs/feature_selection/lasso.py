@@ -23,10 +23,10 @@ import numpy as np
 import statsmodels.api as sm
 from sklearn.base import BaseEstimator, TransformerMixin, RegressorMixin
 from sklearn.base import clone
-from sklearn.utils import check_array
 from sklearn.model_selection import StratifiedKFold, KFold
 from joblib import Parallel, delayed
 from typing import Union, Optional
+from ..utils import validate_sample_weight, validate_target
 
 
 def _map_family_link(family: str = "gaussian", link: Optional[str] = None):
@@ -173,6 +173,8 @@ class EnetGLM(BaseEstimator, RegressorMixin):
         if self.alpha == 0.0:
             self.alpha = 1e-9
 
+        validate_target(y, len(X))
+        sample_weight = validate_sample_weight(sample_weight, len(X))
         if not isinstance(X, pd.DataFrame):
             X = pd.DataFrame(X)
             X.columns = [f"pred_{i}" for i in range(X.shape[1])]
@@ -271,6 +273,8 @@ class EnetGLM(BaseEstimator, RegressorMixin):
         deviance : float
             The deviance of the fitted model.
         """
+        validate_target(y, len(X))
+        sample_weight = validate_sample_weight(sample_weight, len(X))
         mu = self.objective.link.inverse(self.predict(X))
 
         var_weights = sample_weight if sample_weight is not None else 1.0
@@ -316,6 +320,8 @@ def weighted_cross_val_score(estimator, X, y, sample_weight=None, cv=5, n_jobs=-
 
     """
 
+    validate_target(y, len(X))
+    sample_weight = validate_sample_weight(sample_weight, len(X))
     # logging.info("Starting cross-validation...")
 
     splitter = (
@@ -375,19 +381,18 @@ def _fit_and_score(
     ValueError
         If the input data is not of the correct format.
     """
-    # X = X.values if isinstance(X, pd.DataFrame) else X
-    y = y.values if isinstance(y, pd.Series) else y
+    y = validate_target(y, len(X)).to_numpy()
+    sample_weight = validate_sample_weight(sample_weight, len(X))
     X_train, X_test = X.iloc[train_index, :], X.iloc[test_index, :]
     y_train, y_test = y[train_index], y[test_index]
 
     if sample_weight is not None:
-        sample_weight = (
-            sample_weight.values
-            if isinstance(sample_weight, pd.Series)
-            else sample_weight
+        sample_weight_train = validate_sample_weight(
+            sample_weight[train_index], len(train_index)
         )
-        sample_weight_train = sample_weight[train_index]
-        sample_weight_test = sample_weight[test_index]
+        sample_weight_test = validate_sample_weight(
+            sample_weight[test_index], len(test_index)
+        )
         estimator.fit(X_train, y_train, sample_weight=sample_weight_train)
         score = estimator.score(X_test, y_test, sample_weight=sample_weight_test)
     else:
@@ -446,7 +451,8 @@ def grid_search_cv(
 
     # Check if X and y are pandas DataFrames/Series and convert them to numpy arrays if necessary
     # X = check_array(X, accept_sparse=True, ensure_all_finite=False)
-    y = check_array(y, ensure_2d=False, ensure_all_finite=False)
+    y = validate_target(y, len(X)).to_numpy()
+    sample_weight = validate_sample_weight(sample_weight, len(X))
 
     if score not in ["bic", "deviance"]:
         raise ValueError("Invalid score value. Options are: 'bic' or 'deviance'.")
