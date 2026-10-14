@@ -18,9 +18,11 @@ Dependencies:
 
 # Standard library imports
 import gc
+import os
 import warnings
 from datetime import date
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import List, Optional, Union, Dict, Tuple, Any
 
 # Third-party imports
@@ -454,9 +456,20 @@ class GradientBoosting:
         return pd.DataFrame(X, columns=names)
 
     def save(self, save_path: Optional[str] = None, name: Optional[str] = None) -> str:
-        """Saves the trained model and learning curve (if generated).
+        """Saves the Booster and its fitted prediction contract using joblib.
 
-        Model is saved using joblib. Learning curve is saved as a PNG image.
+        The versioned artifact includes the initial-score guard, categorical
+        feature names and original input schema. Training rows, per-row offsets,
+        validation features and figures are not stored in it. A learning curve
+        is saved separately as PNG when present.
+
+        Files are staged in the destination filesystem before replacement.
+        Serialization or plot-rendering failure leaves existing files intact.
+        The model is replaced first, then the optional PNG; a PNG replacement
+        failure can occur after the model has been committed. The two files are
+        not one transaction, and power-loss durability is not guaranteed.
+        Existing names are overwritten. Load only artifacts from trusted sources
+        in a compatible Python/dependency environment.
 
         Parameters
         ----------
@@ -470,7 +483,8 @@ class GradientBoosting:
         Returns
         -------
         str
-            The full path to the saved model file (.joblib).
+            Path to the saved model file (.joblib), relative when no save_path
+            was provided.
 
         Raises
         ------
@@ -481,6 +495,10 @@ class GradientBoosting:
         """
         if self.model is None:
             raise ValueError("Model has not been trained yet. Cannot save.")
+        if self.learning_curve is not None and not isinstance(
+            self.learning_curve, plt.Figure
+        ):
+            raise TypeError("learning_curve must be a matplotlib Figure or None.")
 
         # Determine file names
         if name:
@@ -503,27 +521,49 @@ class GradientBoosting:
             model_file_path = Path(model_file_name)
             fig_file_path = Path(fig_file_name)
 
-        # Save model
+        artifact = {
+            "format": "arfs.GradientBoosting",
+            "version": 1,
+            "model": self.model,
+            "is_init_score": self.is_init_score,
+            "cat_feat": self.cat_feat,
+            "feature_names_in_": self.feature_names_in_,
+        }
         print(f"Saving model to: {model_file_path}")
-        joblib.dump(self.model, model_file_path)
-
-        # Save learning curve if it exists
-        if self.learning_curve:
-            if isinstance(self.learning_curve, plt.Figure):
-                print(f"Saving learning curve to: {fig_file_path}")
-                self.learning_curve.savefig(fig_file_path, bbox_inches="tight")
-                plt.close(self.learning_curve)  # Close figure to free memory
-            else:
-                warnings.warn(
-                    "Learning curve attribute exists but is not a matplotlib Figure. Cannot save."
-                )
+        with TemporaryDirectory(dir=model_file_path.parent, prefix=".arfs-") as staged:
+            staged_model = Path(staged) / "model.joblib"
+            with staged_model.open("wb") as stream:
+                joblib.dump(artifact, stream)
+                stream.flush()
+                os.fsync(stream.fileno())
+            if self.learning_curve is not None:
+                staged_curve = Path(staged) / "curve.png"
+                self.learning_curve.savefig(staged_curve, bbox_inches="tight")
+            staged_model.replace(model_file_path)
+            if self.learning_curve is not None:
+                # shortcut: model/PNG replacements are separate, use one artifact if a joint transaction is needed.
+                staged_curve.replace(fig_file_path)
+                plt.close(self.learning_curve)
 
         return str(model_file_path)
 
     def load(self, model_path: str) -> None:
-        """Loads a previously saved LightGBM model.
+        """Loads a trusted versioned GradientBoosting artifact.
 
-        Overwrites the current `model` and `model_params` attributes.
+        Joblib loading can execute arbitrary code: never load an untrusted file.
+        This format does not guarantee compatibility across Python or dependency
+        versions. Legacy Booster-only files are rejected because they do not
+        record whether an external baseline is required; refit and save again.
+
+        Validation completes before replacing fitted state. The saved Booster,
+        initial-score guard, category names and original schema replace the
+        current values; validation features and learning curve become None.
+        Constructor options are retained for a subsequent fit. Failed loads
+        preserve the previously fitted state.
+
+        An initial-score artifact still needs an external baseline for each new
+        prediction row: request raw_score=True, add the baseline, then apply the
+        objective's inverse link or output transformation.
 
         Parameters
         ----------
@@ -534,38 +574,61 @@ class GradientBoosting:
         ------
         FileNotFoundError
             If the model file does not exist at the specified path.
+        ValueError
+            If the artifact version is unsupported or metadata is invalid.
+            Deserialization errors propagate without changing fitted state.
+        TypeError
+            If the loaded object is legacy or is not an artifact dictionary.
         """
         model_file = Path(model_path)
         if not model_file.is_file():
             raise FileNotFoundError(f"Model file not found at: {model_path}")
 
         print(f"Loading model from: {model_path}")
-        self.model = joblib.load(model_file)
-        if self.model:
-            self.model_params = self.model.params
-            self.feature_names_in_ = self.model.feature_name()
-            # Attempt to infer cat_feat from loaded model if possible (might not be stored directly)
-            # This part is heuristic; cat_feat isn't directly stored in older booster files this way
-            if (
-                hasattr(self.model, "pandas_categorical")
-                and self.model.pandas_categorical
-            ):
-                self.cat_feat = self.model.pandas_categorical
-                print(
-                    f"Inferred categorical features from loaded model: {self.cat_feat}"
+        artifact = joblib.load(model_file)
+        if isinstance(artifact, lgb.Booster):
+            raise TypeError(
+                "Legacy Booster-only files have no init_score contract. Refit and save again."
+            )
+        if not isinstance(artifact, dict):
+            raise TypeError("GradientBoosting artifact must be a dictionary.")
+        if artifact.get("format") != "arfs.GradientBoosting":
+            raise ValueError("Invalid GradientBoosting artifact format.")
+        if type(artifact.get("version")) is not int or artifact["version"] != 1:
+            raise ValueError("Unsupported GradientBoosting artifact version.")
+        if not {"model", "is_init_score", "cat_feat", "feature_names_in_"}.issubset(
+            artifact
+        ):
+            raise ValueError("Incomplete GradientBoosting artifact metadata.")
+
+        model = artifact["model"]
+        names = artifact["feature_names_in_"]
+        categories = artifact["cat_feat"]
+        if (
+            not isinstance(model, lgb.Booster)
+            or not isinstance(model.params, dict)
+            or type(artifact["is_init_score"]) is not bool
+            or not isinstance(names, list)
+            or not all(isinstance(name, str) for name in names)
+            or len(set(names)) != len(names)
+            or [name.replace(" ", "_") for name in names] != model.feature_name()
+            or (
+                categories is not None
+                and (
+                    not isinstance(categories, list)
+                    or not all(str(name) in names for name in categories)
                 )
-            else:
-                # Cannot reliably get cat_feat from older models, keep original setting or None
-                print(
-                    "Could not reliably infer categorical features from the loaded model."
-                )
-                self.cat_feat = (
-                    self.cat_feat_input
-                    if isinstance(self.cat_feat_input, list)
-                    else None
-                )
-        else:
-            raise ValueError("Failed to load model from file.")
+            )
+        ):
+            raise ValueError("Invalid GradientBoosting artifact metadata.")
+
+        self.model = model
+        self.model_params = model.params
+        self.feature_names_in_ = names
+        self.cat_feat = categories
+        self.is_init_score = artifact["is_init_score"]
+        self.valid_features = None
+        self.learning_curve = None
 
 
 # --- Helper Functions ---

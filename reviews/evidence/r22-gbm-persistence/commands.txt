@@ -1,0 +1,71 @@
+Checkout: /home/bsatom/Documents/arfs; clean main @ 4d0e240.
+R22 alone; next group R23 alone (R07/R10-R12/R18/R21 complete).
+No publication or release.
+
+Source/baseline runs use MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1.
+Installed-cell environment additionally sets:
+UV_CACHE_DIR=/tmp/arfs-r04/cache MPLCONFIGDIR=/tmp/arfs-r22/mpl-<cell>
+MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2
+PYTHONHASHSEED=0 PYTHONDONTWRITEBYTECODE=1.
+Installed runs remove PYTHONPATH and use isolated Python outside the checkout.
+
+Before historical:
+/tmp/arfs-r21/py312-locked/bin/python -I -m pytest /tmp/arfs-r22/historical/checks.py -k 'reload_preserves or load_into_previously' --runxfail -q --tb=short -p no:cacheprovider
+before-historical.txt: 3 failed, 68 deselected.
+Both checks.py and reload.py are unchanged copies from review 04.
+Original historical scripts/reports/logs are preserved.
+
+Final maintained regressions copied into /tmp/arfs-r22/before:
+/tmp/arfs-r21/py312-locked/bin/python -I -m pytest /tmp/arfs-r22/before/test_gbm_persistence.py -q --tb=short -p no:cacheprovider
+before-final.txt: 33 failed, 4 passed (37 cases).
+before-environment.json records packages/provenance and asserts no setuptools.
+All 12 installed-module hashes match git show 4d0e240:src/<module>.py.
+The final before/after tests have identical bodies, including child-process code.
+
+Final affected source/callers:
+PYTHONPATH=src /tmp/arfs-r21/py312-locked/bin/python -m pytest tests/test_gbm_persistence.py tests/test_gbm_contracts.py tests/test_tree_partitions.py tests/test_importance_selection.py -k 'not fresh_process' -q --tb=short -p no:cacheprovider
+source-final.txt: 194 passed, 8 deselected, 40 existing warnings.
+Isolated child processes use the installed wheel, so their eight new cases are
+verified in the complete installed runs rather than in the source probe.
+
+uv export --locked --extra test --no-emit-project --output-file /tmp/arfs-r22/locked-requirements.txt
+uv build --python /tmp/arfs-r21/py312-locked/bin/python --out-dir /tmp/arfs-r22/dist
+uv lock --check --python /tmp/arfs-r21/py312-locked/bin/python
+/tmp/arfs-r21/py312-locked/bin/python /tmp/arfs-r22/check_payloads.py
+payloads.json: all 19 source/sdist/wheel files match, including three data payloads.
+
+Orchestrators validate.py, environment.py, check_payloads.py are reused from R21,
+with phase paths, R21 base interpreters and historical selection changed. Exact
+copies run from /tmp/arfs-r22. Fresh venvs install the locked export or checked-in
+newer requirements plus the rebuilt wheel, check dependencies, verify all copied
+tests and 12 installed-module hashes, then run outside checkout with -I and no
+setuptools workaround.
+/tmp/arfs-r21/py312-locked/bin/python /tmp/arfs-r22/validate.py py39-locked
+/tmp/arfs-r21/py312-locked/bin/python /tmp/arfs-r22/validate.py py312-locked
+/tmp/arfs-r21/py312-locked/bin/python /tmp/arfs-r22/validate.py py312-newer
+Per-cell commands.json records exact argv/cwd/exit codes. Environment JSON records
+all package versions, paths, hashes and interpreter versions. Python 3.12 cells
+run the unchanged historical reload/persistence/unfitted cases with --runxfail.
+
+uv tool run --from ruff==0.17.0 python .github/scripts/check_ruff_baseline.py
+Ruff: 395 total, zero new; baseline unchanged.
+/tmp/arfs-r21/py312-locked/bin/python -m unittest discover -s .github/scripts -p 'test_*.py'
+Two passed.
+uv tool run --from ruff==0.17.0 ruff check tests/test_gbm_persistence.py reviews/evidence/r22-gbm-persistence/*.py
+uv tool run --from ruff==0.17.0 ruff format --check src/arfs/gbm.py tests/test_gbm_persistence.py reviews/evidence/r22-gbm-persistence/*.py
+Both pass. Local handoff links and git diff --check checked before commits.
+
+Context7 /joblib/joblib: joblib.dump/load file-stream support, trusted loading
+(arbitrary code execution through pickle), and Python-version compatibility limits.
+Failure injection covers partial dump, fsync, partial PNG rendering, model replace,
+PNG replace and invalid figure type. Pre-commit failures retain old target bytes
+and remove staging files. PNG replacement failure is after model commit: the new
+model remains loadable, the old PNG survives, the error propagates and staging is
+cleaned. Model/PNG replacement is not a joint transaction; power-loss recovery,
+parent-directory fsync and interruption cleanup are not claimed or tested.
+
+Skipped hosted CI, docs/notebook execution, optional numerical backends, other
+platforms, cross-version model loading, hostile artifacts, concurrent writers,
+performance and statistical calibration. Joblib is trusted-input only; metadata
+validation does not make it safe to unpickle unknown files. No release claim.
+New log lines have display-only trailing whitespace removed for git diff --check.

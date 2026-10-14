@@ -1,0 +1,581 @@
+FFFFFFFFFFFFFFF..FFFFFFFFFFFFFFFFF..F                                    [100%]
+=================================== FAILURES ===================================
+_________ test_fresh_process_round_trip_on_new_rows[False-regression] __________
+/tmp/arfs-r22/before/test_gbm_persistence.py:129: in test_fresh_process_round_trip_on_new_rows
+    assert result.returncode == 0, result.stdout + result.stderr
+E   AssertionError: Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_fresh_process_round_trip_0/nested/model.joblib
+E     Could not reliably infer categorical features from the loaded model.
+E     Traceback (most recent call last):
+E       File "<string>", line 12, in <module>
+E     AssertionError
+E
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/tmp/arfs-r21/py312-locked/bin/python', '-I', '-c', "\nimport sys\nfrom pathlib import Path\ni...aded model.\n', stderr='Traceback (most recent call last):\n  File "<string>", line 12, in <module>\nAssertionError\n').returncode
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_fresh_process_round_trip_0/nested/model.joblib
+___________ test_fresh_process_round_trip_on_new_rows[False-binary] ____________
+/tmp/arfs-r22/before/test_gbm_persistence.py:129: in test_fresh_process_round_trip_on_new_rows
+    assert result.returncode == 0, result.stdout + result.stderr
+E   AssertionError: Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_fresh_process_round_trip_1/nested/model.joblib
+E     Could not reliably infer categorical features from the loaded model.
+E     Traceback (most recent call last):
+E       File "<string>", line 12, in <module>
+E     AssertionError
+E
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/tmp/arfs-r21/py312-locked/bin/python', '-I', '-c', "\nimport sys\nfrom pathlib import Path\ni...aded model.\n', stderr='Traceback (most recent call last):\n  File "<string>", line 12, in <module>\nAssertionError\n').returncode
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_fresh_process_round_trip_1/nested/model.joblib
+___________ test_fresh_process_round_trip_on_new_rows[False-softmax] ___________
+/tmp/arfs-r22/before/test_gbm_persistence.py:129: in test_fresh_process_round_trip_on_new_rows
+    assert result.returncode == 0, result.stdout + result.stderr
+E   AssertionError: Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_fresh_process_round_trip_2/nested/model.joblib
+E     Could not reliably infer categorical features from the loaded model.
+E     Traceback (most recent call last):
+E       File "<string>", line 12, in <module>
+E     AssertionError
+E
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/tmp/arfs-r21/py312-locked/bin/python', '-I', '-c', "\nimport sys\nfrom pathlib import Path\ni...aded model.\n', stderr='Traceback (most recent call last):\n  File "<string>", line 12, in <module>\nAssertionError\n').returncode
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_fresh_process_round_trip_2/nested/model.joblib
+__________ test_fresh_process_round_trip_on_new_rows[False-category] ___________
+/tmp/arfs-r22/before/test_gbm_persistence.py:129: in test_fresh_process_round_trip_on_new_rows
+    assert result.returncode == 0, result.stdout + result.stderr
+E   AssertionError: Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_fresh_process_round_trip_3/nested/model.joblib
+E     Inferred categorical features from loaded model: [['green', 'red']]
+E     Traceback (most recent call last):
+E       File "<string>", line 12, in <module>
+E     AssertionError
+E
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/tmp/arfs-r21/py312-locked/bin/python', '-I', '-c', "\nimport sys\nfrom pathlib import Path\ni...n', 'red']]\n", stderr='Traceback (most recent call last):\n  File "<string>", line 12, in <module>\nAssertionError\n').returncode
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_fresh_process_round_trip_3/nested/model.joblib
+__________ test_fresh_process_round_trip_on_new_rows[True-regression] __________
+/tmp/arfs-r22/before/test_gbm_persistence.py:129: in test_fresh_process_round_trip_on_new_rows
+    assert result.returncode == 0, result.stdout + result.stderr
+E   AssertionError: Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_fresh_process_round_trip_4/nested/model.joblib
+E     Could not reliably infer categorical features from the loaded model.
+E     Traceback (most recent call last):
+E       File "<string>", line 12, in <module>
+E     AssertionError
+E
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/tmp/arfs-r21/py312-locked/bin/python', '-I', '-c', "\nimport sys\nfrom pathlib import Path\ni...aded model.\n', stderr='Traceback (most recent call last):\n  File "<string>", line 12, in <module>\nAssertionError\n').returncode
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_fresh_process_round_trip_4/nested/model.joblib
+____________ test_fresh_process_round_trip_on_new_rows[True-binary] ____________
+/tmp/arfs-r22/before/test_gbm_persistence.py:129: in test_fresh_process_round_trip_on_new_rows
+    assert result.returncode == 0, result.stdout + result.stderr
+E   AssertionError: Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_fresh_process_round_trip_5/nested/model.joblib
+E     Could not reliably infer categorical features from the loaded model.
+E     Traceback (most recent call last):
+E       File "<string>", line 12, in <module>
+E     AssertionError
+E
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/tmp/arfs-r21/py312-locked/bin/python', '-I', '-c', "\nimport sys\nfrom pathlib import Path\ni...aded model.\n', stderr='Traceback (most recent call last):\n  File "<string>", line 12, in <module>\nAssertionError\n').returncode
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_fresh_process_round_trip_5/nested/model.joblib
+___________ test_fresh_process_round_trip_on_new_rows[True-softmax] ____________
+/tmp/arfs-r22/before/test_gbm_persistence.py:129: in test_fresh_process_round_trip_on_new_rows
+    assert result.returncode == 0, result.stdout + result.stderr
+E   AssertionError: Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_fresh_process_round_trip_6/nested/model.joblib
+E     Could not reliably infer categorical features from the loaded model.
+E     Traceback (most recent call last):
+E       File "<string>", line 12, in <module>
+E     AssertionError
+E
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/tmp/arfs-r21/py312-locked/bin/python', '-I', '-c', "\nimport sys\nfrom pathlib import Path\ni...aded model.\n', stderr='Traceback (most recent call last):\n  File "<string>", line 12, in <module>\nAssertionError\n').returncode
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_fresh_process_round_trip_6/nested/model.joblib
+___________ test_fresh_process_round_trip_on_new_rows[True-category] ___________
+/tmp/arfs-r22/before/test_gbm_persistence.py:129: in test_fresh_process_round_trip_on_new_rows
+    assert result.returncode == 0, result.stdout + result.stderr
+E   AssertionError: Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_fresh_process_round_trip_7/nested/model.joblib
+E     Inferred categorical features from loaded model: [['green', 'red']]
+E     Traceback (most recent call last):
+E       File "<string>", line 12, in <module>
+E     AssertionError
+E
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/tmp/arfs-r21/py312-locked/bin/python', '-I', '-c', "\nimport sys\nfrom pathlib import Path\ni...n', 'red']]\n", stderr='Traceback (most recent call last):\n  File "<string>", line 12, in <module>\nAssertionError\n').returncode
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_fresh_process_round_trip_7/nested/model.joblib
+_____________ test_loaded_offsets_require_external_baseline[False] _____________
+/tmp/arfs-r22/before/test_gbm_persistence.py:139: in test_loaded_offsets_require_external_baseline
+    raw = restored.predict_raw(X.iloc[:2], raw_score=True)
+/tmp/arfs-r21/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:436: in predict_raw
+    return self.model.predict(self._prepare_prediction_input(X), **kwargs)
+/tmp/arfs-r21/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:445: in _prepare_prediction_input
+    raise ValueError(
+E   ValueError: Prediction columns must match fitted feature names and order.
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_loaded_offsets_require_ex0/model.joblib
+Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_loaded_offsets_require_ex0/model.joblib
+Could not reliably infer categorical features from the loaded model.
+_____________ test_loaded_offsets_require_external_baseline[True] ______________
+/tmp/arfs-r22/before/test_gbm_persistence.py:139: in test_loaded_offsets_require_external_baseline
+    raw = restored.predict_raw(X.iloc[:2], raw_score=True)
+/tmp/arfs-r21/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:436: in predict_raw
+    return self.model.predict(self._prepare_prediction_input(X), **kwargs)
+/tmp/arfs-r21/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:445: in _prepare_prediction_input
+    raise ValueError(
+E   ValueError: Prediction columns must match fitted feature names and order.
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_loaded_offsets_require_ex1/model.joblib
+Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_loaded_offsets_require_ex1/model.joblib
+Could not reliably infer categorical features from the loaded model.
+____ test_load_replaces_fitted_state_and_retains_constructor_options[False] ____
+/tmp/arfs-r22/before/test_gbm_persistence.py:183: in test_load_replaces_fitted_state_and_retains_constructor_options
+    assert receiver.feature_names_in_ == saved.feature_names_in_
+E   AssertionError: assert ['a_b', 'noise', '7'] == ['a b', 'noise', '7']
+E
+E     At index 0 diff: 'a_b' != 'a b'
+E     Use -v to get more diff
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_load_replaces_fitted_stat0/saved.joblib
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_load_replaces_fitted_stat0/saved.joblib
+Inferred categorical features from loaded model: [['green', 'red']]
+____ test_load_replaces_fitted_state_and_retains_constructor_options[True] _____
+/tmp/arfs-r22/before/test_gbm_persistence.py:183: in test_load_replaces_fitted_state_and_retains_constructor_options
+    assert receiver.feature_names_in_ == saved.feature_names_in_
+E   AssertionError: assert ['a_b', 'noise', '7'] == ['a b', 'noise', '7']
+E
+E     At index 0 diff: 'a_b' != 'a b'
+E     Use -v to get more diff
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_load_replaces_fitted_stat1/saved.joblib
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_load_replaces_fitted_stat1/saved.joblib
+Inferred categorical features from loaded model: [['green', 'red']]
+____________ test_invalid_artifact_preserves_previous_state[legacy] ____________
+/tmp/arfs-r22/before/test_gbm_persistence.py:288: in test_invalid_artifact_preserves_previous_state
+    with pytest.raises(expected_error):
+E   Failed: DID NOT RAISE <class 'TypeError'>
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve0/good.joblib
+Saving learning curve to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve0/good_learning_curve.png
+Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve0/bad.joblib
+Could not reliably infer categorical features from the loaded model.
+___________ test_invalid_artifact_preserves_previous_state[foreign] ____________
+/tmp/arfs-r22/before/test_gbm_persistence.py:289: in test_invalid_artifact_preserves_previous_state
+    model.load(str(bad_path))
+/tmp/arfs-r21/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:545: in load
+    self.model_params = self.model.params
+E   AttributeError: 'dict' object has no attribute 'params'
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve1/good.joblib
+Saving learning curve to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve1/good_learning_curve.png
+Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve1/bad.joblib
+________ test_invalid_artifact_preserves_previous_state[foreign_object] ________
+/tmp/arfs-r22/before/test_gbm_persistence.py:289: in test_invalid_artifact_preserves_previous_state
+    model.load(str(bad_path))
+/tmp/arfs-r21/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:545: in load
+    self.model_params = self.model.params
+E   AttributeError: 'list' object has no attribute 'params'
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve2/good.joblib
+Saving learning curve to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve2/good_learning_curve.png
+Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve2/bad.joblib
+____________ test_invalid_artifact_preserves_previous_state[format] ____________
+/tmp/arfs-r22/before/test_gbm_persistence.py:289: in test_invalid_artifact_preserves_previous_state
+    model.load(str(bad_path))
+/tmp/arfs-r21/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:545: in load
+    self.model_params = self.model.params
+E   AttributeError: 'dict' object has no attribute 'params'
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve5/good.joblib
+Saving learning curve to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve5/good_learning_curve.png
+Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve5/bad.joblib
+___________ test_invalid_artifact_preserves_previous_state[version] ____________
+/tmp/arfs-r22/before/test_gbm_persistence.py:289: in test_invalid_artifact_preserves_previous_state
+    model.load(str(bad_path))
+/tmp/arfs-r21/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:545: in load
+    self.model_params = self.model.params
+E   AttributeError: 'dict' object has no attribute 'params'
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve6/good.joblib
+Saving learning curve to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve6/good_learning_curve.png
+Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve6/bad.joblib
+_________ test_invalid_artifact_preserves_previous_state[bool_version] _________
+/tmp/arfs-r22/before/test_gbm_persistence.py:289: in test_invalid_artifact_preserves_previous_state
+    model.load(str(bad_path))
+/tmp/arfs-r21/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:545: in load
+    self.model_params = self.model.params
+E   AttributeError: 'dict' object has no attribute 'params'
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve7/good.joblib
+Saving learning curve to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve7/good_learning_curve.png
+Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve7/bad.joblib
+________ test_invalid_artifact_preserves_previous_state[missing_field] _________
+/tmp/arfs-r22/before/test_gbm_persistence.py:289: in test_invalid_artifact_preserves_previous_state
+    model.load(str(bad_path))
+/tmp/arfs-r21/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:545: in load
+    self.model_params = self.model.params
+E   AttributeError: 'dict' object has no attribute 'params'
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve8/good.joblib
+Saving learning curve to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve8/good_learning_curve.png
+Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve8/bad.joblib
+____________ test_invalid_artifact_preserves_previous_state[model] _____________
+/tmp/arfs-r22/before/test_gbm_persistence.py:289: in test_invalid_artifact_preserves_previous_state
+    model.load(str(bad_path))
+/tmp/arfs-r21/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:545: in load
+    self.model_params = self.model.params
+E   AttributeError: 'dict' object has no attribute 'params'
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve9/good.joblib
+Saving learning curve to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve9/good_learning_curve.png
+Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve9/bad.joblib
+_____________ test_invalid_artifact_preserves_previous_state[flag] _____________
+/tmp/arfs-r22/before/test_gbm_persistence.py:289: in test_invalid_artifact_preserves_previous_state
+    model.load(str(bad_path))
+/tmp/arfs-r21/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:545: in load
+    self.model_params = self.model.params
+E   AttributeError: 'dict' object has no attribute 'params'
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve10/good.joblib
+Saving learning curve to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve10/good_learning_curve.png
+Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve10/bad.joblib
+____________ test_invalid_artifact_preserves_previous_state[names] _____________
+/tmp/arfs-r22/before/test_gbm_persistence.py:289: in test_invalid_artifact_preserves_previous_state
+    model.load(str(bad_path))
+/tmp/arfs-r21/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:545: in load
+    self.model_params = self.model.params
+E   AttributeError: 'dict' object has no attribute 'params'
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve11/good.joblib
+Saving learning curve to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve11/good_learning_curve.png
+Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve11/bad.joblib
+_______ test_invalid_artifact_preserves_previous_state[duplicate_names] ________
+/tmp/arfs-r22/before/test_gbm_persistence.py:289: in test_invalid_artifact_preserves_previous_state
+    model.load(str(bad_path))
+/tmp/arfs-r21/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:545: in load
+    self.model_params = self.model.params
+E   AttributeError: 'dict' object has no attribute 'params'
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve12/good.joblib
+Saving learning curve to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve12/good_learning_curve.png
+Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve12/bad.joblib
+_________ test_invalid_artifact_preserves_previous_state[wrong_names] __________
+/tmp/arfs-r22/before/test_gbm_persistence.py:289: in test_invalid_artifact_preserves_previous_state
+    model.load(str(bad_path))
+/tmp/arfs-r21/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:545: in load
+    self.model_params = self.model.params
+E   AttributeError: 'dict' object has no attribute 'params'
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve13/good.joblib
+Saving learning curve to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve13/good_learning_curve.png
+Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve13/bad.joblib
+__________ test_invalid_artifact_preserves_previous_state[categories] __________
+/tmp/arfs-r22/before/test_gbm_persistence.py:289: in test_invalid_artifact_preserves_previous_state
+    model.load(str(bad_path))
+/tmp/arfs-r21/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:545: in load
+    self.model_params = self.model.params
+E   AttributeError: 'dict' object has no attribute 'params'
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve14/good.joblib
+Saving learning curve to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve14/good_learning_curve.png
+Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve14/bad.joblib
+_______ test_invalid_artifact_preserves_previous_state[unknown_category] _______
+/tmp/arfs-r22/before/test_gbm_persistence.py:289: in test_invalid_artifact_preserves_previous_state
+    model.load(str(bad_path))
+/tmp/arfs-r21/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:545: in load
+    self.model_params = self.model.params
+E   AttributeError: 'dict' object has no attribute 'params'
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve15/good.joblib
+Saving learning curve to: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve15/good_learning_curve.png
+Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_invalid_artifact_preserve15/bad.joblib
+_________ test_save_failure_does_not_truncate_existing_artifacts[dump] _________
+/tmp/arfs-r22/before/test_gbm_persistence.py:356: in test_save_failure_does_not_truncate_existing_artifacts
+    assert path.read_bytes() == old_model
+E   AssertionError: assert b'partial' == b'\x80\x04\x9...\x94K\x0fuub.'
+E
+E     At index 0 diff: b'p' != b'\x80'
+E     Use -v to get more diff
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_save_failure_does_not_tru0/saved.joblib
+Saving learning curve to: /tmp/pytest-of-bsatom/pytest-195/test_save_failure_does_not_tru0/saved_learning_curve.png
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_save_failure_does_not_tru0/saved.joblib
+________ test_save_failure_does_not_truncate_existing_artifacts[fsync] _________
+/tmp/arfs-r22/before/test_gbm_persistence.py:325: in test_save_failure_does_not_truncate_existing_artifacts
+    monkeypatch.setattr(gbm.os, "fsync", broken_fsync)
+E   AttributeError: module 'arfs.gbm' has no attribute 'os'
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_save_failure_does_not_tru1/saved.joblib
+Saving learning curve to: /tmp/pytest-of-bsatom/pytest-195/test_save_failure_does_not_tru1/saved_learning_curve.png
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+________ test_save_failure_does_not_truncate_existing_artifacts[render] ________
+/tmp/arfs-r22/before/test_gbm_persistence.py:348: in test_save_failure_does_not_truncate_existing_artifacts
+    assert curve_path.read_bytes() == old_curve
+E   AssertionError: assert b'partial' == b'\x89PNG\r\n...END\xaeB`\x82'
+E
+E     At index 0 diff: b'p' != b'\x89'
+E     Use -v to get more diff
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_save_failure_does_not_tru2/saved.joblib
+Saving learning curve to: /tmp/pytest-of-bsatom/pytest-195/test_save_failure_does_not_tru2/saved_learning_curve.png
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_save_failure_does_not_tru2/saved.joblib
+Saving learning curve to: /tmp/pytest-of-bsatom/pytest-195/test_save_failure_does_not_tru2/saved_learning_curve.png
+____ test_save_failure_does_not_truncate_existing_artifacts[model_replace] _____
+/tmp/arfs-r22/before/test_gbm_persistence.py:346: in test_save_failure_does_not_truncate_existing_artifacts
+    with pytest.raises(TypeError if failure == "invalid_curve" else OSError):
+E   Failed: DID NOT RAISE <class 'OSError'>
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_save_failure_does_not_tru3/saved.joblib
+Saving learning curve to: /tmp/pytest-of-bsatom/pytest-195/test_save_failure_does_not_tru3/saved_learning_curve.png
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_save_failure_does_not_tru3/saved.joblib
+Saving learning curve to: /tmp/pytest-of-bsatom/pytest-195/test_save_failure_does_not_tru3/saved_learning_curve.png
+____ test_save_failure_does_not_truncate_existing_artifacts[curve_replace] _____
+/tmp/arfs-r22/before/test_gbm_persistence.py:346: in test_save_failure_does_not_truncate_existing_artifacts
+    with pytest.raises(TypeError if failure == "invalid_curve" else OSError):
+E   Failed: DID NOT RAISE <class 'OSError'>
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_save_failure_does_not_tru4/saved.joblib
+Saving learning curve to: /tmp/pytest-of-bsatom/pytest-195/test_save_failure_does_not_tru4/saved_learning_curve.png
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_save_failure_does_not_tru4/saved.joblib
+Saving learning curve to: /tmp/pytest-of-bsatom/pytest-195/test_save_failure_does_not_tru4/saved_learning_curve.png
+____ test_save_failure_does_not_truncate_existing_artifacts[invalid_curve] _____
+/tmp/arfs-r22/before/test_gbm_persistence.py:346: in test_save_failure_does_not_truncate_existing_artifacts
+    with pytest.raises(TypeError if failure == "invalid_curve" else OSError):
+E   Failed: DID NOT RAISE <class 'TypeError'>
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_save_failure_does_not_tru5/saved.joblib
+Saving learning curve to: /tmp/pytest-of-bsatom/pytest-195/test_save_failure_does_not_tru5/saved_learning_curve.png
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_save_failure_does_not_tru5/saved.joblib
+____________ test_explicit_duplicate_category_selection_round_trips ____________
+/tmp/arfs-r22/before/test_gbm_persistence.py:397: in test_explicit_duplicate_category_selection_round_trips
+    assert restored.cat_feat == [7, 7]
+E   AssertionError: assert [['green', 'red']] == [7, 7]
+E
+E     At index 0 diff: ['green', 'red'] != 7
+E     Right contains one more item: 7
+E     Use -v to get more diff
+---------------------------- Captured stdout setup -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+Training up to 15 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-195/test_explicit_duplicate_catego0/duplicates.joblib
+Loading model from: /tmp/pytest-of-bsatom/pytest-195/test_explicit_duplicate_catego0/duplicates.joblib
+Inferred categorical features from loaded model: [['green', 'red']]
+=============================== warnings summary ===============================
+arfs-r22/before/test_gbm_persistence.py::test_save_failure_does_not_truncate_existing_artifacts[invalid_curve]
+  /tmp/arfs-r21/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:517: UserWarning: Learning curve attribute exists but is not a matplotlib Figure. Cannot save.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_fresh_process_round_trip_on_new_rows[False-regression]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_fresh_process_round_trip_on_new_rows[False-binary]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_fresh_process_round_trip_on_new_rows[False-softmax]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_fresh_process_round_trip_on_new_rows[False-category]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_fresh_process_round_trip_on_new_rows[True-regression]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_fresh_process_round_trip_on_new_rows[True-binary]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_fresh_process_round_trip_on_new_rows[True-softmax]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_fresh_process_round_trip_on_new_rows[True-category]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_loaded_offsets_require_external_baseline[False]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_loaded_offsets_require_external_baseline[True]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_load_replaces_fitted_state_and_retains_constructor_options[False]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_load_replaces_fitted_state_and_retains_constructor_options[True]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_invalid_artifact_preserves_previous_state[legacy]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_invalid_artifact_preserves_previous_state[foreign]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_invalid_artifact_preserves_previous_state[foreign_object]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_invalid_artifact_preserves_previous_state[format]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_invalid_artifact_preserves_previous_state[version]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_invalid_artifact_preserves_previous_state[bool_version]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_invalid_artifact_preserves_previous_state[missing_field]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_invalid_artifact_preserves_previous_state[model]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_invalid_artifact_preserves_previous_state[flag]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_invalid_artifact_preserves_previous_state[names]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_invalid_artifact_preserves_previous_state[duplicate_names]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_invalid_artifact_preserves_previous_state[wrong_names]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_invalid_artifact_preserves_previous_state[categories]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_invalid_artifact_preserves_previous_state[unknown_category]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_save_failure_does_not_truncate_existing_artifacts[dump]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_save_failure_does_not_truncate_existing_artifacts[fsync]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_save_failure_does_not_truncate_existing_artifacts[render]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_save_failure_does_not_truncate_existing_artifacts[model_replace]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_save_failure_does_not_truncate_existing_artifacts[curve_replace]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_save_failure_does_not_truncate_existing_artifacts[invalid_curve]
+FAILED ../../../../tmp/arfs-r22/before/test_gbm_persistence.py::test_explicit_duplicate_category_selection_round_trips
+33 failed, 4 passed, 1 warning in 30.97s

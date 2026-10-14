@@ -1,0 +1,43 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+_________________ test_reload_preserves_initial_score_contract _________________
+/tmp/arfs-r22/historical/checks.py:477: in test_reload_preserves_initial_score_contract
+    assert result.get("prediction_error") == "AttributeError", result
+E   AssertionError: {'best_iteration': 25, 'cat_feat': None, 'feature_names': ['genuine', 'other', 'random'], 'is_init_score': False, ...}
+E   assert None == 'AttributeError'
+E    +  where None = <built-in method get of dict object at 0x74ce928a5b80>('prediction_error')
+E    +    where <built-in method get of dict object at 0x74ce928a5b80> = {'best_iteration': 25, 'cat_feat': None, 'feature_names': ['genuine', 'other', 'random'], 'is_init_score': False, ...}.get
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-189/test_reload_preserves_initial_0/nested/trusted_model.joblib
+_____________________ test_reload_preserves_category_names _____________________
+/tmp/arfs-r22/historical/checks.py:486: in test_reload_preserves_category_names
+    assert reload_fresh(m, X, tmp_path)["cat_feat"] == ["category"]
+E   AssertionError: assert [['a', 'b']] == ['category']
+E
+E     At index 0 diff: ['a', 'b'] != 'category'
+E     Use -v to get more diff
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-189/test_reload_preserves_category0/nested/trusted_model.joblib
+___________________ test_load_into_previously_fitted_wrapper ___________________
+/tmp/arfs-r22/historical/checks.py:496: in test_load_into_previously_fitted_wrapper
+    assert_allclose(old.predict(X), new.predict(X))
+/tmp/arfs-r21/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:362: in predict
+    raise AttributeError(
+E   AttributeError: Model was fitted with init_score. Use predict_raw(raw_score=True), add the external baseline for these rows, then apply the objective's link.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+Saving model to: /tmp/pytest-of-bsatom/pytest-189/test_load_into_previously_fitt0/trusted_normal.joblib
+Loading model from: /tmp/pytest-of-bsatom/pytest-189/test_load_into_previously_fitt0/trusted_normal.joblib
+Could not reliably infer categorical features from the loaded model.
+=========================== short test summary info ============================
+FAILED ../../../../tmp/arfs-r22/historical/checks.py::test_reload_preserves_initial_score_contract
+FAILED ../../../../tmp/arfs-r22/historical/checks.py::test_reload_preserves_category_names
+FAILED ../../../../tmp/arfs-r22/historical/checks.py::test_load_into_previously_fitted_wrapper
+3 failed, 68 deselected in 7.82s

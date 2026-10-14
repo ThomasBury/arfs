@@ -2,6 +2,8 @@
 
 # Unreleased
 
+ - Save versioned GBM artifacts with the offset guard, category names and original prediction schema. Validate metadata before replacing loaded state and clear stale validation data/curves. Reject legacy Booster-only files because their baseline contract is unknown; refit and save again. Stage model and optional PNG writes before replacement; the PNG remains a separate file, and its replacement can fail after the model commits. Joblib artifacts require trusted input and a compatible environment.
+
  - Reject conflicting GBM group/stratified splitting and mismatched prediction schemas. Handle multiclass objective aliases and finite positional initial-score matrices; clear stale state after successful refits. Restrict automatic categories to pandas category/bool, honor explicit categorical disable, and explain unsupported dtype conversion. Initial-score predictions still require a new external baseline on the raw scale.
 
  - Preserve TreeDiscretizer, IntervalToMidpoint and PatsyTransformer constructor options across refits. Resolve fitted columns/formulas in bin_features_, cat_features_, cols_ and formula_; normalize array inputs consistently and preserve Patsy dictionary names. Named tree transforms require the full fitted schema; arrays require its width. Honor scalar midpoint names and Patsy's NA_action/add_intercept options. Explicit Patsy dropping removes predictor rows only, so targets and weights must be aligned by the caller.
