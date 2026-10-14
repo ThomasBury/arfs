@@ -13,6 +13,33 @@ evidence. Prefer existing helpers and supported native APIs; no compatibility
 layer, new backend, packaging split, or broad rewrite is required by this plan.
 Names below are phase IDs, not commit promises or a release schedule.
 
+## R28 delivery — 2026-10-14
+
+The user authorized staging, topical Conventional Commits, the dedicated branch,
+a pull request, Codex bot review, fixes for its comments, merge and branch removal.
+Branch: `fix/r28-parallel-contracts`, based on `81dc6c9` on remote `main`.
+The phase commits are `2181790` (parallel contracts) and `53c3699` (handoff).
+This delivery includes completed R28 and its affected callers/tests only.
+
+The source and maintained tests match the final rebuilt installed-wheel matrix:
+**1372 / 1372 / 1356 passed** on Python 3.9 locked / Python 3.12 locked /
+Python 3.12 newer. All 67 R28 regressions and 12 selected historical parallel
+checks pass in the recorded cells. Package/source/test hashes, dependency/lock
+checks, Ruff (330 total, zero new) and two gate unit tests are recorded in
+[the R28 handoff](R28-parallel-contracts.md). New evidence remains local and
+ignored; no historical evidence is removed or added to this delivery.
+Hosted CI and Codex review are checked on the PR before merge. CodeRabbit is
+not a delivery gate.
+
+**Release decision: defer the version bump, tag and GitHub release.** The
+checkout and latest published GitHub release remain `3.0.0` (verified during
+this delivery). R29–R30, R32 and R33 still cover plot/selection correctness,
+dataset fixtures, runnable documentation and final release evidence. Keep
+these API repairs under Unreleased in CHANGELOG.md and choose the next version
+after the remaining API changes and R33 checks are complete. No tag is needed
+for this independently reviewable phase. Next remains **R29 alone**, with
+R03/R10/R17 complete.
+
 ## R25–R27 delivery — 2026-10-14
 
 The user authorized staging, topical Conventional Commits, a dedicated branch,
