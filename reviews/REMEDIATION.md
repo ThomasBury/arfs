@@ -1,6 +1,6 @@
 # ARFS remediation handoff
 
-**Status: R01–R24 and R31 complete; R25–R30 and R32–R33 pending. Next implementation group: R25 → R26, conditional on policy/scope decisions.**
+**Status: R01–R25 and R31 complete; R26–R30 and R32–R33 pending. Current batch: R25 → R26; next within it: R26.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
 a separate repair backlog. By default, a request to implement the next phase
@@ -941,10 +941,37 @@ commit R25 before starting R26; stop at the phase boundary if scope or choices
 remain unresolved. R25–R30 and R32–R33 remain pending; R31 is complete.
 Stop here; no following phase, publication, version bump or release is included.
 
+## R25 — Sampling outputs complete — 2026-10-14
+
+[R25](R25-sampling-outputs.md) records the first phase of the requested R25 → R26
+batch, based on `34641a2`, on local branch `fix/r25-r26-remediation`; this entry
+is included in the R25 phase commit. Gower rejects row weights and entirely
+missing columns, imputes numeric columns separately and preserves feature names
+without overwriting `label`. Isolation forwards positional fit weights, omits
+zero-weight fit rows and returns original selected rows. Its draws and KS screen
+remain unweighted. The R05 zero-weight rule also resolves a native sklearn 1.9
+weighted-subsampling failure; all three final suites were rerun after that repair.
+
+Fresh installed-wheel full suites pass **1227 / 1227 / 1211** in Python 3.9 locked,
+3.12 locked and 3.12 newer. All 11 selected historical output checks pass unmasked
+in both 3.12 cells; 50 maintained checks produce 43 failures/seven controls on
+the old wheel. Affected source checks pass 189 tests. Artifact/source/test hashes,
+dependency checks, lock, Ruff (331 total, zero new), two gate unit tests, changed
+lint/format and whitespace pass. New evidence remains local/ignored; historical
+reports and tracked evidence are preserved. Exact commands/versions are in R25.
+Hosted CI, docs/notebooks, optional backends, other platforms, scaling and
+sampling calibration are unchecked.
+
+Continue to **R26 only** after the R25 commit. The recorded batch defaults are
+empty/single isolation identity, distinct rounded-up 5%–95% proper-subset sizes,
+20 attempts per size and full original data on exhaustion. Preserve the >0.95
+p-value threshold as a heuristic, without representativeness/outlier guarantees.
+No later phase, push, PR, version bump or release is included.
+
 ## Ordered phases
 
-R01–R24 and R31 are **Complete**; R25–R30 and R32–R33 are **Pending**. The next
-recorded group is R25 → R26, conditional on policy/scope decisions. The
+R01–R25 and R31 are **Complete**; R26–R30 and R32–R33 are **Pending**.
+R25 has passed and is committed separately before continuing to R26. The
 [R01 handoff](R01-installed-package.md) records changes, decisions, exact checks,
 environment identities, inherited failures, and the resume point. Changes are
 committed as `6b675fd` on `fix/r01-installed-package` at checkpoint base `0270aca`;
@@ -1018,7 +1045,7 @@ mapping follows the table.
 | **R22 — Persist the wrapper contract (Complete)** | Save/load required wrapper metadata with the Booster and reset state coherently. Define legacy Booster-only file handling without guessing an unknown offset contract. [04 F10](04-training-and-benchmarks.md) | R21 | Fresh-process ordinary/category/offset round trips, external baseline required for new rows, loading into previously fitted wrapper, invalid/missing artifact errors; trusted-input boundary stays explicit. Exercise safe write failure behavior before claiming durable persistence |
 | **R23 — Comparisons that run what they label (Complete)** | Fit encoders on training rows only; settle documented array/name support; reject incompatible GrootCV comparisons; construct fresh selector/model combinations. [04 F11/F12/F14/F15](04-training-and-benchmarks.md) | R07/R10–R12/R18/R21 | Held-out-only category excluded from vocabulary; integer display names, array policy, real fitted estimator/method tracing, seed/backend state reset, weighted scoring retained |
 | **R24 — Valid Gower distances (Complete)** | Use stable direct numeric ranges, distinguish cross/self matrices, handle pairwise missingness explicitly, normalize documented input/masks, validate feature weights. [05 F1–F5](05-sampling-and-parallel.md) | R06 | Hand scalar reference, translation/scale invariance, equal-sized different frames, missing/constant features, no-comparable-pair policy, arrays/Series/extension dtypes/sparse errors, valid feature-weight rescaling |
-| **R25 — Sampling returns the intended data** | Separate row weights from distance feature weights; choose weighted representative semantics or reject them; impute by column, avoid `label` collision, raise unknown methods and return original isolation-selected rows. [05 F6–F8/F10](05-sampling-and-parallel.md) | R05/R24 | N≠P and N=P weights, per-column means, original column/index/dtype schema, an existing `label`, selected categorical values, clear unsupported-method/weight errors |
+| **R25 — Sampling returns the intended data (Complete)** | Separate row weights from distance feature weights; choose weighted representative semantics or reject them; impute by column, avoid `label` collision, raise unknown methods and return original isolation-selected rows. [05 F6–F8/F10](05-sampling-and-parallel.md) | R05/R24 | N≠P and N=P weights, per-column means, original column/index/dtype schema, an existing `label`, selected categorical values, clear unsupported-method/weight errors |
 | **R26 — Bounded isolation attempts** | Advance retry state, bound size progression and define exhaustion/tiny-input behavior. Correct KS-p-value interpretation in API/example prose. [05 F9 and statistical limits](05-sampling-and-parallel.md) | R25 | Deterministic forced rejection reaches bounded termination; draw sizes follow the documented rule; 0/1/10-row inputs handled explicitly. A terminating sampler still has no representativeness guarantee |
 | **R27 — Query-aware nearest neighbors** | Use the actual one-row query, exclude its key, deduplicate eligible keys once, validate n/query and define insufficient-candidate/nonfinite behavior. [05 F11/F12](05-sampling-and-parallel.md) | R24 | Query changes result; duplicate IDs; enough/too few unique candidates; n=0/negative/too large; optional-query policy; only a query-by-candidate distance vector allocated |
 | **R28 — Parallel labels and bounded useful work** | Chunk original label objects without NumPy coercion; settle result order/empty schema and worker-count semantics, avoiding empty tasks. [05 F13 and resource boundaries](05-sampling-and-parallel.md) | R06/R08 | Integer/string and tuple/MultiIndex labels with one/two workers; propagated callback error; no-pair and empty work; supported negative counts; worker cap observed without a new execution framework |

@@ -9,7 +9,7 @@ from scipy.stats import ks_2samp
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.ensemble import IsolationForest
 
-from .utils import _is_categorical_dtype
+from .utils import _is_categorical_dtype, validate_sample_weight
 
 
 def sample(df, n=1000, sample_weight=None, method="gower"):
@@ -20,6 +20,10 @@ def sample(df, n=1000, sample_weight=None, method="gower"):
     the most similar elements.
     For the clustering algorithm, clusters are determined using the Gower distance
     (mixed type data) and the dataset is shrunk from n_samples to n_clusters.
+    Representatives are synthetic column means/modes, with cluster IDs as their
+    index and the original feature order. Numeric missing values use each column's
+    mean; categorical missing values use its first mode. Entirely missing columns
+    are rejected. Numeric representative dtypes may differ from the input.
 
     For the isolation forest algorithm, samples are added till a sufficient 2-samples
     KS statistics is reached or if the number iteration reached the max number (20)
@@ -29,9 +33,13 @@ def sample(df, n=1000, sample_weight=None, method="gower"):
     df : pd.DataFrame
         the dataframe to sample, with or without the target
     n : int, optional
-        the number of clusters if method is ``"gower"``, by default 100
+        the number of clusters if method is ``"gower"``, by default 1000.
+        Must be between 1 and len(df), with at least two input rows.
+        Ignored for ``"isoforest"``.
     sample_weight : pd.Series or np.array, optional
-        sample weights, by default None
+        Positional observation weights for the isolation forest fit only.
+        Its subset draws and KS screen are unweighted. Gower representatives
+        reject row weights; direct gower_matrix has separate feature weights.
     method : str, optional
         the strategy to use for sampling the rows. Either ``"gower"`` or ``"isoforest"``, by default 'gower'
 
@@ -41,44 +49,60 @@ def sample(df, n=1000, sample_weight=None, method="gower"):
         the sampled dataframe
 
     """
-    assert isinstance(df, pd.DataFrame), "X should be a DataFrame"
+    if not isinstance(df, pd.DataFrame):
+        raise TypeError("df should be a DataFrame")
+    if not df.columns.is_unique or df.shape[1] == 0:
+        raise ValueError("df must have unique columns and at least one feature")
     X = df.copy()
     num_cols = list(X.select_dtypes(include=[np.number]))
-    non_num_cols = list(set(list(X.columns)) - set(num_cols))
+    non_num_cols = [col for col in X.columns if col not in num_cols]
 
     if method == "gower":
+        if sample_weight is not None:
+            raise ValueError(
+                "Gower representatives do not support sample_weight (row weights)"
+            )
+        if isinstance(n, (bool, np.bool_)) or not isinstance(n, (int, np.integer)):
+            raise ValueError("n must be an integer between 1 and len(df)")
+        if len(X) < 2 or not 1 <= n <= len(X):
+            raise ValueError(
+                "Gower sampling requires at least two rows and 1 <= n <= len(df)"
+            )
+        if X.isna().all().any():
+            raise ValueError(
+                "Gower representatives require an observed value in every column"
+            )
         # basic imputation
         if non_num_cols:
             X[non_num_cols] = X[non_num_cols].fillna(X[non_num_cols].mode().iloc[0])
         if num_cols:
-            X[num_cols] = X[num_cols].fillna(X[num_cols].mean().iloc[0])
+            X[num_cols] = X[num_cols].astype(float).fillna(X[num_cols].mean())
 
         # no need for scaling, it is built-in the computation of the Gower distance
-        gd = gower_matrix(
-            X, cat_features=X.columns.isin(non_num_cols), weight=sample_weight
-        )
+        gd = gower_matrix(X, cat_features=X.columns.isin(non_num_cols))
 
         labels = AgglomerativeClustering(
             n_clusters=n, metric="precomputed", linkage="complete"
         ).fit_predict(gd)
-        X["label"] = labels
-        X["label"] = "clus_" + X["label"].astype(str)
-        X_num = X.groupby("label")[num_cols].agg("mean")
+        labels = np.array([f"clus_{label}" for label in labels])
+        X_num = X.groupby(labels)[num_cols].agg("mean")
         if non_num_cols:
-            X_nonnum = X.groupby("label")[non_num_cols].agg(get_most_common)
+            X_nonnum = X.groupby(labels)[non_num_cols].agg(get_most_common)
             X_sampled = X_num.join(X_nonnum)
         else:
             X_sampled = X_num
-        X_sampled = X_sampled.reindex(X.columns, axis=1)
+        X_sampled.index.name = "label"
+        X_sampled = X_sampled.reindex(df.columns, axis=1)
         return X_sampled
     elif method == "isoforest":
+        sample_weight = validate_sample_weight(sample_weight, len(X))
         X[non_num_cols] = X[non_num_cols].astype("str").astype("category")
         for col in non_num_cols:
             X[col] = X[col].astype("category").cat.codes
-        idx = isof_find_sample(X, sample_weight=None)
-        return X.iloc[idx, :]
+        idx = isof_find_sample(X, sample_weight=sample_weight)
+        return df.iloc[idx, :].copy()
     else:
-        NotImplementedError(f"{method} not implemented")
+        raise NotImplementedError(f"{method} not implemented")
 
 
 def get_most_common(srs):
@@ -390,9 +414,16 @@ def isolation_forest(X, sample_weight=None):
     X : pd.DataFrame or np.array
         the predictors matrix
     sample_weight : pd.Series or np.array, optional
-        the sample weights, if any, by default None
+        Positional fit weights. Zero-weight rows are omitted from fitting;
+        all original rows are scored, without scoring weights.
     """
-    clf = IsolationForest().fit(X, sample_weight=sample_weight)
+    sample_weight = validate_sample_weight(sample_weight, len(X))
+    clf = IsolationForest()
+    if sample_weight is None:
+        clf.fit(X)
+    else:
+        positive = sample_weight > 0
+        clf.fit(X[positive], sample_weight=sample_weight[positive])
     return clf.score_samples(X)
 
 
@@ -416,6 +447,7 @@ def isof_find_sample(X, sample_weight=None):
     array
         the indices for reducing the shadow predictors matrix
     """
+    sample_weight = validate_sample_weight(sample_weight, len(X))
     loop = True
     iteration = 0
     size = get_5_percent_splits(length=X.shape[0])

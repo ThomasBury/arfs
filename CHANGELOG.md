@@ -2,6 +2,8 @@
 
 # Unreleased
 
+ - Repair sampling outputs: impute numeric columns separately, preserve feature names (including label), and return original isolation-selected rows and dtypes. Reject unsupported Gower row weights and entirely missing columns; forward validated observation weights to the isolation forest fit while keeping subset draws and KS screening unweighted.
+
  - Correct Gower numeric scaling, cross-matrix indexing and pairwise missing-value weights. Return NaN for undefined pairs, validate feature weights and category masks, support nullable dtypes and reference Series, and retain pooled numeric ranges with float64 output.
 
  - Fit benchmark encoders on training rows only, support ndarray inputs and integer display names, and compare fresh Leshy/BoostAGroota configurations without mutating caller objects. Reject GrootCV in cross-estimator comparisons and refresh Leshy backend flags at fit time.
