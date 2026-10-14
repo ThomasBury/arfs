@@ -25,8 +25,12 @@ def sample(df, n=1000, sample_weight=None, method="gower"):
     mean; categorical missing values use its first mode. Entirely missing columns
     are rejected. Numeric representative dtypes may differ from the input.
 
-    For the isolation forest algorithm, samples are added till a sufficient 2-samples
-    KS statistics is reached or if the number iteration reached the max number (20)
+    Isolation sampling tries random subsets of 5%, 10%, ..., 95%, rounded up
+    and capped below the input row count, with 20 attempts per distinct size.
+    The first subset with an unweighted two-sample KS p-value >0.95 is returned;
+    exhaustion returns the full original data. Empty/single-row inputs return
+    unchanged. The subset overlaps the full score population, so this screen is
+    a heuristic, not a 95% representativeness guarantee or outlier removal.
 
     Parameters
     ----------
@@ -96,6 +100,8 @@ def sample(df, n=1000, sample_weight=None, method="gower"):
         return X_sampled
     elif method == "isoforest":
         sample_weight = validate_sample_weight(sample_weight, len(X))
+        if len(X) < 2:
+            return df.copy()
         X[non_num_cols] = X[non_num_cols].astype("str").astype("category")
         for col in non_num_cols:
             X[col] = X[col].astype("category").cat.codes
@@ -389,21 +395,35 @@ def gower_topn(
 
 
 def get_5_percent_splits(length):
-    """splits dataframe into 5% intervals
+    """Return distinct proper-subset sizes for 5%, 10%, ..., 95%.
 
     Parameters
     ----------
     length : int
-        array length
+        Positive integer array length.
 
     Returns
     -------
     array
-        vector of sizes
+        Sorted sizes, rounded up to at least one row and capped at length - 1.
+        A single-row input has no proper subset, so its result is empty.
     """
 
-    five_percent = round(5 / 100 * length)
-    return np.arange(five_percent, length, five_percent)
+    if (
+        isinstance(length, (bool, np.bool_))
+        or not isinstance(length, (int, np.integer))
+        or length < 1
+    ):
+        raise ValueError("length must be a positive integer")
+    if length == 1:
+        return np.array([], dtype=int)
+    length = int(length)
+    return np.unique(
+        [
+            min(length - 1, (length * percent + 99) // 100)
+            for percent in range(5, 100, 5)
+        ]
+    )
 
 
 def isolation_forest(X, sample_weight=None):
@@ -428,8 +448,19 @@ def isolation_forest(X, sample_weight=None):
 
 
 def isof_find_sample(X, sample_weight=None):
-    """Finds a sample by comparing the distributions of the anomaly scores between the sample and the original
-    distribution using the KS-test. Starts of a 5% however will increase to 10% and then 15% etc. if a significant sample can not be found
+    """Return row positions using a bounded anomaly-score similarity screen.
+
+    Try 20 random draws without replacement per distinct size from
+    get_5_percent_splits, starting at 5%. Accept the first KS p-value >0.95;
+    after at most 380 draws return all positions in original order. Empty and
+    single-row inputs return all positions without fitting. Observation weights
+    apply only to forest fitting; subset draws and KS comparisons are unweighted.
+
+    A large p-value does not prove representativeness. KS assumes independent
+    samples from continuous distributions, whereas each candidate here overlaps
+    the full score population. Repeated screening and one-dimensional score
+    matching do not guarantee feature/target or minority-group preservation,
+    and the random subset is not an outlier-removal rule.
 
     References
     ----------
@@ -438,29 +469,24 @@ def isof_find_sample(X, sample_weight=None):
     Parameters
     ----------
     X : pd.DataFrame
-        the predictors matrix
+        Two-dimensional DataFrame or ndarray predictor matrix.
     sample_weight : pd.Series or np.array, optional
-        the sample weights, if any, by default None
+        Positional weights for the forest fit only, by default None.
 
     Returns
     -------
     array
-        the indices for reducing the shadow predictors matrix
+        Selected positional row indices, or all indices on exhaustion/tiny input.
     """
+    if not isinstance(X, (pd.DataFrame, np.ndarray)) or X.ndim != 2 or X.shape[1] == 0:
+        raise ValueError("X must be a two-dimensional predictor matrix with features")
     sample_weight = validate_sample_weight(sample_weight, len(X))
-    loop = True
-    iteration = 0
-    size = get_5_percent_splits(length=X.shape[0])
-    element = 1
+    if len(X) < 2:
+        return np.arange(len(X))
     preds = isolation_forest(X, sample_weight)
-    while loop:
-        sample_indices = np.random.choice(
-            np.arange(preds.size), size=size[element], replace=False
-        )
-        sample = np.take(preds, sample_indices)
-        if ks_2samp(preds, sample).pvalue > 0.95:
-            break
-        if iteration == 20:
-            element += 1
-            iteration = 0
-    return sample_indices
+    for size in get_5_percent_splits(len(X)):
+        for _ in range(20):
+            sample_indices = np.random.choice(len(X), size=size, replace=False)
+            if ks_2samp(preds, preds[sample_indices]).pvalue > 0.95:
+                return sample_indices
+    return np.arange(len(X))
