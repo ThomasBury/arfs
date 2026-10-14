@@ -1,0 +1,80 @@
+Checkout: /home/bsatom/Documents/arfs; clean main @ e030fde.
+R20 alone; next group R21 alone (R05/R06 complete). No publication or release.
+
+Environment shared by source probes / installed-cell orchestrator:
+UV_CACHE_DIR=/tmp/arfs-r04/cache MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 PYTHONHASHSEED=0
+PYTHONDONTWRITEBYTECODE=1. Installed runs remove PYTHONPATH, use isolated Python
+outside checkout and a per-cell disposable MPLCONFIGDIR.
+
+Before maintained regressions, copied into /tmp/arfs-r20/before/tests:
+/tmp/arfs-r19/final/py39-locked/bin/python -I -m pytest /tmp/arfs-r20/before/tests/test_transformer_inputs.py -q --tb=short -p no:cacheprovider
+before-py39-final.txt: 36 failed, 17 passed (53 cases).
+The final installed R19 wheel has all 12 module hashes matching e030fde;
+before-provenance.json retains Python/packages/provenance and verifies no setuptools.
+Intermediate Python 3.12 runs, including --tb=no, crash while pytest formats
+Patsy's chained NameError: traceback.py iterates Patsy's evaluation namespace,
+whose __getitem__(0) raises KeyError. The aborted logs are retained separately;
+they are not complete-suite results. No library or interpreter was monkeypatched.
+Python 3.9 gives the complete failing regression run.
+
+Before historical (same adapted copy before/after):
+/tmp/arfs-r19/final/py312-locked/bin/python -I -m pytest /tmp/arfs-r20/historical/checks.py -k 'tree_refit or tree_array or interval or patsy' --runxfail -q --tb=short -p no:cacheprovider
+before-historical.txt: 11 failed, 5 passed, 24 deselected.
+Remove only '    cat_var,' from the retired-helper import in a disposable copy;
+original script/report/logs unchanged. historical-adaptation.json/.diff retain
+both SHA256 hashes and the exact one-line diff. The historical Patsy harness
+already avoids the traceback bug for its expected errors.
+
+Initial source probe (48 new cases + tree/pandas controls):
+PYTHONPATH=src /tmp/arfs-r19/final/py312-locked/bin/python -m pytest tests/test_transformer_inputs.py tests/test_tree_partitions.py tests/test_pandas_writes.py -q --tb=short -p no:cacheprovider
+source.txt: 117 passed.
+Interim source-final probe: incorrect test expected a frame's custom index to
+survive conversion to an unnamed array; corrected to the fresh RangeIndex.
+Implicit fit_transform callable scope also reaches sklearn's wrapping frame,
+an inherited behavior outside R20. The control now passes an explicit
+EvalEnvironment (both public fit paths) and verifies dict/array preparation.
+Production capture behavior is unchanged. interim-source.txt retains that failure
+and the resulting interpreter exception-formatting crash.
+
+Final affected source/callers:
+PYTHONPATH=src /tmp/arfs-r19/final/py312-locked/bin/python -m pytest tests/test_transformer_inputs.py tests/test_tree_partitions.py tests/test_pandas_writes.py tests/test_ordinal_schema.py tests/test_category_identity.py tests/test_dependency_apis.py tests/test_observation_boundaries.py -q --tb=short -p no:cacheprovider
+source-final.txt: 391 passed, 59 existing warnings.
+
+uv export --locked --extra test --no-emit-project --output-file /tmp/arfs-r20/locked-requirements.txt
+uv build --python /tmp/arfs-r19/final/py312-locked/bin/python --out-dir /tmp/arfs-r20/dist
+uv lock --check --python /tmp/arfs-r19/final/py312-locked/bin/python
+/tmp/arfs-r19/final/py312-locked/bin/python /tmp/arfs-r20/check_payloads.py
+payloads.json: all 19 source/sdist/wheel files match, including three data payloads.
+
+Orchestrators validate.py, environment.py, check_payloads.py are retained here;
+the exact copies run from /tmp/arfs-r20. Each creates a fresh venv with the
+matching R31 interpreter, installs the locked export or checked-in newer
+snapshot plus the new wheel, checks dependencies/provenance, copies/verifies
+all tests and runs outside checkout with -I and no setuptools workaround.
+/tmp/arfs-r19/final/py312-locked/bin/python /tmp/arfs-r20/validate.py py39-locked
+/tmp/arfs-r19/final/py312-locked/bin/python /tmp/arfs-r20/validate.py py312-locked
+/tmp/arfs-r19/final/py312-locked/bin/python /tmp/arfs-r20/validate.py py312-newer
+Per-cell commands.json records exact argv, cwd, exit codes; environment.json
+records all package versions, module paths and SHA256 hashes. Python 3.12 cells
+also run the same selected historical cases with --runxfail. Final counts are
+recorded in the phase handoff and cell logs.
+
+uv tool run --from ruff==0.17.0 python .github/scripts/check_ruff_baseline.py
+Ruff: 396 total, zero new. Remove the resolved preprocessing C414 allowance.
+/tmp/arfs-r19/final/py312-locked/bin/python -m unittest discover -s .github/scripts -p 'test_*.py'
+Two passed.
+uv tool run --from ruff==0.17.0 ruff check tests/test_transformer_inputs.py reviews/evidence/r20-transformer-inputs/*.py
+uv tool run --from ruff==0.17.0 ruff format --check tests/test_transformer_inputs.py reviews/evidence/r20-transformer-inputs/*.py
+Both pass. Only changed source sections formatted; unrelated source preserved.
+Final local handoff links and git diff --check are checked before commit.
+
+Context7 /pydata/patsy: native DesignInfo/stateful transform reuse and formula
+intercept ModelDesc/INTERCEPT semantics. Installed native dmatrix references
+verify missing/drop/raise behavior, return forms and fitted centering.
+Skipped hosted CI, full docs/notebooks, full sklearn compliance, implicit
+fit_transform eval-environment stack repair, optional numerical backends,
+other platforms, performance, statistical calibration and cross-process artifacts.
+No release-readiness claim; version 3.0.0 unchanged.
+
+New text logs have display-only trailing whitespace removed for git diff --check.

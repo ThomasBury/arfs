@@ -1,0 +1,3 @@
+Using CPython 3.12.7 interpreter at: /tmp/arfs-r31/py312-newer/bin/python
+Creating virtual environment at: /tmp/arfs-r20/py312-newer
+Activate with: source /tmp/arfs-r20/py312-newer/bin/activate

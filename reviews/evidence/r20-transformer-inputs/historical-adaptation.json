@@ -1,0 +1,6 @@
+{
+  "original": "reviews/evidence/02-preprocessing/checks.py",
+  "original_sha256": "c56219c7a95cb9a02b6105fbdd446ef748ac7191b1a0da8092cfc76331774b8e",
+  "adapted_sha256": "16302a2a0d93bada8be287565459ec006fd517ba949d064c276ea3753e8a2812",
+  "change": "Remove only the retired cat_var import; assertions and test bodies unchanged."
+}

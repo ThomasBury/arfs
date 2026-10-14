@@ -1,0 +1,116 @@
+FF...FFF..FFFFFF                                                         [100%]
+=================================== FAILURES ===================================
+_____________________ test_tree_refit_rediscovers_columns ______________________
+/tmp/arfs-r20/historical/checks.py:217: in test_tree_refit_rediscovers_columns
+    model.fit(new, y)
+/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:528: in fit
+    self.bin_features, self.cat_features = self._determine_bin_and_cat_features(
+/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:569: in _determine_bin_and_cat_features
+    - set(list(X[bin_features].select_dtypes("number").columns))
+/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:4108: in __getitem__
+    indexer = self.columns._get_indexer_strict(key, "columns")[1]
+/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6200: in _get_indexer_strict
+    self._raise_if_missing(keyarr, indexer, axis_name)
+/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pandas/core/indexes/base.py:6249: in _raise_if_missing
+    raise KeyError(f"None of [{key}] are in the [{axis_name}]")
+E   KeyError: "None of [Index(['x'], dtype='object')] are in the [columns]"
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+________________________ test_tree_array_fit_transform _________________________
+/tmp/arfs-r20/historical/checks.py:224: in test_tree_array_fit_transform
+    result = discretizer().fit_transform(X.to_numpy(), y)
+/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/sklearn/base.py:921: in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:655: in transform
+    frame = X[[col]]
+E   IndexError: only integers, slices (`:`), ellipsis (`...`), numpy.newaxis (`None`) and integer or boolean arrays are valid indices
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+________________ test_interval_single_string_column[estimator] _________________
+/tmp/arfs-r20/historical/checks.py:279: in test_interval_single_string_column
+    assert pd.api.types.is_float_dtype(actual.interval)
+E   AssertionError: assert False
+E    +  where False = <function is_float_dtype at 0x73f4ec664cc0>(10    (0.0, 2.0]\n20    (2.0, 4.0]\nName: interval, dtype: interval)
+E    +    where <function is_float_dtype at 0x73f4ec664cc0> = <module 'pandas.api.types' from '/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pandas/api/types/__init__.py'>.is_float_dtype
+E    +      where <module 'pandas.api.types' from '/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pandas/api/types/__init__.py'> = <module 'pandas.api' from '/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pandas/api/__init__.py'>.types
+E    +        where <module 'pandas.api' from '/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pandas/api/__init__.py'> = pd.api
+E    +    and   10    (0.0, 2.0]\n20    (2.0, 4.0]\nName: interval, dtype: interval =       interval  num\n10  (0.0, 2.0]    1\n20  (2.0, 4.0]    2.interval
+_________________ test_interval_single_string_column[function] _________________
+/tmp/arfs-r20/historical/checks.py:279: in test_interval_single_string_column
+    assert pd.api.types.is_float_dtype(actual.interval)
+E   AssertionError: assert False
+E    +  where False = <function is_float_dtype at 0x73f4ec664cc0>(10    (0.0, 2.0]\n20    (2.0, 4.0]\nName: interval, dtype: interval)
+E    +    where <function is_float_dtype at 0x73f4ec664cc0> = <module 'pandas.api.types' from '/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pandas/api/types/__init__.py'>.is_float_dtype
+E    +      where <module 'pandas.api.types' from '/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pandas/api/types/__init__.py'> = <module 'pandas.api' from '/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pandas/api/__init__.py'>.types
+E    +        where <module 'pandas.api' from '/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pandas/api/__init__.py'> = pd.api
+E    +    and   10    (0.0, 2.0]\n20    (2.0, 4.0]\nName: interval, dtype: interval =       interval  num\n10  (0.0, 2.0]    1\n20  (2.0, 4.0]    2.interval
+_____________________________ test_interval_refit ______________________________
+/tmp/arfs-r20/historical/checks.py:286: in test_interval_refit
+    model.fit(X)
+/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:745: in fit
+    if self.cols == "all":
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+_______ test_patsy_raise_policy_also_applies_during_transform[dataframe] _______
+/tmp/arfs-r20/historical/checks.py:312: in test_patsy_raise_policy_also_applies_during_transform
+    with pytest.raises(PatsyError, match='missing'):
+E   Failed: DID NOT RAISE <class 'patsy.PatsyError'>
+________ test_patsy_raise_policy_also_applies_during_transform[ndarray] ________
+/tmp/arfs-r20/historical/checks.py:312: in test_patsy_raise_policy_also_applies_during_transform
+    with pytest.raises(PatsyError, match='missing'):
+E   Failed: DID NOT RAISE <class 'patsy.PatsyError'>
+________________________ test_patsy_add_intercept_false ________________________
+/tmp/arfs-r20/historical/checks.py:319: in test_patsy_add_intercept_false
+    assert list(result.columns) == ['x']
+E   AssertionError: assert ['Intercept', 'x'] == ['x']
+E
+E     At index 0 diff: 'Intercept' != 'x'
+E     Left contains one more item: 'x'
+E     Use -v to get more diff
+_________________________ test_patsy_named_dictionary __________________________
+/tmp/arfs-r20/historical/checks.py:324: in test_patsy_named_dictionary
+    result = without_patsy_error(lambda: PatsyTransformer('x').fit_transform({'x': [1., 2.]}))
+/tmp/arfs-r20/historical/checks.py:57: in without_patsy_error
+    assert error is None, error
+E   AssertionError: Error evaluating factor: NameError: name 'x' is not defined
+E         x
+E         ^
+E   assert "Error evaluating factor: NameError: name 'x' is not defined\n    x\n    ^" is None
+__________________________ test_patsy_array_transform __________________________
+/tmp/arfs-r20/historical/checks.py:332: in test_patsy_array_transform
+    assert without_patsy_error(lambda: model.transform(X)).shape[0] == len(X)
+/tmp/arfs-r20/historical/checks.py:57: in without_patsy_error
+    assert error is None, error
+E   AssertionError: Error evaluating factor: IndexError: only integers, slices (`:`), ellipsis (`...`), numpy.newaxis (`None`) and integer or boolean arrays are valid indices
+E         pred_0 + pred_1
+E         ^^^^^^
+E   assert 'Error evaluating factor: IndexError: only integers, slices (`:`), ellipsis (`...`), numpy.newaxis (`None`) and integer or boolean arrays are valid indices\n    pred_0 + pred_1\n    ^^^^^^' is None
+________________ test_patsy_refit_rediscovers_automatic_formula ________________
+/tmp/arfs-r20/historical/checks.py:338: in test_patsy_refit_rediscovers_automatic_formula
+    result = without_patsy_error(lambda: model.fit_transform(pd.DataFrame({'z': [3., 4.]})))
+/tmp/arfs-r20/historical/checks.py:57: in without_patsy_error
+    assert error is None, error
+E   AssertionError: Error evaluating factor: NameError: name 'x' is not defined
+E         x
+E         ^
+E   assert "Error evaluating factor: NameError: name 'x' is not defined\n    x\n    ^" is None
+=========================== short test summary info ============================
+FAILED ../../../../tmp/arfs-r20/historical/checks.py::test_tree_refit_rediscovers_columns
+FAILED ../../../../tmp/arfs-r20/historical/checks.py::test_tree_array_fit_transform
+FAILED ../../../../tmp/arfs-r20/historical/checks.py::test_interval_single_string_column[estimator]
+FAILED ../../../../tmp/arfs-r20/historical/checks.py::test_interval_single_string_column[function]
+FAILED ../../../../tmp/arfs-r20/historical/checks.py::test_interval_refit - V...
+FAILED ../../../../tmp/arfs-r20/historical/checks.py::test_patsy_raise_policy_also_applies_during_transform[dataframe]
+FAILED ../../../../tmp/arfs-r20/historical/checks.py::test_patsy_raise_policy_also_applies_during_transform[ndarray]
+FAILED ../../../../tmp/arfs-r20/historical/checks.py::test_patsy_add_intercept_false
+FAILED ../../../../tmp/arfs-r20/historical/checks.py::test_patsy_named_dictionary
+FAILED ../../../../tmp/arfs-r20/historical/checks.py::test_patsy_array_transform
+FAILED ../../../../tmp/arfs-r20/historical/checks.py::test_patsy_refit_rediscovers_automatic_formula
+11 failed, 5 passed, 24 deselected in 3.94s

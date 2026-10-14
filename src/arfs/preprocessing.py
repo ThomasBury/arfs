@@ -13,6 +13,7 @@ Module Structure:
 # Settings and libraries
 from __future__ import print_function
 from numbers import Integral
+from collections.abc import Mapping
 
 # pandas
 import pandas as pd
@@ -380,6 +381,9 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
     Retains GradientBoosting's fixed 80/20 training/validation split. Fit this
     supervised transformer only on training folds. Binning does not implement
     GroupLasso or FusedLasso penalties or guarantee better held-out performance.
+    Named transforms require the full fitted column names and order. Arrays
+    receive pred_0, pred_1, etc. at fit; later arrays use the fitted names and
+    must have the fitted width. Output is always a copied DataFrame.
 
     Parameters
     ----------
@@ -419,7 +423,9 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         leaf's interval; interval endpoints describe numerical comparisons.
     ordinal_encoder_dic : dict
         Dictionary with the fitted encoder, if any.
-    cat_features : list
+    bin_features_ : list
+        Resolved columns to bin; bin_features remains the constructor option.
+    cat_features_ : list
         Names of the found categorical columns.
 
     Methods
@@ -523,37 +529,40 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         self.cat_bin_dict = {}
         self.ordinal_encoder_dic = {}
         self.leaf_interval_dic_ = {}
-        self.cat_features = None
         X, self.feature_names_in_ = self._prepare_input_dataframe(X)
-        self.bin_features, self.cat_features = self._determine_bin_and_cat_features(
-            X, self.bin_features, self.cat_features
+        if not X.columns.is_unique:
+            raise ValueError("Feature names must be unique.")
+        self.n_features_in_ = X.shape[1]
+        self.bin_features_, self.cat_features_ = self._determine_bin_and_cat_features(
+            X, self.bin_features
         )
-        self.n_unique_table_ = X[self.bin_features].nunique()
-        self.bin_features = self._filter_bin_features(
-            self.bin_features, self.n_unique_table_, self.n_bins_max
+        self.n_unique_table_ = X[self.bin_features_].nunique()
+        self.bin_features_ = self._filter_bin_features(
+            self.bin_features_, self.n_unique_table_, self.n_bins_max
         )
         X, self.ordinal_encoder_dic = self._encode_categorical_features(
-            X, self.bin_features, self.cat_features
+            X, self.bin_features_, self.cat_features_
         )
 
-        for col in self.bin_features:
-            is_categorical = (self.cat_features is not None) and (
-                col in self.cat_features
-            )
+        for col in self.bin_features_:
+            is_categorical = col in self.cat_features_
             self._fit_tree_and_create_bins(X, col, y, sample_weight, is_categorical)
 
         return self
 
-    def _prepare_input_dataframe(self, X):
-        X = X.copy()
-
+    def _prepare_input_dataframe(self, X, fitting=True):
         if not isinstance(X, pd.DataFrame):
             X = pd.DataFrame(X)
-            X.columns = [f"pred_{i}" for i in range(X.shape[1])]
+            if fitting:
+                X.columns = [f"pred_{i}" for i in range(X.shape[1])]
+            else:
+                if X.shape[1] != self.n_features_in_:
+                    raise ValueError("Array width must match the fitted input.")
+                X.columns = self.feature_names_in_
 
-        return X, X.columns.to_numpy()
+        return X.copy(), X.columns.to_numpy()
 
-    def _determine_bin_and_cat_features(self, X, bin_features, cat_features):
+    def _determine_bin_and_cat_features(self, X, bin_features):
         if bin_features is None or (
             isinstance(bin_features, str) and (bin_features == "numerical")
         ):
@@ -563,11 +572,11 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         elif isinstance(bin_features, str) and (bin_features == "categorical"):
             bin_features = create_dtype_dict(X, dic_keys="dtypes")["cat"]
 
-        # Calculate cat_features by subtracting bin_features from all numeric columns
-        cat_features = list(
-            set(bin_features)
-            - set(list(X[bin_features].select_dtypes("number").columns))
-        )
+        cat_features = [
+            col
+            for col in bin_features
+            if col not in X[bin_features].select_dtypes("number").columns
+        ]
         return bin_features, cat_features
 
     def _filter_bin_features(self, bin_features, n_unique_table_, n_bins_max):
@@ -649,9 +658,11 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
             DataFrame with the binned and grouped columns.
         """
         check_is_fitted(self, "feature_names_in_")
-        X = X.copy()
+        X, names = self._prepare_input_dataframe(X, fitting=False)
+        if not np.array_equal(names, self.feature_names_in_):
+            raise ValueError("Feature names and order must match the fitted input.")
 
-        for col in self.bin_features:
+        for col in self.bin_features_:
             frame = X[[col]]
             if col in self.ordinal_encoder_dic:
                 frame = self.ordinal_encoder_dic[col].transform(frame)
@@ -740,17 +751,17 @@ class IntervalToMidpoint(BaseEstimator, TransformerMixin):
         self : IntervalToMidpoint
             The fitted transformer object.
         """
-        data = X.copy()
-
-        if self.cols == "all":
-            self.cols = data.columns
+        if isinstance(self.cols, str):
+            self.cols_ = list(X.columns) if self.cols == "all" else [self.cols]
+        else:
+            self.cols_ = list(self.cols)
 
         self.float_interval_cols_ = create_dtype_dict(X, dic_keys="dtypes")[
             "num_interval"
         ]
-        self.columns_to_transform_ = list(
-            set(self.cols).intersection(set(self.float_interval_cols_))
-        )
+        self.columns_to_transform_ = [
+            col for col in self.float_interval_cols_ if col in self.cols_
+        ]
         return self
 
     def transform(self, X: pd.DataFrame):
@@ -767,6 +778,7 @@ class IntervalToMidpoint(BaseEstimator, TransformerMixin):
         X : pd.DataFrame
             The transformed data with numerical intervals replaced by their midpoints.
         """
+        check_is_fitted(self, "columns_to_transform_")
         X = X.copy()
         for c in self.columns_to_transform_:
             X[c] = find_interval_midpoint(X[c])
@@ -818,12 +830,12 @@ def transform_interval_to_midpoint(
     TypeError :
         If the input data is not a pandas DataFrame.
     """
-    if cols == "all":
-        cols = X.columns
+    if isinstance(cols, str):
+        cols = list(X.columns) if cols == "all" else [cols]
 
     X = X.copy()
     float_interval_cols_ = create_dtype_dict(X, dic_keys="dtypes")["num_interval"]
-    columns_to_transform_ = list(set(cols).intersection(set(float_interval_cols_)))
+    columns_to_transform_ = [col for col in float_interval_cols_ if col in cols]
     for c in columns_to_transform_:
         X[c] = find_interval_midpoint(X[c])
     return X
@@ -858,48 +870,48 @@ def find_interval_midpoint(interval_series: pd.Series) -> np.ndarray:
 class PatsyTransformer(BaseEstimator, TransformerMixin):
     """Transformer using patsy-formulas.
 
-    PatsyTransformer transforms a pandas DataFrame (or dict-like)
-    according to the formula and produces a numpy array.
+    PatsyTransformer transforms a pandas DataFrame, named dictionary or array
+    according to the formula. Arrays receive names pred_0, pred_1, etc. at fit;
+    later arrays use the fitted names and must have the same width.
 
     Parameters
     ----------
-    formula : string or formula-like
-        Pasty formula used to transform the data.
+    formula : string or ModelDesc, default=None
+        Patsy formula used to transform the data. None infers a new formula
+        at each fit, excluding the named target if it appears in the input.
 
-    add_intercept : boolean, default=False
-        Whether to add an intercept. By default scikit-learn has built-in
-        intercepts for all models, so we don't add an intercept to the data,
-        even if one is specified in the formula.
+    add_intercept : boolean, default=True
+        Allow the formula's intercept. False removes it even if specified;
+        True respects explicit formula exclusions such as "0 + x".
 
     eval_env : environment or int, default=0
         Environment in which to evaluate the formula.
-        Defaults to the scope in which PatsyModel was instantiated.
+        Pass a Patsy EvalEnvironment for explicit callable bindings.
 
     NA_action : string or NAAction, default="drop"
         What to do with rows that contain missing values. You can ``"drop"``
         them, ``"raise"`` an error, or for customization, pass an `NAAction`
         object.  See ``patsy.NAAction`` for details on what values count as
         'missing' (and how to alter this).
+        Drop removes predictor rows only; this transformer cannot also align
+        y or sample weights. Use "raise" in pipelines that require every row.
+
+    return_type : string, default="dataframe"
+        Output type: pandas DataFrame or NumPy array.
 
     Attributes
     ----------
-    feature_names_ : list of string
+    feature_names_in_ : ndarray
         Column names / keys of training data.
-
-    return_type : string, default="dataframe"
-        data type that transform method will return. Default is ``"dataframe"``
-        for numpy array, but if you would like to get Pandas dataframe (for
-        example for using it in scikit transformers with dataframe as input
-        use ``"dataframe"`` and if numpy array use ``"ndarray"``)
+    formula_ : string or ModelDesc
+        Resolved fitted formula; the constructor's formula stays unchanged.
+    design_ : DesignInfo
+        Fitted design, including stateful transforms and categorical levels.
 
     Note
     ----
-    PastyTransformer does by default not add an intercept, even if you
-    specified it in the formula. You need to set add_intercept=True.
-
     As scikit-learn transformers can not output y, the formula
-    should not contain a left hand side.  If you need to transform both
-    features and targets, use PatsyModel.
+    should not contain a left hand side.
     """
 
     def __init__(
@@ -943,23 +955,18 @@ class PatsyTransformer(BaseEstimator, TransformerMixin):
         return self._fit_transform(data, y)
 
     def _fit_transform(self, data, y=None):
-        if not isinstance(data, pd.DataFrame):
-            data = pd.DataFrame(data)
-            data.columns = [f"pred_{i}" for i in range(data.shape[1])]
-
-        if not isinstance(y, pd.Series):
-            y = pd.Series(y)
-            y.name = "target"
-
-        target_name = y.name if y is not None else "y"
-        self.formula = self.formula or " + ".join(
-            data.columns.difference([target_name])
-        )
+        data = self._prepare_input_dataframe(data)
+        self.feature_names_in_ = data.columns.to_numpy()
+        self.n_features_in_ = data.shape[1]
+        target_name = y.name if isinstance(y, pd.Series) else None
+        formula = self.formula
+        if formula is None:
+            formula = " + ".join(data.columns.difference([target_name])) or "1"
+        self.formula_ = _drop_intercept(formula, self.add_intercept)
         eval_env = EvalEnvironment.capture(self.eval_env, reference=2)
-        # self.formula = _drop_intercept(self.formula, self.add_intercept)
 
         design = dmatrix(
-            self.formula,
+            self.formula_,
             data,
             NA_action=self.NA_action,
             return_type="dataframe",
@@ -972,6 +979,18 @@ class PatsyTransformer(BaseEstimator, TransformerMixin):
         else:
             return np.array(design)
 
+    def _prepare_input_dataframe(self, data, fitting=True):
+        if isinstance(data, (pd.DataFrame, Mapping)):
+            return pd.DataFrame(data).copy()
+        data = pd.DataFrame(data).copy()
+        if fitting:
+            data.columns = [f"pred_{i}" for i in range(data.shape[1])]
+        else:
+            if data.shape[1] != self.n_features_in_:
+                raise ValueError("Array width must match the fitted input.")
+            data.columns = self.feature_names_in_
+        return data
+
     def transform(self, data):
         """Transform with estimator using formula.
 
@@ -983,10 +1002,12 @@ class PatsyTransformer(BaseEstimator, TransformerMixin):
         data : dict-like (pandas dataframe)
             Input data. Column names need to match variables in formula.
         """
-        if self.return_type == "dataframe":
-            return dmatrix(self.design_, data, return_type="dataframe")
-        else:
-            return np.array(dmatrix(self.design_, data))
+        check_is_fitted(self, "design_")
+        data = self._prepare_input_dataframe(data, fitting=False)
+        design = dmatrix(
+            self.design_, data, NA_action=self.NA_action, return_type="dataframe"
+        )
+        return design if self.return_type == "dataframe" else np.array(design)
 
 
 def _drop_intercept(formula, add_intercept):
@@ -994,7 +1015,8 @@ def _drop_intercept(formula, add_intercept):
     if not add_intercept:
         if not isinstance(formula, ModelDesc):
             formula = ModelDesc.from_formula(formula)
-        if INTERCEPT in formula.rhs_termlist:
-            formula.rhs_termlist.remove(INTERCEPT)
-        return formula
+        return ModelDesc(
+            formula.lhs_termlist,
+            [term for term in formula.rhs_termlist if term != INTERCEPT],
+        )
     return formula
