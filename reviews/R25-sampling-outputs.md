@@ -39,6 +39,24 @@ reports and evidence are unchanged. New diagnostic evidence is local and ignored
 under the user's `reviews/evidence/` rule; maintained regression tests and this
 handoff remain reviewable in Git.
 
+## Delivery review follow-up — 2026-10-14
+
+Codex's [PR #61 finding](https://github.com/ThomasBury/arfs/pull/61#discussion_r4270994641)
+showed that a zero-weight category could change ordinal-code spacing before the
+forest omitted that row. The delivery repair learns the existing sorted string
+category vocabulary from positive-weight rows only. Native Index.get_indexer
+keeps known codes and gives unseen score-only categories -1, avoiding the newer
+pandas deprecation for constructing categoricals with unknown values. Original
+selected values/dtypes, unweighted draws and KS population are retained.
+
+Four new regressions fail on the previous wheel and pass after this repair:
+object/category/string vocabularies, known versus unseen score-only categories,
+input/output ownership, and exact native positive-row score equality with the
+zero-weight row physically removed. All 217 affected sampling checks pass in
+both dependency snapshots. The original phase validation below is historical;
+post-review installed-wheel/hosted results are recorded in the current delivery
+entry in [REMEDIATION.md](REMEDIATION.md) and on the PR.
+
 ## Validation
 
 The 50 maintained R25 checks on the old R24 installed wheel produce **43 failures

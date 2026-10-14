@@ -178,3 +178,47 @@ def test_invalid_feature_schema_rejected(method):
         sampling.sample(pd.DataFrame(index=[0, 1]), n=1, method=method)
     with pytest.raises(TypeError, match="DataFrame"):
         sampling.sample(np.ones((2, 2)), n=1, method=method)
+
+
+@pytest.mark.parametrize("dtype", [object, "category", "string"])
+def test_isolation_category_vocabulary_excludes_zero_weight_rows(monkeypatch, dtype):
+    X = pd.DataFrame({"c": pd.Series(["a", "b", "c", "d", "a"], dtype=dtype)})
+    X.index = [8, 8, 30, 90, 50]
+    before = X.copy(deep=True)
+    seen = {}
+
+    def select(encoded, sample_weight):
+        seen["codes"] = encoded.c.to_numpy()
+        seen["weights"] = sample_weight
+        return np.array([1, 2])
+
+    monkeypatch.setattr(sampling, "isof_find_sample", select)
+    weights = [1, 0, 1, 1, 0]
+    result = sampling.sample(X, sample_weight=weights, method="isoforest")
+    assert_array_equal(seen["codes"], [0, -1, 1, 2, 0])
+    assert_array_equal(seen["weights"], weights)
+    assert_frame_equal(result, X.iloc[[1, 2]])
+    assert_frame_equal(X, before)
+
+
+def test_real_positive_row_scores_ignore_zero_weight_category_vocabulary(monkeypatch):
+    X = pd.DataFrame({"c": ["a", "b", "c", "d"]})
+    weights = np.array([1, 0, 1, 1])
+    scores = []
+
+    def select(encoded, sample_weight):
+        scores.append(sampling.isolation_forest(encoded, sample_weight))
+        return np.arange(len(encoded))
+
+    monkeypatch.setattr(sampling, "isof_find_sample", select)
+    state = np.random.get_state()
+    try:
+        np.random.seed(73)
+        sampling.sample(X, sample_weight=weights, method="isoforest")
+        np.random.seed(73)
+        sampling.sample(
+            X[weights > 0], sample_weight=weights[weights > 0], method="isoforest"
+        )
+    finally:
+        np.random.set_state(state)
+    assert_allclose(scores[0][weights > 0], scores[1], rtol=0, atol=0)

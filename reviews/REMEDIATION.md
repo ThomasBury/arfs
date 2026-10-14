@@ -22,14 +22,39 @@ The five existing phase/handoff commits retain their Conventional Commit titles
 and the independently validated R25, R26 and R27 histories. This delivery
 includes those completed phases only; R28 remains the next separate repair.
 
-Final package source and all maintained test bytes match the green R27 installed
-wheel matrix: **1301 passed** on Python 3.9 locked, **1301 passed** on Python 3.12
-locked and **1285 passed** on Python 3.12 newer. All six selected historical R27
-checks pass unmasked in both Python 3.12 cells. Exact commands, environment
-identities, source/artifact hashes and limits are in [R27](R27-nearest-neighbors.md).
-New evidence remains local and ignored; no historical evidence is deleted or
-added to this delivery. Hosted CI and Codex review are checked on the delivery
-PR before merging. CodeRabbit is not a delivery gate.
+[PR #61](https://github.com/ThomasBury/arfs/pull/61) delivers the changes. Codex's
+first review on `7361d4d` reported one valid P2: zero-weight categories changed
+ordinal-code spacing before the forest omitted their rows. The repair learns
+category vocabularies from positive-weight rows only and maps unseen score-only
+categories to -1 with native Index.get_indexer. Four new regressions reproduce
+all failures on the old wheel and pass after the fix, including exact native
+positive-row score equality with zero-weight rows physically removed. The draws
+and KS screen remain unweighted, and returned rows retain original values/dtypes.
+
+Final package source and all maintained test bytes match the post-review rebuilt
+wheel matrix: **1305 passed** on Python 3.9 locked, **1305 passed** on Python 3.12
+locked and **1289 passed** on Python 3.12 newer. All six selected historical R27
+checks pass unmasked in both Python 3.12 cells; 217 affected source tests pass
+in each dependency snapshot. All 13 module hashes and 19 source/sdist/wheel
+payloads agree, with no setuptools workaround. Dependency/lock, Ruff (331 total,
+zero new), gate unit tests, format, links and whitespace checks pass.
+
+The original R27 phase commands/identities remain in [R27](R27-nearest-neighbors.md).
+Post-review commands use the same dependency snapshots and locked export:
+
+```sh
+uv build --python /tmp/arfs-r27/py312-locked/bin/python --out-dir /tmp/arfs-r25-r27-review/dist
+/tmp/arfs-r27/py312-locked/bin/python /tmp/arfs-r25-r27-review/check_payloads.py
+/tmp/arfs-r27/py312-locked/bin/python /tmp/arfs-r25-r27-review/validate.py py39-locked
+/tmp/arfs-r27/py312-locked/bin/python /tmp/arfs-r25-r27-review/validate.py py312-locked
+/tmp/arfs-r27/py312-locked/bin/python /tmp/arfs-r25-r27-review/validate.py py312-newer
+```
+
+Exact commands, environment identities, hashes and logs are local under ignored
+`reviews/evidence/r25-r27-delivery/`; no historical evidence is deleted or added
+to this delivery. Initial hosted Ruff and both push/PR installed-wheel matrices
+pass on `7361d4d`. The review fix needs current-head hosted CI and Codex re-review
+before merge; those results are recorded on PR #61. CodeRabbit is not a gate.
 
 **Release decision: defer the version bump, tag and GitHub release.** The checkout
 and latest published GitHub release remain `3.0.0` (verified during delivery).
