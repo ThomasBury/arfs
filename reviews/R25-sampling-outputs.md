@@ -2,7 +2,7 @@
 
 **R25 complete on 2026-10-14**, based on clean `main` at `34641a2`.
 This is the first phase of the requested sequential R25 → R26 batch.
-Branch: `fix/r25-r26-remediation`. This handoff is included in the local R25 phase commit.
+Branch: `fix/r25-r26-remediation`. Local phase commit: `b352069`.
 
 ## Changes and decisions
 
@@ -90,15 +90,13 @@ unweighted draws or comparison population.
 
 Hosted CI, notebook/docs execution, optional backends, other platforms, large
 matrix performance and sampling calibration are not checked. Gower storage
-remains dense and quadratic. R26's retry/tiny-input repair is still required
-before isolation sampling is bounded. This phase does not establish release readiness.
+remains dense and quadratic. At the R25 phase boundary, R26's retry/tiny-input repair was still required
+before isolation sampling was bounded; it is now complete in [R26](R26-isolation-attempts.md). This phase does not establish release readiness.
 
 ## Resume
 
-After R25 passes and receives its local phase commit, continue to R26 only.
-The chosen batch policy is: empty/single-row isolation inputs return unchanged;
-try distinct 5%, 10%, …, 95% proper-subset sizes, rounded up to at least one row,
-with at most 20 attempts per size; return all original rows on exhaustion.
-Keep the existing p-value >0.95 screen explicitly heuristic. Record its precise
-size rule in API/docs and tests. R27 runs alone after this requested batch.
+R25 and [R26](R26-isolation-attempts.md) are now complete in separate sequential
+local phase commits. R26 records the chosen tiny-input, size and exhaustion
+policies. Stop after this requested batch; the next group is **R27 alone**, with
+R24 complete. R28–R30, R32 and R33 also remain pending; R31 is complete.
 No push, PR, version bump or release is part of this request.

@@ -1,6 +1,6 @@
 # ARFS remediation handoff
 
-**Status: R01–R25 and R31 complete; R26–R30 and R32–R33 pending. Current batch: R25 → R26; next within it: R26.**
+**Status: R01–R26 and R31 complete; R27–R30 and R32–R33 pending. Next implementation group: R27 alone, with R24 complete.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
 a separate repair backlog. By default, a request to implement the next phase
@@ -112,11 +112,10 @@ record each outcome separately. Stop at a phase boundary if a new API or
 statistical decision, unresolved failure, or wider scope makes the batch too
 large. Session boundaries and repair phases are not published releases.
 
-R01–R24 and R31 are complete. The explicitly requested R02/R03, R10/R11 and
-R18/R31 batches were implemented and validated sequentially; R04–R09 were
-completed alone. The next recorded group is **R25 → R26**, with R05/R24 complete;
-settle its weighting, tiny-input and exhaustion policies before implementation. Later phases
-use the recorded grouping rules below; phases outside the three conditional pairs remain separate.
+R01–R26 and R31 are complete. The explicitly requested R02/R03, R10/R11,
+R18/R31 and R25/R26 batches were implemented and validated sequentially.
+The next recorded group is **R27 alone**, with R24 complete. Remaining phases
+R27–R30, R32 and R33 each run separately.
 
 | Phases | Session recommendation | Reason |
 | --- | --- | --- |
@@ -142,13 +141,14 @@ use the recorded grouping rules below; phases outside the three conditional pair
 | R22 | Complete; do not repeat | [R22](R22-gbm-persistence.md) records versioned wrapper artifacts, coherent validated loads, legacy-file rejection and staged writes |
 | R23 | Complete; do not repeat | [R23](R23-benchmark-contracts.md) records training-only encoding, array/name support, supported selectors and fresh configurations |
 | R24 | Complete; do not repeat | [R24](R24-gower-distances.md) records pooled float64 ranges, cross/self distances, pairwise missingness and feature-weight/input contracts |
-| R25 → R26 | Conditional next sequential batch | R05/R24 complete; resolve representative weighting, tiny inputs and bounded exhaustion before the affected phase |
+| R25 → R26 | Complete sequential batch; do not repeat | [R25](R25-sampling-outputs.md) and [R26](R26-isolation-attempts.md) record row-weight rejection/forwarding, original outputs, tiny identities and bounded full-data fallback |
+| R27 | Next; run alone | R24 complete; settle key/query/count/nonfinite-neighbor boundaries |
 
 ### Recorded groups for next-batch requests
 
 When the user asks to "implement the next batch of RXX", read the current phase
-statuses in this file and use these groups. **The next recorded group is R25 → R26**,
-conditional on its policy/scope decisions, with R05/R24 complete.
+statuses in this file and use these groups. **The next recorded group is R27
+alone**, with R24 complete. The three two-phase groups below are already complete.
 R10/R11 are complete; their separate handoffs record support/history consistency,
 weighted permutation scoring and the user-chosen absolute-total normalization.
 R12 is complete: GrootCV uses maximum shadow medians across folds/repeats;
@@ -185,8 +185,13 @@ separate operations. R23 is complete: encoders fit training rows only, arrays ge
 stable names, GrootCV comparisons fail clearly and each supported comparison uses
 a fresh selector/model with copied seed state. R24 is complete: pooled float64
 ranges, actual cross/self indexing, pairwise available-feature weighting and NaN
-for undefined pairs, with validated input/mask/feature-weight contracts. Next is
-R25 → R26, conditional on policy/scope decisions, with R05/R24 complete.
+for undefined pairs, with validated input/mask/feature-weight contracts.
+R25 → R26 is complete: Gower rejects row weights and missing-only columns,
+returns synthetic means/modes with the original feature schema; isolation
+forwards fit weights, omits zero-weight fit rows and returns original rows.
+Distinct rounded-up 5%–95% proper subsets get 20 attempts each; tiny inputs
+return unchanged and exhaustion returns full data. KS acceptance remains an
+unweighted heuristic. Next is **R27 alone**, with R24 complete.
 A request for the next batch authorizes that one group, its affected callers,
 tests, local phase commits and handoff update; stop after
 it. It does not authorize the following group or Git publication/release unless
@@ -196,14 +201,11 @@ the user also requests those actions.
 | --- | --- | --- | --- |
 | R10 → R11 (complete) | R05/R07 complete | Leshy support/history and weighted permutation importance share selector code | Settled: absolute-total normalization, all-zero stays zero, only positive mean permutation scores eligible |
 | **R18 → R31 (complete)** | R06/R18 complete | Encoder schema repairs and related legacy helpers share dtype/schema checks | Settled: remove both public legacy helpers without compatibility shims |
-| **R25 → R26** | R05 and R24 complete | Sampling output repairs and bounded isolation retries mostly share one module | Define weighting, tiny-input, and exhaustion behavior |
+| **R25 → R26 (complete)** | R05 and R24 complete | Sampling output repairs and bounded isolation retries share one module | Settled: reject Gower row weights, forward isolation fit weights, omit zero-weight fit rows, tiny identity, 20 attempts per distinct size and full-data fallback |
 
-R18 → R31 is complete in separate sequential local commits, with the explicit
-removal decision recorded in R31. R19–R24 are complete; R25 → R26 is the next
-conditional group, with R05/R24 complete.
-R10 → R11 has already been completed.
-R25 → R26 is larger and remains conditional on its scope and policy decisions
-being settled; its R05/R24 prerequisites are now complete. These are sequential groups, not parallel agent assignments.
+R10 → R11, R18 → R31 and R25 → R26 are complete in separate sequential
+local phase commits, with decisions recorded in their handoffs. Next is R27
+alone. These are sequential groups, not parallel agent assignments.
 
 For an unnamed next-batch request, continue from the lowest-numbered Pending
 phase in the ordered table. If it is R10, R18, or R25, use its recorded pair once
@@ -218,8 +220,8 @@ contracts, and final release assessment independent. R31 runs alone if R18 is
 already complete or the pair had to stop after R18.
 
 Start each group in a fresh session and cap it at two phases. Trace all affected
-callers before edits; these candidate pairs have not had a complete caller/scope
-audit. Complete, validate, and make a separate local commit for the first phase
+callers before edits; previous caller audits do not replace tracing a new
+change. Complete, validate, and make a separate local commit for the first phase
 before starting the second. Settle and record required API/statistical choices
 in the relevant docs and tests; do not invent them to make a check pass. If a
 choice remains unresolved, a failure cannot be explained, or the scope widens,
@@ -968,10 +970,43 @@ empty/single isolation identity, distinct rounded-up 5%–95% proper-subset size
 p-value threshold as a heuristic, without representativeness/outlier guarantees.
 No later phase, push, PR, version bump or release is included.
 
+## R26 — Bounded isolation complete — 2026-10-14
+
+[R26](R26-isolation-attempts.md) completes the requested sequential R25 → R26
+batch on `fix/r25-r26-remediation`. R25 commit: `b352069`; R26 commit: `5c631bf`.
+No following phase or publication is included. The sampler tries 20 draws per
+rounded-up distinct 5%–95% proper-subset size, at most 380 draws, fitting one
+forest. Empty/single inputs return unchanged; exhaustion returns full original
+data in order. Input and fit-weight validation remain explicit. API/notebook
+prose corrects the p-value interpretation and outlier-removal claim. No weighted
+KS or representativeness guarantee is added.
+
+Fresh installed-wheel full suites pass **1256 / 1256 / 1240** in Python 3.9
+locked, 3.12 locked and 3.12 newer. The four selected historical retry/tiny-split
+checks pass unmasked in both 3.12 cells. The 29 maintained cases include bounded
+rejection, exact schedules/strict acceptance, tiny/invalid inputs, original-row
+fallback and real constant/weighted replay runs. On the old R25 wheel, 28 safe
+cases produce 25 failures/three controls; the potentially unbounded real
+nonconstant case is excluded there. Affected source checks pass 218; all 79
+sampling checks pass with newer dependencies. Source/artifact/test hashes,
+dependency checks, lock, Ruff (331 total, zero new), two gate unit tests, changed
+lint/format, notebook structure, local links and whitespace pass. Exact commands,
+versions and limits are in R26. New evidence remains local and ignored.
+
+Hosted CI, complete docs/notebooks, optional backends, other platforms, large-data
+throughput, rare-group sampling and calibration are unchecked. The retry bound
+counts attempts, not wall-clock time, and exhaustion may return the full dataset.
+
+**Next recorded group: R27 alone**, with R24 complete. Trace gower_topn and
+smallest_indices; settle actual query/key exclusion, unique eligible candidates,
+count bounds and insufficient/nonfinite-distance behavior. Stop after this batch;
+no push, PR, version bump or release is included. R27–R30 and R32–R33 remain
+pending; R31 is complete.
+
 ## Ordered phases
 
-R01–R25 and R31 are **Complete**; R26–R30 and R32–R33 are **Pending**.
-R25 has passed and is committed separately before continuing to R26. The
+R01–R26 and R31 are **Complete**; R27–R30 and R32–R33 are **Pending**.
+The next group is **R27 alone**, with R24 complete. The
 [R01 handoff](R01-installed-package.md) records changes, decisions, exact checks,
 environment identities, inherited failures, and the resume point. Changes are
 committed as `6b675fd` on `fix/r01-installed-package` at checkpoint base `0270aca`;
@@ -1012,8 +1047,10 @@ in local commit `cff3c59`, based on `e030fde`. [R21](R21-gbm-contracts.md) is co
 in local commit `6204a3f`, based on `d51c567`. [R22](R22-gbm-persistence.md) is complete
 in local commit `4bd3681`, based on `4d0e240`. [R23](R23-benchmark-contracts.md) is
 complete in local commit `ff8faa8`, based on `9a6a8b7`. [R24](R24-gower-distances.md)
-is complete in local commit `5325b7f`, based on `4e50f38`. Next is the
-conditional R25 → R26 group, with R05/R24 complete.
+is complete in local commit `5325b7f`, based on `4e50f38`.
+[R25](R25-sampling-outputs.md) is complete in local commit `b352069`, based on
+`34641a2`; [R26](R26-isolation-attempts.md) is complete in local commit `5c631bf`,
+based on `b352069`. Both use branch `fix/r25-r26-remediation`. Next is R27 alone.
 Hosted CI for R13–R24/R31 and remaining release evidence
 are still pending. An ID such
 as `1A F3` means finding 3 in the linked original report. The complete ID-to-phase
@@ -1046,7 +1083,7 @@ mapping follows the table.
 | **R23 — Comparisons that run what they label (Complete)** | Fit encoders on training rows only; settle documented array/name support; reject incompatible GrootCV comparisons; construct fresh selector/model combinations. [04 F11/F12/F14/F15](04-training-and-benchmarks.md) | R07/R10–R12/R18/R21 | Held-out-only category excluded from vocabulary; integer display names, array policy, real fitted estimator/method tracing, seed/backend state reset, weighted scoring retained |
 | **R24 — Valid Gower distances (Complete)** | Use stable direct numeric ranges, distinguish cross/self matrices, handle pairwise missingness explicitly, normalize documented input/masks, validate feature weights. [05 F1–F5](05-sampling-and-parallel.md) | R06 | Hand scalar reference, translation/scale invariance, equal-sized different frames, missing/constant features, no-comparable-pair policy, arrays/Series/extension dtypes/sparse errors, valid feature-weight rescaling |
 | **R25 — Sampling returns the intended data (Complete)** | Separate row weights from distance feature weights; choose weighted representative semantics or reject them; impute by column, avoid `label` collision, raise unknown methods and return original isolation-selected rows. [05 F6–F8/F10](05-sampling-and-parallel.md) | R05/R24 | N≠P and N=P weights, per-column means, original column/index/dtype schema, an existing `label`, selected categorical values, clear unsupported-method/weight errors |
-| **R26 — Bounded isolation attempts** | Advance retry state, bound size progression and define exhaustion/tiny-input behavior. Correct KS-p-value interpretation in API/example prose. [05 F9 and statistical limits](05-sampling-and-parallel.md) | R25 | Deterministic forced rejection reaches bounded termination; draw sizes follow the documented rule; 0/1/10-row inputs handled explicitly. A terminating sampler still has no representativeness guarantee |
+| **R26 — Bounded isolation attempts (Complete)** | Advance retry state, bound size progression and define exhaustion/tiny-input behavior. Correct KS-p-value interpretation in API/example prose. [05 F9 and statistical limits](05-sampling-and-parallel.md) | R25 | Deterministic forced rejection reaches bounded termination; draw sizes follow the documented rule; 0/1/10-row inputs handled explicitly. A terminating sampler still has no representativeness guarantee |
 | **R27 — Query-aware nearest neighbors** | Use the actual one-row query, exclude its key, deduplicate eligible keys once, validate n/query and define insufficient-candidate/nonfinite behavior. [05 F11/F12](05-sampling-and-parallel.md) | R24 | Query changes result; duplicate IDs; enough/too few unique candidates; n=0/negative/too large; optional-query policy; only a query-by-candidate distance vector allocated |
 | **R28 — Parallel labels and bounded useful work** | Chunk original label objects without NumPy coercion; settle result order/empty schema and worker-count semantics, avoiding empty tasks. [05 F13 and resource boundaries](05-sampling-and-parallel.md) | R06/R08 | Integer/string and tuple/MultiIndex labels with one/two workers; propagated callback error; no-pair and empty work; supported negative counts; worker cap observed without a new execution framework |
 | **R29 — Plots match the data and selection** | Keep feature/subplot coordinates separate, color actual Leshy membership, include terminal importance thresholds, respect plot limits and linear feature positions, bypass singleton clustering. [06 F2–F7](06-utilities-and-workflows.md) | R03/R10/R17 | Render and inspect string/integer/single-panel target plots; masks disagreeing with importance order; threshold 1/one/no feature, plot_n limit, first cumulative point, input/figure ownership |
@@ -1056,10 +1093,9 @@ mapping follows the table.
 | **R33 — Release evidence and remaining claims** | Run the repaired package gates and a justified support matrix. Reassess selection claims with meaningful held-out baselines and document remaining optional/performance limits; narrow unsupported claims instead of promising unbounded validation. | All release-blocking phases above | Fresh source/wheel/lock metadata agree; no workaround; established suite and promoted regressions pass; repeated-seed signal/null, weak/correlated/mixed/weighted cases appropriate to claims; fold-local preprocessing/selection; clean-process artifacts; docs build. Optional backends/platforms require their own tests before claiming support |
 
 R21's group/schema safeguards are complete, with R05/R06 prerequisites retained.
-R24 is complete; remaining R25–R28 work need not await GLM repairs. The next
-recorded group is R25 → R26, conditional on policy/scope decisions, with R05/R24
-complete. Do not parallelize
-edits to shared dtype/weight helpers without agreeing their contract first.
+R24–R26 are complete. The next recorded group is **R27 alone**, with R24
+complete; R28–R30, R32 and R33 remain pending. Do not parallelize edits to
+shared dtype/weight helpers without agreeing their contract first.
 
 ## Complete finding-to-phase map
 
