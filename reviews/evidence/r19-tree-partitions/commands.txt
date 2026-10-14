@@ -1,0 +1,69 @@
+Checkout: /home/bsatom/Documents/arfs; clean main @ 132e0e0.
+R19 alone. Next group R20 alone. No publication/release or following-phase work.
+
+Runtime environment (full values in validate.py):
+UV_CACHE_DIR=/tmp/arfs-r04/cache MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 PYTHONHASHSEED=0
+PYTHONDONTWRITEBYTECODE=1; installed runs remove PYTHONPATH and use isolated Python.
+MPLCONFIGDIR is a per-cell disposable path.
+
+Before maintained cases (verified installed R31 source; copied tests):
+/tmp/arfs-r31/py312-locked/bin/python -I -m pytest /tmp/arfs-r19/before/tests/test_tree_partitions.py -q --tb=short -p no:cacheprovider
+before-final.txt: 49 failed, 11 passed (60 cases). Initial 47-case probe: 39 failed, 8 passed.
+before-provenance.json verifies preprocessing.py source at 132e0e0.
+Historical before:
+/tmp/arfs-r31/py312-locked/bin/python -I -m pytest /tmp/arfs-r19/historical/checks.py -k 'tree and not refit and not array' --runxfail -q --tb=short -p no:cacheprovider
+before-historical.txt: 11 failed, 3 passed, 26 deselected.
+The disposable historical copy removes exactly the retired '    cat_var,' import
+line. No assertion/test body changes. Diff and original/adapted hashes are retained.
+Original scripts/logs untouched; refit/array checks belong to R20 and are excluded.
+The same copy/selection runs after repair, unmasked in both Python 3.12 cells.
+
+Source (PYTHONPATH=src, checkout cwd):
+/tmp/arfs-r31/py312-locked/bin/python -m pytest tests/test_tree_partitions.py tests/test_pandas_writes.py tests/test_ordinal_schema.py tests/test_category_identity.py tests/test_dependency_apis.py tests/test_observation_boundaries.py -q --tb=short -p no:cacheprovider
+source-final.txt: 338 passed.
+/tmp/arfs-r31/py312-newer/bin/python -m pytest tests/test_tree_partitions.py tests/test_pandas_writes.py -q --tb=short -p no:cacheprovider
+source-newer-final.txt: 65 passed (the initial newer source probe has 63). Initial frozen 47-case tree/pandas probe: 56 passed.
+
+uv export --locked --extra test --no-emit-project --output-file /tmp/arfs-r19/locked-requirements.txt
+uv build --python /tmp/arfs-r31/py312-locked/bin/python --out-dir /tmp/arfs-r19/final/dist
+uv lock --check --python /tmp/arfs-r31/py312-locked/bin/python
+/tmp/arfs-r31/py312-locked/bin/python /tmp/arfs-r19/final/check_payloads.py
+payloads.json: all 19 source/sdist/wheel payloads match, three data files.
+
+Exact orchestrators validate.py, environment.py and check_payloads.py are retained
+here, copied to /tmp/arfs-r19/final before running. Each cell creates a fresh environment
+from a verified R31 interpreter. Requirements: uv.lock or runtime-newer-py312.txt.
+/tmp/arfs-r31/py312-locked/bin/python /tmp/arfs-r19/final/validate.py py39-locked
+/tmp/arfs-r31/py312-locked/bin/python /tmp/arfs-r19/final/validate.py py312-locked
+/tmp/arfs-r31/py312-locked/bin/python /tmp/arfs-r19/final/validate.py py312-newer
+The first R19 wheel suites pass 920/920/904, with 14 historical passes in both
+Python 3.12 cells. A subsequent caller probe found a grouping regression when the
+column name is None. Against the interim R19 wheel:
+/tmp/arfs-r19/py312-locked/bin/python -I -m pytest /tmp/arfs-r19/before/tests/test_tree_partitions.py -k original_column_label -q --tb=short -p no:cacheprovider
+interim-column-labels.txt: 1 failed, 1 passed. Explicit to_frame(name=col) fixes
+this without changing the grouping policy; final source/newer tests include both
+None/integer-name controls. Interim matrix logs are prefixed interim-. Final
+requirements and unchanged adapted historical copy are copied into the final work dir.
+Final wheel suites: 922 / 922 / 906 passed; adapted historical tree checks: 14 passed
+unmasked in each Python 3.12 cell.
+Per-cell manifests record venv, install, dependency, isolated provenance, complete
+suite and historical commands, cwd and exit codes. No setuptools workaround.
+Copied tests and 12 installed module hashes match source; exact versions are in JSON.
+
+uv tool run --from ruff==0.17.0 python .github/scripts/check_ruff_baseline.py
+Ruff: 397 total, zero new; no baseline allowance changes.
+/tmp/arfs-r31/py312-locked/bin/python -m unittest discover -s .github/scripts -p 'test_*.py'
+Two passed.
+uv tool run --from ruff==0.17.0 ruff check tests/test_tree_partitions.py reviews/evidence/r19-tree-partitions/*.py
+uv tool run --from ruff==0.17.0 ruff format --check tests/test_tree_partitions.py reviews/evidence/r19-tree-partitions/*.py
+Both pass. git diff --check passes. Local handoff links checked before commit.
+Only the edited TreeDiscretizer class is formatted; unrelated source is preserved.
+
+Context7: LightGBM Booster dump/leaf semantics, native missing routes and parameter
+aliases. Read-only installed alias metadata confirms documented names; production
+imports no private alias API. Native weighted one-tree references retain the fixed
+80/20 wrapper split; neither grouping nor passing smoke tests proves calibration.
+Skipped hosted CI, full docs/notebooks, full sklearn compliance, optional numerical
+backends, other platforms, performance, statistical calibration and cross-process
+artifacts. R20 input/state/Patsy/midpoint work remains; no release-readiness claim.

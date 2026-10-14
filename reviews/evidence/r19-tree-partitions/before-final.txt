@@ -1,0 +1,804 @@
+FFFFFFF.FFFFFFFFFFF.F..FF..FFFFFFFFFFFFFFFF..FFFFFFFFFFF.F..             [100%]
+=================================== FAILURES ===================================
+_ test_real_numeric_partition_and_exact_threshold_boundaries[False-regression] _
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:84: in test_real_numeric_partition_and_exact_threshold_boundaries
+    assert_partition(result.x, leaves)
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:70: in assert_partition
+    assert_array_equal(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 3198 / 57600 (5.55%)
+E    ACTUAL: array([[ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],...
+E    DESIRED: array([[ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],...
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_ test_real_numeric_partition_and_exact_threshold_boundaries[False-classification] _
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:84: in test_real_numeric_partition_and_exact_threshold_boundaries
+    assert_partition(result.x, leaves)
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:70: in assert_partition
+    assert_array_equal(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 26034 / 57600 (45.2%)
+E    ACTUAL: array([[ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],...
+E    DESIRED: array([[ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],...
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'binary' as metric.
+Training up to 1 boosting rounds.
+_ test_real_numeric_partition_and_exact_threshold_boundaries[True-regression] __
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:84: in test_real_numeric_partition_and_exact_threshold_boundaries
+    assert_partition(result.x, leaves)
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:70: in assert_partition
+    assert_array_equal(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 3198 / 57600 (5.55%)
+E    ACTUAL: array([[ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],...
+E    DESIRED: array([[ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],...
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_ test_real_numeric_partition_and_exact_threshold_boundaries[True-classification] _
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:84: in test_real_numeric_partition_and_exact_threshold_boundaries
+    assert_partition(result.x, leaves)
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:70: in assert_partition
+    assert_array_equal(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 26034 / 57600 (45.2%)
+E    ACTUAL: array([[ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],...
+E    DESIRED: array([[ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],...
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'binary' as metric.
+Training up to 1 boosting rounds.
+__________ test_partition_does_not_depend_on_equal_leaf_output_values __________
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:125: in test_partition_does_not_depend_on_equal_leaf_output_values
+    assert_partition(model.transform(X).x, leaves)
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:69: in assert_partition
+    assert (codes >= 0).all()
+E   assert np.False_
+E    +  where np.False_ = <built-in method all of numpy.ndarray object at 0x7b2b7eca4870>()
+E    +    where <built-in method all of numpy.ndarray object at 0x7b2b7eca4870> = array([-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,\n       -1, -1, -1, -1, -1, -1, -1, -1, -1, ... -1, -1, -1, -1, -1, -1, -1,\n       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,\n       -1, -1]) >= 0.all
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+____ test_category_group_labels_cannot_merge_when_display_text_is_truncated ____
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:134: in test_category_group_labels_cannot_merge_when_display_text_is_truncated
+    assert isinstance(model.transform(X).cat.dtype, pd.CategoricalDtype)
+E   AssertionError: assert False
+E    +  where False = isinstance(dtype('O'), <class 'pandas.core.dtypes.dtypes.CategoricalDtype'>)
+E    +    where dtype('O') = 0      sameprefix0samesuffix\n1      sameprefix1samesuffix\n2      sameprefix2samesuffix\n3      sameprefix3samesuffix\n4 ...  sameprefix3samesuffix\n238    sameprefix4samesuffix\n239    sameprefix5samesuffix\nName: cat, Length: 240, dtype: object.dtype
+E    +      where 0      sameprefix0samesuffix\n1      sameprefix1samesuffix\n2      sameprefix2samesuffix\n3      sameprefix3samesuffix\n4 ...  sameprefix3samesuffix\n238    sameprefix4samesuffix\n239    sameprefix5samesuffix\nName: cat, Length: 240, dtype: object =                        cat\n0    sameprefix0samesuffix\n1    sameprefix1samesuffix\n2    sameprefix2samesuffix\n3    samep...fix2samesuffix\n237  sameprefix3samesuffix\n238  sameprefix4samesuffix\n239  sameprefix5samesuffix\n\n[240 rows x 1 columns].cat
+E    +        where                        cat\n0    sameprefix0samesuffix\n1    sameprefix1samesuffix\n2    sameprefix2samesuffix\n3    samep...fix2samesuffix\n237  sameprefix3samesuffix\n238  sameprefix4samesuffix\n239  sameprefix5samesuffix\n\n[240 rows x 1 columns] = transform(                       cat\n0    sameprefix0samesuffix\n1    sameprefix1samesuffix\n2    sameprefix2samesuffix\n3    samep...fix2samesuffix\n237  sameprefix3samesuffix\n238  sameprefix4samesuffix\n239  sameprefix5samesuffix\n\n[240 rows x 1 columns])
+E    +          where transform = TreeDiscretizer(bin_features=['cat'],\n                boost_params={'learning_rate': 1, 'max_leaf': 6,\n               ..._threads': 1, 'objective': 'rmse', 'seed': 8,\n                              'verbosity': -1},\n                n_bins=6).transform
+E    +    and   <class 'pandas.core.dtypes.dtypes.CategoricalDtype'> = pd.CategoricalDtype
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_____ test_generated_name_and_column_order_cannot_change_other_feature_fit _____
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:145: in test_generated_name_and_column_order_cannot_change_other_feature_fit
+    assert_allclose(
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 240 / 240 (100%)
+E   Max absolute difference among violations: 2.30909086
+E   Max relative difference among violations: 3.84848472
+E    ACTUAL: array([-3.973643e-08,  1.937500e+00,  1.944444e+00,  2.909091e+00,
+E           2.909091e+00,  2.909091e+00,  2.909091e+00,  2.909091e+00,
+E           2.909091e+00,  2.909091e+00,  2.909091e+00,  2.909091e+00,...
+E    DESIRED: array([0.925   , 0.925   , 0.925   , 0.925   , 0.925   , 0.925   ,
+E          0.925   , 0.925   , 1.220339, 1.220339, 1.220339, 1.220339,
+E          1.220339, 1.220339, 1.220339, 1.220339, 1.220339, 1.220339,...
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_ test_weighted_raw_outputs_match_independent_native_single_tree[classification] _
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:170: in test_weighted_raw_outputs_match_independent_native_single_tree
+    assert_allclose(model.transform(X).x, native.predict(X), atol=1e-12)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-12
+E
+E   Mismatched elements: 240 / 240 (100%)
+E   Max absolute difference among violations: 0.25646778
+E   Max relative difference among violations: 1.
+E    ACTUAL: array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+E          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+E          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,...
+E    DESIRED: array([0.256468, 0.256468, 0.256468, 0.256468, 0.256468, 0.256468,
+E          0.256468, 0.256468, 0.256468, 0.256468, 0.256468, 0.256468,
+E          0.256468, 0.256468, 0.256468, 0.256468, 0.256468, 0.256468,...
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'binary' as metric.
+Training up to 1 boosting rounds.
+_ test_categorical_raw_and_grouped_missing_unknown_use_native_routes[object-False] _
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:187: in test_categorical_raw_and_grouped_missing_unknown_use_native_routes
+    model = discretizer(raw=raw).fit(X, y)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:495: in fit
+    X, self.ordinal_encoder_dic = self._encode_categorical_features(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:551: in _encode_categorical_features
+    .cat.add_categories("missing_added")
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/accessor.py:112: in f
+    return self._delegate_method(name, *args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/arrays/categorical.py:2941: in _delegate_method
+    res = method(*args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/arrays/categorical.py:1330: in add_categories
+    raise ValueError(
+E   ValueError: new categories must not include old categories: {'missing_added'}
+_ test_categorical_raw_and_grouped_missing_unknown_use_native_routes[object-True] _
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:187: in test_categorical_raw_and_grouped_missing_unknown_use_native_routes
+    model = discretizer(raw=raw).fit(X, y)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:495: in fit
+    X, self.ordinal_encoder_dic = self._encode_categorical_features(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:551: in _encode_categorical_features
+    .cat.add_categories("missing_added")
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/accessor.py:112: in f
+    return self._delegate_method(name, *args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/arrays/categorical.py:2941: in _delegate_method
+    res = method(*args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/arrays/categorical.py:1330: in add_categories
+    raise ValueError(
+E   ValueError: new categories must not include old categories: {'missing_added'}
+_ test_categorical_raw_and_grouped_missing_unknown_use_native_routes[category-False] _
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:187: in test_categorical_raw_and_grouped_missing_unknown_use_native_routes
+    model = discretizer(raw=raw).fit(X, y)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:495: in fit
+    X, self.ordinal_encoder_dic = self._encode_categorical_features(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:551: in _encode_categorical_features
+    .cat.add_categories("missing_added")
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/accessor.py:112: in f
+    return self._delegate_method(name, *args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/arrays/categorical.py:2941: in _delegate_method
+    res = method(*args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/arrays/categorical.py:1330: in add_categories
+    raise ValueError(
+E   ValueError: new categories must not include old categories: {'missing_added'}
+_ test_categorical_raw_and_grouped_missing_unknown_use_native_routes[category-True] _
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:187: in test_categorical_raw_and_grouped_missing_unknown_use_native_routes
+    model = discretizer(raw=raw).fit(X, y)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:495: in fit
+    X, self.ordinal_encoder_dic = self._encode_categorical_features(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:551: in _encode_categorical_features
+    .cat.add_categories("missing_added")
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/accessor.py:112: in f
+    return self._delegate_method(name, *args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/arrays/categorical.py:2941: in _delegate_method
+    res = method(*args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/arrays/categorical.py:1330: in add_categories
+    raise ValueError(
+E   ValueError: new categories must not include old categories: {'missing_added'}
+_ test_categorical_raw_and_grouped_missing_unknown_use_native_routes[string-False] _
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:187: in test_categorical_raw_and_grouped_missing_unknown_use_native_routes
+    model = discretizer(raw=raw).fit(X, y)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:495: in fit
+    X, self.ordinal_encoder_dic = self._encode_categorical_features(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:551: in _encode_categorical_features
+    .cat.add_categories("missing_added")
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/accessor.py:112: in f
+    return self._delegate_method(name, *args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/arrays/categorical.py:2941: in _delegate_method
+    res = method(*args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/arrays/categorical.py:1330: in add_categories
+    raise ValueError(
+E   ValueError: new categories must not include old categories: {'missing_added'}
+_ test_categorical_raw_and_grouped_missing_unknown_use_native_routes[string-True] _
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:187: in test_categorical_raw_and_grouped_missing_unknown_use_native_routes
+    model = discretizer(raw=raw).fit(X, y)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:495: in fit
+    X, self.ordinal_encoder_dic = self._encode_categorical_features(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:551: in _encode_categorical_features
+    .cat.add_categories("missing_added")
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/accessor.py:112: in f
+    return self._delegate_method(name, *args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/arrays/categorical.py:2941: in _delegate_method
+    res = method(*args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/arrays/categorical.py:1330: in add_categories
+    raise ValueError(
+E   ValueError: new categories must not include old categories: {'missing_added'}
+_ test_categorical_raw_and_grouped_missing_unknown_use_native_routes[None-False] _
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:187: in test_categorical_raw_and_grouped_missing_unknown_use_native_routes
+    model = discretizer(raw=raw).fit(X, y)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:495: in fit
+    X, self.ordinal_encoder_dic = self._encode_categorical_features(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:551: in _encode_categorical_features
+    .cat.add_categories("missing_added")
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/accessor.py:112: in f
+    return self._delegate_method(name, *args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/arrays/categorical.py:2941: in _delegate_method
+    res = method(*args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/arrays/categorical.py:1330: in add_categories
+    raise ValueError(
+E   ValueError: new categories must not include old categories: {'missing_added'}
+_ test_categorical_raw_and_grouped_missing_unknown_use_native_routes[None-True] _
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:187: in test_categorical_raw_and_grouped_missing_unknown_use_native_routes
+    model = discretizer(raw=raw).fit(X, y)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:495: in fit
+    X, self.ordinal_encoder_dic = self._encode_categorical_features(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:551: in _encode_categorical_features
+    .cat.add_categories("missing_added")
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/accessor.py:112: in f
+    return self._delegate_method(name, *args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/arrays/categorical.py:2941: in _delegate_method
+    res = method(*args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/arrays/categorical.py:1330: in add_categories
+    raise ValueError(
+E   ValueError: new categories must not include old categories: {'missing_added'}
+_ test_categorical_raw_and_grouped_missing_unknown_use_native_routes[boolean-False] _
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/sklearn/utils/_encode.py:183: in _unique_python
+    uniques = sorted(uniques_set)
+E   numpy._core._exceptions._UFuncNoLoopError: ufunc 'greater' did not contain a loop with signature matching types (<class 'numpy.dtypes.BoolDType'>, <class 'numpy.dtypes.StrDType'>) -> None
+
+During handling of the above exception, another exception occurred:
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:187: in test_categorical_raw_and_grouped_missing_unknown_use_native_routes
+    model = discretizer(raw=raw).fit(X, y)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:495: in fit
+    X, self.ordinal_encoder_dic = self._encode_categorical_features(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:554: in _encode_categorical_features
+    ordinal_encoder_dic[col] = encoder.fit(X[[col]])
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/sklearn/base.py:1389: in wrapper
+    return fit_method(estimator, *args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/sklearn/preprocessing/_encoders.py:1515: in fit
+    fit_results = self._fit(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/sklearn/preprocessing/_encoders.py:103: in _fit
+    result = _unique(Xi, return_counts=compute_counts)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/sklearn/utils/_encode.py:52: in _unique
+    return _unique_python(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/sklearn/utils/_encode.py:188: in _unique_python
+    raise TypeError(
+E   TypeError: Encoders require their input argument must be uniformly strings or numbers. Got ['bool', 'str']
+_ test_categorical_raw_and_grouped_missing_unknown_use_native_routes[boolean-True] _
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/sklearn/utils/_encode.py:183: in _unique_python
+    uniques = sorted(uniques_set)
+E   numpy._core._exceptions._UFuncNoLoopError: ufunc 'greater' did not contain a loop with signature matching types (<class 'numpy.dtypes.BoolDType'>, <class 'numpy.dtypes.StrDType'>) -> None
+
+During handling of the above exception, another exception occurred:
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:187: in test_categorical_raw_and_grouped_missing_unknown_use_native_routes
+    model = discretizer(raw=raw).fit(X, y)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:495: in fit
+    X, self.ordinal_encoder_dic = self._encode_categorical_features(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:554: in _encode_categorical_features
+    ordinal_encoder_dic[col] = encoder.fit(X[[col]])
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/sklearn/base.py:1389: in wrapper
+    return fit_method(estimator, *args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/sklearn/preprocessing/_encoders.py:1515: in fit
+    fit_results = self._fit(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/sklearn/preprocessing/_encoders.py:103: in _fit
+    result = _unique(Xi, return_counts=compute_counts)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/sklearn/utils/_encode.py:52: in _unique
+    return _unique_python(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/sklearn/utils/_encode.py:188: in _unique_python
+    raise TypeError(
+E   TypeError: Encoders require their input argument must be uniformly strings or numbers. Got ['bool', 'str']
+________ test_numeric_missing_and_zero_follow_actual_leaves[False-True] ________
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:220: in test_numeric_missing_and_zero_follow_actual_leaves
+    assert_partition(actual, leaf_ids(model, query))
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:70: in assert_partition
+    assert_array_equal(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 8 / 49 (16.3%)
+E    ACTUAL: array([[ True, False, False, False, False, False, False],
+E          [False,  True,  True,  True,  True, False, False],
+E          [False,  True,  True,  True,  True, False, False],...
+E    DESIRED: array([[ True,  True, False, False, False, False, False],
+E          [ True,  True, False, False, False, False, False],
+E          [False, False,  True,  True,  True, False, False],...
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_______ test_all_missing_feature_is_a_single_fitted_leaf[False-float64] ________
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:228: in test_all_missing_feature_is_a_single_fitted_leaf
+    model = discretizer(raw=raw).fit(X, np.tile([0.0, 1.0], 40))
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:503: in fit
+    self._fit_tree_and_create_bins(X, col, y, sample_weight, is_categorical)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:603: in _fit_tree_and_create_bins
+    pred_values = tree.predict(np.expand_dims(non_nan_values, axis=1))
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:357: in predict
+    y_pred_raw = self.model.predict(X)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:4767: in predict
+    return predictor.predict(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:1158: in predict
+    data = _data_from_pandas(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:834: in _data_from_pandas
+    raise ValueError("Input data must be 2 dimensional and non empty.")
+E   ValueError: Input data must be 2 dimensional and non empty.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=64 samples, Validation=16 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_______ test_all_missing_feature_is_a_single_fitted_leaf[False-Float64] ________
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:228: in test_all_missing_feature_is_a_single_fitted_leaf
+    model = discretizer(raw=raw).fit(X, np.tile([0.0, 1.0], 40))
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:503: in fit
+    self._fit_tree_and_create_bins(X, col, y, sample_weight, is_categorical)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:603: in _fit_tree_and_create_bins
+    pred_values = tree.predict(np.expand_dims(non_nan_values, axis=1))
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:357: in predict
+    y_pred_raw = self.model.predict(X)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:4767: in predict
+    return predictor.predict(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:1158: in predict
+    data = _data_from_pandas(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:834: in _data_from_pandas
+    raise ValueError("Input data must be 2 dimensional and non empty.")
+E   ValueError: Input data must be 2 dimensional and non empty.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=64 samples, Validation=16 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+________ test_all_missing_feature_is_a_single_fitted_leaf[True-float64] ________
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:228: in test_all_missing_feature_is_a_single_fitted_leaf
+    model = discretizer(raw=raw).fit(X, np.tile([0.0, 1.0], 40))
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:503: in fit
+    self._fit_tree_and_create_bins(X, col, y, sample_weight, is_categorical)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:603: in _fit_tree_and_create_bins
+    pred_values = tree.predict(np.expand_dims(non_nan_values, axis=1))
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:357: in predict
+    y_pred_raw = self.model.predict(X)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:4767: in predict
+    return predictor.predict(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:1158: in predict
+    data = _data_from_pandas(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:834: in _data_from_pandas
+    raise ValueError("Input data must be 2 dimensional and non empty.")
+E   ValueError: Input data must be 2 dimensional and non empty.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=64 samples, Validation=16 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+________ test_all_missing_feature_is_a_single_fitted_leaf[True-Float64] ________
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:228: in test_all_missing_feature_is_a_single_fitted_leaf
+    model = discretizer(raw=raw).fit(X, np.tile([0.0, 1.0], 40))
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:503: in fit
+    self._fit_tree_and_create_bins(X, col, y, sample_weight, is_categorical)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:603: in _fit_tree_and_create_bins
+    pred_values = tree.predict(np.expand_dims(non_nan_values, axis=1))
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:357: in predict
+    y_pred_raw = self.model.predict(X)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:4767: in predict
+    return predictor.predict(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:1158: in predict
+    data = _data_from_pandas(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:834: in _data_from_pandas
+    raise ValueError("Input data must be 2 dimensional and non empty.")
+E   ValueError: Input data must be 2 dimensional and non empty.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=64 samples, Validation=16 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+________ test_all_missing_feature_is_a_single_fitted_leaf[True-string] _________
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:229: in test_all_missing_feature_is_a_single_fitted_leaf
+    actual = model.transform(X)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:630: in transform
+    X[col] = self.tree_dic[col].predict(X[[col]])
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:357: in predict
+    y_pred_raw = self.model.predict(X)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:4767: in predict
+    return predictor.predict(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:1158: in predict
+    data = _data_from_pandas(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:868: in _data_from_pandas
+    _pandas_to_numpy(data, target_dtype=target_dtype),
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:814: in _pandas_to_numpy
+    _check_for_bad_pandas_dtypes(data.dtypes)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:805: in _check_for_bad_pandas_dtypes
+    raise ValueError(
+E   ValueError: pandas dtypes must be int, float or bool.
+E   Fields with bad pandas dtypes: x: string
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=64 samples, Validation=16 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_______ test_all_missing_feature_is_a_single_fitted_leaf[True-category] ________
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:229: in test_all_missing_feature_is_a_single_fitted_leaf
+    actual = model.transform(X)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:630: in transform
+    X[col] = self.tree_dic[col].predict(X[[col]])
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:357: in predict
+    y_pred_raw = self.model.predict(X)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:4767: in predict
+    return predictor.predict(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:1158: in predict
+    data = _data_from_pandas(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:851: in _data_from_pandas
+    raise ValueError("train and valid dataset categorical_feature do not match.")
+E   ValueError: train and valid dataset categorical_feature do not match.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=64 samples, Validation=16 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_ test_one_tree_contract_overrides_every_round_alias_without_mutation[num_iterations] _
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:244: in test_one_tree_contract_overrides_every_round_alias_without_mutation
+    assert params == before and model.get_params()["boost_params"] == before
+E   AssertionError: assert ({'learning_ra...ound': 1, ...} == {'learning_ra...eads': 1, ...}
+E
+E     Omitting 6 identical items, use -vv to show
+E     Left contains 3 more items:
+E     {'max_leaf': 2, 'num_boost_round': 1, 'objective': 'rmse'}
+E     Use -v to get more diff)
+_ test_one_tree_contract_overrides_every_round_alias_without_mutation[num_iteration] _
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:244: in test_one_tree_contract_overrides_every_round_alias_without_mutation
+    assert params == before and model.get_params()["boost_params"] == before
+E   AssertionError: assert ({'learning_ra...ound': 1, ...} == {'learning_ra...eads': 1, ...}
+E
+E     Omitting 6 identical items, use -vv to show
+E     Left contains 3 more items:
+E     {'max_leaf': 2, 'num_boost_round': 1, 'objective': 'rmse'}
+E     Use -v to get more diff)
+_ test_one_tree_contract_overrides_every_round_alias_without_mutation[n_iter] __
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:244: in test_one_tree_contract_overrides_every_round_alias_without_mutation
+    assert params == before and model.get_params()["boost_params"] == before
+E   AssertionError: assert ({'learning_ra...iter': 3, ...} == {'learning_ra...eads': 1, ...}
+E
+E     Omitting 6 identical items, use -vv to show
+E     Left contains 3 more items:
+E     {'max_leaf': 2, 'num_boost_round': 1, 'objective': 'rmse'}
+E     Use -v to get more diff)
+_ test_one_tree_contract_overrides_every_round_alias_without_mutation[num_tree] _
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:244: in test_one_tree_contract_overrides_every_round_alias_without_mutation
+    assert params == before and model.get_params()["boost_params"] == before
+E   AssertionError: assert ({'learning_ra...ound': 1, ...} == {'learning_ra...tree': 3, ...}
+E
+E     Omitting 6 identical items, use -vv to show
+E     Left contains 3 more items:
+E     {'max_leaf': 2, 'num_boost_round': 1, 'objective': 'rmse'}
+E     Use -v to get more diff)
+_ test_one_tree_contract_overrides_every_round_alias_without_mutation[num_trees] _
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:244: in test_one_tree_contract_overrides_every_round_alias_without_mutation
+    assert params == before and model.get_params()["boost_params"] == before
+E   AssertionError: assert ({'learning_ra...ound': 1, ...} == {'learning_ra...rees': 3, ...}
+E
+E     Omitting 6 identical items, use -vv to show
+E     Left contains 3 more items:
+E     {'max_leaf': 2, 'num_boost_round': 1, 'objective': 'rmse'}
+E     Use -v to get more diff)
+_ test_one_tree_contract_overrides_every_round_alias_without_mutation[num_round] _
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:244: in test_one_tree_contract_overrides_every_round_alias_without_mutation
+    assert params == before and model.get_params()["boost_params"] == before
+E   AssertionError: assert ({'learning_ra...ound': 1, ...} == {'learning_ra...eads': 1, ...}
+E
+E     Omitting 6 identical items, use -vv to show
+E     Left contains 3 more items:
+E     {'max_leaf': 2, 'num_boost_round': 1, 'objective': 'rmse'}
+E     Use -v to get more diff)
+_ test_one_tree_contract_overrides_every_round_alias_without_mutation[num_rounds] _
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:244: in test_one_tree_contract_overrides_every_round_alias_without_mutation
+    assert params == before and model.get_params()["boost_params"] == before
+E   AssertionError: assert ({'learning_ra...ound': 1, ...} == {'learning_ra...eads': 1, ...}
+E
+E     Omitting 6 identical items, use -vv to show
+E     Left contains 3 more items:
+E     {'max_leaf': 2, 'num_boost_round': 1, 'objective': 'rmse'}
+E     Use -v to get more diff)
+_ test_one_tree_contract_overrides_every_round_alias_without_mutation[nrounds] _
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:244: in test_one_tree_contract_overrides_every_round_alias_without_mutation
+    assert params == before and model.get_params()["boost_params"] == before
+E   AssertionError: assert ({'learning_ra...unds': 3, ...} == {'learning_ra...eads': 1, ...}
+E
+E     Omitting 6 identical items, use -vv to show
+E     Left contains 3 more items:
+E     {'max_leaf': 2, 'num_boost_round': 1, 'objective': 'rmse'}
+E     Use -v to get more diff)
+_ test_one_tree_contract_overrides_every_round_alias_without_mutation[num_boost_round] _
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:244: in test_one_tree_contract_overrides_every_round_alias_without_mutation
+    assert params == before and model.get_params()["boost_params"] == before
+E   AssertionError: assert ({'learning_ra...ound': 1, ...} == {'learning_ra...eads': 1, ...}
+E
+E     Omitting 5 identical items, use -vv to show
+E     Differing items:
+E     {'num_boost_round': 1} != {'num_boost_round': 3}
+E     Left contains 2 more items:
+E     {'max_leaf': 2, 'objective': 'rmse'}
+E     Use -v to get more diff)
+_ test_one_tree_contract_overrides_every_round_alias_without_mutation[n_estimators] _
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:244: in test_one_tree_contract_overrides_every_round_alias_without_mutation
+    assert params == before and model.get_params()["boost_params"] == before
+E   AssertionError: assert ({'learning_ra...tors': 3, ...} == {'learning_ra...eads': 1, ...}
+E
+E     Omitting 6 identical items, use -vv to show
+E     Left contains 3 more items:
+E     {'max_leaf': 2, 'num_boost_round': 1, 'objective': 'rmse'}
+E     Use -v to get more diff)
+_ test_one_tree_contract_overrides_every_round_alias_without_mutation[max_iter] _
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:244: in test_one_tree_contract_overrides_every_round_alias_without_mutation
+    assert params == before and model.get_params()["boost_params"] == before
+E   AssertionError: assert ({'learning_ra...leaf': 5, ...} == {'learning_ra...eads': 1, ...}
+E
+E     Omitting 6 identical items, use -vv to show
+E     Left contains 3 more items:
+E     {'max_leaf': 2, 'num_boost_round': 1, 'objective': 'rmse'}
+E     Use -v to get more diff)
+________ test_current_task_bins_and_conflicting_leaf_objective_aliases _________
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:271: in test_current_task_bins_and_conflicting_leaf_objective_aliases
+    assert booster.params["objective"] == "binary"
+E   AssertionError: assert 'rmse' == 'binary'
+E
+E     - binary
+E     + rmse
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+______ test_raw_ordinary_categories_match_fitted_encoded_tree[regression] ______
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:306: in test_raw_ordinary_categories_match_fitted_encoded_tree
+    model.transform(query).cat, model.tree_dic["cat"].model.predict(encoded)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:630: in transform
+    X[col] = self.tree_dic[col].predict(X[[col]])
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:357: in predict
+    y_pred_raw = self.model.predict(X)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:4767: in predict
+    return predictor.predict(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:1158: in predict
+    data = _data_from_pandas(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:868: in _data_from_pandas
+    _pandas_to_numpy(data, target_dtype=target_dtype),
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:814: in _pandas_to_numpy
+    _check_for_bad_pandas_dtypes(data.dtypes)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:805: in _check_for_bad_pandas_dtypes
+    raise ValueError(
+E   ValueError: pandas dtypes must be int, float or bool.
+E   Fields with bad pandas dtypes: cat: object
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+____ test_raw_ordinary_categories_match_fitted_encoded_tree[classification] ____
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:306: in test_raw_ordinary_categories_match_fitted_encoded_tree
+    model.transform(query).cat, model.tree_dic["cat"].model.predict(encoded)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:630: in transform
+    X[col] = self.tree_dic[col].predict(X[[col]])
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:357: in predict
+    y_pred_raw = self.model.predict(X)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:4767: in predict
+    return predictor.predict(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:1158: in predict
+    data = _data_from_pandas(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:868: in _data_from_pandas
+    _pandas_to_numpy(data, target_dtype=target_dtype),
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:814: in _pandas_to_numpy
+    _check_for_bad_pandas_dtypes(data.dtypes)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:805: in _check_for_bad_pandas_dtypes
+    raise ValueError(
+E   ValueError: pandas dtypes must be int, float or bool.
+E   Fields with bad pandas dtypes: cat: object
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'binary' as metric.
+Training up to 1 boosting rounds.
+_______________ test_invalid_bin_limits_fail_before_training[0] ________________
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:319: in test_invalid_bin_limits_fail_before_training
+    model.fit(X, y)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:503: in fit
+    self._fit_tree_and_create_bins(X, col, y, sample_weight, is_categorical)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:565: in _fit_tree_and_create_bins
+    tree = GradientBoosting(
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:313: in forbidden
+    pytest.fail("Invalid n_bins reached model training")
+E   Failed: Invalid n_bins reached model training
+_______________ test_invalid_bin_limits_fail_before_training[1] ________________
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:319: in test_invalid_bin_limits_fail_before_training
+    model.fit(X, y)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:503: in fit
+    self._fit_tree_and_create_bins(X, col, y, sample_weight, is_categorical)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:565: in _fit_tree_and_create_bins
+    tree = GradientBoosting(
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:313: in forbidden
+    pytest.fail("Invalid n_bins reached model training")
+E   Failed: Invalid n_bins reached model training
+_______________ test_invalid_bin_limits_fail_before_training[-1] _______________
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:319: in test_invalid_bin_limits_fail_before_training
+    model.fit(X, y)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:503: in fit
+    self._fit_tree_and_create_bins(X, col, y, sample_weight, is_categorical)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:565: in _fit_tree_and_create_bins
+    tree = GradientBoosting(
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:313: in forbidden
+    pytest.fail("Invalid n_bins reached model training")
+E   Failed: Invalid n_bins reached model training
+______________ test_invalid_bin_limits_fail_before_training[2.5] _______________
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:319: in test_invalid_bin_limits_fail_before_training
+    model.fit(X, y)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:503: in fit
+    self._fit_tree_and_create_bins(X, col, y, sample_weight, is_categorical)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:565: in _fit_tree_and_create_bins
+    tree = GradientBoosting(
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:313: in forbidden
+    pytest.fail("Invalid n_bins reached model training")
+E   Failed: Invalid n_bins reached model training
+______________ test_invalid_bin_limits_fail_before_training[True] ______________
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:319: in test_invalid_bin_limits_fail_before_training
+    model.fit(X, y)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:503: in fit
+    self._fit_tree_and_create_bins(X, col, y, sample_weight, is_categorical)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:565: in _fit_tree_and_create_bins
+    tree = GradientBoosting(
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:313: in forbidden
+    pytest.fail("Invalid n_bins reached model training")
+E   Failed: Invalid n_bins reached model training
+______________ test_invalid_bin_limits_fail_before_training[nan] _______________
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:319: in test_invalid_bin_limits_fail_before_training
+    model.fit(X, y)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:503: in fit
+    self._fit_tree_and_create_bins(X, col, y, sample_weight, is_categorical)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:565: in _fit_tree_and_create_bins
+    tree = GradientBoosting(
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:313: in forbidden
+    pytest.fail("Invalid n_bins reached model training")
+E   Failed: Invalid n_bins reached model training
+______________ test_invalid_bin_limits_fail_before_training[inf] _______________
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:319: in test_invalid_bin_limits_fail_before_training
+    model.fit(X, y)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:503: in fit
+    self._fit_tree_and_create_bins(X, col, y, sample_weight, is_categorical)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:565: in _fit_tree_and_create_bins
+    tree = GradientBoosting(
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:313: in forbidden
+    pytest.fail("Invalid n_bins reached model training")
+E   Failed: Invalid n_bins reached model training
+_____ test_invalid_current_parameters_rejected_at_fit[params0-ValueError] ______
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:333: in test_invalid_current_parameters_rejected_at_fit
+    with pytest.raises(error):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_____ test_invalid_current_parameters_rejected_at_fit[params1-ValueError] ______
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:333: in test_invalid_current_parameters_rejected_at_fit
+    with pytest.raises(error):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_______ test_categorical_selection_includes_nullable_strings_and_boolean _______
+/tmp/arfs-r19/before/tests/test_tree_partitions.py:349: in test_categorical_selection_includes_nullable_strings_and_boolean
+    assert set(model.tree_dic) == {"text", "flag"}
+E   AssertionError: assert {'flag'} == {'flag', 'text'}
+E
+E     Extra items in the right set:
+E     'text'
+E     Use -v to get more diff
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=96 samples, Validation=24 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+=============================== warnings summary ===============================
+arfs-r19/before/tests/test_tree_partitions.py: 60 warnings
+  /tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:343: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.
+    warnings.warn(
+
+arfs-r19/before/tests/test_tree_partitions.py: 11 warnings
+  /tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:584: DeprecationWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+    .apply(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_real_numeric_partition_and_exact_threshold_boundaries[False-regression]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_real_numeric_partition_and_exact_threshold_boundaries[False-classification]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_real_numeric_partition_and_exact_threshold_boundaries[True-regression]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_real_numeric_partition_and_exact_threshold_boundaries[True-classification]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_partition_does_not_depend_on_equal_leaf_output_values
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_category_group_labels_cannot_merge_when_display_text_is_truncated
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_generated_name_and_column_order_cannot_change_other_feature_fit
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_weighted_raw_outputs_match_independent_native_single_tree[classification]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_categorical_raw_and_grouped_missing_unknown_use_native_routes[object-False]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_categorical_raw_and_grouped_missing_unknown_use_native_routes[object-True]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_categorical_raw_and_grouped_missing_unknown_use_native_routes[category-False]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_categorical_raw_and_grouped_missing_unknown_use_native_routes[category-True]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_categorical_raw_and_grouped_missing_unknown_use_native_routes[string-False]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_categorical_raw_and_grouped_missing_unknown_use_native_routes[string-True]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_categorical_raw_and_grouped_missing_unknown_use_native_routes[None-False]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_categorical_raw_and_grouped_missing_unknown_use_native_routes[None-True]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_categorical_raw_and_grouped_missing_unknown_use_native_routes[boolean-False]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_categorical_raw_and_grouped_missing_unknown_use_native_routes[boolean-True]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_numeric_missing_and_zero_follow_actual_leaves[False-True]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_all_missing_feature_is_a_single_fitted_leaf[False-float64]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_all_missing_feature_is_a_single_fitted_leaf[False-Float64]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_all_missing_feature_is_a_single_fitted_leaf[True-float64]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_all_missing_feature_is_a_single_fitted_leaf[True-Float64]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_all_missing_feature_is_a_single_fitted_leaf[True-string]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_all_missing_feature_is_a_single_fitted_leaf[True-category]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_one_tree_contract_overrides_every_round_alias_without_mutation[num_iterations]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_one_tree_contract_overrides_every_round_alias_without_mutation[num_iteration]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_one_tree_contract_overrides_every_round_alias_without_mutation[n_iter]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_one_tree_contract_overrides_every_round_alias_without_mutation[num_tree]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_one_tree_contract_overrides_every_round_alias_without_mutation[num_trees]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_one_tree_contract_overrides_every_round_alias_without_mutation[num_round]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_one_tree_contract_overrides_every_round_alias_without_mutation[num_rounds]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_one_tree_contract_overrides_every_round_alias_without_mutation[nrounds]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_one_tree_contract_overrides_every_round_alias_without_mutation[num_boost_round]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_one_tree_contract_overrides_every_round_alias_without_mutation[n_estimators]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_one_tree_contract_overrides_every_round_alias_without_mutation[max_iter]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_current_task_bins_and_conflicting_leaf_objective_aliases
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_raw_ordinary_categories_match_fitted_encoded_tree[regression]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_raw_ordinary_categories_match_fitted_encoded_tree[classification]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_invalid_bin_limits_fail_before_training[0]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_invalid_bin_limits_fail_before_training[1]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_invalid_bin_limits_fail_before_training[-1]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_invalid_bin_limits_fail_before_training[2.5]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_invalid_bin_limits_fail_before_training[True]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_invalid_bin_limits_fail_before_training[nan]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_invalid_bin_limits_fail_before_training[inf]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_invalid_current_parameters_rejected_at_fit[params0-ValueError]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_invalid_current_parameters_rejected_at_fit[params1-ValueError]
+FAILED ../../../../tmp/arfs-r19/before/tests/test_tree_partitions.py::test_categorical_selection_includes_nullable_strings_and_boolean
+49 failed, 11 passed, 71 warnings in 8.28s

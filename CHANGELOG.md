@@ -2,6 +2,7 @@
 
 # Unreleased
 
+ - Make TreeDiscretizer bins follow exact fitted thresholds and leaf IDs, preserve predictor columns, and use copied current one-tree parameters. Apply categorical encoding in raw mode; binary raw values are probabilities. Missing/unknown values follow native routes, including all-missing single-leaf bins. Categorical maps now use leaf IDs; leaf_interval_dic_ replaces tree_imputer.
  - Remove the public legacy helpers cat_var and validate_pandas_input. Use OrdinalEncoderPandas for fitted categorical encoding/inverse decoding; use pandas .to_numpy() for array extraction and keep existing NumPy arrays directly. The encoder returns a DataFrame, not cat_var's four-item tuple; no compatibility shim is provided.
  - Keep OrdinalEncoderPandas full input/output names separate from categorical validation, preserve inverse inputs and honor output_dtype on refit. Nullable strings and booleans are encoded with native missing/unknown handling; transforms require the fitted column order.
  - Validate response and observation-weight inputs, preserve category identity, and correct weighted association arithmetic.

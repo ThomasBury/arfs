@@ -1,6 +1,6 @@
 # ARFS remediation handoff
 
-**Status: R01–R18 and R31 complete; R19–R30 and R32–R33 pending. Next implementation group: R19 alone.**
+**Status: R01–R19 and R31 complete; R20–R30 and R32–R33 pending. Next implementation group: R20 alone.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
 a separate repair backlog. By default, a request to implement the next phase
@@ -74,9 +74,9 @@ record each outcome separately. Stop at a phase boundary if a new API or
 statistical decision, unresolved failure, or wider scope makes the batch too
 large. Session boundaries and repair phases are not published releases.
 
-R01–R18 and R31 are complete. The explicitly requested R02/R03, R10/R11 and
+R01–R19 and R31 are complete. The explicitly requested R02/R03, R10/R11 and
 R18/R31 batches were implemented and validated sequentially; R04–R09 were
-completed alone. Run **R19 alone** next, with R05/R06/R18 complete. Later phases
+completed alone. Run **R20 alone** next, with R02/R18/R19 complete. Later phases
 use the recorded grouping rules below; phases outside the three conditional pairs remain separate.
 
 | Phases | Session recommendation | Reason |
@@ -97,12 +97,13 @@ use the recorded grouping rules below; phases outside the three conditional pair
 | R16 | Complete; do not repeat | [R16](R16-threshold-contracts.md) records unique names, aligned callbacks, strict equality, empty stages, stable ties and fitted metadata |
 | R17 | Complete; do not repeat | [R17](R17-importance-selection.md) records the crossing prefix, zero/nonfinite policy, one fit, equal-row explanation population and multiclass/backend repair |
 | R18 → R31 | Complete sequential batch; do not repeat | [R18](R18-ordinal-schema.md) and [R31](R31-legacy-helpers.md) record full encoder schema, owned inverse inputs and the approved legacy-helper removals |
-| R19 | Run alone next | R05/R06/R18 complete; actual fitted tree partitions and missing-value behavior |
+| R19 | Complete; do not repeat | [R19](R19-tree-partitions.md) records exact thresholds/leaf IDs, copied one-tree parameters, native missing routes and raw categorical/binary outputs |
+| R20 | Run alone next | R02/R18/R19 complete; remaining transformer state/input and Patsy/midpoint contracts |
 
 ### Recorded groups for next-batch requests
 
 When the user asks to "implement the next batch of RXX", read the current phase
-statuses in this file and use these groups. **The next group is R19 alone.**
+statuses in this file and use these groups. **The next group is R20 alone.**
 R10/R11 are complete; their separate handoffs record support/history consistency,
 weighted permutation scoring and the user-chosen absolute-total normalization.
 R12 is complete: GrootCV uses maximum shadow medians across folds/repeats;
@@ -124,7 +125,9 @@ multiclass axes. The user chose one fit/removal of n_iterations and equal valida
 importance averaging with weighted training/loss. R18 → R31 is complete: full
 encoder metadata describes passthrough output, inverse owns writable codes, and
 current parameters apply at refit. The user chose removal of both public legacy
-helpers without shims. Next is R19 alone, with R05/R06/R18 complete.
+helpers without shims. R19 is complete: numeric thresholds and leaf IDs define
+partitions, native missing routes and fit-time one-tree parameters are retained,
+and raw binary output is probabilities. Next is R20 alone, with R02/R18/R19 complete.
 A request for the next batch authorizes that one group, its affected callers,
 tests, local phase commits and handoff update; stop after
 it. It does not authorize the following group or Git publication/release unless
@@ -137,7 +140,8 @@ the user also requests those actions.
 | **R25 → R26** | R05 and R24 complete | Sampling output repairs and bounded isolation retries mostly share one module | Define weighting, tiny-input, and exhaustion behavior |
 
 R18 → R31 is complete in separate sequential local commits, with the explicit
-removal decision recorded in R31. R19 alone is next, with R05/R06/R18 complete.
+removal decision recorded in R31. R19 is also complete; R20 alone is next, with
+R02/R18/R19 complete.
 R10 → R11 has already been completed.
 R25 → R26 is larger and remains conditional on its scope and policy decisions
 being settled. These are sequential groups, not parallel agent assignments.
@@ -653,9 +657,51 @@ collision/missing-value handling and copied fit-time parameters. R19–R30 and
 R32–R33 remain pending. Stop here; no next phase, publication, version bump or
 release is authorized by this batch. Passing it does not establish release readiness.
 
+## R19 result — 2026-10-14
+
+R19 is complete on `main`, based on clean `132e0e0`; its separate local phase
+commit is recorded after committing this result. [R19](R19-tree-partitions.md)
+records exact fitted numerical thresholds and leaf-ID intervals, distinct
+categorical leaf groups, removal of temporary prediction-column writes, current
+copied one-tree/task/bin parameters and aliases, shared categorical encoding in
+both branches, and native missing/unknown routes. All-missing numeric input has
+one (-inf, inf] leaf interval. Raw binary output is native probabilities. Labels
+and fitted maps change deliberately: leaf_interval_dic_ replaces tree_imputer,
+and categorical maps use leaf IDs with unambiguous readable labels. Refit old
+saved discretizers; no fitted-state compatibility shim is added. R20's remaining
+input/state/Patsy/midpoint decisions are not treated as complete.
+
+Fresh installed-wheel full suites pass: **Python 3.9 locked 922; Python 3.12 locked
+922; Python 3.12 newer 906**. All **14** adapted historical tree checks pass
+unmasked in both 3.12 cells. The 60 maintained cases report **49 failed, 11
+passed** on the verified R31 wheel; historical before checks reproduce **11
+failures and 3 controls**. The disposable historical copy removes only the cat_var
+import retired by R31; its diff/hashes and unchanged assertions are recorded.
+Original evidence remains intact. The initial repaired wheel passed its suites,
+then a caller probe caught an unnamed categorical-column regression; explicit
+column naming fixes it, with None/integer-name controls included in the final run.
+
+Exact commands, versions, provenance and limits are in the handoff and
+[evidence](evidence/r19-tree-partitions/commands.txt). Source/affected callers
+pass **338 tests**; newer tree/pandas source checks pass **65**. All dependency
+checks, 12 installed module hashes, 19 source/sdist/wheel payloads, lock, Ruff
+(**397 total, zero new**, unchanged allowances), gate unit tests (**2 passed**),
+new-test/evidence lint/format, local links and whitespace pass. Hosted CI, full
+docs/notebooks, full sklearn compliance, optional numerical backends, other
+platforms, performance, calibration and cross-process artifacts are skipped.
+The existing wrapper's 80/20 split remains; no improved held-out performance,
+optimal binning or group/fused-penalty equivalence is claimed.
+
+**Next group: R20 alone**, with R02/R18/R19 complete. Read `02 F6/F7/F10–F12`,
+TreeDiscretizer's resolved bin_features and array normalization, midpoint scalar
+names/refits, and Patsy formula/NA_action/intercept/row alignment. R20–R30 and
+R32–R33 remain pending; skip completed R31 at its numerical position. Stop after
+R19; no next phase, publication, version bump or release is authorized by this
+request. Passing this phase does not establish release readiness.
+
 ## Ordered phases
 
-R01–R18 and R31 are **Complete**; R19–R30 and R32–R33 are **Pending**. R19 alone
+R01–R19 and R31 are **Complete**; R20–R30 and R32–R33 are **Pending**. R20 alone
 is next. The
 [R01 handoff](R01-installed-package.md) records changes, decisions, exact checks,
 environment identities, inherited failures, and the resume point. Changes are
@@ -691,9 +737,10 @@ is complete in local commit `51d44f2` on `main`, based on `2577289`.
 based on `985b0a3`. [R17](R17-importance-selection.md) is complete in local commit
 `6f44345` on `main`, based on `1e88c54`. [R18](R18-ordinal-schema.md) is complete
 in local commit `7df5daa`, based on `37cf6b2`. [R31](R31-legacy-helpers.md) is complete
-in local commit `ffb7388`, based on `7df5daa`.
-R19 alone is next, with R05/R06/R18 complete.
-Hosted CI for R13–R18/R31 and remaining release evidence
+in local commit `ffb7388`, based on `7df5daa`. [R19](R19-tree-partitions.md) is complete
+in the separate local phase commit recorded in its result entry above, based on
+`132e0e0`. R20 alone is next, with R02/R18/R19 complete.
+Hosted CI for R13–R19/R31 and remaining release evidence
 are still pending. An ID such
 as `1A F3` means finding 3 in the linked original report. The complete ID-to-phase
 mapping follows the table.
@@ -718,7 +765,7 @@ mapping follows the table.
 | **R16 — Threshold selector identity/state (Complete)** | Reject duplicate names or adopt consistent positions, align labelled callbacks, validate parameters at fit, handle zero/one-feature collinearity, stabilize ties and fitted metadata. Resolve equality wording explicitly. [03 F5–F9/F12](03-selector-contracts.md) | R06/R08 | Masks/names/output agree, reordered callback labels, invalid `set_params`, empty pipeline stages, multiple hash seeds, correct feature counts and NotFittedError. Preserve legitimate named projection if retained as the API |
 | **R17 — Truthful cumulative importance selection (Complete)** | Keep the crossing feature, reject nonfinite contributions, define zero-total selection, handle array multiclass targets, and raise the optional-backend error. Use one fit unless actual reproducible resampling is required. [03 F1–F3/F11/F13](03-selector-contracts.md) | R03/R05/R06 | Hand `[.6,.3,.1]` thresholds, constant-response real fit, threshold 1, invalid contributions, three-class array/Series parity, iteration behavior and missing fastshap error before wasted training |
 | **R18 — Ordinal encoder full schema (Complete)** | Keep categorical encoder validation separate from full passthrough metadata, copy inverse input, honor changed output dtype. [02 F8/F13/F14](02-preprocessing.md) | R06 | Mixed categorical/numeric `get_feature_names_out` and pandas `set_output`; unknown/missing values, input preservation, inverse, clone/refit and `set_params(output_dtype=...)` |
-| **R19 — Actual fitted tree partitions** | Derive bins from real thresholds/leaf membership, avoid temporary-column collisions, derive copied one-tree parameters at fit, apply encoding in raw mode, define missing/all-missing behavior. [02 F1/F2/F4/F5/F9](02-preprocessing.md) | R05/R06/R18 | Equal-valued leaves, binary probabilities vs leaf IDs, values between observed extrema and fitted splits, `x`/`x_g`, category named `missing_added`, all-missing column, parameter aliases and native weighted one-tree reference |
+| **R19 — Actual fitted tree partitions (Complete)** | Derive bins from real thresholds/leaf membership, avoid temporary-column collisions, derive copied one-tree parameters at fit, apply encoding in raw mode, define missing/all-missing behavior. [02 F1/F2/F4/F5/F9](02-preprocessing.md) | R05/R06/R18 | Equal-valued leaves, binary probabilities vs leaf IDs, values between observed extrema and fitted splits, `x`/`x_g`, category named `missing_added`, all-missing column, parameter aliases and native weighted one-tree reference |
 | **R20 — Reusable transformer inputs and Patsy rows** | Separate constructor options from fitted state; normalize documented fit/transform inputs identically; honor Patsy `NA_action` and intercept choice; treat scalar midpoint name as one name. [02 F6/F7/F10–F12](02-preprocessing.md) | R02/R18/R19 | Refit different schemas, ndarray fit_transform, named dict formula, midpoint second fit/scalar name, Patsy raise/drop branches and row alignment. Document that a transformer cannot also drop y/weight rows |
 | **R21 — GBM prediction and split contracts** | Reject or explicitly prioritize incompatible group/stratification options; validate prediction schemas and objective aliases; state real categorical support/disable behavior; define multiclass offset input; reset fitted state. [04 F1–F5/F8/F9](04-training-and-benchmarks.md) | R05/R06 | Disjoint groups, reorder/replacement columns, label/probability shapes across aliases, explicit category disable, object/string/time error or fitted mapping, offset shapes, refits clearing flags/validation data/curves |
 | **R22 — Persist the wrapper contract** | Save/load required wrapper metadata with the Booster and reset state coherently. Define legacy Booster-only file handling without guessing an unknown offset contract. [04 F10](04-training-and-benchmarks.md) | R21 | Fresh-process ordinary/category/offset round trips, external baseline required for new rows, loading into previously fitted wrapper, invalid/missing artifact errors; trusted-input boundary stays explicit. Exercise safe write failure behavior before claiming durable persistence |
@@ -737,7 +784,7 @@ mapping follows the table.
 R21's group/schema safeguards can be advanced immediately after R05/R06 if
 training-wrapper users are the priority; its dependencies do not require waiting
 for the intervening algorithm phases. Similarly independent R24–R28 work need
-not await GLM repairs. The default next group is now R19 alone. Do not parallelize
+not await GLM repairs. The default next group is now R20 alone. Do not parallelize
 edits to shared dtype/weight helpers without agreeing their contract first.
 
 ## Complete finding-to-phase map
