@@ -250,10 +250,6 @@
     "UP010": 1,
     "UP035": 3
   },
-  "src/arfs/sampling.py": {
-    "C414": 1,
-    "PLW0133": 1
-  },
   "src/arfs/utils.py": {
     "I001": 1,
     "RUF046": 2,

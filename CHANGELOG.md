@@ -2,6 +2,12 @@
 
 # Unreleased
 
+ - Make Gower nearest neighbors use the explicit one-row query, exclude its identifier and return the nearest finite-distance row per remaining key. Use linear distance storage, stable input-order ties and validated nonnegative counts; raise for too few eligible neighbors. Support Series queries and preserve candidate dtype inference. smallest_indices now returns only finite values and empty arrays for zero, without nonfinite-value replacement.
+
+ - Bound isolation sampling to 20 attempts per distinct 5%–95% proper-subset size, starting at 5%. Return empty/single inputs unchanged and full original data on exhaustion. Describe the unweighted KS p-value screen as a heuristic, without representativeness or outlier-removal guarantees.
+
+ - Repair sampling outputs: impute numeric columns separately, preserve feature names (including label), and return original isolation-selected rows and dtypes. Reject unsupported Gower row weights and entirely missing columns; forward validated observation weights to the isolation forest fit while keeping subset draws and KS screening unweighted. Learn isolation category codes from positive-weight rows only; unseen score-only categories use -1.
+
  - Correct Gower numeric scaling, cross-matrix indexing and pairwise missing-value weights. Return NaN for undefined pairs, validate feature weights and category masks, support nullable dtypes and reference Series, and retain pooled numeric ranges with float64 output.
 
  - Fit benchmark encoders on training rows only, support ndarray inputs and integer display names, and compare fresh Leshy/BoostAGroota configurations without mutating caller objects. Reject GrootCV in cross-estimator comparisons and refresh Leshy backend flags at fit time.

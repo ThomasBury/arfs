@@ -9,7 +9,7 @@ from scipy.stats import ks_2samp
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.ensemble import IsolationForest
 
-from .utils import _is_categorical_dtype
+from .utils import _is_categorical_dtype, validate_sample_weight
 
 
 def sample(df, n=1000, sample_weight=None, method="gower"):
@@ -20,18 +20,32 @@ def sample(df, n=1000, sample_weight=None, method="gower"):
     the most similar elements.
     For the clustering algorithm, clusters are determined using the Gower distance
     (mixed type data) and the dataset is shrunk from n_samples to n_clusters.
+    Representatives are synthetic column means/modes, with cluster IDs as their
+    index and the original feature order. Numeric missing values use each column's
+    mean; categorical missing values use its first mode. Entirely missing columns
+    are rejected. Numeric representative dtypes may differ from the input.
 
-    For the isolation forest algorithm, samples are added till a sufficient 2-samples
-    KS statistics is reached or if the number iteration reached the max number (20)
+    Isolation sampling tries random subsets of 5%, 10%, ..., 95%, rounded up
+    and capped below the input row count, with 20 attempts per distinct size.
+    The first subset with an unweighted two-sample KS p-value >0.95 is returned;
+    exhaustion returns the full original data. Empty/single-row inputs return
+    unchanged. The subset overlaps the full score population, so this screen is
+    a heuristic, not a 95% representativeness guarantee or outlier removal.
 
     Parameters
     ----------
     df : pd.DataFrame
         the dataframe to sample, with or without the target
     n : int, optional
-        the number of clusters if method is ``"gower"``, by default 100
+        the number of clusters if method is ``"gower"``, by default 1000.
+        Must be between 1 and len(df), with at least two input rows.
+        Ignored for ``"isoforest"``.
     sample_weight : pd.Series or np.array, optional
-        sample weights, by default None
+        Positional observation weights for the isolation forest fit only.
+        Zero-weight rows are omitted from its category vocabulary and fit;
+        unseen score-only categories use code -1.
+        Its subset draws and KS screen are unweighted. Gower representatives
+        reject row weights; direct gower_matrix has separate feature weights.
     method : str, optional
         the strategy to use for sampling the rows. Either ``"gower"`` or ``"isoforest"``, by default 'gower'
 
@@ -41,44 +55,64 @@ def sample(df, n=1000, sample_weight=None, method="gower"):
         the sampled dataframe
 
     """
-    assert isinstance(df, pd.DataFrame), "X should be a DataFrame"
+    if not isinstance(df, pd.DataFrame):
+        raise TypeError("df should be a DataFrame")
+    if not df.columns.is_unique or df.shape[1] == 0:
+        raise ValueError("df must have unique columns and at least one feature")
     X = df.copy()
     num_cols = list(X.select_dtypes(include=[np.number]))
-    non_num_cols = list(set(list(X.columns)) - set(num_cols))
+    non_num_cols = [col for col in X.columns if col not in num_cols]
 
     if method == "gower":
+        if sample_weight is not None:
+            raise ValueError(
+                "Gower representatives do not support sample_weight (row weights)"
+            )
+        if isinstance(n, (bool, np.bool_)) or not isinstance(n, (int, np.integer)):
+            raise ValueError("n must be an integer between 1 and len(df)")
+        if len(X) < 2 or not 1 <= n <= len(X):
+            raise ValueError(
+                "Gower sampling requires at least two rows and 1 <= n <= len(df)"
+            )
+        if X.isna().all().any():
+            raise ValueError(
+                "Gower representatives require an observed value in every column"
+            )
         # basic imputation
         if non_num_cols:
             X[non_num_cols] = X[non_num_cols].fillna(X[non_num_cols].mode().iloc[0])
         if num_cols:
-            X[num_cols] = X[num_cols].fillna(X[num_cols].mean().iloc[0])
+            X[num_cols] = X[num_cols].astype(float).fillna(X[num_cols].mean())
 
         # no need for scaling, it is built-in the computation of the Gower distance
-        gd = gower_matrix(
-            X, cat_features=X.columns.isin(non_num_cols), weight=sample_weight
-        )
+        gd = gower_matrix(X, cat_features=X.columns.isin(non_num_cols))
 
         labels = AgglomerativeClustering(
             n_clusters=n, metric="precomputed", linkage="complete"
         ).fit_predict(gd)
-        X["label"] = labels
-        X["label"] = "clus_" + X["label"].astype(str)
-        X_num = X.groupby("label")[num_cols].agg("mean")
+        labels = np.array([f"clus_{label}" for label in labels])
+        X_num = X.groupby(labels)[num_cols].agg("mean")
         if non_num_cols:
-            X_nonnum = X.groupby("label")[non_num_cols].agg(get_most_common)
+            X_nonnum = X.groupby(labels)[non_num_cols].agg(get_most_common)
             X_sampled = X_num.join(X_nonnum)
         else:
             X_sampled = X_num
-        X_sampled = X_sampled.reindex(X.columns, axis=1)
+        X_sampled.index.name = "label"
+        X_sampled = X_sampled.reindex(df.columns, axis=1)
         return X_sampled
     elif method == "isoforest":
-        X[non_num_cols] = X[non_num_cols].astype("str").astype("category")
+        sample_weight = validate_sample_weight(sample_weight, len(X))
+        if len(X) < 2:
+            return df.copy()
+        fit_rows = slice(None) if sample_weight is None else sample_weight > 0
         for col in non_num_cols:
-            X[col] = X[col].astype("category").cat.codes
-        idx = isof_find_sample(X, sample_weight=None)
-        return X.iloc[idx, :]
+            values = X[col].astype("str")
+            categories = values.iloc[fit_rows].astype("category").cat.categories
+            X[col] = categories.get_indexer(values)
+        idx = isof_find_sample(X, sample_weight=sample_weight)
+        return df.iloc[idx, :].copy()
     else:
-        NotImplementedError(f"{method} not implemented")
+        raise NotImplementedError(f"{method} not implemented")
 
 
 def get_most_common(srs):
@@ -265,27 +299,25 @@ def _gower_distance_row(xi_cat, xi_num, xj_cat, xj_num, available, weight, categ
 
 
 def smallest_indices(ary, n):
-    """Returns the n largest indices from a numpy array.
+    """Return the n smallest finite values and their flattened positions.
 
-    Parameters
-    ----------
-    ary : np.array
-        the array for which to return largest indices
-    n : int
-        the number of indices to return
-
-    Returns
-    -------
-    dict
-        the dictionary of indices and values of the largest elements
+    n must be a nonnegative integer no larger than the finite-value count.
+    Zero returns empty arrays. NaN and infinities are excluded; ties keep input
+    order. Values retain their numeric dtype, and the input is not modified.
     """
-    # n += 1
-    flat = np.nan_to_num(ary.flatten(), nan=999)
-    indices = np.argpartition(-flat, -n)[-n:]
-    indices = indices[np.argsort(flat[indices])]
-    # indices = np.delete(indices,0,0)
-    values = flat[indices]
-    return {"index": indices, "values": values}
+    if isinstance(n, (bool, np.bool_)) or not isinstance(n, (int, np.integer)) or n < 0:
+        raise ValueError("n must be a nonnegative integer")
+    flat = np.asarray(ary).ravel()
+    if flat.dtype.kind not in "biuf":
+        raise TypeError("ary must contain real numeric values")
+    indices = np.flatnonzero(np.isfinite(flat))
+    if n > len(indices):
+        raise ValueError("n exceeds the number of finite values")
+    if n:
+        indices = indices[np.argsort(flat[indices], kind="stable")][:n]
+    else:
+        indices = indices[:0]
+    return {"index": indices, "values": flat[indices]}
 
 
 def gower_topn(
@@ -296,90 +328,112 @@ def gower_topn(
     n=5,
     key=None,
 ):
-    """Get the n most similar elements
+    """Return the n nearest eligible candidate rows to an explicit one-row query.
 
     Parameters
     ----------
-    data_x : np.array or pd.DataFrame
-        The data for the look up
-    data_y : np.array or pd.DataFrame or pd.Series, optional
-        elements for which to return the most similar elements, should be a single row
-    weight : np.array or pd.Series, optional
-        sample weight, by default None
-    cat_features : list of str or bool or int, optional
-        auto detection of cat features or a list of strings, booleans or integers, by default 'auto'
+    data_x : ndarray or pandas.DataFrame
+        Candidate rows. Returned indices are positions, not DataFrame labels.
+    data_y : ndarray, pandas.DataFrame or pandas.Series
+        Required one-row query with the same feature schema. A Series is a named
+        reference row. Omission/None raises ValueError; other row counts fail.
+    weight : array-like, optional
+        Feature weights passed to gower_matrix, not observation weights. With a
+        key, these and categorical masks describe features after removing it.
+    cat_features : "auto" or sequence of str, bool or int, optional
+        The gower_matrix category specification for the scored features.
+        Automatic feature roles follow candidate dtypes, including Series queries.
     n : int, optional
-        the number of neighbors/similar rows to find, by default 5
-    key : str, optional
-        identifier key. If several rows refer to the same id, this column
-        will be used for finding the nearest neighbors with a
-        different id, by default None
+        Number of neighbors, by default 5. Must be a nonnegative integer; zero
+        returns empty arrays. Too few eligible neighbors raises ValueError.
+    key : column label, optional
+        Requires named candidate/query DataFrames (or a query Series). Exclude
+        this column from distance computation and all rows matching the query's
+        identifier. Query identifiers must be nonmissing; missing candidate IDs
+        are ineligible. Keep the nearest finite-distance row per remaining ID,
+        with pandas membership/duplicate semantics and input order breaking ties.
+        Without a key, all finite-distance rows are eligible, including self.
 
     Returns
     -------
     dict
-        the dictionary of indices and values of the closest elements
+        "index" contains integer candidate positions, "values" their distances
+        in ascending order. NaN/infinite distances are excluded, not replaced.
 
-    Raises
-    ------
-    TypeError
-        if the reference element is not a single row
+    Notes
+    -----
+    One candidate-by-query distance vector is allocated, not a self-distance
+    matrix. Gower ranges still pool the full candidates and query, before key
+    exclusion. Ranking sorts once (O(N log N)); distance storage is O(N).
+    Inputs are not modified.
     """
-
-    if data_y.shape[0] >= 2:
-        raise TypeError("Only support `data_y` of 1 row. ")
-    if key is None:
-        dm = gower_matrix(data_y, data_x, weight, cat_features)
-    else:
-        X = data_x.drop(key, axis=1)
-        Y = data_x.drop(key, axis=1)
-        dm = gower_matrix(Y, X, weight, cat_features)
-
+    if isinstance(n, (bool, np.bool_)) or not isinstance(n, (int, np.integer)) or n < 0:
+        raise ValueError("n must be a nonnegative integer")
+    if data_y is None:
+        raise ValueError("data_y must be provided as an explicit 1 row query")
+    query = data_y.to_frame().T if isinstance(data_y, pd.Series) else data_y
+    if not isinstance(query, (pd.DataFrame, np.ndarray)) or query.ndim != 2:
+        raise TypeError("data_y must be a two-dimensional 1 row query or a Series")
+    if len(query) != 1:
+        raise TypeError("data_y must contain exactly 1 row")
+    candidates = data_x
     if key is not None:
-        idx = smallest_indices(np.nan_to_num(dm[0], nan=1), n)["index"]
-        val = smallest_indices(np.nan_to_num(dm[0], nan=1), n)["values"]
-        unique_id = data_x.iloc[idx, :]
-        unique_id = unique_id[key]
-        nunique_id = unique_id.nunique()
-        mul = 1
-        # continue looking for the closest n unique records with a different id
-        while nunique_id < n:
-            idx = smallest_indices(np.nan_to_num(dm[0], nan=1), mul * n)["index"]
-            val = smallest_indices(np.nan_to_num(dm[0], nan=1), mul * n)["values"]
-            unique_id = data_x.iloc[idx, :].reset_index()
-            unique_id = unique_id[key]
-            nunique_id = unique_id.nunique()
-            mul += 1
-
-        # find the indices of the unique id
-        _, idx_n = np.unique(unique_id, return_index=True)
-        # select only the rows corresponding to unique id
-        val = val[idx_n]
-        idx = idx[idx_n]
-        # sort them from the closest to the farthest, according to the Gower metrics
-        idx_n = np.argsort(val)
-        # return the n closest records, with a different id
-        return {"index": idx[idx_n[:n]], "values": val[idx_n[:n]]}
-    else:
-        return smallest_indices(np.nan_to_num(dm[0], nan=1), n)
+        if not isinstance(data_x, pd.DataFrame) or not isinstance(query, pd.DataFrame):
+            raise TypeError("key requires named candidate and query DataFrames")
+        if not data_x.columns.is_unique or not query.columns.is_unique:
+            raise ValueError("Feature columns must be unique")
+        if key not in data_x.columns or key not in query.columns:
+            raise ValueError("key must be a column in both candidates and query")
+        if query[key].isna().iloc[0]:
+            raise ValueError("The query key must be nonmissing")
+        eligible = data_x[key].notna() & ~data_x[key].isin([query[key].iloc[0]])
+        candidates = data_x.drop(columns=[key])
+        query = query.drop(columns=[key])
+    # shortcut: candidate-first Gower keeps dtype inference; vectorize row calls if profiling requires it.
+    distances = gower_matrix(candidates, query, weight, cat_features)[:, 0]
+    if key is not None:
+        distances[~eligible.to_numpy()] = np.nan
+    if n == 0:
+        return smallest_indices(distances, 0)
+    indices = smallest_indices(distances, np.isfinite(distances).sum())["index"]
+    if key is not None:
+        indices = indices[~data_x[key].iloc[indices].duplicated().to_numpy()]
+    if n > len(indices):
+        raise ValueError("n exceeds the number of eligible finite-distance neighbors")
+    indices = indices[:n]
+    return {"index": indices, "values": distances[indices]}
 
 
 def get_5_percent_splits(length):
-    """splits dataframe into 5% intervals
+    """Return distinct proper-subset sizes for 5%, 10%, ..., 95%.
 
     Parameters
     ----------
     length : int
-        array length
+        Positive integer array length.
 
     Returns
     -------
     array
-        vector of sizes
+        Sorted sizes, rounded up to at least one row and capped at length - 1.
+        A single-row input has no proper subset, so its result is empty.
     """
 
-    five_percent = round(5 / 100 * length)
-    return np.arange(five_percent, length, five_percent)
+    if (
+        isinstance(length, (bool, np.bool_))
+        or not isinstance(length, (int, np.integer))
+        or length < 1
+    ):
+        raise ValueError("length must be a positive integer")
+    if length == 1:
+        return np.array([], dtype=int)
+    length = int(length)
+    return np.unique(
+        [
+            min(length - 1, (length * percent + 99) // 100)
+            for percent in range(5, 100, 5)
+        ]
+    )
 
 
 def isolation_forest(X, sample_weight=None):
@@ -390,15 +444,33 @@ def isolation_forest(X, sample_weight=None):
     X : pd.DataFrame or np.array
         the predictors matrix
     sample_weight : pd.Series or np.array, optional
-        the sample weights, if any, by default None
+        Positional fit weights. Zero-weight rows are omitted from fitting;
+        all original rows are scored, without scoring weights.
     """
-    clf = IsolationForest().fit(X, sample_weight=sample_weight)
+    sample_weight = validate_sample_weight(sample_weight, len(X))
+    clf = IsolationForest()
+    if sample_weight is None:
+        clf.fit(X)
+    else:
+        positive = sample_weight > 0
+        clf.fit(X[positive], sample_weight=sample_weight[positive])
     return clf.score_samples(X)
 
 
 def isof_find_sample(X, sample_weight=None):
-    """Finds a sample by comparing the distributions of the anomaly scores between the sample and the original
-    distribution using the KS-test. Starts of a 5% however will increase to 10% and then 15% etc. if a significant sample can not be found
+    """Return row positions using a bounded anomaly-score similarity screen.
+
+    Try 20 random draws without replacement per distinct size from
+    get_5_percent_splits, starting at 5%. Accept the first KS p-value >0.95;
+    after at most 380 draws return all positions in original order. Empty and
+    single-row inputs return all positions without fitting. Observation weights
+    apply only to forest fitting; subset draws and KS comparisons are unweighted.
+
+    A large p-value does not prove representativeness. KS assumes independent
+    samples from continuous distributions, whereas each candidate here overlaps
+    the full score population. Repeated screening and one-dimensional score
+    matching do not guarantee feature/target or minority-group preservation,
+    and the random subset is not an outlier-removal rule.
 
     References
     ----------
@@ -407,28 +479,24 @@ def isof_find_sample(X, sample_weight=None):
     Parameters
     ----------
     X : pd.DataFrame
-        the predictors matrix
+        Two-dimensional DataFrame or ndarray predictor matrix.
     sample_weight : pd.Series or np.array, optional
-        the sample weights, if any, by default None
+        Positional weights for the forest fit only, by default None.
 
     Returns
     -------
     array
-        the indices for reducing the shadow predictors matrix
+        Selected positional row indices, or all indices on exhaustion/tiny input.
     """
-    loop = True
-    iteration = 0
-    size = get_5_percent_splits(length=X.shape[0])
-    element = 1
+    if not isinstance(X, (pd.DataFrame, np.ndarray)) or X.ndim != 2 or X.shape[1] == 0:
+        raise ValueError("X must be a two-dimensional predictor matrix with features")
+    sample_weight = validate_sample_weight(sample_weight, len(X))
+    if len(X) < 2:
+        return np.arange(len(X))
     preds = isolation_forest(X, sample_weight)
-    while loop:
-        sample_indices = np.random.choice(
-            np.arange(preds.size), size=size[element], replace=False
-        )
-        sample = np.take(preds, sample_indices)
-        if ks_2samp(preds, sample).pvalue > 0.95:
-            break
-        if iteration == 20:
-            element += 1
-            iteration = 0
-    return sample_indices
+    for size in get_5_percent_splits(len(X)):
+        for _ in range(20):
+            sample_indices = np.random.choice(len(X), size=size, replace=False)
+            if ks_2samp(preds, preds[sample_indices]).pvalue > 0.95:
+                return sample_indices
+    return np.arange(len(X))
