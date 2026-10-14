@@ -659,8 +659,7 @@ release is authorized by this batch. Passing it does not establish release readi
 
 ## R19 result — 2026-10-14
 
-R19 is complete on `main`, based on clean `132e0e0`; its separate local phase
-commit is recorded after committing this result. [R19](R19-tree-partitions.md)
+R19 is complete in local commit `6af7415` on `main`, based on clean `132e0e0`. [R19](R19-tree-partitions.md)
 records exact fitted numerical thresholds and leaf-ID intervals, distinct
 categorical leaf groups, removal of temporary prediction-column writes, current
 copied one-tree/task/bin parameters and aliases, shared categorical encoding in
@@ -738,8 +737,7 @@ based on `985b0a3`. [R17](R17-importance-selection.md) is complete in local comm
 `6f44345` on `main`, based on `1e88c54`. [R18](R18-ordinal-schema.md) is complete
 in local commit `7df5daa`, based on `37cf6b2`. [R31](R31-legacy-helpers.md) is complete
 in local commit `ffb7388`, based on `7df5daa`. [R19](R19-tree-partitions.md) is complete
-in the separate local phase commit recorded in its result entry above, based on
-`132e0e0`. R20 alone is next, with R02/R18/R19 complete.
+in local commit `6af7415`, based on `132e0e0`. R20 alone is next, with R02/R18/R19 complete.
 Hosted CI for R13–R19/R31 and remaining release evidence
 are still pending. An ID such
 as `1A F3` means finding 3 in the linked original report. The complete ID-to-phase

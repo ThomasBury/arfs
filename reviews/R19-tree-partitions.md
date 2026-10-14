@@ -1,7 +1,7 @@
 # R19 — Actual fitted tree partitions
 
 **R19 complete on 2026-10-14**, based on clean `main` at `132e0e0`.
-The local phase commit is recorded in REMEDIATION.md. R19 runs alone. No R20 implementation or publication is included.
+Local phase commit: `6af7415`. R19 runs alone. No R20 implementation or publication is included.
 
 ## Changes and decisions
 
