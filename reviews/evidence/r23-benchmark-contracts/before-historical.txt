@@ -1,0 +1,74 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+_____________ test_benchmark_preprocessing_uses_training_rows_only _____________
+/tmp/arfs-r23/historical/checks.py:577: in test_benchmark_preprocessing_uses_training_rows_only
+    assert set(records[0][0]).isdisjoint(X.index[va]), records
+E   AssertionError: [(Index([1000, 1007, 1014, 1021, 1028, 1035, 1042, 1049, 1056, 1063,
+E            ...
+E            2330, 2337, 2344, 2351, 2358, 2365, 2372, 2379, 2386, 2393],
+E           dtype='int64', length=200), [['heldout_only', 'train']])]
+E   assert False
+E    +  where False = <built-in method isdisjoint of set object at 0x7cf320210ac0>(Index([1665, 1105, 1210, 2106, 1896, 1805, 1483, 2190, 2218, 1315, 1462, 2274,\n       2155, 1546, 2302, 2239, 1392, 20...       1945, 1959, 2148, 1532, 1553, 2379, 1266, 1168, 1854, 2365, 1203, 1133,\n       2001, 1602],\n      dtype='int64'))
+E    +    where <built-in method isdisjoint of set object at 0x7cf320210ac0> = {1000, 1007, 1014, 1021, 1028, 1035, ...}.isdisjoint
+E    +      where {1000, 1007, 1014, 1021, 1028, 1035, ...} = set(Index([1000, 1007, 1014, 1021, 1028, 1035, 1042, 1049, 1056, 1063,\n       ...\n       2330, 2337, 2344, 2351, 2358, 2365, 2372, 2379, 2386, 2393],\n      dtype='int64', length=200))
+___________________ test_benchmark_accepts_documented_array ____________________
+/tmp/arfs-r23/historical/checks.py:584: in test_benchmark_accepts_documented_array
+    benchmark.sklearn_pimp_bench(DecisionTreeRegressor(max_depth=2), X.to_numpy(), y)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/benchmark.py:61: in sklearn_pimp_bench
+    X = OrdinalEncoderPandas().fit_transform(X)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:239: in fit_transform
+    self.fit(X, y)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:163: in fit
+    raise TypeError("X must be a pandas DataFrame.")
+E   TypeError: X must be a pandas DataFrame.
+_____________________ test_benchmark_integer_feature_names _____________________
+/tmp/arfs-r23/historical/checks.py:592: in test_benchmark_integer_feature_names
+    benchmark.sklearn_pimp_bench(DecisionTreeRegressor(max_depth=2), X, y)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/benchmark.py:104: in sklearn_pimp_bench
+    indices = [i for i, s in enumerate(X_test.columns[sorted_idx]) if "random" in s]
+E   TypeError: argument of type 'int' is not iterable
+______________ test_compare_reinitializes_selector_for_each_model ______________
+/tmp/arfs-r23/historical/checks.py:647: in test_compare_reinitializes_selector_for_each_model
+    assert all(cached == actual and isinstance(seed, int) for _, cached, actual, seed in records), records
+E   AssertionError: [(137383659588400, False, True, 11), (137383659588400, False, True, RandomState(MT19937) at 0x7CF3202D2F40), (137383659588400, False, True, RandomState(MT19937) at 0x7CF3202D2F40)]
+E   assert False
+E    +  where False = all(<generator object test_compare_reinitializes_selector_for_each_model.<locals>.<genexpr> at 0x7cf3358dbb50>)
+----------------------------- Captured stdout call -----------------------------
+==================== Leshy - testing:             LGBMRegressor for var.imp: shap            ====================
+All relevant predictors selected in 00:00:00.03
+[]
+==================== Leshy - testing:             LGBMRegressor for var.imp: pimp            ====================
+All relevant predictors selected in 00:00:00.31
+[]
+==================== Leshy - testing:             LGBMRegressor for var.imp: native          ====================
+All relevant predictors selected in 00:00:00.02
+[]
+----------------------------- Captured stderr call -----------------------------
+
+Leshy iteration:   0%|          | 0/2 [00:00<?, ?it/s]
+Leshy iteration: 100%|██████████| 2/2 [00:00<00:00, 75.30it/s]
+
+Leshy iteration:   0%|          | 0/2 [00:00<?, ?it/s]
+Leshy iteration:  50%|█████     | 1/2 [00:00<00:00,  4.59it/s]
+Leshy iteration: 100%|██████████| 2/2 [00:00<00:00,  6.62it/s]
+
+Leshy iteration:   0%|          | 0/2 [00:00<?, ?it/s]
+Leshy iteration: 100%|██████████| 2/2 [00:00<00:00, 110.76it/s]
+=============================== warnings summary ===============================
+arfs-r23/historical/checks.py::test_benchmark_preprocessing_uses_training_rows_only
+  /tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/benchmark.py:108: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+    plt.show()
+
+arfs-r23/historical/checks.py::test_benchmark_integer_feature_names
+  /tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/benchmark.py:103: UserWarning: Tight layout not applied. The bottom and top margins cannot be made large enough to accommodate all Axes decorations.
+    fig.tight_layout()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../../../tmp/arfs-r23/historical/checks.py::test_benchmark_preprocessing_uses_training_rows_only
+FAILED ../../../../tmp/arfs-r23/historical/checks.py::test_benchmark_accepts_documented_array
+FAILED ../../../../tmp/arfs-r23/historical/checks.py::test_benchmark_integer_feature_names
+FAILED ../../../../tmp/arfs-r23/historical/checks.py::test_compare_reinitializes_selector_for_each_model
+4 failed, 67 deselected, 2 warnings in 5.42s

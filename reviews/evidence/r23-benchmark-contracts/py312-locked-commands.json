@@ -1,0 +1,90 @@
+[
+  {
+    "command": [
+      "uv",
+      "venv",
+      "--python",
+      "/tmp/arfs-r22/py312-locked/bin/python",
+      "/tmp/arfs-r23/py312-locked"
+    ],
+    "cwd": "/home/bsatom/Documents/arfs",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "uv",
+      "pip",
+      "install",
+      "--python",
+      "/tmp/arfs-r23/py312-locked/bin/python",
+      "-r",
+      "/tmp/arfs-r23/locked-requirements.txt",
+      "/tmp/arfs-r23/dist/arfs-3.0.0-py3-none-any.whl"
+    ],
+    "cwd": "/home/bsatom/Documents/arfs",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "uv",
+      "pip",
+      "check",
+      "--python",
+      "/tmp/arfs-r23/py312-locked/bin/python"
+    ],
+    "cwd": "/home/bsatom/Documents/arfs",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/tmp/arfs-r23/py312-locked/bin/python",
+      "-I",
+      "-c",
+      "import matplotlib.font_manager"
+    ],
+    "cwd": "/home/bsatom/Documents/arfs",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/tmp/arfs-r23/py312-locked/bin/python",
+      "-I",
+      "/tmp/arfs-r23/environment.py"
+    ],
+    "cwd": "/home/bsatom/Documents/arfs",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/tmp/arfs-r23/py312-locked/bin/python",
+      "-I",
+      "-m",
+      "pytest",
+      "tests",
+      "-q",
+      "--tb=short",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "cwd": "/tmp/arfs-r23/run-py312-locked",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/tmp/arfs-r23/py312-locked/bin/python",
+      "-I",
+      "-m",
+      "pytest",
+      "/tmp/arfs-r23/historical/checks.py",
+      "-k",
+      "preprocessing_uses_training or accepts_documented_array or integer_feature_names or reinitializes_selector or benchmark_real_plot",
+      "--runxfail",
+      "-q",
+      "--tb=short",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "cwd": "/tmp/arfs-r23/run-py312-locked",
+    "exit_code": 0
+  }
+]

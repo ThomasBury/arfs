@@ -1,0 +1,21 @@
+.....                                                                    [100%]
+=============================== warnings summary ===============================
+arfs-r23/historical/checks.py::test_benchmark_preprocessing_uses_training_rows_only
+arfs-r23/historical/checks.py::test_benchmark_accepts_documented_array
+arfs-r23/historical/checks.py::test_benchmark_integer_feature_names
+arfs-r23/historical/checks.py::test_benchmark_real_plot
+  /tmp/arfs-r23/py312-newer/lib/python3.12/site-packages/arfs/benchmark.py:111: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+    plt.show()
+
+arfs-r23/historical/checks.py::test_benchmark_accepts_documented_array
+arfs-r23/historical/checks.py::test_benchmark_integer_feature_names
+arfs-r23/historical/checks.py::test_benchmark_real_plot
+  /tmp/arfs-r23/py312-newer/lib/python3.12/site-packages/arfs/benchmark.py:108: UserWarning: Tight layout not applied. The bottom and top margins cannot be made large enough to accommodate all Axes decorations.
+    fig.tight_layout()
+
+arfs-r23/historical/checks.py::test_benchmark_real_plot
+  /tmp/arfs-r23/py312-newer/lib/python3.12/site-packages/arfs/benchmark.py:101: MatplotlibDeprecationWarning: vert: bool was deprecated in Matplotlib 3.11 and will be removed in 3.13. Use orientation: {'vertical', 'horizontal'} instead.
+    ax.boxplot(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+5 passed, 66 deselected, 8 warnings in 7.05s

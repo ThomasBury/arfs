@@ -324,6 +324,8 @@ class Leshy(SelectorMixin, BaseEstimator):
             Nothing but attributes
 
         """
+        self.is_cat = is_catboost(self.estimator)
+        self.is_lgb = is_lightgbm(self.estimator)
         if self.importance == "fastshap":
             try:
                 from fasttreeshap import TreeExplainer as FastTreeExplainer

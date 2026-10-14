@@ -1,0 +1,345 @@
+FFFFFF.FFFFFFFFFFFFF                                                     [100%]
+=================================== FAILURES ===================================
+____ test_encoder_fits_training_only_and_unknowns_stay_unknown[False-False] ____
+/tmp/arfs-r23/test_benchmark_contracts.py:71: in test_encoder_fits_training_only_and_unknowns_stay_unknown
+    assert_frame_equal(records["training"], X.iloc[tr])
+E   AssertionError: DataFrame are different
+E
+E   DataFrame shape mismatch
+E   [left]:  (120, 4)
+E   [right]: (90, 4)
+____ test_encoder_fits_training_only_and_unknowns_stay_unknown[False-True] _____
+/tmp/arfs-r23/test_benchmark_contracts.py:71: in test_encoder_fits_training_only_and_unknowns_stay_unknown
+    assert_frame_equal(records["training"], X.iloc[tr])
+E   AssertionError: DataFrame are different
+E
+E   DataFrame shape mismatch
+E   [left]:  (120, 4)
+E   [right]: (90, 4)
+____ test_encoder_fits_training_only_and_unknowns_stay_unknown[True-False] _____
+/tmp/arfs-r23/test_benchmark_contracts.py:71: in test_encoder_fits_training_only_and_unknowns_stay_unknown
+    assert_frame_equal(records["training"], X.iloc[tr])
+E   AssertionError: DataFrame are different
+E
+E   DataFrame shape mismatch
+E   [left]:  (120, 4)
+E   [right]: (90, 4)
+_____ test_encoder_fits_training_only_and_unknowns_stay_unknown[True-True] _____
+/tmp/arfs-r23/test_benchmark_contracts.py:71: in test_encoder_fits_training_only_and_unknowns_stay_unknown
+    assert_frame_equal(records["training"], X.iloc[tr])
+E   AssertionError: DataFrame are different
+E
+E   DataFrame shape mismatch
+E   [left]:  (120, 4)
+E   [right]: (90, 4)
+______________ test_real_plot_labels_and_model_input_order[array] ______________
+/tmp/arfs-r23/test_benchmark_contracts.py:98: in test_real_plot_labels_and_model_input_order
+    fig = benchmark.sklearn_pimp_bench(model, X, y)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/benchmark.py:61: in sklearn_pimp_bench
+    X = OrdinalEncoderPandas().fit_transform(X)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:239: in fit_transform
+    self.fit(X, y)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:163: in fit
+    raise TypeError("X must be a pandas DataFrame.")
+E   TypeError: X must be a pandas DataFrame.
+_____________ test_real_plot_labels_and_model_input_order[integer] _____________
+/tmp/arfs-r23/test_benchmark_contracts.py:98: in test_real_plot_labels_and_model_input_order
+    fig = benchmark.sklearn_pimp_bench(model, X, y)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/benchmark.py:104: in sklearn_pimp_bench
+    indices = [i for i, s in enumerate(X_test.columns[sorted_idx]) if "random" in s]
+E   TypeError: argument of type 'int' is not iterable
+______________ test_bad_benchmark_input_fails_before_training[X0] ______________
+/tmp/arfs-r23/test_benchmark_contracts.py:127: in test_bad_benchmark_input_fails_before_training
+    benchmark.sklearn_pimp_bench(model, X, np.arange(len(X)))
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/benchmark.py:61: in sklearn_pimp_bench
+    X = OrdinalEncoderPandas().fit_transform(X)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:239: in fit_transform
+    self.fit(X, y)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:163: in fit
+    raise TypeError("X must be a pandas DataFrame.")
+E   TypeError: X must be a pandas DataFrame.
+
+During handling of the above exception, another exception occurred:
+/tmp/arfs-r23/test_benchmark_contracts.py:126: in test_bad_benchmark_input_fails_before_training
+    with pytest.raises(TypeError, match="two-dimensional ndarray"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'two-dimensional ndarray'
+E    Input: 'X must be a pandas DataFrame.'
+______________ test_bad_benchmark_input_fails_before_training[X1] ______________
+/tmp/arfs-r23/test_benchmark_contracts.py:127: in test_bad_benchmark_input_fails_before_training
+    benchmark.sklearn_pimp_bench(model, X, np.arange(len(X)))
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/benchmark.py:61: in sklearn_pimp_bench
+    X = OrdinalEncoderPandas().fit_transform(X)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:239: in fit_transform
+    self.fit(X, y)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:163: in fit
+    raise TypeError("X must be a pandas DataFrame.")
+E   TypeError: X must be a pandas DataFrame.
+
+During handling of the above exception, another exception occurred:
+/tmp/arfs-r23/test_benchmark_contracts.py:126: in test_bad_benchmark_input_fails_before_training
+    with pytest.raises(TypeError, match="two-dimensional ndarray"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'two-dimensional ndarray'
+E    Input: 'X must be a pandas DataFrame.'
+______________ test_bad_benchmark_input_fails_before_training[X2] ______________
+/tmp/arfs-r23/test_benchmark_contracts.py:127: in test_bad_benchmark_input_fails_before_training
+    benchmark.sklearn_pimp_bench(model, X, np.arange(len(X)))
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/benchmark.py:61: in sklearn_pimp_bench
+    X = OrdinalEncoderPandas().fit_transform(X)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:239: in fit_transform
+    self.fit(X, y)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:163: in fit
+    raise TypeError("X must be a pandas DataFrame.")
+E   TypeError: X must be a pandas DataFrame.
+
+During handling of the above exception, another exception occurred:
+/tmp/arfs-r23/test_benchmark_contracts.py:126: in test_bad_benchmark_input_fails_before_training
+    with pytest.raises(TypeError, match="two-dimensional ndarray"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'two-dimensional ndarray'
+E    Input: 'X must be a pandas DataFrame.'
+_________ test_unsupported_comparison_fails_before_training[selector0] _________
+/tmp/arfs-r23/test_benchmark_contracts.py:140: in test_unsupported_comparison_fails_before_training
+    benchmark.compare_varimp(selector, [DecisionTreeRegressor()], X, y)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/benchmark.py:146: in compare_varimp
+    feat_selector.fit(X=X, y=y, sample_weight=sample_weight)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2108: in fit
+    self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2327: in _reduce_vars_lgb_cv
+    bst, shap_matrix, bst.best_iteration = _train_lgb_model(
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py:2575: in _train_lgb_model
+    bst = lgb.train(
+/tmp/arfs-r23/test_benchmark_contracts.py:136: in unexpected
+    pytest.fail("Unsupported comparison started native training")
+E   Failed: Unsupported comparison started native training
+----------------------------- Captured stdout call -----------------------------
+==================== GrootCV - testing:     DecisionTreeRegressor for var.imp: shap            ====================
+----------------------------- Captured stderr call -----------------------------
+
+Cross Validation:   0%|          | 0/25 [00:00<?, ?it/s]
+Cross Validation:   0%|          | 0/25 [00:00<?, ?it/s]
+_________ test_unsupported_comparison_fails_before_training[selector1] _________
+/tmp/arfs-r23/test_benchmark_contracts.py:140: in test_unsupported_comparison_fails_before_training
+    benchmark.compare_varimp(selector, [DecisionTreeRegressor()], X, y)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/benchmark.py:141: in compare_varimp
+    feat_selector.importance = varimp
+E   AttributeError: 'object' object has no attribute 'importance'
+----------------------------- Captured stdout call -----------------------------
+==================== object - testing:     DecisionTreeRegressor for var.imp: shap            ====================
+_______ test_comparisons_run_each_supplied_model_and_method[Leshy-False] _______
+/tmp/arfs-r23/test_benchmark_contracts.py:198: in test_comparisons_run_each_supplied_model_and_method
+    benchmark.compare_varimp(selector, models, X, y, sample_weight=weights)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/benchmark.py:146: in compare_varimp
+    feat_selector.fit(X=X, y=y, sample_weight=sample_weight)
+/tmp/arfs-r23/test_benchmark_contracts.py:169: in observe_fit
+    assert self.random_state == 11
+E   AssertionError: assert RandomState(MT19937) at 0x75243A29E440 == 11
+E    +  where RandomState(MT19937) at 0x75243A29E440 = Leshy(estimator=RandomForestRegressor(max_depth=3, n_estimators=3, n_jobs=1,\n                                      ran...ate=8),\n      importance='pimp', max_iter=2, n_estimators=3,\n      random_state=RandomState(MT19937) at 0x75243A29E440).random_state
+----------------------------- Captured stdout call -----------------------------
+==================== Leshy - testing:     RandomForestRegressor for var.imp: shap            ====================
+All relevant predictors selected in 00:00:00.04
+[]
+==================== Leshy - testing:     RandomForestRegressor for var.imp: pimp            ====================
+----------------------------- Captured stderr call -----------------------------
+
+Leshy iteration:   0%|          | 0/2 [00:00<?, ?it/s]
+Leshy iteration: 100%|██████████| 2/2 [00:00<00:00, 56.21it/s]
+_______ test_comparisons_run_each_supplied_model_and_method[Leshy-True] ________
+/tmp/arfs-r23/test_benchmark_contracts.py:198: in test_comparisons_run_each_supplied_model_and_method
+    benchmark.compare_varimp(selector, models, X, y, sample_weight=weights)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/benchmark.py:146: in compare_varimp
+    feat_selector.fit(X=X, y=y, sample_weight=sample_weight)
+/tmp/arfs-r23/test_benchmark_contracts.py:169: in observe_fit
+    assert self.random_state == 11
+E   AssertionError: assert RandomState(MT19937) at 0x75243A29F740 == 11
+E    +  where RandomState(MT19937) at 0x75243A29F740 = Leshy(estimator=RandomForestClassifier(max_depth=3, n_estimators=3, n_jobs=1,\n                                       r...ate=8),\n      importance='pimp', max_iter=2, n_estimators=3,\n      random_state=RandomState(MT19937) at 0x75243A29F740).random_state
+----------------------------- Captured stdout call -----------------------------
+==================== Leshy - testing:    RandomForestClassifier for var.imp: shap            ====================
+All relevant predictors selected in 00:00:00.04
+[]
+==================== Leshy - testing:    RandomForestClassifier for var.imp: pimp            ====================
+----------------------------- Captured stderr call -----------------------------
+
+Leshy iteration:   0%|          | 0/2 [00:00<?, ?it/s]
+Leshy iteration: 100%|██████████| 2/2 [00:00<00:00, 53.23it/s]
+___ test_comparisons_run_each_supplied_model_and_method[BoostAGroota-False] ____
+/tmp/arfs-r23/test_benchmark_contracts.py:204: in test_comparisons_run_each_supplied_model_and_method
+    assert len(runs) == len({id(run) for run in runs}) == 6
+E   assert 6 == 1
+E    +  where 6 = len([BoostARoota(est=LGBMRegressor(n_estimators=3, n_jobs=1, num_leaves=4, random_state=8,\n              verbosity=-1), \n ...           max_rounds=1,\n                delta=0.1,\n                silent=True, \n                importance="native")])
+E    +  and   1 = len({128798453815280})
+----------------------------- Captured stdout call -----------------------------
+==================== BoostAGroota - testing:     RandomForestRegressor for var.imp: shap            ====================
+['genuine_signal' 'other' 'random_noise']
+==================== BoostAGroota - testing:     RandomForestRegressor for var.imp: pimp            ====================
+['genuine_signal' 'other']
+==================== BoostAGroota - testing:     RandomForestRegressor for var.imp: native          ====================
+['genuine_signal' 'other' 'random_noise']
+==================== BoostAGroota - testing:             LGBMRegressor for var.imp: shap            ====================
+['genuine_signal' 'other' 'random_noise']
+==================== BoostAGroota - testing:             LGBMRegressor for var.imp: pimp            ====================
+['genuine_signal']
+==================== BoostAGroota - testing:             LGBMRegressor for var.imp: native          ====================
+['genuine_signal' 'other' 'random_noise']
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+____ test_comparisons_run_each_supplied_model_and_method[BoostAGroota-True] ____
+/tmp/arfs-r23/test_benchmark_contracts.py:204: in test_comparisons_run_each_supplied_model_and_method
+    assert len(runs) == len({id(run) for run in runs}) == 6
+E   assert 6 == 1
+E    +  where 6 = len([BoostARoota(est=LGBMClassifier(n_estimators=3, n_jobs=1, num_leaves=4, random_state=8,\n               verbosity=-1), ...           max_rounds=1,\n                delta=0.1,\n                silent=True, \n                importance="native")])
+E    +  and   1 = len({128798453614880})
+----------------------------- Captured stdout call -----------------------------
+==================== BoostAGroota - testing:    RandomForestClassifier for var.imp: shap            ====================
+['genuine_signal' 'other']
+==================== BoostAGroota - testing:    RandomForestClassifier for var.imp: pimp            ====================
+['genuine_signal']
+==================== BoostAGroota - testing:    RandomForestClassifier for var.imp: native          ====================
+['genuine_signal' 'other']
+==================== BoostAGroota - testing:            LGBMClassifier for var.imp: shap            ====================
+['genuine_signal' 'other' 'random_noise']
+==================== BoostAGroota - testing:            LGBMClassifier for var.imp: pimp            ====================
+['genuine_signal']
+==================== BoostAGroota - testing:            LGBMClassifier for var.imp: native          ====================
+['genuine_signal' 'random_noise']
+----------------------------- Captured stderr call -----------------------------
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+BoostaGRoota round:   0%|          | 0/1 [00:00<?, ?it/s]
+___ test_comparison_seed_state_is_copied_even_from_fitted_selector[integer] ____
+/tmp/arfs-r23/test_benchmark_contracts.py:241: in test_comparison_seed_state_is_copied_even_from_fitted_selector
+    benchmark.compare_varimp(selector, [model], X, y)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/benchmark.py:146: in compare_varimp
+    feat_selector.fit(X=X, y=y, sample_weight=sample_weight)
+/tmp/arfs-r23/test_benchmark_contracts.py:233: in observe
+    assert self.random_state is not selector.random_state
+E   assert RandomState(MT19937) at 0x75243A29D740 is not RandomState(MT19937) at 0x75243A29D740
+E    +  where RandomState(MT19937) at 0x75243A29D740 = Leshy(estimator=RandomForestRegressor(max_depth=3, n_estimators=3,\n                                      random_state=...19937) at 0x75243A29CE40),\n      max_iter=2, n_estimators=3,\n      random_state=RandomState(MT19937) at 0x75243A29D740).random_state
+E    +  and   RandomState(MT19937) at 0x75243A29D740 = Leshy(estimator=RandomForestRegressor(max_depth=3, n_estimators=3,\n                                      random_state=...19937) at 0x75243A29CE40),\n      max_iter=2, n_estimators=3,\n      random_state=RandomState(MT19937) at 0x75243A29D740).random_state
+----------------------------- Captured stdout call -----------------------------
+All relevant predictors selected in 00:00:00.04
+==================== Leshy - testing:     RandomForestRegressor for var.imp: shap            ====================
+----------------------------- Captured stderr call -----------------------------
+
+Leshy iteration:   0%|          | 0/2 [00:00<?, ?it/s]
+Leshy iteration: 100%|██████████| 2/2 [00:00<00:00, 61.60it/s]
+___ test_comparison_seed_state_is_copied_even_from_fitted_selector[instance] ___
+/tmp/arfs-r23/test_benchmark_contracts.py:241: in test_comparison_seed_state_is_copied_even_from_fitted_selector
+    benchmark.compare_varimp(selector, [model], X, y)
+/tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/benchmark.py:146: in compare_varimp
+    feat_selector.fit(X=X, y=y, sample_weight=sample_weight)
+/tmp/arfs-r23/test_benchmark_contracts.py:233: in observe
+    assert self.random_state is not selector.random_state
+E   assert RandomState(MT19937) at 0x752439F58040 is not RandomState(MT19937) at 0x752439F58040
+E    +  where RandomState(MT19937) at 0x752439F58040 = Leshy(estimator=RandomForestRegressor(max_depth=3, n_estimators=3,\n                                      random_state=...19937) at 0x752439F58340),\n      max_iter=2, n_estimators=3,\n      random_state=RandomState(MT19937) at 0x752439F58040).random_state
+E    +  and   RandomState(MT19937) at 0x752439F58040 = Leshy(estimator=RandomForestRegressor(max_depth=3, n_estimators=3,\n                                      random_state=...19937) at 0x752439F58340),\n      max_iter=2, n_estimators=3,\n      random_state=RandomState(MT19937) at 0x752439F58040).random_state
+----------------------------- Captured stdout call -----------------------------
+All relevant predictors selected in 00:00:00.04
+==================== Leshy - testing:     RandomForestRegressor for var.imp: shap            ====================
+----------------------------- Captured stderr call -----------------------------
+
+Leshy iteration:   0%|          | 0/2 [00:00<?, ?it/s]
+Leshy iteration: 100%|██████████| 2/2 [00:00<00:00, 60.94it/s]
+__________ test_leshy_set_params_refreshes_backend_on_real_fit[False] __________
+/tmp/arfs-r23/test_benchmark_contracts.py:259: in test_leshy_set_params_refreshes_backend_on_real_fit
+    assert selector.is_lgb == to_lightgbm
+E   AssertionError: assert True == False
+E    +  where True = Leshy(estimator=RandomForestRegressor(max_depth=3, n_estimators=3, n_jobs=1,\n                                      ran...895),\n      importance='native', max_iter=2, n_estimators=3,\n      random_state=RandomState(MT19937) at 0x752439F59040).is_lgb
+----------------------------- Captured stdout call -----------------------------
+All relevant predictors selected in 00:00:00.04
+----------------------------- Captured stderr call -----------------------------
+
+Leshy iteration:   0%|          | 0/2 [00:00<?, ?it/s]
+Leshy iteration: 100%|██████████| 2/2 [00:00<00:00, 52.42it/s]
+__________ test_leshy_set_params_refreshes_backend_on_real_fit[True] ___________
+/tmp/arfs-r23/test_benchmark_contracts.py:259: in test_leshy_set_params_refreshes_backend_on_real_fit
+    assert selector.is_lgb == to_lightgbm
+E   AssertionError: assert False == True
+E    +  where False = Leshy(estimator=LGBMRegressor(n_estimators=3, n_jobs=1, num_leaves=4,\n                              random_state=Rando...=-1),\n      importance='native', max_iter=2, n_estimators=3,\n      random_state=RandomState(MT19937) at 0x752439F59C40).is_lgb
+----------------------------- Captured stdout call -----------------------------
+All relevant predictors selected in 00:00:00.03
+----------------------------- Captured stderr call -----------------------------
+
+Leshy iteration:   0%|          | 0/2 [00:00<?, ?it/s]
+Leshy iteration: 100%|██████████| 2/2 [00:00<00:00, 77.41it/s]
+=============================== warnings summary ===============================
+arfs-r23/test_benchmark_contracts.py::test_encoder_fits_training_only_and_unknowns_stay_unknown[False-False]
+arfs-r23/test_benchmark_contracts.py::test_encoder_fits_training_only_and_unknowns_stay_unknown[False-True]
+arfs-r23/test_benchmark_contracts.py::test_encoder_fits_training_only_and_unknowns_stay_unknown[True-False]
+arfs-r23/test_benchmark_contracts.py::test_encoder_fits_training_only_and_unknowns_stay_unknown[True-True]
+arfs-r23/test_benchmark_contracts.py::test_real_plot_labels_and_model_input_order[named]
+  /tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/benchmark.py:108: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+    plt.show()
+
+arfs-r23/test_benchmark_contracts.py::test_real_plot_labels_and_model_input_order[integer]
+arfs-r23/test_benchmark_contracts.py::test_real_plot_labels_and_model_input_order[named]
+  /tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/arfs/benchmark.py:103: UserWarning: Tight layout not applied. The bottom and top margins cannot be made large enough to accommodate all Axes decorations.
+    fig.tight_layout()
+
+arfs-r23/test_benchmark_contracts.py::test_comparisons_run_each_supplied_model_and_method[BoostAGroota-True]
+  /tmp/arfs-r22/py312-locked/lib/python3.12/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../../../tmp/arfs-r23/test_benchmark_contracts.py::test_encoder_fits_training_only_and_unknowns_stay_unknown[False-False]
+FAILED ../../../../tmp/arfs-r23/test_benchmark_contracts.py::test_encoder_fits_training_only_and_unknowns_stay_unknown[False-True]
+FAILED ../../../../tmp/arfs-r23/test_benchmark_contracts.py::test_encoder_fits_training_only_and_unknowns_stay_unknown[True-False]
+FAILED ../../../../tmp/arfs-r23/test_benchmark_contracts.py::test_encoder_fits_training_only_and_unknowns_stay_unknown[True-True]
+FAILED ../../../../tmp/arfs-r23/test_benchmark_contracts.py::test_real_plot_labels_and_model_input_order[array]
+FAILED ../../../../tmp/arfs-r23/test_benchmark_contracts.py::test_real_plot_labels_and_model_input_order[integer]
+FAILED ../../../../tmp/arfs-r23/test_benchmark_contracts.py::test_bad_benchmark_input_fails_before_training[X0]
+FAILED ../../../../tmp/arfs-r23/test_benchmark_contracts.py::test_bad_benchmark_input_fails_before_training[X1]
+FAILED ../../../../tmp/arfs-r23/test_benchmark_contracts.py::test_bad_benchmark_input_fails_before_training[X2]
+FAILED ../../../../tmp/arfs-r23/test_benchmark_contracts.py::test_unsupported_comparison_fails_before_training[selector0]
+FAILED ../../../../tmp/arfs-r23/test_benchmark_contracts.py::test_unsupported_comparison_fails_before_training[selector1]
+FAILED ../../../../tmp/arfs-r23/test_benchmark_contracts.py::test_comparisons_run_each_supplied_model_and_method[Leshy-False]
+FAILED ../../../../tmp/arfs-r23/test_benchmark_contracts.py::test_comparisons_run_each_supplied_model_and_method[Leshy-True]
+FAILED ../../../../tmp/arfs-r23/test_benchmark_contracts.py::test_comparisons_run_each_supplied_model_and_method[BoostAGroota-False]
+FAILED ../../../../tmp/arfs-r23/test_benchmark_contracts.py::test_comparisons_run_each_supplied_model_and_method[BoostAGroota-True]
+FAILED ../../../../tmp/arfs-r23/test_benchmark_contracts.py::test_comparison_seed_state_is_copied_even_from_fitted_selector[integer]
+FAILED ../../../../tmp/arfs-r23/test_benchmark_contracts.py::test_comparison_seed_state_is_copied_even_from_fitted_selector[instance]
+FAILED ../../../../tmp/arfs-r23/test_benchmark_contracts.py::test_leshy_set_params_refreshes_backend_on_real_fit[False]
+FAILED ../../../../tmp/arfs-r23/test_benchmark_contracts.py::test_leshy_set_params_refreshes_backend_on_real_fit[True]
+19 failed, 1 passed, 8 warnings in 10.29s

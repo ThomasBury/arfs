@@ -2,6 +2,8 @@
 
 # Unreleased
 
+ - Fit benchmark encoders on training rows only, support ndarray inputs and integer display names, and compare fresh Leshy/BoostAGroota configurations without mutating caller objects. Reject GrootCV in cross-estimator comparisons and refresh Leshy backend flags at fit time.
+
  - Save versioned GBM artifacts with the offset guard, category names and original prediction schema. Validate metadata before replacing loaded state and clear stale validation data/curves. Reject legacy Booster-only files because their baseline contract is unknown; refit and save again. Stage model and optional PNG writes before replacement; the PNG remains a separate file, and its replacement can fail after the model commits. Joblib artifacts require trusted input and a compatible environment.
 
  - Reject conflicting GBM group/stratified splitting and mismatched prediction schemas. Handle multiclass objective aliases and finite positional initial-score matrices; clear stale state after successful refits. Restrict automatic categories to pandas category/bool, honor explicit categorical disable, and explain unsupported dtype conversion. Initial-score predictions still require a new external baseline on the raw scale.

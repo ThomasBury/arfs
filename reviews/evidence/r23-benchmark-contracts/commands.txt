@@ -1,0 +1,70 @@
+Checkout: /home/bsatom/Documents/arfs; clean main @ 9a6a8b7.
+R23 alone; next group R24 alone (R06 complete).
+No publication or release.
+
+Source/baseline runs: MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+LOKY_MAX_CPU_COUNT=2. Installed-cell environment additionally sets:
+UV_CACHE_DIR=/tmp/arfs-r04/cache MPLCONFIGDIR=/tmp/arfs-r23/mpl-<cell>
+MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 PYTHONHASHSEED=0
+PYTHONDONTWRITEBYTECODE=1. Installed runs remove PYTHONPATH and use isolated
+Python outside the checkout. All generated artifacts loaded here are trusted.
+
+Before historical (unchanged checks.py copied from review 04):
+/tmp/arfs-r22/py312-locked/bin/python -I -m pytest /tmp/arfs-r23/historical/checks.py -k 'preprocessing_uses_training or accepts_documented_array or integer_feature_names or reinitializes_selector' --runxfail -q --tb=short -p no:cacheprovider
+before-historical.txt: 4 failed, 67 deselected.
+Original historical scripts/reports/logs are preserved.
+
+Final maintained regressions copied into /tmp/arfs-r23:
+/tmp/arfs-r22/py312-locked/bin/python -I -m pytest /tmp/arfs-r23/test_benchmark_contracts.py -q --tb=short -p no:cacheprovider
+before-final.txt: 19 failed, 1 passed (20 cases).
+before-environment.json records packages/provenance and asserts no setuptools.
+All 12 installed-module hashes match git show 9a6a8b7:src/<module>.py.
+Copied before tests have identical bytes to final maintained tests.
+
+Final affected source/callers:
+PYTHONPATH=src /tmp/arfs-r22/py312-locked/bin/python -m pytest tests/test_benchmark_contracts.py tests/test_observation_boundaries.py tests/test_dependency_apis.py tests/test_leshy_support.py tests/test_permutation_importance.py tests/test_shadow_contracts.py tests/test_allrelevant_aggregation.py -q --tb=short -p no:cacheprovider
+source-final.txt: 316 passed, 72 existing warnings.
+
+uv export --locked --extra test --no-emit-project --output-file /tmp/arfs-r23/locked-requirements.txt
+uv build --python /tmp/arfs-r22/py312-locked/bin/python --out-dir /tmp/arfs-r23/dist
+uv lock --check --python /tmp/arfs-r22/py312-locked/bin/python
+/tmp/arfs-r22/py312-locked/bin/python /tmp/arfs-r23/check_payloads.py
+payloads.json: all 19 source/sdist/wheel files match, including three data payloads.
+
+Orchestrators validate.py, environment.py, check_payloads.py are reused from R22,
+with phase paths, R22 base interpreters and historical selection changed. Exact
+copies run from /tmp/arfs-r23. Fresh venvs install the locked export or checked-in
+newer requirements plus the rebuilt wheel, check dependencies, verify all copied
+tests and 12 installed source-module hashes, then run outside checkout with -I and
+no setuptools workaround. Three independent cells run concurrently; no agent
+work was delegated.
+/tmp/arfs-r22/py312-locked/bin/python /tmp/arfs-r23/validate.py py39-locked
+/tmp/arfs-r22/py312-locked/bin/python /tmp/arfs-r23/validate.py py312-locked
+/tmp/arfs-r22/py312-locked/bin/python /tmp/arfs-r23/validate.py py312-newer
+Full-suite results: 1088 / 1088 / 1072.
+Per-cell commands.json records exact argv/cwd/exit codes. Environment JSON records
+all package versions, paths, hashes and interpreter versions. Both Python 3.12
+cells run five unchanged historical benchmark checks with --runxfail. The old
+GrootCV expectation is replaced by maintained explicit-rejection tests; no
+historical evidence is changed to match the new API.
+
+uv tool run --from ruff==0.17.0 python .github/scripts/check_ruff_baseline.py
+Ruff: 395 total, zero new; baseline unchanged.
+/tmp/arfs-r22/py312-locked/bin/python -m unittest discover -s .github/scripts -p 'test_*.py'
+Two passed.
+uv tool run --from ruff==0.17.0 ruff check tests/test_benchmark_contracts.py reviews/evidence/r23-benchmark-contracts/*.py
+uv tool run --from ruff==0.17.0 ruff format --check src/arfs/benchmark.py tests/test_benchmark_contracts.py reviews/evidence/r23-benchmark-contracts/*.py
+Both pass. Local handoff links and git diff --check checked before commits.
+
+Context7 /scikit-learn/scikit-learn: clone and top-level get_params. Installed
+sklearn.base._clone_parametrized source confirms safe=False recursively clones
+dictionaries/estimators and deep-copies non-estimator RandomState parameters.
+Real comparison tests verify independent state copies in every runtime cell.
+Integer seeds are copied; a fitted template's current advanced state is copied.
+None and BoostAGroota global shadow randomness keep their existing behavior.
+No common held-out model-performance comparison or calibration claim is made.
+
+Skipped hosted CI, docs/notebook execution, optional CatBoost/XGBoost/fasttreeshap,
+other platforms, performance and statistical calibration. Missing/unknown encoded
+categories require a missing-value-capable estimator. No release claim.
+New log lines have display-only trailing whitespace removed for git diff --check.
