@@ -47,14 +47,14 @@ for features in (X, X.to_numpy()):
         n_jobs=1,
     )
     assert np.isfinite(selected.predict(features)).all()
-params = dict(
-    objective="binary",
-    metric="binary_logloss",
-    n_estimators=5,
-    num_threads=1,
-    verbosity=-1,
-    min_data_in_leaf=2,
-)
+params = {
+    "objective": "binary",
+    "metric": "binary_logloss",
+    "n_estimators": 5,
+    "num_threads": 1,
+    "verbosity": -1,
+    "min_data_in_leaf": 2,
+}
 wrapper = GradientBoosting(params=params, show_learning_curve=False, verbose_eval=0)
 wrapper.fit(X, (y > 0.5).astype(int), sample_weight=weight)
 probability = wrapper.model.predict(X)
