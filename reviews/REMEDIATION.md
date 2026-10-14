@@ -13,6 +13,32 @@ evidence. Prefer existing helpers and supported native APIs; no compatibility
 layer, new backend, packaging split, or broad rewrite is required by this plan.
 Names below are phase IDs, not commit promises or a release schedule.
 
+## R13–R24 and R31 delivery — 2026-10-14
+
+The user authorized staging, topical Conventional Commits, a dedicated branch,
+a pull request, Codex bot review, fixes for its comments, merge and branch removal.
+Branch: `fix/r13-r24-remediation`, based on `64b0ce7` on remote `main`.
+The 25 existing phase commits already have topical Conventional Commit titles;
+they retain the phase histories and validation evidence below. This delivery
+includes completed R13–R24 and R31 only; it does not start the next repair group.
+
+The branch's package source and tests match the final R24 installed-wheel
+validation: **1177 passed** on Python 3.9 locked, **1177 passed** on Python 3.12
+locked and **1161 passed** on Python 3.12 newer. All 28 historical R24 distance
+checks pass unmasked in both 3.12 cells. Source/artifact hashes, dependency checks,
+lock validation, Ruff (**390 total, zero new**) and gate unit tests (**two passed**)
+are recorded in [R24](R24-gower-distances.md). Hosted CI and Codex review are
+checked on the pull request during delivery; CodeRabbit is not a delivery gate.
+
+**Release decision: defer the version bump and GitHub release.** The checkout
+and latest published release remain `3.0.0`. R25–R30, R32 and R33 remain pending,
+including sampling weights/output/retries, nearest neighbors, parallel labels,
+plots, dataset fixtures, runnable documentation and final release evidence.
+The API changes in this branch remain under Unreleased in CHANGELOG.md; choose
+the next version after those blockers and R33 checks are complete. No tag or
+release is part of this delivery. The next recorded group remains **R25 → R26**,
+conditional on its weighting, tiny-input and exhaustion policies.
+
 ## R04–R12 delivery — 2026-10-13
 
 The user authorized staging, topical Conventional Commits, a dedicated branch,
