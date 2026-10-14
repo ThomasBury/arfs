@@ -13,6 +13,33 @@ evidence. Prefer existing helpers and supported native APIs; no compatibility
 layer, new backend, packaging split, or broad rewrite is required by this plan.
 Names below are phase IDs, not commit promises or a release schedule.
 
+## R25–R27 delivery — 2026-10-14
+
+The user authorized staging, topical Conventional Commits, a dedicated branch,
+a pull request, Codex bot review, fixes for its comments, merge and branch removal.
+Branch: `fix/r25-r27-remediation`, based on `34641a2` on remote `main`.
+The five existing phase/handoff commits retain their Conventional Commit titles
+and the independently validated R25, R26 and R27 histories. This delivery
+includes those completed phases only; R28 remains the next separate repair.
+
+Final package source and all maintained test bytes match the green R27 installed
+wheel matrix: **1301 passed** on Python 3.9 locked, **1301 passed** on Python 3.12
+locked and **1285 passed** on Python 3.12 newer. All six selected historical R27
+checks pass unmasked in both Python 3.12 cells. Exact commands, environment
+identities, source/artifact hashes and limits are in [R27](R27-nearest-neighbors.md).
+New evidence remains local and ignored; no historical evidence is deleted or
+added to this delivery. Hosted CI and Codex review are checked on the delivery
+PR before merging. CodeRabbit is not a delivery gate.
+
+**Release decision: defer the version bump, tag and GitHub release.** The checkout
+and latest published GitHub release remain `3.0.0` (verified during delivery).
+R28–R30, R32 and R33 still include parallel-label/worker contracts, plots,
+dataset fixtures, runnable documentation and final release evidence. The changes
+remain under Unreleased in CHANGELOG.md. These independently validated repairs
+are ready for a PR now; choose the next version only after the remaining API
+changes and R33 checks are complete. No further repair phase or release is part
+of this delivery. Next remains **R28 alone**, with R06/R08 complete.
+
 ## R13–R24 and R31 delivery — 2026-10-14
 
 The user authorized staging, topical Conventional Commits, a dedicated branch,
