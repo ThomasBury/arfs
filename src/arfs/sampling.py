@@ -295,27 +295,25 @@ def _gower_distance_row(xi_cat, xi_num, xj_cat, xj_num, available, weight, categ
 
 
 def smallest_indices(ary, n):
-    """Returns the n largest indices from a numpy array.
+    """Return the n smallest finite values and their flattened positions.
 
-    Parameters
-    ----------
-    ary : np.array
-        the array for which to return largest indices
-    n : int
-        the number of indices to return
-
-    Returns
-    -------
-    dict
-        the dictionary of indices and values of the largest elements
+    n must be a nonnegative integer no larger than the finite-value count.
+    Zero returns empty arrays. NaN and infinities are excluded; ties keep input
+    order. Values retain their numeric dtype, and the input is not modified.
     """
-    # n += 1
-    flat = np.nan_to_num(ary.flatten(), nan=999)
-    indices = np.argpartition(-flat, -n)[-n:]
-    indices = indices[np.argsort(flat[indices])]
-    # indices = np.delete(indices,0,0)
-    values = flat[indices]
-    return {"index": indices, "values": values}
+    if isinstance(n, (bool, np.bool_)) or not isinstance(n, (int, np.integer)) or n < 0:
+        raise ValueError("n must be a nonnegative integer")
+    flat = np.asarray(ary).ravel()
+    if flat.dtype.kind not in "biuf":
+        raise TypeError("ary must contain real numeric values")
+    indices = np.flatnonzero(np.isfinite(flat))
+    if n > len(indices):
+        raise ValueError("n exceeds the number of finite values")
+    if n:
+        indices = indices[np.argsort(flat[indices], kind="stable")][:n]
+    else:
+        indices = indices[:0]
+    return {"index": indices, "values": flat[indices]}
 
 
 def gower_topn(
@@ -326,72 +324,80 @@ def gower_topn(
     n=5,
     key=None,
 ):
-    """Get the n most similar elements
+    """Return the n nearest eligible candidate rows to an explicit one-row query.
 
     Parameters
     ----------
-    data_x : np.array or pd.DataFrame
-        The data for the look up
-    data_y : np.array or pd.DataFrame or pd.Series, optional
-        elements for which to return the most similar elements, should be a single row
-    weight : np.array or pd.Series, optional
-        sample weight, by default None
-    cat_features : list of str or bool or int, optional
-        auto detection of cat features or a list of strings, booleans or integers, by default 'auto'
+    data_x : ndarray or pandas.DataFrame
+        Candidate rows. Returned indices are positions, not DataFrame labels.
+    data_y : ndarray, pandas.DataFrame or pandas.Series
+        Required one-row query with the same feature schema. A Series is a named
+        reference row. Omission/None raises ValueError; other row counts fail.
+    weight : array-like, optional
+        Feature weights passed to gower_matrix, not observation weights. With a
+        key, these and categorical masks describe features after removing it.
+    cat_features : "auto" or sequence of str, bool or int, optional
+        The gower_matrix category specification for the scored features.
+        Automatic feature roles follow candidate dtypes, including Series queries.
     n : int, optional
-        the number of neighbors/similar rows to find, by default 5
-    key : str, optional
-        identifier key. If several rows refer to the same id, this column
-        will be used for finding the nearest neighbors with a
-        different id, by default None
+        Number of neighbors, by default 5. Must be a nonnegative integer; zero
+        returns empty arrays. Too few eligible neighbors raises ValueError.
+    key : column label, optional
+        Requires named candidate/query DataFrames (or a query Series). Exclude
+        this column from distance computation and all rows matching the query's
+        identifier. Query identifiers must be nonmissing; missing candidate IDs
+        are ineligible. Keep the nearest finite-distance row per remaining ID,
+        with pandas membership/duplicate semantics and input order breaking ties.
+        Without a key, all finite-distance rows are eligible, including self.
 
     Returns
     -------
     dict
-        the dictionary of indices and values of the closest elements
+        "index" contains integer candidate positions, "values" their distances
+        in ascending order. NaN/infinite distances are excluded, not replaced.
 
-    Raises
-    ------
-    TypeError
-        if the reference element is not a single row
+    Notes
+    -----
+    One candidate-by-query distance vector is allocated, not a self-distance
+    matrix. Gower ranges still pool the full candidates and query, before key
+    exclusion. Ranking sorts once (O(N log N)); distance storage is O(N).
+    Inputs are not modified.
     """
-
-    if data_y.shape[0] >= 2:
-        raise TypeError("Only support `data_y` of 1 row. ")
-    if key is None:
-        dm = gower_matrix(data_y, data_x, weight, cat_features)
-    else:
-        X = data_x.drop(key, axis=1)
-        Y = data_x.drop(key, axis=1)
-        dm = gower_matrix(Y, X, weight, cat_features)
-
+    if isinstance(n, (bool, np.bool_)) or not isinstance(n, (int, np.integer)) or n < 0:
+        raise ValueError("n must be a nonnegative integer")
+    if data_y is None:
+        raise ValueError("data_y must be provided as an explicit 1 row query")
+    query = data_y.to_frame().T if isinstance(data_y, pd.Series) else data_y
+    if not isinstance(query, (pd.DataFrame, np.ndarray)) or query.ndim != 2:
+        raise TypeError("data_y must be a two-dimensional 1 row query or a Series")
+    if len(query) != 1:
+        raise TypeError("data_y must contain exactly 1 row")
+    candidates = data_x
     if key is not None:
-        idx = smallest_indices(np.nan_to_num(dm[0], nan=1), n)["index"]
-        val = smallest_indices(np.nan_to_num(dm[0], nan=1), n)["values"]
-        unique_id = data_x.iloc[idx, :]
-        unique_id = unique_id[key]
-        nunique_id = unique_id.nunique()
-        mul = 1
-        # continue looking for the closest n unique records with a different id
-        while nunique_id < n:
-            idx = smallest_indices(np.nan_to_num(dm[0], nan=1), mul * n)["index"]
-            val = smallest_indices(np.nan_to_num(dm[0], nan=1), mul * n)["values"]
-            unique_id = data_x.iloc[idx, :].reset_index()
-            unique_id = unique_id[key]
-            nunique_id = unique_id.nunique()
-            mul += 1
-
-        # find the indices of the unique id
-        _, idx_n = np.unique(unique_id, return_index=True)
-        # select only the rows corresponding to unique id
-        val = val[idx_n]
-        idx = idx[idx_n]
-        # sort them from the closest to the farthest, according to the Gower metrics
-        idx_n = np.argsort(val)
-        # return the n closest records, with a different id
-        return {"index": idx[idx_n[:n]], "values": val[idx_n[:n]]}
-    else:
-        return smallest_indices(np.nan_to_num(dm[0], nan=1), n)
+        if not isinstance(data_x, pd.DataFrame) or not isinstance(query, pd.DataFrame):
+            raise TypeError("key requires named candidate and query DataFrames")
+        if not data_x.columns.is_unique or not query.columns.is_unique:
+            raise ValueError("Feature columns must be unique")
+        if key not in data_x.columns or key not in query.columns:
+            raise ValueError("key must be a column in both candidates and query")
+        if query[key].isna().iloc[0]:
+            raise ValueError("The query key must be nonmissing")
+        eligible = data_x[key].notna() & ~data_x[key].isin([query[key].iloc[0]])
+        candidates = data_x.drop(columns=[key])
+        query = query.drop(columns=[key])
+    # shortcut: candidate-first Gower keeps dtype inference; vectorize row calls if profiling requires it.
+    distances = gower_matrix(candidates, query, weight, cat_features)[:, 0]
+    if key is not None:
+        distances[~eligible.to_numpy()] = np.nan
+    if n == 0:
+        return smallest_indices(distances, 0)
+    indices = smallest_indices(distances, np.isfinite(distances).sum())["index"]
+    if key is not None:
+        indices = indices[~data_x[key].iloc[indices].duplicated().to_numpy()]
+    if n > len(indices):
+        raise ValueError("n exceeds the number of eligible finite-distance neighbors")
+    indices = indices[:n]
+    return {"index": indices, "values": distances[indices]}
 
 
 def get_5_percent_splits(length):

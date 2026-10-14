@@ -2,6 +2,8 @@
 
 # Unreleased
 
+ - Make Gower nearest neighbors use the explicit one-row query, exclude its identifier and return the nearest finite-distance row per remaining key. Use linear distance storage, stable input-order ties and validated nonnegative counts; raise for too few eligible neighbors. Support Series queries and preserve candidate dtype inference. smallest_indices now returns only finite values and empty arrays for zero, without nonfinite-value replacement.
+
  - Bound isolation sampling to 20 attempts per distinct 5%–95% proper-subset size, starting at 5%. Return empty/single inputs unchanged and full original data on exhaustion. Describe the unweighted KS p-value screen as a heuristic, without representativeness or outlier-removal guarantees.
 
  - Repair sampling outputs: impute numeric columns separately, preserve feature names (including label), and return original isolation-selected rows and dtypes. Reject unsupported Gower row weights and entirely missing columns; forward validated observation weights to the isolation forest fit while keeping subset draws and KS screening unweighted.
