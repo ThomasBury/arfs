@@ -1,0 +1,814 @@
+FFFFFFFFFFFFFFFFFFFFFFFF.FFFF..FFFFFFFFFFFFFFFFFFFFF.FFFFFFFFFF...F....F [ 80%]
+F.FFFFFFFFFFF..FF                                                        [100%]
+=================================== FAILURES ===================================
+______ test_hand_weighted_mixed_matrix_and_input_preservation[array-auto] ______
+/tmp/arfs-r24/test_gower_distances.py:78: in test_hand_weighted_mixed_matrix_and_input_preservation
+    assert result.dtype == np.float64
+E   AssertionError: assert dtype('float32') == <class 'numpy.float64'>
+E    +  where dtype('float32') = array([[0.  , 0.25, 0.75],\n       [0.25, 0.  , 0.5 ],\n       [0.75, 0.5 , 0.  ]], dtype=float32).dtype
+E    +  and   <class 'numpy.float64'> = np.float64
+_____ test_hand_weighted_mixed_matrix_and_input_preservation[array-mask1] ______
+/tmp/arfs-r24/test_gower_distances.py:78: in test_hand_weighted_mixed_matrix_and_input_preservation
+    assert result.dtype == np.float64
+E   AssertionError: assert dtype('float32') == <class 'numpy.float64'>
+E    +  where dtype('float32') = array([[0.  , 0.25, 0.75],\n       [0.25, 0.  , 0.5 ],\n       [0.75, 0.5 , 0.  ]], dtype=float32).dtype
+E    +  and   <class 'numpy.float64'> = np.float64
+_____ test_hand_weighted_mixed_matrix_and_input_preservation[array-mask2] ______
+/tmp/arfs-r24/test_gower_distances.py:78: in test_hand_weighted_mixed_matrix_and_input_preservation
+    assert result.dtype == np.float64
+E   AssertionError: assert dtype('float32') == <class 'numpy.float64'>
+E    +  where dtype('float32') = array([[0.  , 0.25, 0.75],\n       [0.25, 0.  , 0.5 ],\n       [0.75, 0.5 , 0.  ]], dtype=float32).dtype
+E    +  and   <class 'numpy.float64'> = np.float64
+_____ test_hand_weighted_mixed_matrix_and_input_preservation[array-mask3] ______
+/tmp/arfs-r24/test_gower_distances.py:78: in test_hand_weighted_mixed_matrix_and_input_preservation
+    assert result.dtype == np.float64
+E   AssertionError: assert dtype('float32') == <class 'numpy.float64'>
+E    +  where dtype('float32') = array([[0.  , 0.25, 0.75],\n       [0.25, 0.  , 0.5 ],\n       [0.75, 0.5 , 0.  ]], dtype=float32).dtype
+E    +  and   <class 'numpy.float64'> = np.float64
+_____ test_hand_weighted_mixed_matrix_and_input_preservation[array-mask4] ______
+/tmp/arfs-r24/test_gower_distances.py:77: in test_hand_weighted_mixed_matrix_and_input_preservation
+    result = sampling.gower_matrix(X, weight=weights, cat_features=mask)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:169: in gower_matrix
+    raise TypeError(
+E   TypeError: If not 'auto' cat_features should be a list of strings, integers or Booleans
+_____ test_hand_weighted_mixed_matrix_and_input_preservation[array-mask5] ______
+/tmp/arfs-r24/test_gower_distances.py:77: in test_hand_weighted_mixed_matrix_and_input_preservation
+    result = sampling.gower_matrix(X, weight=weights, cat_features=mask)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:147: in gower_matrix
+    if cat_features == "auto":
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+_____ test_hand_weighted_mixed_matrix_and_input_preservation[array-mask6] ______
+/tmp/arfs-r24/test_gower_distances.py:77: in test_hand_weighted_mixed_matrix_and_input_preservation
+    result = sampling.gower_matrix(X, weight=weights, cat_features=mask)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:169: in gower_matrix
+    raise TypeError(
+E   TypeError: If not 'auto' cat_features should be a list of strings, integers or Booleans
+______ test_hand_weighted_mixed_matrix_and_input_preservation[list-auto] _______
+/tmp/arfs-r24/test_gower_distances.py:77: in test_hand_weighted_mixed_matrix_and_input_preservation
+    result = sampling.gower_matrix(X, weight=weights, cat_features=mask)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:217: in gower_matrix
+    weight_cat = weight[cat_features]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+______ test_hand_weighted_mixed_matrix_and_input_preservation[list-mask1] ______
+/tmp/arfs-r24/test_gower_distances.py:77: in test_hand_weighted_mixed_matrix_and_input_preservation
+    result = sampling.gower_matrix(X, weight=weights, cat_features=mask)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:217: in gower_matrix
+    weight_cat = weight[cat_features]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+______ test_hand_weighted_mixed_matrix_and_input_preservation[list-mask2] ______
+/tmp/arfs-r24/test_gower_distances.py:77: in test_hand_weighted_mixed_matrix_and_input_preservation
+    result = sampling.gower_matrix(X, weight=weights, cat_features=mask)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:217: in gower_matrix
+    weight_cat = weight[cat_features]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+______ test_hand_weighted_mixed_matrix_and_input_preservation[list-mask3] ______
+/tmp/arfs-r24/test_gower_distances.py:77: in test_hand_weighted_mixed_matrix_and_input_preservation
+    result = sampling.gower_matrix(X, weight=weights, cat_features=mask)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:217: in gower_matrix
+    weight_cat = weight[cat_features]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+______ test_hand_weighted_mixed_matrix_and_input_preservation[list-mask4] ______
+/tmp/arfs-r24/test_gower_distances.py:77: in test_hand_weighted_mixed_matrix_and_input_preservation
+    result = sampling.gower_matrix(X, weight=weights, cat_features=mask)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:169: in gower_matrix
+    raise TypeError(
+E   TypeError: If not 'auto' cat_features should be a list of strings, integers or Booleans
+______ test_hand_weighted_mixed_matrix_and_input_preservation[list-mask5] ______
+/tmp/arfs-r24/test_gower_distances.py:77: in test_hand_weighted_mixed_matrix_and_input_preservation
+    result = sampling.gower_matrix(X, weight=weights, cat_features=mask)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:147: in gower_matrix
+    if cat_features == "auto":
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+______ test_hand_weighted_mixed_matrix_and_input_preservation[list-mask6] ______
+/tmp/arfs-r24/test_gower_distances.py:77: in test_hand_weighted_mixed_matrix_and_input_preservation
+    result = sampling.gower_matrix(X, weight=weights, cat_features=mask)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:169: in gower_matrix
+    raise TypeError(
+E   TypeError: If not 'auto' cat_features should be a list of strings, integers or Booleans
+_____ test_hand_weighted_mixed_matrix_and_input_preservation[series-auto] ______
+/tmp/arfs-r24/test_gower_distances.py:77: in test_hand_weighted_mixed_matrix_and_input_preservation
+    result = sampling.gower_matrix(X, weight=weights, cat_features=mask)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:236: in gower_matrix
+    res = _gower_distance_row(
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:292: in _gower_distance_row
+    sum_cat = np.multiply(feature_weight_cat, sij_cat).sum(axis=1)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/generic.py:2171: in __array_ufunc__
+    return arraylike.array_ufunc(self, ufunc, method, *inputs, **kwargs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/arraylike.py:276: in array_ufunc
+    result = maybe_dispatch_ufunc_to_dunder_op(self, ufunc, method, *inputs, **kwargs)
+ops_dispatch.pyx:107: in pandas._libs.ops_dispatch.maybe_dispatch_ufunc_to_dunder_op
+    ???
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/ops/common.py:76: in new_method
+    return method(self, other)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/arraylike.py:202: in __mul__
+    return self._arith_method(other, operator.mul)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:6135: in _arith_method
+    return base.IndexOpsMixin._arith_method(self, other, op)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/base.py:1384: in _arith_method
+    return self._construct_result(result, name=res_name)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:6231: in _construct_result
+    out = self._constructor(result, index=self.index, dtype=dtype, copy=False)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:575: in __init__
+    com.require_length_match(data, index)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/common.py:573: in require_length_match
+    raise ValueError(
+E   ValueError: Length of values (3) does not match length of index (1)
+_____ test_hand_weighted_mixed_matrix_and_input_preservation[series-mask1] _____
+/tmp/arfs-r24/test_gower_distances.py:77: in test_hand_weighted_mixed_matrix_and_input_preservation
+    result = sampling.gower_matrix(X, weight=weights, cat_features=mask)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:236: in gower_matrix
+    res = _gower_distance_row(
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:292: in _gower_distance_row
+    sum_cat = np.multiply(feature_weight_cat, sij_cat).sum(axis=1)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/generic.py:2171: in __array_ufunc__
+    return arraylike.array_ufunc(self, ufunc, method, *inputs, **kwargs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/arraylike.py:276: in array_ufunc
+    result = maybe_dispatch_ufunc_to_dunder_op(self, ufunc, method, *inputs, **kwargs)
+ops_dispatch.pyx:107: in pandas._libs.ops_dispatch.maybe_dispatch_ufunc_to_dunder_op
+    ???
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/ops/common.py:76: in new_method
+    return method(self, other)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/arraylike.py:202: in __mul__
+    return self._arith_method(other, operator.mul)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:6135: in _arith_method
+    return base.IndexOpsMixin._arith_method(self, other, op)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/base.py:1384: in _arith_method
+    return self._construct_result(result, name=res_name)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:6231: in _construct_result
+    out = self._constructor(result, index=self.index, dtype=dtype, copy=False)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:575: in __init__
+    com.require_length_match(data, index)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/common.py:573: in require_length_match
+    raise ValueError(
+E   ValueError: Length of values (3) does not match length of index (1)
+_____ test_hand_weighted_mixed_matrix_and_input_preservation[series-mask2] _____
+/tmp/arfs-r24/test_gower_distances.py:77: in test_hand_weighted_mixed_matrix_and_input_preservation
+    result = sampling.gower_matrix(X, weight=weights, cat_features=mask)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:236: in gower_matrix
+    res = _gower_distance_row(
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:292: in _gower_distance_row
+    sum_cat = np.multiply(feature_weight_cat, sij_cat).sum(axis=1)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/generic.py:2171: in __array_ufunc__
+    return arraylike.array_ufunc(self, ufunc, method, *inputs, **kwargs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/arraylike.py:276: in array_ufunc
+    result = maybe_dispatch_ufunc_to_dunder_op(self, ufunc, method, *inputs, **kwargs)
+ops_dispatch.pyx:107: in pandas._libs.ops_dispatch.maybe_dispatch_ufunc_to_dunder_op
+    ???
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/ops/common.py:76: in new_method
+    return method(self, other)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/arraylike.py:202: in __mul__
+    return self._arith_method(other, operator.mul)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:6135: in _arith_method
+    return base.IndexOpsMixin._arith_method(self, other, op)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/base.py:1384: in _arith_method
+    return self._construct_result(result, name=res_name)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:6231: in _construct_result
+    out = self._constructor(result, index=self.index, dtype=dtype, copy=False)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:575: in __init__
+    com.require_length_match(data, index)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/common.py:573: in require_length_match
+    raise ValueError(
+E   ValueError: Length of values (3) does not match length of index (1)
+_____ test_hand_weighted_mixed_matrix_and_input_preservation[series-mask3] _____
+/tmp/arfs-r24/test_gower_distances.py:77: in test_hand_weighted_mixed_matrix_and_input_preservation
+    result = sampling.gower_matrix(X, weight=weights, cat_features=mask)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:236: in gower_matrix
+    res = _gower_distance_row(
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:292: in _gower_distance_row
+    sum_cat = np.multiply(feature_weight_cat, sij_cat).sum(axis=1)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/generic.py:2171: in __array_ufunc__
+    return arraylike.array_ufunc(self, ufunc, method, *inputs, **kwargs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/arraylike.py:276: in array_ufunc
+    result = maybe_dispatch_ufunc_to_dunder_op(self, ufunc, method, *inputs, **kwargs)
+ops_dispatch.pyx:107: in pandas._libs.ops_dispatch.maybe_dispatch_ufunc_to_dunder_op
+    ???
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/ops/common.py:76: in new_method
+    return method(self, other)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/arraylike.py:202: in __mul__
+    return self._arith_method(other, operator.mul)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:6135: in _arith_method
+    return base.IndexOpsMixin._arith_method(self, other, op)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/base.py:1384: in _arith_method
+    return self._construct_result(result, name=res_name)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:6231: in _construct_result
+    out = self._constructor(result, index=self.index, dtype=dtype, copy=False)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:575: in __init__
+    com.require_length_match(data, index)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/common.py:573: in require_length_match
+    raise ValueError(
+E   ValueError: Length of values (3) does not match length of index (1)
+_____ test_hand_weighted_mixed_matrix_and_input_preservation[series-mask4] _____
+/tmp/arfs-r24/test_gower_distances.py:77: in test_hand_weighted_mixed_matrix_and_input_preservation
+    result = sampling.gower_matrix(X, weight=weights, cat_features=mask)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:169: in gower_matrix
+    raise TypeError(
+E   TypeError: If not 'auto' cat_features should be a list of strings, integers or Booleans
+_____ test_hand_weighted_mixed_matrix_and_input_preservation[series-mask5] _____
+/tmp/arfs-r24/test_gower_distances.py:77: in test_hand_weighted_mixed_matrix_and_input_preservation
+    result = sampling.gower_matrix(X, weight=weights, cat_features=mask)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:147: in gower_matrix
+    if cat_features == "auto":
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+_____ test_hand_weighted_mixed_matrix_and_input_preservation[series-mask6] _____
+/tmp/arfs-r24/test_gower_distances.py:77: in test_hand_weighted_mixed_matrix_and_input_preservation
+    result = sampling.gower_matrix(X, weight=weights, cat_features=mask)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:169: in gower_matrix
+    raise TypeError(
+E   TypeError: If not 'auto' cat_features should be a list of strings, integers or Booleans
+_____ test_numeric_range_is_independent_of_origin_and_small_units[values0] _____
+/tmp/arfs-r24/test_gower_distances.py:93: in test_numeric_range_is_independent_of_origin_and_small_units
+    assert_allclose(sampling.gower_matrix(X), [[0.0, 1.0], [1.0, 0.0]])
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 2 / 4 (50%)
+E   Max absolute difference among violations: 2.
+E   Max relative difference among violations: 2.
+E    ACTUAL: array([[ 0., -1.],
+E          [-1.,  0.]], dtype=float32)
+E    DESIRED: array([[0., 1.],
+E          [1., 0.]])
+_____ test_numeric_range_is_independent_of_origin_and_small_units[values1] _____
+/tmp/arfs-r24/test_gower_distances.py:93: in test_numeric_range_is_independent_of_origin_and_small_units
+    assert_allclose(sampling.gower_matrix(X), [[0.0, 1.0], [1.0, 0.0]])
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 2 / 4 (50%)
+E   Max absolute difference among violations: 1.
+E   Max relative difference among violations: 1.
+E    ACTUAL: array([[0., 0.],
+E          [0., 0.]], dtype=float32)
+E    DESIRED: array([[0., 1.],
+E          [1., 0.]])
+_____ test_numeric_range_is_independent_of_origin_and_small_units[values2] _____
+/tmp/arfs-r24/test_gower_distances.py:93: in test_numeric_range_is_independent_of_origin_and_small_units
+    assert_allclose(sampling.gower_matrix(X), [[0.0, 1.0], [1.0, 0.0]])
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 2 / 4 (50%)
+E   Max absolute difference among violations: 1.
+E   Max relative difference among violations: 1.
+E    ACTUAL: array([[0., 0.],
+E          [0., 0.]], dtype=float32)
+E    DESIRED: array([[0., 1.],
+E          [1., 0.]])
+_____ test_numeric_range_is_independent_of_origin_and_small_units[values4] _____
+/tmp/arfs-r24/test_gower_distances.py:93: in test_numeric_range_is_independent_of_origin_and_small_units
+    assert_allclose(sampling.gower_matrix(X), [[0.0, 1.0], [1.0, 0.0]])
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 2 / 4 (50%)
+E   Max absolute difference among violations: 1.
+E   Max relative difference among violations: 1.
+E    ACTUAL: array([[0., 0.],
+E          [0., 0.]], dtype=float32)
+E    DESIRED: array([[0., 1.],
+E          [1., 0.]])
+____________ test_translation_and_rescaling_preserve_mixed_distance ____________
+/tmp/arfs-r24/test_gower_distances.py:102: in test_translation_and_rescaling_preserve_mixed_distance
+    assert_allclose(sampling.gower_matrix(changed), expected)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 6 / 9 (66.7%)
+E   Max absolute difference among violations: 0.6666667
+E   Max relative difference among violations: 2.
+E    ACTUAL: array([[ 0.000000e+00, -1.666667e-01, -1.986822e-08],
+E          [-1.666667e-01,  0.000000e+00,  1.666667e-01],
+E          [-1.986822e-08,  1.666667e-01,  0.000000e+00]], dtype=float32)
+E    DESIRED: array([[0.      , 0.166667, 0.666667],
+E          [0.166667, 0.      , 0.5     ],
+E          [0.666667, 0.5     , 0.      ]], dtype=float32)
+______ test_cross_matrix_positions_ranges_and_transpose[y_values0-False] _______
+/tmp/arfs-r24/test_gower_distances.py:113: in test_cross_matrix_positions_ranges_and_transpose
+    assert_allclose(sampling.gower_matrix(left, right), expected)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 1 / 4 (25%)
+E   Max absolute difference among violations: 0.59999999
+E   Max relative difference among violations: 0.66666665
+E    ACTUAL: array([[0.1, 0.3],
+E          [0.3, 0.7]], dtype=float32)
+E    DESIRED: array([[0.1, 0.3],
+E          [0.9, 0.7]])
+_______ test_cross_matrix_positions_ranges_and_transpose[y_values0-True] _______
+/tmp/arfs-r24/test_gower_distances.py:113: in test_cross_matrix_positions_ranges_and_transpose
+    assert_allclose(sampling.gower_matrix(left, right), expected)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 1 / 4 (25%)
+E   Max absolute difference among violations: 0.59999999
+E   Max relative difference among violations: 0.66666665
+E    ACTUAL: array([[0.1, 0.3],
+E          [0.3, 0.7]], dtype=float32)
+E    DESIRED: array([[0.1, 0.3],
+E          [0.9, 0.7]])
+__________ test_cross_ranges_include_reference_and_series_is_one_row ___________
+/tmp/arfs-r24/test_gower_distances.py:123: in test_cross_ranges_include_reference_and_series_is_one_row
+    assert_allclose(sampling.gower_matrix(X, Y), reference(X, Y.to_frame().T, ["c"]))
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:145: in gower_matrix
+    y_n_rows, y_n_cols = Y.shape
+E   ValueError: not enough values to unpack (expected 2, got 1)
+___ test_missingness_uses_pairwise_available_mass_without_warnings[numeric] ____
+/tmp/arfs-r24/test_gower_distances.py:150: in test_missingness_uses_pairwise_available_mass_without_warnings
+    result = sampling.gower_matrix(X, weight=[2.0, 1.0, 1.0])
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:217: in gower_matrix
+    weight_cat = weight[cat_features]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_ test_missingness_uses_pairwise_available_mass_without_warnings[categorical] __
+/tmp/arfs-r24/test_gower_distances.py:150: in test_missingness_uses_pairwise_available_mass_without_warnings
+    result = sampling.gower_matrix(X, weight=[2.0, 1.0, 1.0])
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:217: in gower_matrix
+    weight_cat = weight[cat_features]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_ test_missingness_uses_pairwise_available_mass_without_warnings[all-missing-column] _
+/tmp/arfs-r24/test_gower_distances.py:150: in test_missingness_uses_pairwise_available_mass_without_warnings
+    result = sampling.gower_matrix(X, weight=[2.0, 1.0, 1.0])
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:193: in gower_matrix
+    max_ = np.nanmax(col_array)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_nanfunctions_impl.py:495: in nanmax
+    warnings.warn("All-NaN slice encountered", RuntimeWarning,
+E   RuntimeWarning: All-NaN slice encountered
+_ test_missingness_uses_pairwise_available_mass_without_warnings[all-missing-row] _
+/tmp/arfs-r24/test_gower_distances.py:150: in test_missingness_uses_pairwise_available_mass_without_warnings
+    result = sampling.gower_matrix(X, weight=[2.0, 1.0, 1.0])
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:217: in gower_matrix
+    weight_cat = weight[cat_features]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_________ test_undefined_pairs_are_nan_and_observed_constants_are_zero _________
+/tmp/arfs-r24/test_gower_distances.py:158: in test_undefined_pairs_are_nan_and_observed_constants_are_zero
+    assert_allclose(
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   nan location mismatch:
+E    ACTUAL: array([[0., 0., 0.],
+E          [0., 0., 0.],
+E          [0., 0., 0.]], dtype=float32)
+E    DESIRED: array([[ 0., nan, nan],
+E          [nan,  0., nan],
+E          [nan, nan, nan]])
+_______________ test_extension_dtypes_and_missing_values[Int64] ________________
+/tmp/arfs-r24/test_gower_distances.py:172: in test_extension_dtypes_and_missing_values
+    sampling.gower_matrix(X),
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:150: in gower_matrix
+    cat_features = is_number(X.dtypes)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2397: in __call__
+    return self._call_as_normal(*args, **kwargs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2390: in _call_as_normal
+    return self._vectorize_call(func=func, args=vargs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2475: in _vectorize_call
+    ufunc, otypes = self._get_ufunc_and_otypes(func=func, args=args)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2435: in _get_ufunc_and_otypes
+    outputs = func(*inputs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:149: in <lambda>
+    is_number = np.vectorize(lambda x: not np.issubdtype(x, np.number))
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/_core/numerictypes.py:529: in issubdtype
+    arg1 = dtype(arg1).type
+E   TypeError: Cannot interpret 'Int64Dtype()' as a data type
+______________ test_extension_dtypes_and_missing_values[Float64] _______________
+/tmp/arfs-r24/test_gower_distances.py:172: in test_extension_dtypes_and_missing_values
+    sampling.gower_matrix(X),
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:150: in gower_matrix
+    cat_features = is_number(X.dtypes)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2397: in __call__
+    return self._call_as_normal(*args, **kwargs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2390: in _call_as_normal
+    return self._vectorize_call(func=func, args=vargs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2475: in _vectorize_call
+    ufunc, otypes = self._get_ufunc_and_otypes(func=func, args=args)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2435: in _get_ufunc_and_otypes
+    outputs = func(*inputs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:149: in <lambda>
+    is_number = np.vectorize(lambda x: not np.issubdtype(x, np.number))
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/_core/numerictypes.py:529: in issubdtype
+    arg1 = dtype(arg1).type
+E   TypeError: Cannot interpret 'Float64Dtype()' as a data type
+______________ test_extension_dtypes_and_missing_values[category] ______________
+/tmp/arfs-r24/test_gower_distances.py:172: in test_extension_dtypes_and_missing_values
+    sampling.gower_matrix(X),
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:150: in gower_matrix
+    cat_features = is_number(X.dtypes)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2397: in __call__
+    return self._call_as_normal(*args, **kwargs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2390: in _call_as_normal
+    return self._vectorize_call(func=func, args=vargs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2475: in _vectorize_call
+    ufunc, otypes = self._get_ufunc_and_otypes(func=func, args=args)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2435: in _get_ufunc_and_otypes
+    outputs = func(*inputs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:149: in <lambda>
+    is_number = np.vectorize(lambda x: not np.issubdtype(x, np.number))
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/_core/numerictypes.py:529: in issubdtype
+    arg1 = dtype(arg1).type
+E   TypeError: Cannot interpret 'CategoricalDtype(categories=[1, 2], ordered=False, categories_dtype=int64)' as a data type
+_______________ test_extension_dtypes_and_missing_values[string] _______________
+/tmp/arfs-r24/test_gower_distances.py:172: in test_extension_dtypes_and_missing_values
+    sampling.gower_matrix(X),
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:150: in gower_matrix
+    cat_features = is_number(X.dtypes)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2397: in __call__
+    return self._call_as_normal(*args, **kwargs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2390: in _call_as_normal
+    return self._vectorize_call(func=func, args=vargs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2475: in _vectorize_call
+    ufunc, otypes = self._get_ufunc_and_otypes(func=func, args=args)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2435: in _get_ufunc_and_otypes
+    outputs = func(*inputs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:149: in <lambda>
+    is_number = np.vectorize(lambda x: not np.issubdtype(x, np.number))
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/_core/numerictypes.py:529: in issubdtype
+    arg1 = dtype(arg1).type
+E   TypeError: Cannot interpret 'string[python]' as a data type
+______________ test_extension_dtypes_and_missing_values[boolean] _______________
+/tmp/arfs-r24/test_gower_distances.py:172: in test_extension_dtypes_and_missing_values
+    sampling.gower_matrix(X),
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:150: in gower_matrix
+    cat_features = is_number(X.dtypes)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2397: in __call__
+    return self._call_as_normal(*args, **kwargs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2390: in _call_as_normal
+    return self._vectorize_call(func=func, args=vargs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2475: in _vectorize_call
+    ufunc, otypes = self._get_ufunc_and_otypes(func=func, args=args)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2435: in _get_ufunc_and_otypes
+    outputs = func(*inputs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:149: in <lambda>
+    is_number = np.vectorize(lambda x: not np.issubdtype(x, np.number))
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/_core/numerictypes.py:529: in issubdtype
+    arg1 = dtype(arg1).type
+E   TypeError: Cannot interpret 'BooleanDtype' as a data type
+__________________ test_category_identity_is_not_stringified ___________________
+/tmp/arfs-r24/test_gower_distances.py:180: in test_category_identity_is_not_stringified
+    assert_allclose(
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   nan location mismatch:
+E    ACTUAL: array([[0., 1., 1., 1.],
+E          [1., 0., 1., 1.],
+E          [1., 1., 0., 1.],
+E          [1., 1., 1., 0.]], dtype=float32)
+E    DESIRED: array([[ 0.,  1., nan,  1.],
+E          [ 1.,  0., nan,  1.],
+E          [nan, nan, nan, nan],
+E          [ 1.,  1., nan,  0.]])
+______ test_mixed_object_array_soft_inference_skips_leading_missing[auto] ______
+/tmp/arfs-r24/test_gower_distances.py:193: in test_mixed_object_array_soft_inference_skips_leading_missing
+    assert_allclose(
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 2 / 9 (22.2%)
+E   Max absolute difference among violations: 0.5
+E   Max relative difference among violations: inf
+E    ACTUAL: array([[0. , 0.5, 1. ],
+E          [0.5, 0. , 1. ],
+E          [1. , 1. , 0. ]], dtype=float32)
+E    DESIRED: array([[0., 0., 1.],
+E          [0., 0., 1.],
+E          [1., 1., 0.]])
+_____ test_mixed_object_array_soft_inference_skips_leading_missing[mask1] ______
+/tmp/arfs-r24/test_gower_distances.py:194: in test_mixed_object_array_soft_inference_skips_leading_missing
+    sampling.gower_matrix(X, cat_features=mask),
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:165: in gower_matrix
+    True if c in cat_features else False for c in range(len(X.columns))
+E   AttributeError: 'numpy.ndarray' object has no attribute 'columns'
+_____ test_mixed_object_array_soft_inference_skips_leading_missing[mask2] ______
+/tmp/arfs-r24/test_gower_distances.py:193: in test_mixed_object_array_soft_inference_skips_leading_missing
+    assert_allclose(
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   nan location mismatch:
+E    ACTUAL: array([[nan, nan, nan],
+E          [nan,  0.,  1.],
+E          [nan,  1.,  0.]], dtype=float32)
+E    DESIRED: array([[0., 0., 1.],
+E          [0., 0., 1.],
+E          [1., 1., 0.]])
+_____ test_mixed_object_array_soft_inference_skips_leading_missing[mask3] ______
+/tmp/arfs-r24/test_gower_distances.py:194: in test_mixed_object_array_soft_inference_skips_leading_missing
+    sampling.gower_matrix(X, cat_features=mask),
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:147: in gower_matrix
+    if cat_features == "auto":
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+__________________ test_array_positions_and_empty_mask[mask0] __________________
+/tmp/arfs-r24/test_gower_distances.py:204: in test_array_positions_and_empty_mask
+    sampling.gower_matrix(np.array([[0.0, 0.0], [1.0, 1.0]]), cat_features=mask),
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:159: in gower_matrix
+    cat_feat = [True if c in cat_features else False for c in X.columns]
+E   AttributeError: 'numpy.ndarray' object has no attribute 'columns'
+__________________ test_array_positions_and_empty_mask[mask1] __________________
+/tmp/arfs-r24/test_gower_distances.py:204: in test_array_positions_and_empty_mask
+    sampling.gower_matrix(np.array([[0.0, 0.0], [1.0, 1.0]]), cat_features=mask),
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:165: in gower_matrix
+    True if c in cat_features else False for c in range(len(X.columns))
+E   AttributeError: 'numpy.ndarray' object has no attribute 'columns'
+__________________ test_array_positions_and_empty_mask[mask2] __________________
+/tmp/arfs-r24/test_gower_distances.py:204: in test_array_positions_and_empty_mask
+    sampling.gower_matrix(np.array([[0.0, 0.0], [1.0, 1.0]]), cat_features=mask),
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:169: in gower_matrix
+    raise TypeError(
+E   TypeError: If not 'auto' cat_features should be a list of strings, integers or Booleans
+_____ test_object_array_numeric_inference_ignores_missing_sentinels[None] ______
+/tmp/arfs-r24/test_gower_distances.py:214: in test_object_array_numeric_inference_ignores_missing_sentinels
+    assert np.isnan(result[0]).all()
+E   AssertionError: assert np.False_
+E    +  where np.False_ = <built-in method all of numpy.ndarray object at 0x7096be8dff90>()
+E    +    where <built-in method all of numpy.ndarray object at 0x7096be8dff90> = array([False, False, False, False]).all
+E    +      where array([False, False, False, False]) = <ufunc 'isnan'>(array([0., 1., 1., 1.], dtype=float32))
+E    +        where <ufunc 'isnan'> = np.isnan
+___ test_object_array_numeric_inference_ignores_missing_sentinels[missing1] ____
+/tmp/arfs-r24/test_gower_distances.py:213: in test_object_array_numeric_inference_ignores_missing_sentinels
+    result = sampling.gower_matrix(X)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:236: in gower_matrix
+    res = _gower_distance_row(
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:291: in _gower_distance_row
+    sij_cat = np.where(xi_cat == xj_cat, np.zeros_like(xi_cat), np.ones_like(xi_cat))
+missing.pyx:392: in pandas._libs.missing.NAType.__bool__
+    ???
+E   TypeError: boolean value of NA is ambiguous
+_________________ test_invalid_feature_weights_fail[weights0] __________________
+/tmp/arfs-r24/test_gower_distances.py:234: in test_invalid_feature_weights_fail
+    sampling.gower_matrix(mixed()[["x", "constant"]], weight=weights)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:217: in gower_matrix
+    weight_cat = weight[cat_features]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_________________ test_invalid_feature_weights_fail[weights1] __________________
+/tmp/arfs-r24/test_gower_distances.py:234: in test_invalid_feature_weights_fail
+    sampling.gower_matrix(mixed()[["x", "constant"]], weight=weights)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:217: in gower_matrix
+    weight_cat = weight[cat_features]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_________________ test_invalid_feature_weights_fail[weights2] __________________
+/tmp/arfs-r24/test_gower_distances.py:234: in test_invalid_feature_weights_fail
+    sampling.gower_matrix(mixed()[["x", "constant"]], weight=weights)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:217: in gower_matrix
+    weight_cat = weight[cat_features]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_________________ test_invalid_feature_weights_fail[weights3] __________________
+/tmp/arfs-r24/test_gower_distances.py:234: in test_invalid_feature_weights_fail
+    sampling.gower_matrix(mixed()[["x", "constant"]], weight=weights)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:217: in gower_matrix
+    weight_cat = weight[cat_features]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_________________ test_invalid_feature_weights_fail[weights4] __________________
+/tmp/arfs-r24/test_gower_distances.py:234: in test_invalid_feature_weights_fail
+    sampling.gower_matrix(mixed()[["x", "constant"]], weight=weights)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:217: in gower_matrix
+    weight_cat = weight[cat_features]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+_________________ test_invalid_feature_weights_fail[weights5] __________________
+/tmp/arfs-r24/test_gower_distances.py:234: in test_invalid_feature_weights_fail
+    sampling.gower_matrix(mixed()[["x", "constant"]], weight=weights)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:217: in gower_matrix
+    weight_cat = weight[cat_features]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+____________________ test_invalid_feature_weights_fail[2.0] ____________________
+/tmp/arfs-r24/test_gower_distances.py:234: in test_invalid_feature_weights_fail
+    sampling.gower_matrix(mixed()[["x", "constant"]], weight=weights)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:217: in gower_matrix
+    weight_cat = weight[cat_features]
+E   TypeError: 'float' object is not subscriptable
+_________________ test_invalid_feature_weights_fail[weights7] __________________
+/tmp/arfs-r24/test_gower_distances.py:233: in test_invalid_feature_weights_fail
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+__________ test_zero_and_extreme_feature_weights_are_stable_per_pair ___________
+/tmp/arfs-r24/test_gower_distances.py:239: in test_zero_and_extreme_feature_weights_are_stable_per_pair
+    result = sampling.gower_matrix(X, weight=[1e-308, 1e308], cat_features=[])
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:217: in gower_matrix
+    weight_cat = weight[cat_features]
+E   TypeError: only integer scalar arrays can be converted to a scalar index
+______________ test_invalid_category_masks_fail[mask0-ValueError] ______________
+/tmp/arfs-r24/test_gower_distances.py:264: in test_invalid_category_masks_fail
+    sampling.gower_matrix(mixed(), cat_features=mask)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:185: in gower_matrix
+    Z_num = Z[:, np.logical_not(cat_features)]
+E   IndexError: boolean index did not match indexed array along axis 1; size of axis is 3 but size of corresponding boolean axis is 1
+______________ test_invalid_category_masks_fail[mask4-TypeError] _______________
+/tmp/arfs-r24/test_gower_distances.py:263: in test_invalid_category_masks_fail
+    with pytest.raises(error):
+E   Failed: DID NOT RAISE <class 'TypeError'>
+_____ test_named_masks_need_frame_and_integer_names_do_not_mean_positions ______
+/tmp/arfs-r24/test_gower_distances.py:269: in test_named_masks_need_frame_and_integer_names_do_not_mean_positions
+    sampling.gower_matrix(np.zeros((2, 2)), cat_features=["x"])
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:159: in gower_matrix
+    cat_feat = [True if c in cat_features else False for c in X.columns]
+E   AttributeError: 'numpy.ndarray' object has no attribute 'columns'
+___________ test_sparse_is_rejected_before_shape_or_schema_checks[x] ___________
+/tmp/arfs-r24/test_gower_distances.py:282: in test_sparse_is_rejected_before_shape_or_schema_checks
+    sampling.gower_matrix(
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:135: in gower_matrix
+    y_col = Y.columns if isinstance(Y, pd.DataFrame) else Y.index
+E   AttributeError: 'numpy.ndarray' object has no attribute 'index'
+_______________________ test_non_matrix_inputs_fail[X0] ________________________
+/tmp/arfs-r24/test_gower_distances.py:292: in test_non_matrix_inputs_fail
+    sampling.gower_matrix(X)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:139: in gower_matrix
+    if not X.shape[1] == Y.shape[1]:
+E   IndexError: tuple index out of range
+_______________________ test_non_matrix_inputs_fail[X1] ________________________
+/tmp/arfs-r24/test_gower_distances.py:292: in test_non_matrix_inputs_fail
+    sampling.gower_matrix(X)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:144: in gower_matrix
+    x_n_rows, x_n_cols = X.shape
+E   ValueError: too many values to unpack (expected 2)
+_______________________ test_non_matrix_inputs_fail[X2] ________________________
+/tmp/arfs-r24/test_gower_distances.py:292: in test_non_matrix_inputs_fail
+    sampling.gower_matrix(X)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:136: in gower_matrix
+    if not np.array_equal(X.columns, y_col):
+E   AttributeError: 'list' object has no attribute 'columns'
+_______________________ test_non_matrix_inputs_fail[X3] ________________________
+/tmp/arfs-r24/test_gower_distances.py:292: in test_non_matrix_inputs_fail
+    sampling.gower_matrix(X)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:136: in gower_matrix
+    if not np.array_equal(X.columns, y_col):
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/pandas/core/generic.py:6299: in __getattr__
+    return object.__getattribute__(self, name)
+E   AttributeError: 'Series' object has no attribute 'columns'
+______________ test_schema_width_duplicate_and_empty_columns_fail ______________
+/tmp/arfs-r24/test_gower_distances.py:302: in test_schema_width_duplicate_and_empty_columns_fail
+    sampling.gower_matrix(X.to_numpy(), np.zeros((2, 4)))
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:140: in gower_matrix
+    raise TypeError("X and Y must have same y-dim!")
+E   TypeError: X and Y must have same y-dim!
+_______ test_invalid_numeric_values_and_overflowing_range_fail[values0] ________
+/tmp/arfs-r24/test_gower_distances.py:311: in test_invalid_numeric_values_and_overflowing_range_fail
+    with pytest.raises(ValueError, match="finite|float64"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_______ test_invalid_numeric_values_and_overflowing_range_fail[values1] ________
+/tmp/arfs-r24/test_gower_distances.py:311: in test_invalid_numeric_values_and_overflowing_range_fail
+    with pytest.raises(ValueError, match="finite|float64"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_______ test_invalid_numeric_values_and_overflowing_range_fail[values2] ________
+/tmp/arfs-r24/test_gower_distances.py:311: in test_invalid_numeric_values_and_overflowing_range_fail
+    with pytest.raises(ValueError, match="finite|float64"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+________________ test_declared_numeric_feature_must_be_numeric _________________
+/tmp/arfs-r24/test_gower_distances.py:317: in test_declared_numeric_feature_must_be_numeric
+    sampling.gower_matrix(pd.DataFrame({"x": ["a", "b"]}), cat_features=[])
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:192: in gower_matrix
+    col_array = Z_num[:, col].astype(np.float32)
+E   ValueError: could not convert string to float: 'a'
+_________________ test_empty_row_shapes_and_singleton[sizes0] __________________
+/tmp/arfs-r24/test_gower_distances.py:323: in test_empty_row_shapes_and_singleton
+    result = sampling.gower_matrix(np.zeros((n_x, 1)), np.zeros((n_y, 1)))
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:154: in gower_matrix
+    if not np.issubdtype(type(X[0, col]), np.number):
+E   IndexError: index 0 is out of bounds for axis 0 with size 0
+_________________ test_empty_row_shapes_and_singleton[sizes1] __________________
+/tmp/arfs-r24/test_gower_distances.py:323: in test_empty_row_shapes_and_singleton
+    result = sampling.gower_matrix(np.zeros((n_x, 1)), np.zeros((n_y, 1)))
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:154: in gower_matrix
+    if not np.issubdtype(type(X[0, col]), np.number):
+E   IndexError: index 0 is out of bounds for axis 0 with size 0
+______ test_sampling_caller_uses_boolean_category_mask_with_integer_names ______
+/tmp/arfs-r24/test_gower_distances.py:339: in test_sampling_caller_uses_boolean_category_mask_with_integer_names
+    result = sampling.sample(X, n=1)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:55: in sample
+    gd = gower_matrix(X, cat_features=non_num_cols, weight=sample_weight)
+/tmp/arfs-r24/test_gower_distances.py:335: in capture
+    seen["distances"] = original(*args, **kwargs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:192: in gower_matrix
+    col_array = Z_num[:, col].astype(np.float32)
+E   ValueError: could not convert string to float: 'a'
+___ test_nearest_neighbor_caller_without_key_uses_repaired_numeric_distance ____
+/tmp/arfs-r24/test_gower_distances.py:350: in test_nearest_neighbor_caller_without_key_uses_repaired_numeric_distance
+    assert list(result["index"]) == [0, 1]
+E   assert [np.int64(2), np.int64(1)] == [0, 1]
+E
+E     At index 0 diff: np.int64(2) != 0
+E     Use -v to get more diff
+=============================== warnings summary ===============================
+arfs-r24/test_gower_distances.py::test_array_positions_and_empty_mask[mask2]
+  /tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:147: DeprecationWarning: The truth value of an empty array is ambiguous. Returning False, but in future this will result in an error. Use `array.size > 0` to check that an array is not empty.
+    if cat_features == "auto":
+
+arfs-r24/test_gower_distances.py::test_invalid_feature_weights_fail[weights7]
+  /tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:247: ComplexWarning: Casting complex values to real discards the imaginary part
+    out[i, j_start:] = res
+
+arfs-r24/test_gower_distances.py::test_invalid_feature_weights_fail[weights7]
+  /tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:249: ComplexWarning: Casting complex values to real discards the imaginary part
+    out[i:, j_start] = res
+
+arfs-r24/test_gower_distances.py::test_invalid_numeric_values_and_overflowing_range_fail[values0]
+  /tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:204: RuntimeWarning: invalid value encountered in divide
+    Z_num = np.divide(
+
+arfs-r24/test_gower_distances.py::test_invalid_numeric_values_and_overflowing_range_fail[values2]
+  /tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:192: RuntimeWarning: overflow encountered in cast
+    col_array = Z_num[:, col].astype(np.float32)
+
+arfs-r24/test_gower_distances.py::test_invalid_numeric_values_and_overflowing_range_fail[values2]
+  /tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:201: RuntimeWarning: invalid value encountered in scalar divide
+    num_ranges[col] = (1 - min_ / max_) if (max_ != 0) else 0.0
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_hand_weighted_mixed_matrix_and_input_preservation[array-auto]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_hand_weighted_mixed_matrix_and_input_preservation[array-mask1]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_hand_weighted_mixed_matrix_and_input_preservation[array-mask2]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_hand_weighted_mixed_matrix_and_input_preservation[array-mask3]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_hand_weighted_mixed_matrix_and_input_preservation[array-mask4]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_hand_weighted_mixed_matrix_and_input_preservation[array-mask5]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_hand_weighted_mixed_matrix_and_input_preservation[array-mask6]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_hand_weighted_mixed_matrix_and_input_preservation[list-auto]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_hand_weighted_mixed_matrix_and_input_preservation[list-mask1]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_hand_weighted_mixed_matrix_and_input_preservation[list-mask2]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_hand_weighted_mixed_matrix_and_input_preservation[list-mask3]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_hand_weighted_mixed_matrix_and_input_preservation[list-mask4]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_hand_weighted_mixed_matrix_and_input_preservation[list-mask5]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_hand_weighted_mixed_matrix_and_input_preservation[list-mask6]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_hand_weighted_mixed_matrix_and_input_preservation[series-auto]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_hand_weighted_mixed_matrix_and_input_preservation[series-mask1]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_hand_weighted_mixed_matrix_and_input_preservation[series-mask2]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_hand_weighted_mixed_matrix_and_input_preservation[series-mask3]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_hand_weighted_mixed_matrix_and_input_preservation[series-mask4]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_hand_weighted_mixed_matrix_and_input_preservation[series-mask5]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_hand_weighted_mixed_matrix_and_input_preservation[series-mask6]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_numeric_range_is_independent_of_origin_and_small_units[values0]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_numeric_range_is_independent_of_origin_and_small_units[values1]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_numeric_range_is_independent_of_origin_and_small_units[values2]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_numeric_range_is_independent_of_origin_and_small_units[values4]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_translation_and_rescaling_preserve_mixed_distance
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_cross_matrix_positions_ranges_and_transpose[y_values0-False]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_cross_matrix_positions_ranges_and_transpose[y_values0-True]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_cross_ranges_include_reference_and_series_is_one_row
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_missingness_uses_pairwise_available_mass_without_warnings[numeric]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_missingness_uses_pairwise_available_mass_without_warnings[categorical]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_missingness_uses_pairwise_available_mass_without_warnings[all-missing-column]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_missingness_uses_pairwise_available_mass_without_warnings[all-missing-row]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_undefined_pairs_are_nan_and_observed_constants_are_zero
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_extension_dtypes_and_missing_values[Int64]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_extension_dtypes_and_missing_values[Float64]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_extension_dtypes_and_missing_values[category]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_extension_dtypes_and_missing_values[string]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_extension_dtypes_and_missing_values[boolean]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_category_identity_is_not_stringified
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_mixed_object_array_soft_inference_skips_leading_missing[auto]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_mixed_object_array_soft_inference_skips_leading_missing[mask1]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_mixed_object_array_soft_inference_skips_leading_missing[mask2]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_mixed_object_array_soft_inference_skips_leading_missing[mask3]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_array_positions_and_empty_mask[mask0]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_array_positions_and_empty_mask[mask1]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_array_positions_and_empty_mask[mask2]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_object_array_numeric_inference_ignores_missing_sentinels[None]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_object_array_numeric_inference_ignores_missing_sentinels[missing1]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_invalid_feature_weights_fail[weights0]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_invalid_feature_weights_fail[weights1]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_invalid_feature_weights_fail[weights2]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_invalid_feature_weights_fail[weights3]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_invalid_feature_weights_fail[weights4]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_invalid_feature_weights_fail[weights5]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_invalid_feature_weights_fail[2.0]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_invalid_feature_weights_fail[weights7]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_zero_and_extreme_feature_weights_are_stable_per_pair
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_invalid_category_masks_fail[mask0-ValueError]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_invalid_category_masks_fail[mask4-TypeError]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_named_masks_need_frame_and_integer_names_do_not_mean_positions
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_sparse_is_rejected_before_shape_or_schema_checks[x]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_non_matrix_inputs_fail[X0]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_non_matrix_inputs_fail[X1]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_non_matrix_inputs_fail[X2]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_non_matrix_inputs_fail[X3]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_schema_width_duplicate_and_empty_columns_fail
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_invalid_numeric_values_and_overflowing_range_fail[values0]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_invalid_numeric_values_and_overflowing_range_fail[values1]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_invalid_numeric_values_and_overflowing_range_fail[values2]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_declared_numeric_feature_must_be_numeric
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_empty_row_shapes_and_singleton[sizes0]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_empty_row_shapes_and_singleton[sizes1]
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_sampling_caller_uses_boolean_category_mask_with_integer_names
+FAILED ../../../../tmp/arfs-r24/test_gower_distances.py::test_nearest_neighbor_caller_without_key_uses_repaired_numeric_distance
+75 failed, 14 passed, 6 warnings in 8.72s

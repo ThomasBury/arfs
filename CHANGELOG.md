@@ -2,6 +2,8 @@
 
 # Unreleased
 
+ - Correct Gower numeric scaling, cross-matrix indexing and pairwise missing-value weights. Return NaN for undefined pairs, validate feature weights and category masks, support nullable dtypes and reference Series, and retain pooled numeric ranges with float64 output.
+
  - Fit benchmark encoders on training rows only, support ndarray inputs and integer display names, and compare fresh Leshy/BoostAGroota configurations without mutating caller objects. Reject GrootCV in cross-estimator comparisons and refresh Leshy backend flags at fit time.
 
  - Save versioned GBM artifacts with the offset guard, category names and original prediction schema. Validate metadata before replacing loaded state and clear stale validation data/curves. Reject legacy Booster-only files because their baseline contract is unknown; refit and save again. Stage model and optional PNG writes before replacement; the PNG remains a separate file, and its replacement can fail after the model commits. Joblib artifacts require trusted input and a compatible environment.

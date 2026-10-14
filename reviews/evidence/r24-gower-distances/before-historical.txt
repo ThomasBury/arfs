@@ -1,0 +1,234 @@
+......FFFF.FFFFF.FFF.FF.FFF.                                             [100%]
+=================================== FAILURES ===================================
+_________________ test_numeric_translation_invariance[values0] _________________
+/tmp/arfs-r24/historical/checks.py:88: in test_numeric_translation_invariance
+    assert_allclose(sampling.gower_matrix(X), [[0., 1.], [1., 0.]])
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 2 / 4 (50%)
+E   Max absolute difference among violations: 2.
+E   Max relative difference among violations: 2.
+E    ACTUAL: array([[ 0., -1.],
+E          [-1.,  0.]], dtype=float32)
+E    DESIRED: array([[0., 1.],
+E          [1., 0.]])
+_________________ test_numeric_translation_invariance[values1] _________________
+/tmp/arfs-r24/historical/checks.py:88: in test_numeric_translation_invariance
+    assert_allclose(sampling.gower_matrix(X), [[0., 1.], [1., 0.]])
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 2 / 4 (50%)
+E   Max absolute difference among violations: 1.
+E   Max relative difference among violations: 1.
+E    ACTUAL: array([[0., 0.],
+E          [0., 0.]], dtype=float32)
+E    DESIRED: array([[0., 1.],
+E          [1., 0.]])
+_________________ test_numeric_translation_invariance[values2] _________________
+/tmp/arfs-r24/historical/checks.py:88: in test_numeric_translation_invariance
+    assert_allclose(sampling.gower_matrix(X), [[0., 1.], [1., 0.]])
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 2 / 4 (50%)
+E   Max absolute difference among violations: 1.
+E   Max relative difference among violations: 1.
+E    ACTUAL: array([[0., 0.],
+E          [0., 0.]], dtype=float32)
+E    DESIRED: array([[0., 1.],
+E          [1., 0.]])
+_________________________ test_equal_size_cross_matrix _________________________
+/tmp/arfs-r24/historical/checks.py:95: in test_equal_size_cross_matrix
+    assert_allclose(sampling.gower_matrix(X, Y), reference_gower(X, Y))
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 1 / 4 (25%)
+E   Max absolute difference among violations: 0.59999999
+E   Max relative difference among violations: 0.66666665
+E    ACTUAL: array([[0.1, 0.3],
+E          [0.3, 0.7]], dtype=float32)
+E    DESIRED: array([[0.1, 0.3],
+E          [0.9, 0.7]])
+_____________________ test_pairwise_missing_gower[numeric] _____________________
+/tmp/arfs-r24/historical/checks.py:113: in test_pairwise_missing_gower
+    assert_allclose(sampling.gower_matrix(X), reference_gower(X, categorical=["c"]), equal_nan=True)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   nan location mismatch:
+E    ACTUAL: array([[ 0., nan,  1.],
+E          [nan, nan, nan],
+E          [ 1., nan,  0.]], dtype=float32)
+E    DESIRED: array([[0., 0., 1.],
+E          [0., 0., 1.],
+E          [1., 1., 0.]])
+___________________ test_pairwise_missing_gower[categorical] ___________________
+/tmp/arfs-r24/historical/checks.py:113: in test_pairwise_missing_gower
+    assert_allclose(sampling.gower_matrix(X), reference_gower(X, categorical=["c"]), equal_nan=True)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 5 / 9 (55.6%)
+E   Max absolute difference among violations: 0.5
+E   Max relative difference among violations: 0.5
+E    ACTUAL: array([[0.  , 0.75, 1.  ],
+E          [0.75, 0.5 , 0.75],
+E          [1.  , 0.75, 0.  ]], dtype=float32)
+E    DESIRED: array([[0. , 0.5, 1. ],
+E          [0.5, 0. , 0.5],
+E          [1. , 0.5, 0. ]])
+___________________ test_pairwise_missing_gower[all-missing] ___________________
+/tmp/arfs-r24/historical/checks.py:113: in test_pairwise_missing_gower
+    assert_allclose(sampling.gower_matrix(X), reference_gower(X, categorical=["c"]), equal_nan=True)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 4 / 9 (44.4%)
+E   Max absolute difference among violations: 0.5
+E   Max relative difference among violations: 0.5
+E    ACTUAL: array([[0. , 0. , 0.5],
+E          [0. , 0. , 0.5],
+E          [0.5, 0.5, 0. ]], dtype=float32)
+E    DESIRED: array([[0., 0., 1.],
+E          [0., 0., 1.],
+E          [1., 1., 0.]])
+____________________ test_array_category_index_masks[mask0] ____________________
+/tmp/arfs-r24/historical/checks.py:120: in test_array_category_index_masks
+    assert_allclose(sampling.gower_matrix(X, cat_features=mask), [[0., 1.], [1., 0.]])
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:165: in gower_matrix
+    True if c in cat_features else False for c in range(len(X.columns))
+E   AttributeError: 'numpy.ndarray' object has no attribute 'columns'
+____________________ test_array_category_index_masks[mask1] ____________________
+/tmp/arfs-r24/historical/checks.py:120: in test_array_category_index_masks
+    assert_allclose(sampling.gower_matrix(X, cat_features=mask), [[0., 1.], [1., 0.]])
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:159: in gower_matrix
+    cat_feat = [True if c in cat_features else False for c in X.columns]
+E   AttributeError: 'numpy.ndarray' object has no attribute 'columns'
+__________________ test_pandas_extension_dtype_auto[category] __________________
+/tmp/arfs-r24/historical/checks.py:132: in test_pandas_extension_dtype_auto
+    assert_allclose(sampling.gower_matrix(X), [[0., 1.], [1., 0.]])
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:150: in gower_matrix
+    cat_features = is_number(X.dtypes)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2397: in __call__
+    return self._call_as_normal(*args, **kwargs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2390: in _call_as_normal
+    return self._vectorize_call(func=func, args=vargs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2475: in _vectorize_call
+    ufunc, otypes = self._get_ufunc_and_otypes(func=func, args=args)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2435: in _get_ufunc_and_otypes
+    outputs = func(*inputs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:149: in <lambda>
+    is_number = np.vectorize(lambda x: not np.issubdtype(x, np.number))
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/_core/numerictypes.py:529: in issubdtype
+    arg1 = dtype(arg1).type
+E   TypeError: Cannot interpret 'CategoricalDtype(categories=[1, 2], ordered=False, categories_dtype=int64)' as a data type
+___________________ test_pandas_extension_dtype_auto[Int64] ____________________
+/tmp/arfs-r24/historical/checks.py:132: in test_pandas_extension_dtype_auto
+    assert_allclose(sampling.gower_matrix(X), [[0., 1.], [1., 0.]])
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:150: in gower_matrix
+    cat_features = is_number(X.dtypes)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2397: in __call__
+    return self._call_as_normal(*args, **kwargs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2390: in _call_as_normal
+    return self._vectorize_call(func=func, args=vargs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2475: in _vectorize_call
+    ufunc, otypes = self._get_ufunc_and_otypes(func=func, args=args)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2435: in _get_ufunc_and_otypes
+    outputs = func(*inputs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:149: in <lambda>
+    is_number = np.vectorize(lambda x: not np.issubdtype(x, np.number))
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/_core/numerictypes.py:529: in issubdtype
+    arg1 = dtype(arg1).type
+E   TypeError: Cannot interpret 'Int64Dtype()' as a data type
+___________________ test_pandas_extension_dtype_auto[string] ___________________
+/tmp/arfs-r24/historical/checks.py:132: in test_pandas_extension_dtype_auto
+    assert_allclose(sampling.gower_matrix(X), [[0., 1.], [1., 0.]])
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:150: in gower_matrix
+    cat_features = is_number(X.dtypes)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2397: in __call__
+    return self._call_as_normal(*args, **kwargs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2390: in _call_as_normal
+    return self._vectorize_call(func=func, args=vargs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2475: in _vectorize_call
+    ufunc, otypes = self._get_ufunc_and_otypes(func=func, args=args)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:2435: in _get_ufunc_and_otypes
+    outputs = func(*inputs)
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:149: in <lambda>
+    is_number = np.vectorize(lambda x: not np.issubdtype(x, np.number))
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/numpy/_core/numerictypes.py:529: in issubdtype
+    arg1 = dtype(arg1).type
+E   TypeError: Cannot interpret 'string[python]' as a data type
+_________________________ test_gower_reference_series __________________________
+/tmp/arfs-r24/historical/checks.py:145: in test_gower_reference_series
+    assert_allclose(sampling.gower_matrix(X, X.iloc[0]),
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:145: in gower_matrix
+    y_n_rows, y_n_cols = Y.shape
+E   ValueError: not enough values to unpack (expected 2, got 1)
+_______________________ test_sparse_has_documented_error _______________________
+/tmp/arfs-r24/historical/checks.py:152: in test_sparse_has_documented_error
+    sampling.gower_matrix(csr_matrix([[0., 1.], [1., 0.]]))
+/tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:135: in gower_matrix
+    y_col = Y.columns if isinstance(Y, pd.DataFrame) else Y.index
+E   AttributeError: 'csr_matrix' object has no attribute 'index'
+_______________ test_invalid_feature_weights_rejected[weights0] ________________
+/tmp/arfs-r24/historical/checks.py:164: in test_invalid_feature_weights_rejected
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_______________ test_invalid_feature_weights_rejected[weights1] ________________
+/tmp/arfs-r24/historical/checks.py:164: in test_invalid_feature_weights_rejected
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_______________ test_invalid_feature_weights_rejected[weights2] ________________
+/tmp/arfs-r24/historical/checks.py:164: in test_invalid_feature_weights_rejected
+    with pytest.raises(ValueError):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+=============================== warnings summary ===============================
+arfs-r24/historical/checks.py::test_pairwise_missing_gower[all-missing]
+  /tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:193: RuntimeWarning: All-NaN slice encountered
+    max_ = np.nanmax(col_array)
+
+arfs-r24/historical/checks.py::test_pairwise_missing_gower[all-missing]
+  /tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:194: RuntimeWarning: All-NaN slice encountered
+    min_ = np.nanmin(col_array)
+
+arfs-r24/historical/checks.py::test_invalid_feature_weights_rejected[weights1]
+  /tmp/arfs-r23/py312-locked/lib/python3.12/site-packages/arfs/sampling.py:305: RuntimeWarning: invalid value encountered in divide
+    sum_sij = np.divide(sums, feature_weight_sum)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../../../tmp/arfs-r24/historical/checks.py::test_numeric_translation_invariance[values0]
+FAILED ../../../../tmp/arfs-r24/historical/checks.py::test_numeric_translation_invariance[values1]
+FAILED ../../../../tmp/arfs-r24/historical/checks.py::test_numeric_translation_invariance[values2]
+FAILED ../../../../tmp/arfs-r24/historical/checks.py::test_equal_size_cross_matrix
+FAILED ../../../../tmp/arfs-r24/historical/checks.py::test_pairwise_missing_gower[numeric]
+FAILED ../../../../tmp/arfs-r24/historical/checks.py::test_pairwise_missing_gower[categorical]
+FAILED ../../../../tmp/arfs-r24/historical/checks.py::test_pairwise_missing_gower[all-missing]
+FAILED ../../../../tmp/arfs-r24/historical/checks.py::test_array_category_index_masks[mask0]
+FAILED ../../../../tmp/arfs-r24/historical/checks.py::test_array_category_index_masks[mask1]
+FAILED ../../../../tmp/arfs-r24/historical/checks.py::test_pandas_extension_dtype_auto[category]
+FAILED ../../../../tmp/arfs-r24/historical/checks.py::test_pandas_extension_dtype_auto[Int64]
+FAILED ../../../../tmp/arfs-r24/historical/checks.py::test_pandas_extension_dtype_auto[string]
+FAILED ../../../../tmp/arfs-r24/historical/checks.py::test_gower_reference_series
+FAILED ../../../../tmp/arfs-r24/historical/checks.py::test_sparse_has_documented_error
+FAILED ../../../../tmp/arfs-r24/historical/checks.py::test_invalid_feature_weights_rejected[weights0]
+FAILED ../../../../tmp/arfs-r24/historical/checks.py::test_invalid_feature_weights_rejected[weights1]
+FAILED ../../../../tmp/arfs-r24/historical/checks.py::test_invalid_feature_weights_rejected[weights2]
+17 failed, 11 passed, 51 deselected, 3 warnings in 3.52s

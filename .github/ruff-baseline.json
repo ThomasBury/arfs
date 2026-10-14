@@ -252,11 +252,7 @@
   },
   "src/arfs/sampling.py": {
     "C414": 1,
-    "I001": 1,
-    "PIE808": 1,
-    "PLW0133": 1,
-    "RUF059": 1,
-    "SIM210": 2
+    "PLW0133": 1
   },
   "src/arfs/utils.py": {
     "I001": 1,
