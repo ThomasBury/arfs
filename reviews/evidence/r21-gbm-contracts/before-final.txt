@@ -1,0 +1,828 @@
+FF.FFFFFFFFFFFF.FF.F..FF.FF.FFFFFFFFFF...FFFFFFFFFFFFFF.                 [100%]
+=================================== FAILURES ===================================
+__________________ test_conflicting_splits_rejected[wrapper] ___________________
+/tmp/arfs-r21/before/test_gbm_contracts.py:93: in test_conflicting_splits_rejected
+    with pytest.raises(ValueError, match="groups.*stratified"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+___________________ test_conflicting_splits_rejected[split] ____________________
+/tmp/arfs-r21/before/test_gbm_contracts.py:93: in test_conflicting_splits_rejected
+    with pytest.raises(ValueError, match="groups.*stratified"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+________ test_prediction_requires_full_ordered_schema[reorder-predict] _________
+/tmp/arfs-r21/before/test_gbm_contracts.py:129: in test_prediction_requires_full_ordered_schema
+    with pytest.raises(ValueError, match="feature names and order"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+______ test_prediction_requires_full_ordered_schema[reorder-predict_raw] _______
+/tmp/arfs-r21/before/test_gbm_contracts.py:129: in test_prediction_requires_full_ordered_schema
+    with pytest.raises(ValueError, match="feature names and order"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+________ test_prediction_requires_full_ordered_schema[replace-predict] _________
+/tmp/arfs-r21/before/test_gbm_contracts.py:129: in test_prediction_requires_full_ordered_schema
+    with pytest.raises(ValueError, match="feature names and order"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+______ test_prediction_requires_full_ordered_schema[replace-predict_raw] _______
+/tmp/arfs-r21/before/test_gbm_contracts.py:129: in test_prediction_requires_full_ordered_schema
+    with pytest.raises(ValueError, match="feature names and order"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+________ test_prediction_requires_full_ordered_schema[missing-predict] _________
+/tmp/arfs-r21/before/test_gbm_contracts.py:130: in test_prediction_requires_full_ordered_schema
+    getattr(model, method)(bad)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:357: in predict
+    y_pred_raw = self.model.predict(X)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:4767: in predict
+    return predictor.predict(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:1204: in predict
+    preds, nrow = self.__pred_for_np2d(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:1361: in __pred_for_np2d
+    return self.__inner_predict_np2d(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:1307: in __inner_predict_np2d
+    _safe_call(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:313: in _safe_call
+    raise LightGBMError(_LIB.LGBM_GetLastError().decode("utf-8"))
+E   lightgbm.basic.LightGBMError: The number of features in data (2) is not the same as it was in training data (3).
+E   You can set ``predict_disable_shape_check=true`` to discard this error, but please be aware what you are doing.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+----------------------------- Captured stderr call -----------------------------
+[LightGBM] [Fatal] The number of features in data (2) is not the same as it was in training data (3).
+You can set ``predict_disable_shape_check=true`` to discard this error, but please be aware what you are doing.
+______ test_prediction_requires_full_ordered_schema[missing-predict_raw] _______
+/tmp/arfs-r21/before/test_gbm_contracts.py:130: in test_prediction_requires_full_ordered_schema
+    getattr(model, method)(bad)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:424: in predict_raw
+    return self.model.predict(X, **kwargs)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:4767: in predict
+    return predictor.predict(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:1204: in predict
+    preds, nrow = self.__pred_for_np2d(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:1361: in __pred_for_np2d
+    return self.__inner_predict_np2d(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:1307: in __inner_predict_np2d
+    _safe_call(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:313: in _safe_call
+    raise LightGBMError(_LIB.LGBM_GetLastError().decode("utf-8"))
+E   lightgbm.basic.LightGBMError: The number of features in data (2) is not the same as it was in training data (3).
+E   You can set ``predict_disable_shape_check=true`` to discard this error, but please be aware what you are doing.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+----------------------------- Captured stderr call -----------------------------
+[LightGBM] [Fatal] The number of features in data (2) is not the same as it was in training data (3).
+You can set ``predict_disable_shape_check=true`` to discard this error, but please be aware what you are doing.
+_________ test_prediction_requires_full_ordered_schema[extra-predict] __________
+/tmp/arfs-r21/before/test_gbm_contracts.py:130: in test_prediction_requires_full_ordered_schema
+    getattr(model, method)(bad)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:357: in predict
+    y_pred_raw = self.model.predict(X)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:4767: in predict
+    return predictor.predict(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:1204: in predict
+    preds, nrow = self.__pred_for_np2d(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:1361: in __pred_for_np2d
+    return self.__inner_predict_np2d(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:1307: in __inner_predict_np2d
+    _safe_call(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:313: in _safe_call
+    raise LightGBMError(_LIB.LGBM_GetLastError().decode("utf-8"))
+E   lightgbm.basic.LightGBMError: The number of features in data (4) is not the same as it was in training data (3).
+E   You can set ``predict_disable_shape_check=true`` to discard this error, but please be aware what you are doing.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+----------------------------- Captured stderr call -----------------------------
+[LightGBM] [Fatal] The number of features in data (4) is not the same as it was in training data (3).
+You can set ``predict_disable_shape_check=true`` to discard this error, but please be aware what you are doing.
+_______ test_prediction_requires_full_ordered_schema[extra-predict_raw] ________
+/tmp/arfs-r21/before/test_gbm_contracts.py:130: in test_prediction_requires_full_ordered_schema
+    getattr(model, method)(bad)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:424: in predict_raw
+    return self.model.predict(X, **kwargs)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:4767: in predict
+    return predictor.predict(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:1204: in predict
+    preds, nrow = self.__pred_for_np2d(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:1361: in __pred_for_np2d
+    return self.__inner_predict_np2d(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:1307: in __inner_predict_np2d
+    _safe_call(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:313: in _safe_call
+    raise LightGBMError(_LIB.LGBM_GetLastError().decode("utf-8"))
+E   lightgbm.basic.LightGBMError: The number of features in data (4) is not the same as it was in training data (3).
+E   You can set ``predict_disable_shape_check=true`` to discard this error, but please be aware what you are doing.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+----------------------------- Captured stderr call -----------------------------
+[LightGBM] [Fatal] The number of features in data (4) is not the same as it was in training data (3).
+You can set ``predict_disable_shape_check=true`` to discard this error, but please be aware what you are doing.
+_______ test_prediction_requires_full_ordered_schema[duplicate-predict] ________
+/tmp/arfs-r21/before/test_gbm_contracts.py:129: in test_prediction_requires_full_ordered_schema
+    with pytest.raises(ValueError, match="feature names and order"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+_____ test_prediction_requires_full_ordered_schema[duplicate-predict_raw] ______
+/tmp/arfs-r21/before/test_gbm_contracts.py:129: in test_prediction_requires_full_ordered_schema
+    with pytest.raises(ValueError, match="feature names and order"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+_____ test_array_prediction_is_positional_and_keeps_native_options[names0] _____
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:418: in predict_raw
+    X = pd.DataFrame(X, columns=self.model.feature_name())
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:827: in __init__
+    mgr = ndarray_to_mgr(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/internals/construction.py:336: in ndarray_to_mgr
+    _check_values_indices_shape_match(values, index, columns)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/internals/construction.py:420: in _check_values_indices_shape_match
+    raise ValueError(f"Shape of passed values is {passed}, indices imply {implied}")
+E   ValueError: Shape of passed values is (200, 2), indices imply (200, 3)
+
+During handling of the above exception, another exception occurred:
+/tmp/arfs-r21/before/test_gbm_contracts.py:151: in test_array_prediction_is_positional_and_keeps_native_options
+    model.predict_raw(invalid)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:420: in predict_raw
+    raise ValueError(
+E   ValueError: Input X has 2 columns, but model expects 3.
+
+During handling of the above exception, another exception occurred:
+/tmp/arfs-r21/before/test_gbm_contracts.py:150: in test_array_prediction_is_positional_and_keeps_native_options
+    with pytest.raises(ValueError, match="two-dimensional"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'two-dimensional'
+E    Input: 'Input X has 2 columns, but model expects 3.'
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+_____ test_array_prediction_is_positional_and_keeps_native_options[names1] _____
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:418: in predict_raw
+    X = pd.DataFrame(X, columns=self.model.feature_name())
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/frame.py:827: in __init__
+    mgr = ndarray_to_mgr(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/internals/construction.py:336: in ndarray_to_mgr
+    _check_values_indices_shape_match(values, index, columns)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/internals/construction.py:420: in _check_values_indices_shape_match
+    raise ValueError(f"Shape of passed values is {passed}, indices imply {implied}")
+E   ValueError: Shape of passed values is (200, 2), indices imply (200, 3)
+
+During handling of the above exception, another exception occurred:
+/tmp/arfs-r21/before/test_gbm_contracts.py:151: in test_array_prediction_is_positional_and_keeps_native_options
+    model.predict_raw(invalid)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:420: in predict_raw
+    raise ValueError(
+E   ValueError: Input X has 2 columns, but model expects 3.
+
+During handling of the above exception, another exception occurred:
+/tmp/arfs-r21/before/test_gbm_contracts.py:150: in test_array_prediction_is_positional_and_keeps_native_options
+    with pytest.raises(ValueError, match="two-dimensional"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'two-dimensional'
+E    Input: 'Input X has 2 columns, but model expects 3.'
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+___________________ test_fit_rejects_ambiguous_names[names0] ___________________
+/tmp/arfs-r21/before/test_gbm_contracts.py:167: in test_fit_rejects_ambiguous_names
+    wrapper().fit(X, y)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:276: in fit
+    output = _fit_early_stopped_lgb(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:692: in _fit_early_stopped_lgb
+    model = lgb.train(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/engine.py:297: in train
+    booster = Booster(params=params, train_set=train_set)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:3656: in __init__
+    train_set.construct()
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2590: in construct
+    self._lazy_init(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2227: in _lazy_init
+    return self.set_feature_name(feature_name)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:3046: in set_feature_name
+    _safe_call(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:313: in _safe_call
+    raise LightGBMError(_LIB.LGBM_GetLastError().decode("utf-8"))
+E   lightgbm.basic.LightGBMError: Feature (x) appears more than one time.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+----------------------------- Captured stderr call -----------------------------
+[LightGBM] [Fatal] Feature (x) appears more than one time.
+___________________ test_fit_rejects_ambiguous_names[names1] ___________________
+/tmp/arfs-r21/before/test_gbm_contracts.py:167: in test_fit_rejects_ambiguous_names
+    wrapper().fit(X, y)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:276: in fit
+    output = _fit_early_stopped_lgb(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:692: in _fit_early_stopped_lgb
+    model = lgb.train(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/engine.py:297: in train
+    booster = Booster(params=params, train_set=train_set)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:3656: in __init__
+    train_set.construct()
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2590: in construct
+    self._lazy_init(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2227: in _lazy_init
+    return self.set_feature_name(feature_name)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:3046: in set_feature_name
+    _safe_call(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:313: in _safe_call
+    raise LightGBMError(_LIB.LGBM_GetLastError().decode("utf-8"))
+E   lightgbm.basic.LightGBMError: Feature (1) appears more than one time.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+----------------------------- Captured stderr call -----------------------------
+[LightGBM] [Fatal] Feature (1) appears more than one time.
+______________ test_classification_aliases_match_native[softmax] _______________
+/tmp/arfs-r21/before/test_gbm_contracts.py:184: in test_classification_aliases_match_native
+    assert_array_equal(model.predict(X), probability.argmax(axis=1))
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   (shapes (200, 3), (200,) mismatch)
+E    ACTUAL: array([[0.56713 , 0.116323, 0.316547],
+E          [0.026387, 0.778762, 0.194851],
+E          [0.665167, 0.265581, 0.069252],...
+E    DESIRED: array([0, 1, 0, 2, 2, 0, 2, 0, 1, 2, 0, 1, 0, 2, 0, 0, 2, 2, 2, 0, 1, 0,
+E          1, 1, 1, 1, 1, 0, 0, 2, 1, 2, 2, 1, 1, 0, 2, 2, 2, 2, 0, 0, 0, 0,
+E          2, 0, 2, 2, 2, 1, 2, 0, 2, 1, 0, 2, 0, 2, 1, 1, 1, 0, 2, 2, 1, 2,...
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+________________ test_classification_aliases_match_native[ova] _________________
+/tmp/arfs-r21/before/test_gbm_contracts.py:184: in test_classification_aliases_match_native
+    assert_array_equal(model.predict(X), probability.argmax(axis=1))
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   (shapes (200, 3), (200,) mismatch)
+E    ACTUAL: array([[0.891418, 0.205073, 0.631114],
+E          [0.005695, 0.727531, 0.072785],
+E          [0.923228, 0.551755, 0.095355],...
+E    DESIRED: array([0, 1, 0, 2, 2, 0, 2, 0, 1, 2, 0, 1, 0, 2, 0, 0, 2, 2, 2, 0, 1, 0,
+E          1, 1, 2, 2, 1, 0, 0, 2, 1, 2, 2, 0, 1, 0, 2, 2, 2, 2, 0, 1, 0, 0,
+E          2, 0, 2, 2, 2, 1, 2, 0, 2, 1, 0, 2, 0, 2, 1, 1, 1, 0, 2, 2, 1, 2,...
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+________________ test_classification_aliases_match_native[ovr] _________________
+/tmp/arfs-r21/before/test_gbm_contracts.py:184: in test_classification_aliases_match_native
+    assert_array_equal(model.predict(X), probability.argmax(axis=1))
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   (shapes (200, 3), (200,) mismatch)
+E    ACTUAL: array([[0.891418, 0.205073, 0.631114],
+E          [0.005695, 0.727531, 0.072785],
+E          [0.923228, 0.551755, 0.095355],...
+E    DESIRED: array([0, 1, 0, 2, 2, 0, 2, 0, 1, 2, 0, 1, 0, 2, 0, 0, 2, 2, 2, 0, 1, 0,
+E          1, 1, 2, 2, 1, 0, 0, 2, 1, 2, 2, 0, 1, 0, 2, 2, 2, 2, 0, 1, 0, 0,
+E          2, 0, 2, 2, 2, 1, 2, 0, 2, 1, 0, 2, 0, 2, 1, 1, 1, 0, 2, 2, 1, 2,...
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+_________ test_category_selection_matches_native_and_owns_inputs[None] _________
+/tmp/arfs-r21/before/test_gbm_contracts.py:202: in test_category_selection_matches_native_and_owns_inputs
+    assert model.model.dump_model()["feature_infos"]["category"]["values"] == []
+E   assert [-1, 0, 1] == []
+E
+E     Left contains 3 more items, first extra item: -1
+E     Use -v to get more diff
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+_____ test_category_selection_matches_native_and_owns_inputs[categorical2] _____
+/tmp/arfs-r21/before/test_gbm_contracts.py:200: in test_category_selection_matches_native_and_owns_inputs
+    assert model.cat_feat == (names or None)
+E   AssertionError: assert [] == (([] or None))
+E    +  where [] = GradientBoosting(cat_feat=[], params={'objective': 'regression', 'metric': 'l2', 'n_estimators': 25, 'num_threads': 1,...wise': True, 'seed': 91}, stratified=False, show_learning_curve=False, verbose_eval=False, return_valid_features=False).cat_feat
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+____________ test_explicit_integer_codes_and_integer_feature_names _____________
+/tmp/arfs-r21/before/test_gbm_contracts.py:216: in test_explicit_integer_codes_and_integer_feature_names
+    assert_allclose(model.predict(X), reference.predict(X))
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 200 / 200 (100%)
+E   Max absolute difference among violations: 0.23711812
+E   Max relative difference among violations: 1.2346961
+E    ACTUAL: array([-2.005334e+00,  3.025889e-01, -4.075831e+00,  5.584764e+00,
+E           3.259647e+00, -1.838602e+00,  2.457985e+00, -1.916484e+00,
+E           1.421973e-01,  6.871381e+00, -2.684741e+00,  1.820283e+00,...
+E    DESIRED: array([-1.909184,  0.414523, -3.936371,  5.57958 ,  3.248669, -1.784189,
+E           2.452064, -1.798833,  0.10681 ,  6.814319, -2.676075,  1.723806,
+E          -1.471094,  3.480085, -1.909184, -2.62142 ,  4.328211,  3.252772,...
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+_________ test_unsupported_feature_dtype_has_conversion_error[object] __________
+/tmp/arfs-r21/before/test_gbm_contracts.py:227: in test_unsupported_feature_dtype_has_conversion_error
+    wrapper().fit(X, y)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:276: in fit
+    output = _fit_early_stopped_lgb(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:692: in _fit_early_stopped_lgb
+    model = lgb.train(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/engine.py:297: in train
+    booster = Booster(params=params, train_set=train_set)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:3656: in __init__
+    train_set.construct()
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2590: in construct
+    self._lazy_init(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2123: in _lazy_init
+    data, feature_name, categorical_feature, self.pandas_categorical = _data_from_pandas(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:868: in _data_from_pandas
+    _pandas_to_numpy(data, target_dtype=target_dtype),
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:814: in _pandas_to_numpy
+    _check_for_bad_pandas_dtypes(data.dtypes)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:805: in _check_for_bad_pandas_dtypes
+    raise ValueError(
+E   ValueError: pandas dtypes must be int, float or bool.
+E   Fields with bad pandas dtypes: unsupported: object
+
+During handling of the above exception, another exception occurred:
+/tmp/arfs-r21/before/test_gbm_contracts.py:226: in test_unsupported_feature_dtype_has_conversion_error
+    with pytest.raises(ValueError, match="Unsupported feature dtypes.*Convert"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'Unsupported feature dtypes.*Convert'
+E    Input: 'pandas dtypes must be int, float or bool.\nFields with bad pandas dtypes: unsupported: object'
+----------------------------- Captured stdout call -----------------------------
+Auto-detected categorical features (cat/time/unk dtypes): ['unsupported']
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+_________ test_unsupported_feature_dtype_has_conversion_error[string] __________
+/tmp/arfs-r21/before/test_gbm_contracts.py:227: in test_unsupported_feature_dtype_has_conversion_error
+    wrapper().fit(X, y)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:276: in fit
+    output = _fit_early_stopped_lgb(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:692: in _fit_early_stopped_lgb
+    model = lgb.train(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/engine.py:297: in train
+    booster = Booster(params=params, train_set=train_set)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:3656: in __init__
+    train_set.construct()
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2590: in construct
+    self._lazy_init(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2123: in _lazy_init
+    data, feature_name, categorical_feature, self.pandas_categorical = _data_from_pandas(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:868: in _data_from_pandas
+    _pandas_to_numpy(data, target_dtype=target_dtype),
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:814: in _pandas_to_numpy
+    _check_for_bad_pandas_dtypes(data.dtypes)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:805: in _check_for_bad_pandas_dtypes
+    raise ValueError(
+E   ValueError: pandas dtypes must be int, float or bool.
+E   Fields with bad pandas dtypes: unsupported: string
+
+During handling of the above exception, another exception occurred:
+/tmp/arfs-r21/before/test_gbm_contracts.py:226: in test_unsupported_feature_dtype_has_conversion_error
+    with pytest.raises(ValueError, match="Unsupported feature dtypes.*Convert"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'Unsupported feature dtypes.*Convert'
+E    Input: 'pandas dtypes must be int, float or bool.\nFields with bad pandas dtypes: unsupported: string'
+----------------------------- Captured stdout call -----------------------------
+Auto-detected categorical features (cat/time/unk dtypes): ['unsupported']
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+_____ test_unsupported_feature_dtype_has_conversion_error[datetime64[ns]] ______
+/tmp/arfs-r21/before/test_gbm_contracts.py:227: in test_unsupported_feature_dtype_has_conversion_error
+    wrapper().fit(X, y)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:276: in fit
+    output = _fit_early_stopped_lgb(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:692: in _fit_early_stopped_lgb
+    model = lgb.train(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/engine.py:297: in train
+    booster = Booster(params=params, train_set=train_set)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:3656: in __init__
+    train_set.construct()
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2590: in construct
+    self._lazy_init(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2123: in _lazy_init
+    data, feature_name, categorical_feature, self.pandas_categorical = _data_from_pandas(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:865: in _data_from_pandas
+    target_dtype = np.result_type(*df_dtypes)
+E   numpy.exceptions.DTypePromotionError: The DType <class 'numpy.dtypes.Float64DType'> could not be promoted by <class 'numpy.dtypes.DateTime64DType'>. This means that no common DType exists for the given inputs. For example they cannot be stored in a single array unless the dtype is `object`. The full list of DTypes is: (<class 'numpy.dtypes.Float64DType'>, <class 'numpy.dtypes.Float64DType'>, <class 'numpy.dtypes.Float64DType'>, <class 'numpy.dtypes.DateTime64DType'>, <class 'numpy.dtypes.Float32DType'>)
+----------------------------- Captured stdout call -----------------------------
+Auto-detected categorical features (cat/time/unk dtypes): ['unsupported']
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+_____ test_unsupported_feature_dtype_has_conversion_error[timedelta64[ns]] _____
+/tmp/arfs-r21/before/test_gbm_contracts.py:227: in test_unsupported_feature_dtype_has_conversion_error
+    wrapper().fit(X, y)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:276: in fit
+    output = _fit_early_stopped_lgb(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:692: in _fit_early_stopped_lgb
+    model = lgb.train(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/engine.py:297: in train
+    booster = Booster(params=params, train_set=train_set)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:3656: in __init__
+    train_set.construct()
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2590: in construct
+    self._lazy_init(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2123: in _lazy_init
+    data, feature_name, categorical_feature, self.pandas_categorical = _data_from_pandas(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:865: in _data_from_pandas
+    target_dtype = np.result_type(*df_dtypes)
+E   numpy.exceptions.DTypePromotionError: The DType <class 'numpy.dtypes.Float64DType'> could not be promoted by <class 'numpy.dtypes.TimeDelta64DType'>. This means that no common DType exists for the given inputs. For example they cannot be stored in a single array unless the dtype is `object`. The full list of DTypes is: (<class 'numpy.dtypes.Float64DType'>, <class 'numpy.dtypes.Float64DType'>, <class 'numpy.dtypes.Float64DType'>, <class 'numpy.dtypes.TimeDelta64DType'>, <class 'numpy.dtypes.Float32DType'>)
+----------------------------- Captured stdout call -----------------------------
+Auto-detected categorical features (cat/time/unk dtypes): ['unsupported']
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+_______ test_unsupported_feature_dtype_has_conversion_error[complex128] ________
+/tmp/arfs-r21/before/test_gbm_contracts.py:227: in test_unsupported_feature_dtype_has_conversion_error
+    wrapper().fit(X, y)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:276: in fit
+    output = _fit_early_stopped_lgb(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:692: in _fit_early_stopped_lgb
+    model = lgb.train(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/engine.py:297: in train
+    booster = Booster(params=params, train_set=train_set)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:3656: in __init__
+    train_set.construct()
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2590: in construct
+    self._lazy_init(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2123: in _lazy_init
+    data, feature_name, categorical_feature, self.pandas_categorical = _data_from_pandas(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:868: in _data_from_pandas
+    _pandas_to_numpy(data, target_dtype=target_dtype),
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:814: in _pandas_to_numpy
+    _check_for_bad_pandas_dtypes(data.dtypes)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:805: in _check_for_bad_pandas_dtypes
+    raise ValueError(
+E   ValueError: pandas dtypes must be int, float or bool.
+E   Fields with bad pandas dtypes: unsupported: complex128
+
+During handling of the above exception, another exception occurred:
+/tmp/arfs-r21/before/test_gbm_contracts.py:226: in test_unsupported_feature_dtype_has_conversion_error
+    with pytest.raises(ValueError, match="Unsupported feature dtypes.*Convert"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'Unsupported feature dtypes.*Convert'
+E    Input: 'pandas dtypes must be int, float or bool.\nFields with bad pandas dtypes: unsupported: complex128'
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+__ test_multiclass_offsets_match_native_and_validation_loss[multiclass-array] __
+/tmp/arfs-r21/before/test_gbm_contracts.py:245: in test_multiclass_offsets_match_native_and_validation_loss
+    model.fit(X, y, sample_weight=weight, init_score=initial)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:264: in fit
+    init_score = pd.Series(init_score, name="init_score")
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:584: in __init__
+    data = sanitize_array(data, index, dtype, copy)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:659: in sanitize_array
+    subarr = _sanitize_ndim(subarr, data, dtype, index, allow_2d=allow_2d)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:718: in _sanitize_ndim
+    raise ValueError(
+E   ValueError: Data must be 1-dimensional, got ndarray of shape (200, 3) instead
+__ test_multiclass_offsets_match_native_and_validation_loss[multiclass-frame] __
+/tmp/arfs-r21/before/test_gbm_contracts.py:245: in test_multiclass_offsets_match_native_and_validation_loss
+    model.fit(X, y, sample_weight=weight, init_score=initial)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:264: in fit
+    init_score = pd.Series(init_score, name="init_score")
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:584: in __init__
+    data = sanitize_array(data, index, dtype, copy)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:633: in sanitize_array
+    return sanitize_array(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:659: in sanitize_array
+    subarr = _sanitize_ndim(subarr, data, dtype, index, allow_2d=allow_2d)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:718: in _sanitize_ndim
+    raise ValueError(
+E   ValueError: Data must be 1-dimensional, got ndarray of shape (200, 3) instead
+_____ test_multiclass_offsets_match_native_and_validation_loss[ovr-array] ______
+/tmp/arfs-r21/before/test_gbm_contracts.py:245: in test_multiclass_offsets_match_native_and_validation_loss
+    model.fit(X, y, sample_weight=weight, init_score=initial)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:264: in fit
+    init_score = pd.Series(init_score, name="init_score")
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:584: in __init__
+    data = sanitize_array(data, index, dtype, copy)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:659: in sanitize_array
+    subarr = _sanitize_ndim(subarr, data, dtype, index, allow_2d=allow_2d)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:718: in _sanitize_ndim
+    raise ValueError(
+E   ValueError: Data must be 1-dimensional, got ndarray of shape (200, 3) instead
+_____ test_multiclass_offsets_match_native_and_validation_loss[ovr-frame] ______
+/tmp/arfs-r21/before/test_gbm_contracts.py:245: in test_multiclass_offsets_match_native_and_validation_loss
+    model.fit(X, y, sample_weight=weight, init_score=initial)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:264: in fit
+    init_score = pd.Series(init_score, name="init_score")
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:584: in __init__
+    data = sanitize_array(data, index, dtype, copy)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:633: in sanitize_array
+    return sanitize_array(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:659: in sanitize_array
+    subarr = _sanitize_ndim(subarr, data, dtype, index, allow_2d=allow_2d)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:718: in _sanitize_ndim
+    raise ValueError(
+E   ValueError: Data must be 1-dimensional, got ndarray of shape (200, 3) instead
+_______ test_invalid_initial_score_shape_or_values_rejected[short-False] _______
+/tmp/arfs-r21/before/test_gbm_contracts.py:303: in test_invalid_initial_score_shape_or_values_rejected
+    wrapper(p).fit(X, y, init_score=initial)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:266: in fit
+    raise ValueError("Length of init_score must match length of y.")
+E   ValueError: Length of init_score must match length of y.
+
+During handling of the above exception, another exception occurred:
+/tmp/arfs-r21/before/test_gbm_contracts.py:302: in test_invalid_initial_score_shape_or_values_rejected
+    with pytest.raises(ValueError, match="init_score.*finite.*shape"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'init_score.*finite.*shape'
+E    Input: 'Length of init_score must match length of y.'
+_______ test_invalid_initial_score_shape_or_values_rejected[short-True] ________
+/tmp/arfs-r21/before/test_gbm_contracts.py:303: in test_invalid_initial_score_shape_or_values_rejected
+    wrapper(p).fit(X, y, init_score=initial)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:264: in fit
+    init_score = pd.Series(init_score, name="init_score")
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:584: in __init__
+    data = sanitize_array(data, index, dtype, copy)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:659: in sanitize_array
+    subarr = _sanitize_ndim(subarr, data, dtype, index, allow_2d=allow_2d)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:718: in _sanitize_ndim
+    raise ValueError(
+E   ValueError: Data must be 1-dimensional, got ndarray of shape (199, 3) instead
+
+During handling of the above exception, another exception occurred:
+/tmp/arfs-r21/before/test_gbm_contracts.py:302: in test_invalid_initial_score_shape_or_values_rejected
+    with pytest.raises(ValueError, match="init_score.*finite.*shape"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'init_score.*finite.*shape'
+E    Input: 'Data must be 1-dimensional, got ndarray of shape (199, 3) instead'
+_______ test_invalid_initial_score_shape_or_values_rejected[wide-False] ________
+/tmp/arfs-r21/before/test_gbm_contracts.py:303: in test_invalid_initial_score_shape_or_values_rejected
+    wrapper(p).fit(X, y, init_score=initial)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:264: in fit
+    init_score = pd.Series(init_score, name="init_score")
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:584: in __init__
+    data = sanitize_array(data, index, dtype, copy)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:659: in sanitize_array
+    subarr = _sanitize_ndim(subarr, data, dtype, index, allow_2d=allow_2d)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:718: in _sanitize_ndim
+    raise ValueError(
+E   ValueError: Data must be 1-dimensional, got ndarray of shape (200, 2) instead
+
+During handling of the above exception, another exception occurred:
+/tmp/arfs-r21/before/test_gbm_contracts.py:302: in test_invalid_initial_score_shape_or_values_rejected
+    with pytest.raises(ValueError, match="init_score.*finite.*shape"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'init_score.*finite.*shape'
+E    Input: 'Data must be 1-dimensional, got ndarray of shape (200, 2) instead'
+________ test_invalid_initial_score_shape_or_values_rejected[wide-True] ________
+/tmp/arfs-r21/before/test_gbm_contracts.py:303: in test_invalid_initial_score_shape_or_values_rejected
+    wrapper(p).fit(X, y, init_score=initial)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:264: in fit
+    init_score = pd.Series(init_score, name="init_score")
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:584: in __init__
+    data = sanitize_array(data, index, dtype, copy)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:659: in sanitize_array
+    subarr = _sanitize_ndim(subarr, data, dtype, index, allow_2d=allow_2d)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:718: in _sanitize_ndim
+    raise ValueError(
+E   ValueError: Data must be 1-dimensional, got ndarray of shape (200, 2) instead
+
+During handling of the above exception, another exception occurred:
+/tmp/arfs-r21/before/test_gbm_contracts.py:302: in test_invalid_initial_score_shape_or_values_rejected
+    with pytest.raises(ValueError, match="init_score.*finite.*shape"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'init_score.*finite.*shape'
+E    Input: 'Data must be 1-dimensional, got ndarray of shape (200, 2) instead'
+_______ test_invalid_initial_score_shape_or_values_rejected[flat-False] ________
+/tmp/arfs-r21/before/test_gbm_contracts.py:303: in test_invalid_initial_score_shape_or_values_rejected
+    wrapper(p).fit(X, y, init_score=initial)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:264: in fit
+    init_score = pd.Series(init_score, name="init_score")
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:584: in __init__
+    data = sanitize_array(data, index, dtype, copy)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:659: in sanitize_array
+    subarr = _sanitize_ndim(subarr, data, dtype, index, allow_2d=allow_2d)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:718: in _sanitize_ndim
+    raise ValueError(
+E   ValueError: Data must be 1-dimensional, got ndarray of shape (200, 1) instead
+
+During handling of the above exception, another exception occurred:
+/tmp/arfs-r21/before/test_gbm_contracts.py:302: in test_invalid_initial_score_shape_or_values_rejected
+    with pytest.raises(ValueError, match="init_score.*finite.*shape"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'init_score.*finite.*shape'
+E    Input: 'Data must be 1-dimensional, got ndarray of shape (200, 1) instead'
+________ test_invalid_initial_score_shape_or_values_rejected[flat-True] ________
+/tmp/arfs-r21/before/test_gbm_contracts.py:303: in test_invalid_initial_score_shape_or_values_rejected
+    wrapper(p).fit(X, y, init_score=initial)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:266: in fit
+    raise ValueError("Length of init_score must match length of y.")
+E   ValueError: Length of init_score must match length of y.
+
+During handling of the above exception, another exception occurred:
+/tmp/arfs-r21/before/test_gbm_contracts.py:302: in test_invalid_initial_score_shape_or_values_rejected
+    with pytest.raises(ValueError, match="init_score.*finite.*shape"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'init_score.*finite.*shape'
+E    Input: 'Length of init_score must match length of y.'
+________ test_invalid_initial_score_shape_or_values_rejected[nan-False] ________
+/tmp/arfs-r21/before/test_gbm_contracts.py:302: in test_invalid_initial_score_shape_or_values_rejected
+    with pytest.raises(ValueError, match="init_score.*finite.*shape"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+________ test_invalid_initial_score_shape_or_values_rejected[nan-True] _________
+/tmp/arfs-r21/before/test_gbm_contracts.py:303: in test_invalid_initial_score_shape_or_values_rejected
+    wrapper(p).fit(X, y, init_score=initial)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:264: in fit
+    init_score = pd.Series(init_score, name="init_score")
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:584: in __init__
+    data = sanitize_array(data, index, dtype, copy)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:659: in sanitize_array
+    subarr = _sanitize_ndim(subarr, data, dtype, index, allow_2d=allow_2d)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:718: in _sanitize_ndim
+    raise ValueError(
+E   ValueError: Data must be 1-dimensional, got ndarray of shape (200, 3) instead
+
+During handling of the above exception, another exception occurred:
+/tmp/arfs-r21/before/test_gbm_contracts.py:302: in test_invalid_initial_score_shape_or_values_rejected
+    with pytest.raises(ValueError, match="init_score.*finite.*shape"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'init_score.*finite.*shape'
+E    Input: 'Data must be 1-dimensional, got ndarray of shape (200, 3) instead'
+________ test_invalid_initial_score_shape_or_values_rejected[inf-False] ________
+/tmp/arfs-r21/before/test_gbm_contracts.py:302: in test_invalid_initial_score_shape_or_values_rejected
+    with pytest.raises(ValueError, match="init_score.*finite.*shape"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+________ test_invalid_initial_score_shape_or_values_rejected[inf-True] _________
+/tmp/arfs-r21/before/test_gbm_contracts.py:303: in test_invalid_initial_score_shape_or_values_rejected
+    wrapper(p).fit(X, y, init_score=initial)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:264: in fit
+    init_score = pd.Series(init_score, name="init_score")
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:584: in __init__
+    data = sanitize_array(data, index, dtype, copy)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:659: in sanitize_array
+    subarr = _sanitize_ndim(subarr, data, dtype, index, allow_2d=allow_2d)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:718: in _sanitize_ndim
+    raise ValueError(
+E   ValueError: Data must be 1-dimensional, got ndarray of shape (200, 3) instead
+
+During handling of the above exception, another exception occurred:
+/tmp/arfs-r21/before/test_gbm_contracts.py:302: in test_invalid_initial_score_shape_or_values_rejected
+    with pytest.raises(ValueError, match="init_score.*finite.*shape"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'init_score.*finite.*shape'
+E    Input: 'Data must be 1-dimensional, got ndarray of shape (200, 3) instead'
+______________ test_successful_refits_reset_contract_and_outputs _______________
+/tmp/arfs-r21/before/test_gbm_contracts.py:317: in test_successful_refits_reset_contract_and_outputs
+    assert model.is_init_score is False
+E   AssertionError: assert True is False
+E    +  where True = GradientBoosting(cat_feat='auto', params={'objective': 'regression', 'metric': 'l2', 'n_estimators': 25, 'num_threads'...wise': True, 'seed': 91}, stratified=False, show_learning_curve=False, verbose_eval=False, return_valid_features=False).is_init_score
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+_____________ test_failed_refit_preserves_previous_fitted_contract _____________
+/tmp/arfs-r21/before/test_gbm_contracts.py:341: in test_failed_refit_preserves_previous_fitted_contract
+    assert model.model is old_model and model.cat_feat == ["category"]
+E   AssertionError: assert (<lightgbm.basic.Booster object at 0x7465e57bc530> is <lightgbm.basic.Booster object at 0x7465e57bc530> and None == ['category'])
+E    +  where <lightgbm.basic.Booster object at 0x7465e57bc530> = GradientBoosting(cat_feat=None, params={'objective': 'regression', 'metric': 'l2', 'n_estimators': 25, 'num_threads': ...wise': True, 'seed': 91}, stratified=False, show_learning_curve=False, verbose_eval=False, return_valid_features=False).model
+E    +  and   None = GradientBoosting(cat_feat=None, params={'objective': 'regression', 'metric': 'l2', 'n_estimators': 25, 'num_threads': ...wise': True, 'seed': 91}, stratified=False, show_learning_curve=False, verbose_eval=False, return_valid_features=False).cat_feat
+----------------------------- Captured stdout call -----------------------------
+Auto-detected categorical features (cat/time/unk dtypes): ['category']
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+__________ test_native_feature_name_normalization_keeps_fitted_schema __________
+/tmp/arfs-r21/before/test_gbm_contracts.py:354: in test_native_feature_name_normalization_keeps_fitted_schema
+    model.predict_raw(X, validate_features=True), model.model.predict(X)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:424: in predict_raw
+    return self.model.predict(X, **kwargs)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:4767: in predict
+    return predictor.predict(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:1149: in predict
+    _safe_call(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:313: in _safe_call
+    raise LightGBMError(_LIB.LGBM_GetLastError().decode("utf-8"))
+E   lightgbm.basic.LightGBMError: Expected 'a_b' at position 0 but found 'a b'
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+----------------------------- Captured stderr call -----------------------------
+[LightGBM] [Fatal] Expected 'a_b' at position 0 but found 'a b'
+______ test_refit_refreshes_category_names_and_native_failure_keeps_state ______
+/tmp/arfs-r21/before/test_gbm_contracts.py:374: in test_refit_refreshes_category_names_and_native_failure_keeps_state
+    assert model.model is old_model and model.cat_feat is None
+E   AssertionError: assert (<lightgbm.basic.Booster object at 0x7465e57d3d40> is <lightgbm.basic.Booster object at 0x7465e57d3d40> and ['category'] is None)
+E    +  where <lightgbm.basic.Booster object at 0x7465e57d3d40> = GradientBoosting(cat_feat='auto', params={'objective': 'not_an_objective', 'metric': 'l2', 'n_estimators': 25, 'num_th...wise': True, 'seed': 91}, stratified=False, show_learning_curve=False, verbose_eval=False, return_valid_features=False).model
+E    +  and   ['category'] = GradientBoosting(cat_feat='auto', params={'objective': 'not_an_objective', 'metric': 'l2', 'n_estimators': 25, 'num_th...wise': True, 'seed': 91}, stratified=False, show_learning_curve=False, verbose_eval=False, return_valid_features=False).cat_feat
+----------------------------- Captured stdout call -----------------------------
+Auto-detected categorical features (cat/time/unk dtypes): ['category']
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+Auto-detected categorical features (cat/time/unk dtypes): ['category']
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+----------------------------- Captured stderr call -----------------------------
+[LightGBM] [Fatal] Unknown objective type name: not_an_objective
+=============================== warnings summary ===============================
+arfs-r21/before/test_gbm_contracts.py::test_array_prediction_is_positional_and_keeps_native_options[names0]
+arfs-r21/before/test_gbm_contracts.py::test_array_prediction_is_positional_and_keeps_native_options[names1]
+arfs-r21/before/test_gbm_contracts.py::test_array_fit_prediction
+  /tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:343: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.
+    warnings.warn(
+
+arfs-r21/before/test_gbm_contracts.py::test_array_prediction_is_positional_and_keeps_native_options[names0]
+arfs-r21/before/test_gbm_contracts.py::test_array_prediction_is_positional_and_keeps_native_options[names0]
+arfs-r21/before/test_gbm_contracts.py::test_array_prediction_is_positional_and_keeps_native_options[names0]
+arfs-r21/before/test_gbm_contracts.py::test_array_prediction_is_positional_and_keeps_native_options[names0]
+arfs-r21/before/test_gbm_contracts.py::test_array_prediction_is_positional_and_keeps_native_options[names1]
+arfs-r21/before/test_gbm_contracts.py::test_array_prediction_is_positional_and_keeps_native_options[names1]
+arfs-r21/before/test_gbm_contracts.py::test_array_prediction_is_positional_and_keeps_native_options[names1]
+arfs-r21/before/test_gbm_contracts.py::test_array_prediction_is_positional_and_keeps_native_options[names1]
+  /tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:414: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.
+    warnings.warn(
+
+arfs-r21/before/test_gbm_contracts.py::test_classification_aliases_match_native[softmax]
+arfs-r21/before/test_gbm_contracts.py::test_classification_aliases_match_native[ova]
+arfs-r21/before/test_gbm_contracts.py::test_classification_aliases_match_native[ovr]
+  /tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:378: UserWarning: predict_proba=True is ignored for non-classification objectives.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_conflicting_splits_rejected[wrapper]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_conflicting_splits_rejected[split]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_prediction_requires_full_ordered_schema[reorder-predict]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_prediction_requires_full_ordered_schema[reorder-predict_raw]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_prediction_requires_full_ordered_schema[replace-predict]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_prediction_requires_full_ordered_schema[replace-predict_raw]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_prediction_requires_full_ordered_schema[missing-predict]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_prediction_requires_full_ordered_schema[missing-predict_raw]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_prediction_requires_full_ordered_schema[extra-predict]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_prediction_requires_full_ordered_schema[extra-predict_raw]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_prediction_requires_full_ordered_schema[duplicate-predict]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_prediction_requires_full_ordered_schema[duplicate-predict_raw]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_array_prediction_is_positional_and_keeps_native_options[names0]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_array_prediction_is_positional_and_keeps_native_options[names1]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_fit_rejects_ambiguous_names[names0]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_fit_rejects_ambiguous_names[names1]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_classification_aliases_match_native[softmax]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_classification_aliases_match_native[ova]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_classification_aliases_match_native[ovr]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_category_selection_matches_native_and_owns_inputs[None]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_category_selection_matches_native_and_owns_inputs[categorical2]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_explicit_integer_codes_and_integer_feature_names
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_unsupported_feature_dtype_has_conversion_error[object]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_unsupported_feature_dtype_has_conversion_error[string]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_unsupported_feature_dtype_has_conversion_error[datetime64[ns]]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_unsupported_feature_dtype_has_conversion_error[timedelta64[ns]]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_unsupported_feature_dtype_has_conversion_error[complex128]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_multiclass_offsets_match_native_and_validation_loss[multiclass-array]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_multiclass_offsets_match_native_and_validation_loss[multiclass-frame]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_multiclass_offsets_match_native_and_validation_loss[ovr-array]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_multiclass_offsets_match_native_and_validation_loss[ovr-frame]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_invalid_initial_score_shape_or_values_rejected[short-False]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_invalid_initial_score_shape_or_values_rejected[short-True]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_invalid_initial_score_shape_or_values_rejected[wide-False]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_invalid_initial_score_shape_or_values_rejected[wide-True]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_invalid_initial_score_shape_or_values_rejected[flat-False]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_invalid_initial_score_shape_or_values_rejected[flat-True]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_invalid_initial_score_shape_or_values_rejected[nan-False]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_invalid_initial_score_shape_or_values_rejected[nan-True]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_invalid_initial_score_shape_or_values_rejected[inf-False]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_invalid_initial_score_shape_or_values_rejected[inf-True]
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_successful_refits_reset_contract_and_outputs
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_failed_refit_preserves_previous_fitted_contract
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_native_feature_name_normalization_keeps_fitted_schema
+FAILED ../../../../tmp/arfs-r21/before/test_gbm_contracts.py::test_refit_refreshes_category_names_and_native_failure_keeps_state
+45 failed, 11 passed, 14 warnings in 10.01s

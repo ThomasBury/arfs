@@ -2,6 +2,8 @@
 
 # Unreleased
 
+ - Reject conflicting GBM group/stratified splitting and mismatched prediction schemas. Handle multiclass objective aliases and finite positional initial-score matrices; clear stale state after successful refits. Restrict automatic categories to pandas category/bool, honor explicit categorical disable, and explain unsupported dtype conversion. Initial-score predictions still require a new external baseline on the raw scale.
+
  - Preserve TreeDiscretizer, IntervalToMidpoint and PatsyTransformer constructor options across refits. Resolve fitted columns/formulas in bin_features_, cat_features_, cols_ and formula_; normalize array inputs consistently and preserve Patsy dictionary names. Named tree transforms require the full fitted schema; arrays require its width. Honor scalar midpoint names and Patsy's NA_action/add_intercept options. Explicit Patsy dropping removes predictor rows only, so targets and weights must be aligned by the caller.
  - Make TreeDiscretizer bins follow exact fitted thresholds and leaf IDs, preserve predictor columns, and use copied current one-tree parameters. Apply categorical encoding in raw mode; binary raw values are probabilities. Missing/unknown values follow native routes, including all-missing single-leaf bins. Categorical maps now use leaf IDs; leaf_interval_dic_ replaces tree_imputer.
  - Remove the public legacy helpers cat_var and validate_pandas_input. Use OrdinalEncoderPandas for fitted categorical encoding/inverse decoding; use pandas .to_numpy() for array extraction and keep existing NumPy arrays directly. The encoder returns a DataFrame, not cat_var's four-item tuple; no compatibility shim is provided.

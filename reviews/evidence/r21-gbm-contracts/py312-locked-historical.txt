@@ -1,0 +1,12 @@
+.......................................                                  [100%]
+=============================== warnings summary ===============================
+arfs-r21/historical/checks.py::test_prediction_shapes_labels_and_raw_scores[regression]
+  /tmp/arfs-r21/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:400: UserWarning: predict_proba=True is ignored for non-classification objectives.
+    warnings.warn(
+
+arfs-r21/historical/checks.py::test_parameter_alias_precedence_and_array_fit
+  /tmp/arfs-r21/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:226: UserWarning: Input X is not a pandas DataFrame. Converting, column names might be lost.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+39 passed, 32 deselected, 2 warnings in 7.85s

@@ -13,7 +13,7 @@ Module Structure:
 
 Dependencies:
 -------------
-- Requires 'arfs.utils' for 'create_dtype_dict'.
+- Requires 'arfs.utils' for response and observation-weight validation.
 """
 
 # Standard library imports
@@ -37,7 +37,7 @@ from sklearn.model_selection import (
 )
 
 # Local imports
-from arfs.utils import create_dtype_dict, validate_sample_weight, validate_target
+from arfs.utils import validate_sample_weight, validate_target
 
 
 # --- Matplotlib Configuration ---
@@ -76,18 +76,19 @@ class GradientBoosting:
     ----------
     cat_feat : List[str], 'auto', or None, default='auto'
         List of categorical feature names.
-        If 'auto', uses `arfs.utils.create_dtype_dict` to identify columns
-        with dtypes 'object', 'category', 'bool', 'datetime', 'timedelta',
-        'datetimetz', and any unrecognized types as categorical for LightGBM.
-        If None, no features are treated as categorical by LightGBM.
-        Note: For LightGBM, integer-encoded features often perform well even
-              when not explicitly marked as categorical.
+        If 'auto', marks pandas categorical and Boolean columns as categorical.
+        Explicit names can also mark numeric category codes. None or an empty
+        list disables categorical splitting; pandas categories then use their
+        native numeric codes. Object/string features must first be converted to
+        pandas category; time/other unsupported dtypes must become numeric.
+        No vocabulary or time conversion is learned by this wrapper.
     params : dict, optional
         LightGBM parameters. Must include 'objective'. If None, uses default
         RMSE objective with 10,000 boosting rounds (subject to early stopping).
     stratified : bool, default=False
         Whether to use StratifiedShuffleSplit for the validation set. Ensures
-        class proportions are maintained in classification tasks.
+        class proportions are maintained in classification tasks. Cannot be
+        combined with groups; use group splitting alone for group isolation.
     show_learning_curve : bool, default=True
         If True, generates and stores the learning curve plot.
     verbose_eval : int, default=50
@@ -120,12 +121,15 @@ class GradientBoosting:
         Whether validation features were stored.
     valid_features : pd.DataFrame or None
         Validation features (X_val), if `return_valid_features` was True.
+    feature_names_in_ : list of str or None
+        Original fitted column names converted to strings. Native LightGBM
+        names may differ (for example, spaces become underscores).
 
     Example
     -------
     >>> # Example Usage (assuming X_tr, y_tr, X_tt exist)
     >>> gbm_trainer = GradientBoosting(
-    ...     cat_feat='auto', # Automatically detect categorical/object/bool/time cols
+    ...     cat_feat='auto', # Automatically detect pandas category/bool columns
     ...     stratified=False,
     ...     params={'objective': 'regression_l1', 'metric': 'mae', 'n_estimators': 500}
     ... )
@@ -164,6 +168,7 @@ class GradientBoosting:
         )
         self.return_valid_features: bool = return_valid_features
         self.valid_features: Optional[pd.DataFrame] = None
+        self.feature_names_in_ = None
 
     def __repr__(self) -> str:
         """Provides a string representation of the GradientBoosting object."""
@@ -182,7 +187,7 @@ class GradientBoosting:
         X: Union[pd.DataFrame, np.ndarray],
         y: Union[pd.Series, np.ndarray],
         sample_weight: Optional[Union[pd.Series, np.ndarray]] = None,
-        init_score: Optional[Union[pd.Series, np.ndarray]] = None,
+        init_score: Optional[Union[pd.Series, pd.DataFrame, np.ndarray]] = None,
         groups: Optional[Union[pd.Series, np.ndarray]] = None,
     ) -> None:
         """Fits the LightGBM model using early stopping.
@@ -196,11 +201,18 @@ class GradientBoosting:
         sample_weight : array-like, optional
             Finite nonnegative observation weights with the same length as y.
             Both training and validation splits must retain positive weight mass.
-        init_score : pd.Series or np.ndarray, optional
-            Initial scores to boost from. Must have the same length as y.
+        init_score : pd.Series, pd.DataFrame or np.ndarray, optional
+            Finite raw-scale initial scores, aligned by row position. Use shape
+            (n_samples,) for single-output objectives and (n_samples, num_class)
+            for multiclass, with columns in native numeric class order. A pandas
+            DataFrame is also accepted for multiclass; its index is not joined.
+            Flat multiclass scores and single-column matrices are rejected.
+            New rows require an external baseline: call predict_raw with
+            raw_score=True, add that baseline, then apply the objective's link.
         groups : pd.Series or np.ndarray, optional
             Group labels for GroupShuffleSplit. Ensures samples from the same
-            group are not in both train and validation sets.
+            group are not in both train and validation sets. Cannot be combined
+            with stratified=True. The fixed split is not a full-data refit.
         """
         # --- Input Validation and Preparation ---
         if self.params is not None and not isinstance(self.params, dict):
@@ -216,40 +228,41 @@ class GradientBoosting:
             )
             X = pd.DataFrame(X)  # Potential high memory usage for large arrays
 
-        # Handle categorical features
+        if not X.columns.is_unique or len(set(map(str, X.columns))) != X.shape[1]:
+            raise ValueError(
+                "Feature names must be unique, including after string conversion."
+            )
+        unsupported = [
+            col
+            for col, dtype in X.dtypes.items()
+            if not isinstance(dtype, pd.CategoricalDtype)
+            and (
+                not pd.api.types.is_numeric_dtype(dtype)
+                or pd.api.types.is_complex_dtype(dtype)
+            )
+        ]
+        if unsupported:
+            raise ValueError(
+                f"Unsupported feature dtypes: {unsupported}. Convert object/string columns "
+                "to pandas category and time/other columns to numeric before fit."
+            )
+
+        # Resolve locally so a failed refit cannot change the previous model's state.
         if self.cat_feat_input == "auto":
-            try:
-                # Use create_dtype_dict to find column names by type groups
-                # It identifies:
-                # 'cat': object, category, bool
-                # 'time': datetime, timedelta, datetimetz
-                # 'unk': Any other non-numeric, non-interval types
-                dtypes_dic = create_dtype_dict(df=X, dic_keys="dtypes")
-                # Combine columns identified as cat, time, or unknown
-                # These will be treated as categorical by LightGBM
-                category_cols = (
-                    dtypes_dic.get("cat", [])
-                    + dtypes_dic.get("time", [])
-                    + dtypes_dic.get("unk", [])
-                )
-                self.cat_feat = category_cols if category_cols else None
-                if self.cat_feat:
-                    print(
-                        f"Auto-detected categorical features (cat/time/unk dtypes): {self.cat_feat}"
-                    )
-            except Exception as e:
-                warnings.warn(
-                    f"Error during auto-detection of categorical features: {e}. Proceeding with cat_feat=None."
-                )
-                self.cat_feat = None
+            cat_feat = [
+                col
+                for col, dtype in X.dtypes.items()
+                if isinstance(dtype, pd.CategoricalDtype)
+                or pd.api.types.is_bool_dtype(dtype)
+            ]
         elif isinstance(self.cat_feat_input, list):
             # Validate that provided categorical features exist in X
             missing_cols = [col for col in self.cat_feat_input if col not in X.columns]
             if missing_cols:
                 raise ValueError(f"Categorical features not found in X: {missing_cols}")
-            self.cat_feat = self.cat_feat_input
+            cat_feat = self.cat_feat_input.copy()
         elif self.cat_feat_input is None:
-            self.cat_feat = None
+            cat_feat = []
         else:
             raise TypeError("cat_feat must be 'auto', a list of column names, or None.")
 
@@ -259,11 +272,20 @@ class GradientBoosting:
             sample_weight = pd.Series(checked_weight, name="sample_weight")
 
         if init_score is not None:
-            self.is_init_score = True
-            if not isinstance(init_score, pd.Series):
-                init_score = pd.Series(init_score, name="init_score")
-            if len(init_score) != len(y):
-                raise ValueError("Length of init_score must match length of y.")
+            scores = np.asarray(init_score, dtype=float)
+            num_class = (self.params or {}).get(
+                "num_class", (self.params or {}).get("num_classes", 1)
+            )
+            expected_shape = (len(y), num_class) if num_class > 1 else (len(y),)
+            if scores.shape != expected_shape or not np.isfinite(scores).all():
+                raise ValueError(
+                    f"init_score must be finite with shape {expected_shape}."
+                )
+            init_score = (
+                pd.DataFrame(scores)
+                if scores.ndim == 2
+                else pd.Series(scores, name="init_score")
+            )
 
         # Ensure groups is a Series if provided
         if groups is not None:
@@ -279,7 +301,7 @@ class GradientBoosting:
             sample_weight=sample_weight,
             params=self.params.copy() if self.params else None,  # Pass a copy
             init_score=init_score,
-            cat_feat=self.cat_feat,  # Use processed list
+            cat_feat=cat_feat,
             stratified=self.stratified,
             groups=groups,
             show_learning_curve=self.show_learning_curve,
@@ -288,6 +310,8 @@ class GradientBoosting:
         )
 
         # --- Process Output ---
+        self.valid_features = None
+        self.learning_curve = None
         if self.return_valid_features and self.show_learning_curve:
             self.model, self.valid_features, self.learning_curve = output
         elif self.return_valid_features and not self.show_learning_curve:
@@ -300,6 +324,9 @@ class GradientBoosting:
         # Store final model parameters
         if self.model:
             self.model_params = self.model.params
+            self.cat_feat = cat_feat or None
+            self.is_init_score = init_score is not None
+            self.feature_names_in_ = list(map(str, X.columns))
 
     def predict(
         self, X: Union[pd.DataFrame, np.ndarray], predict_proba: bool = False
@@ -309,7 +336,9 @@ class GradientBoosting:
         Parameters
         ----------
         X : pd.DataFrame or np.ndarray
-            Predictor matrix for which to make predictions.
+            Nonempty two-dimensional predictor matrix. DataFrame names and
+            order must match the original fitted names (compared as strings).
+            Arrays are positional and must have the fitted width.
         predict_proba : bool, default=False
             If True and the objective is classification, returns class
             probabilities. Otherwise, returns predicted values (regression)
@@ -331,25 +360,11 @@ class GradientBoosting:
             raise ValueError("Model has not been trained yet. Call fit() first.")
         if self.is_init_score:
             raise AttributeError(
-                "Model was fitted with init_score. Use predict_raw() instead "
-                "for raw outputs. Apply transformations (e.g., exp) manually "
-                "if needed."
+                "Model was fitted with init_score. Use predict_raw(raw_score=True), "
+                "add the external baseline for these rows, then apply the objective's link."
             )
 
-        # Ensure X is DataFrame if model was trained on DataFrame (for feature names)
-        if isinstance(self.model.feature_name(), list) and not isinstance(
-            X, pd.DataFrame
-        ):
-            warnings.warn(
-                "Model was trained with feature names, but input X for prediction is not a DataFrame. Converting."
-            )
-            # Assuming columns match the order during training if no names provided
-            try:
-                X = pd.DataFrame(X, columns=self.model.feature_name())
-            except ValueError:
-                raise ValueError(
-                    f"Input X has {X.shape[1]} columns, but model expects {len(self.model.feature_name())}."
-                )
+        X = self._prepare_prediction_input(X)
 
         obj_fn = self.model_params.get("objective", "") if self.model_params else ""
 
@@ -357,7 +372,7 @@ class GradientBoosting:
         y_pred_raw = self.model.predict(X)
 
         # Post-processing based on objective and predict_proba
-        if "binary" in obj_fn:
+        if isinstance(obj_fn, str) and obj_fn.lower() == "binary":
             if predict_proba:
                 # Return probabilities for the positive class
                 # LightGBM binary predict often returns probabilities directly
@@ -366,7 +381,14 @@ class GradientBoosting:
             else:
                 # Return class labels (0 or 1)
                 return (y_pred_raw > 0.5).astype(int)
-        elif "multiclass" in obj_fn:
+        elif isinstance(obj_fn, str) and obj_fn.lower() in {
+            "multiclass",
+            "softmax",
+            "multiclassova",
+            "multiclass_ova",
+            "ova",
+            "ovr",
+        }:
             if predict_proba:
                 # Return probabilities for all classes
                 return y_pred_raw
@@ -384,12 +406,16 @@ class GradientBoosting:
         """Provides direct access to the underlying LightGBM predict method.
 
         Useful for obtaining raw scores, leaf indices, etc., especially when
-        `init_score` was used during training.
+        `init_score` was used during training. Native transformed output remains
+        the default; request raw_score=True before adding an external baseline.
+        Custom objectives have no automatic link or class-label conversion.
+        Schema validation also applies when validate_features=False is passed.
 
         Parameters
         ----------
         X : pd.DataFrame or np.ndarray
-            Predictor matrix.
+            DataFrame names/order must match the original fitted names (as strings);
+            arrays must have the fitted width and are positional.
         **kwargs : dict, optional
             Additional keyword arguments passed directly to `lgb.Booster.predict()`.
             Examples: `raw_score=True`, `pred_leaf=True`. See LightGBM docs.
@@ -407,21 +433,25 @@ class GradientBoosting:
         if self.model is None:
             raise ValueError("Model has not been trained yet. Call fit() first.")
 
-        # Ensure X is DataFrame if model was trained on DataFrame (for feature names)
-        if isinstance(self.model.feature_name(), list) and not isinstance(
-            X, pd.DataFrame
-        ):
-            warnings.warn(
-                "Model was trained with feature names, but input X for prediction is not a DataFrame. Converting."
-            )
-            try:
-                X = pd.DataFrame(X, columns=self.model.feature_name())
-            except ValueError:
-                raise ValueError(
-                    f"Input X has {X.shape[1]} columns, but model expects {len(self.model.feature_name())}."
-                )
+        return self.model.predict(self._prepare_prediction_input(X), **kwargs)
 
-        return self.model.predict(X, **kwargs)
+    def _prepare_prediction_input(self, X):
+        names = self.model.feature_name()
+        if isinstance(X, pd.DataFrame):
+            fitted_names = (
+                self.feature_names_in_ if self.feature_names_in_ is not None else names
+            )
+            if not X.columns.is_unique or list(map(str, X.columns)) != fitted_names:
+                raise ValueError(
+                    "Prediction columns must match fitted feature names and order."
+                )
+            return X.set_axis(names, axis=1)
+        X = np.asarray(X)
+        if X.ndim != 2 or X.shape[1] != len(names):
+            raise ValueError(
+                f"Prediction input must be two-dimensional with {len(names)} columns."
+            )
+        return pd.DataFrame(X, columns=names)
 
     def save(self, save_path: Optional[str] = None, name: Optional[str] = None) -> str:
         """Saves the trained model and learning curve (if generated).
@@ -513,6 +543,7 @@ class GradientBoosting:
         self.model = joblib.load(model_file)
         if self.model:
             self.model_params = self.model.params
+            self.feature_names_in_ = self.model.feature_name()
             # Attempt to infer cat_feat from loaded model if possible (might not be stored directly)
             # This part is heuristic; cat_feat isn't directly stored in older booster files this way
             if (
@@ -579,18 +610,7 @@ def _fit_early_stopped_lgb(
     )
 
     # --- Prepare LightGBM Datasets ---
-    # Note: LightGBM recommends using pd.Categorical dtype for categorical features
-    #       for optimal performance, but handles string/object types too.
-    #       Consider converting specified cat_feat columns to pd.Categorical
-    #       before creating lgb.Dataset if performance is critical.
-    # Example:
-    # if cat_feat:
-    #     for col in cat_feat:
-    #         X_train[col] = X_train[col].astype('category')
-    #         X_val[col] = X_val[col].astype('category')
-
-    # If cat_feat list is provided or detected, pass it. Otherwise 'auto'.
-    categorical_feature_param = cat_feat if cat_feat else "auto"
+    categorical_feature_param = [str(col) for col in cat_feat] if cat_feat else []
 
     d_train = lgb.Dataset(
         X_train,
@@ -766,6 +786,8 @@ def _make_split(
     Optional[pd.Series],  # init_score_val, init_score_train
 ]:
     """Split by position; require valid responses and positive mass in both sets."""
+    if stratified and groups is not None:
+        raise ValueError("groups and stratified=True cannot be combined.")
     y = validate_target(y, len(X))
     checked_weight = validate_sample_weight(sample_weight, len(X))
     if sample_weight is not None and not isinstance(sample_weight, pd.Series):

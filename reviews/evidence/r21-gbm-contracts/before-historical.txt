@@ -1,0 +1,277 @@
+FFFFFFFFFFFFFFF                                                          [100%]
+=================================== FAILURES ===================================
+__________________ test_stratification_and_groups_do_not_leak __________________
+/tmp/arfs-r21/historical/checks.py:115: in test_stratification_and_groups_do_not_leak
+    assert train_groups.isdisjoint(valid_groups), sorted(train_groups & valid_groups)
+E   AssertionError: [0, 1, 2, 3, 4, 5, ...]
+E   assert False
+E    +  where False = <built-in method isdisjoint of set object at 0x71433d650ba0>({0, 1, 2, 3, 4, 5, ...})
+E    +    where <built-in method isdisjoint of set object at 0x71433d650ba0> = {0, 1, 2, 3, 4, 5, ...}.isdisjoint
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+________ test_reordered_features_preserve_prediction_or_raise[predict] _________
+/tmp/arfs-r21/historical/checks.py:199: in test_reordered_features_preserve_prediction_or_raise
+    assert_allclose(actual, expected)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 183 / 200 (91.5%)
+E   Max absolute difference among violations: 12.7144278
+E   Max relative difference among violations: 49.70559181
+E    ACTUAL: array([-1.496466,  4.315136,  6.383065,  2.06655 , -4.558286, -1.421405,
+E          -0.68495 , -1.970004, -1.563707,  4.358718, -1.21072 ,  1.982721,
+E          -0.423825,  3.393873,  1.459319, -3.01112 ,  0.406129,  1.492212,...
+E    DESIRED: array([-3.902997,  0.488899, -6.331362,  5.57617 ,  3.09708 , -2.639019,
+E           2.241395, -2.205239, -0.326871,  6.508195, -3.01112 ,  1.857609,
+E          -1.518359,  3.393873, -4.323629, -3.01112 ,  4.315136,  3.01757 ,...
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+______ test_reordered_features_preserve_prediction_or_raise[predict_raw] _______
+/tmp/arfs-r21/historical/checks.py:199: in test_reordered_features_preserve_prediction_or_raise
+    assert_allclose(actual, expected)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   Mismatched elements: 183 / 200 (91.5%)
+E   Max absolute difference among violations: 12.7144278
+E   Max relative difference among violations: 49.70559181
+E    ACTUAL: array([-1.496466,  4.315136,  6.383065,  2.06655 , -4.558286, -1.421405,
+E          -0.68495 , -1.970004, -1.563707,  4.358718, -1.21072 ,  1.982721,
+E          -0.423825,  3.393873,  1.459319, -3.01112 ,  0.406129,  1.492212,...
+E    DESIRED: array([-3.902997,  0.488899, -6.331362,  5.57617 ,  3.09708 , -2.639019,
+E           2.241395, -2.205239, -0.326871,  6.508195, -3.01112 ,  1.857609,
+E          -1.518359,  3.393873, -4.323629, -3.01112 ,  4.315136,  3.01757 ,...
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+______________________ test_replacement_feature_rejected _______________________
+/tmp/arfs-r21/historical/checks.py:207: in test_replacement_feature_rejected
+    with pytest.raises((ValueError, lgb.basic.LightGBMError)):
+E   Failed: DID NOT RAISE (<class 'ValueError'>, <class 'lightgbm.basic.LightGBMError'>)
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+________________ test_multiclass_aliases_return_labels[softmax] ________________
+/tmp/arfs-r21/historical/checks.py:230: in test_multiclass_aliases_return_labels
+    assert_array_equal(m.predict(X), m.model.predict(X).argmax(1))
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   (shapes (200, 3), (200,) mismatch)
+E    ACTUAL: array([[0.953931, 0.023568, 0.0225  ],
+E          [0.086641, 0.845272, 0.068088],
+E          [0.951568, 0.023922, 0.02451 ],...
+E    DESIRED: array([0, 1, 0, 2, 2, 0, 2, 0, 1, 2, 0, 1, 0, 2, 0, 0, 2, 2, 2, 0, 1, 0,
+E          1, 1, 2, 1, 1, 0, 0, 2, 1, 2, 2, 1, 1, 0, 2, 2, 1, 2, 0, 1, 0, 0,
+E          2, 0, 2, 2, 2, 1, 2, 0, 2, 1, 0, 2, 0, 1, 1, 1, 1, 0, 2, 2, 1, 1,...
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+__________________ test_multiclass_aliases_return_labels[ova] __________________
+/tmp/arfs-r21/historical/checks.py:230: in test_multiclass_aliases_return_labels
+    assert_array_equal(m.predict(X), m.model.predict(X).argmax(1))
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   (shapes (200, 3), (200,) mismatch)
+E    ACTUAL: array([[0.94728 , 0.03354 , 0.027999],
+E          [0.076049, 0.720661, 0.048725],
+E          [0.928831, 0.03354 , 0.028697],...
+E    DESIRED: array([0, 1, 0, 2, 2, 0, 2, 0, 1, 2, 0, 1, 0, 2, 0, 0, 2, 2, 2, 0, 1, 0,
+E          1, 1, 1, 1, 1, 0, 0, 2, 1, 2, 2, 1, 1, 0, 2, 2, 1, 2, 0, 1, 0, 0,
+E          2, 0, 2, 2, 2, 1, 2, 0, 2, 1, 0, 2, 0, 1, 1, 1, 2, 0, 2, 2, 1, 1,...
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+__________________ test_multiclass_aliases_return_labels[ovr] __________________
+/tmp/arfs-r21/historical/checks.py:230: in test_multiclass_aliases_return_labels
+    assert_array_equal(m.predict(X), m.model.predict(X).argmax(1))
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   (shapes (200, 3), (200,) mismatch)
+E    ACTUAL: array([[0.94728 , 0.03354 , 0.027999],
+E          [0.076049, 0.720661, 0.048725],
+E          [0.928831, 0.03354 , 0.028697],...
+E    DESIRED: array([0, 1, 0, 2, 2, 0, 2, 0, 1, 2, 0, 1, 0, 2, 0, 0, 2, 2, 2, 0, 1, 0,
+E          1, 1, 1, 1, 1, 0, 0, 2, 1, 2, 2, 1, 1, 0, 2, 2, 1, 2, 0, 1, 0, 0,
+E          2, 0, 2, 2, 2, 1, 2, 0, 2, 1, 0, 2, 0, 1, 1, 1, 2, 0, 2, 2, 1, 1,...
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+________________ test_advertised_auto_categorical_input[object] ________________
+/tmp/arfs-r21/historical/checks.py:241: in test_advertised_auto_categorical_input
+    wrapper().fit(X, y)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:276: in fit
+    output = _fit_early_stopped_lgb(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:692: in _fit_early_stopped_lgb
+    model = lgb.train(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/engine.py:297: in train
+    booster = Booster(params=params, train_set=train_set)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:3656: in __init__
+    train_set.construct()
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2590: in construct
+    self._lazy_init(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2123: in _lazy_init
+    data, feature_name, categorical_feature, self.pandas_categorical = _data_from_pandas(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:868: in _data_from_pandas
+    _pandas_to_numpy(data, target_dtype=target_dtype),
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:814: in _pandas_to_numpy
+    _check_for_bad_pandas_dtypes(data.dtypes)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:805: in _check_for_bad_pandas_dtypes
+    raise ValueError(
+E   ValueError: pandas dtypes must be int, float or bool.
+E   Fields with bad pandas dtypes: category: object
+----------------------------- Captured stdout call -----------------------------
+Auto-detected categorical features (cat/time/unk dtypes): ['category']
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+________________ test_advertised_auto_categorical_input[string] ________________
+/tmp/arfs-r21/historical/checks.py:241: in test_advertised_auto_categorical_input
+    wrapper().fit(X, y)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:276: in fit
+    output = _fit_early_stopped_lgb(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:692: in _fit_early_stopped_lgb
+    model = lgb.train(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/engine.py:297: in train
+    booster = Booster(params=params, train_set=train_set)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:3656: in __init__
+    train_set.construct()
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2590: in construct
+    self._lazy_init(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2123: in _lazy_init
+    data, feature_name, categorical_feature, self.pandas_categorical = _data_from_pandas(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:868: in _data_from_pandas
+    _pandas_to_numpy(data, target_dtype=target_dtype),
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:814: in _pandas_to_numpy
+    _check_for_bad_pandas_dtypes(data.dtypes)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:805: in _check_for_bad_pandas_dtypes
+    raise ValueError(
+E   ValueError: pandas dtypes must be int, float or bool.
+E   Fields with bad pandas dtypes: category: string
+----------------------------- Captured stdout call -----------------------------
+Auto-detected categorical features (cat/time/unk dtypes): ['category']
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+____________ test_advertised_auto_categorical_input[datetime64[ns]] ____________
+/tmp/arfs-r21/historical/checks.py:241: in test_advertised_auto_categorical_input
+    wrapper().fit(X, y)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:276: in fit
+    output = _fit_early_stopped_lgb(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:692: in _fit_early_stopped_lgb
+    model = lgb.train(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/engine.py:297: in train
+    booster = Booster(params=params, train_set=train_set)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:3656: in __init__
+    train_set.construct()
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2590: in construct
+    self._lazy_init(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2123: in _lazy_init
+    data, feature_name, categorical_feature, self.pandas_categorical = _data_from_pandas(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:865: in _data_from_pandas
+    target_dtype = np.result_type(*df_dtypes)
+E   numpy.exceptions.DTypePromotionError: The DType <class 'numpy.dtypes.Float64DType'> could not be promoted by <class 'numpy.dtypes.DateTime64DType'>. This means that no common DType exists for the given inputs. For example they cannot be stored in a single array unless the dtype is `object`. The full list of DTypes is: (<class 'numpy.dtypes.Float64DType'>, <class 'numpy.dtypes.Float64DType'>, <class 'numpy.dtypes.Float64DType'>, <class 'numpy.dtypes.DateTime64DType'>, <class 'numpy.dtypes.Float32DType'>)
+----------------------------- Captured stdout call -----------------------------
+Auto-detected categorical features (cat/time/unk dtypes): ['category']
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+___________ test_advertised_auto_categorical_input[timedelta64[ns]] ____________
+/tmp/arfs-r21/historical/checks.py:241: in test_advertised_auto_categorical_input
+    wrapper().fit(X, y)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:276: in fit
+    output = _fit_early_stopped_lgb(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:692: in _fit_early_stopped_lgb
+    model = lgb.train(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/engine.py:297: in train
+    booster = Booster(params=params, train_set=train_set)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:3656: in __init__
+    train_set.construct()
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2590: in construct
+    self._lazy_init(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:2123: in _lazy_init
+    data, feature_name, categorical_feature, self.pandas_categorical = _data_from_pandas(
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:865: in _data_from_pandas
+    target_dtype = np.result_type(*df_dtypes)
+E   numpy.exceptions.DTypePromotionError: The DType <class 'numpy.dtypes.Float64DType'> could not be promoted by <class 'numpy.dtypes.TimeDelta64DType'>. This means that no common DType exists for the given inputs. For example they cannot be stored in a single array unless the dtype is `object`. The full list of DTypes is: (<class 'numpy.dtypes.Float64DType'>, <class 'numpy.dtypes.Float64DType'>, <class 'numpy.dtypes.Float64DType'>, <class 'numpy.dtypes.TimeDelta64DType'>, <class 'numpy.dtypes.Float32DType'>)
+----------------------------- Captured stdout call -----------------------------
+Auto-detected categorical features (cat/time/unk dtypes): ['category']
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+___________________ test_none_disables_categorical_features ____________________
+/tmp/arfs-r21/historical/checks.py:262: in test_none_disables_categorical_features
+    assert m.model.dump_model()["feature_infos"]["category"]["values"] == []
+E   assert [-1, 0, 1] == []
+E
+E     Left contains 3 more items, first extra item: -1
+E     Use -v to get more diff
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+_____________________ test_multiclass_initial_score_matrix _____________________
+/tmp/arfs-r21/historical/checks.py:335: in test_multiclass_initial_score_matrix
+    m.fit(X, y, sample_weight=w, init_score=initial)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:264: in fit
+    init_score = pd.Series(init_score, name="init_score")
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/series.py:584: in __init__
+    data = sanitize_array(data, index, dtype, copy)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:659: in sanitize_array
+    subarr = _sanitize_ndim(subarr, data, dtype, index, allow_2d=allow_2d)
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/pandas/core/construction.py:718: in _sanitize_ndim
+    raise ValueError(
+E   ValueError: Data must be 1-dimensional, got ndarray of shape (200, 3) instead
+_____________________ test_refit_resets_initial_score_flag _____________________
+/tmp/arfs-r21/historical/checks.py:345: in test_refit_resets_initial_score_flag
+    assert_allclose(m.predict(X), m.model.predict(X))
+/tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:333: in predict
+    raise AttributeError(
+E   AttributeError: Model was fitted with init_score. Use predict_raw() instead for raw outputs. Apply transformations (e.g., exp) manually if needed.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+______________________ test_refit_resets_optional_outputs ______________________
+/tmp/arfs-r21/historical/checks.py:357: in test_refit_resets_optional_outputs
+    assert m.valid_features is None and m.learning_curve is None
+E   AssertionError: assert (       genuine     other    random\n1665  1.534356  0.575918 -0.128938\n1105 -0.786627  1.831475 -1.011460\n1210  0.80037...9097  0.023587\n1959  0.223087  0.768850 -0.924890\n2148  0.897314  0.631378  1.111421\n1532  1.249762 -0.817920 -0.789321 is None)
+E    +  where        genuine     other    random\n1665  1.534356  0.575918 -0.128938\n1105 -0.786627  1.831475 -1.011460\n1210  0.80037...9097  0.023587\n1959  0.223087  0.768850 -0.924890\n2148  0.897314  0.631378  1.111421\n1532  1.249762 -0.817920 -0.789321 = GradientBoosting(cat_feat='auto', params={'objective': 'regression', 'metric': 'l2', 'n_estimators': 25, 'num_threads'...wise': True, 'seed': 91}, stratified=False, show_learning_curve=False, verbose_eval=False, return_valid_features=False).valid_features
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+Data split: Train=160 samples, Validation=40 samples.
+Training up to 25 boosting rounds.
+=========================== short test summary info ============================
+FAILED ../../../../tmp/arfs-r21/historical/checks.py::test_stratification_and_groups_do_not_leak
+FAILED ../../../../tmp/arfs-r21/historical/checks.py::test_reordered_features_preserve_prediction_or_raise[predict]
+FAILED ../../../../tmp/arfs-r21/historical/checks.py::test_reordered_features_preserve_prediction_or_raise[predict_raw]
+FAILED ../../../../tmp/arfs-r21/historical/checks.py::test_replacement_feature_rejected
+FAILED ../../../../tmp/arfs-r21/historical/checks.py::test_multiclass_aliases_return_labels[softmax]
+FAILED ../../../../tmp/arfs-r21/historical/checks.py::test_multiclass_aliases_return_labels[ova]
+FAILED ../../../../tmp/arfs-r21/historical/checks.py::test_multiclass_aliases_return_labels[ovr]
+FAILED ../../../../tmp/arfs-r21/historical/checks.py::test_advertised_auto_categorical_input[object]
+FAILED ../../../../tmp/arfs-r21/historical/checks.py::test_advertised_auto_categorical_input[string]
+FAILED ../../../../tmp/arfs-r21/historical/checks.py::test_advertised_auto_categorical_input[datetime64[ns]]
+FAILED ../../../../tmp/arfs-r21/historical/checks.py::test_advertised_auto_categorical_input[timedelta64[ns]]
+FAILED ../../../../tmp/arfs-r21/historical/checks.py::test_none_disables_categorical_features
+FAILED ../../../../tmp/arfs-r21/historical/checks.py::test_multiclass_initial_score_matrix
+FAILED ../../../../tmp/arfs-r21/historical/checks.py::test_refit_resets_initial_score_flag
+FAILED ../../../../tmp/arfs-r21/historical/checks.py::test_refit_resets_optional_outputs
+15 failed, 56 deselected in 6.27s
