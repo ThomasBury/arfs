@@ -27,8 +27,20 @@ validation: **1177 passed** on Python 3.9 locked, **1177 passed** on Python 3.12
 locked and **1161 passed** on Python 3.12 newer. All 28 historical R24 distance
 checks pass unmasked in both 3.12 cells. Source/artifact hashes, dependency checks,
 lock validation, Ruff (**390 total, zero new**) and gate unit tests (**two passed**)
-are recorded in [R24](R24-gower-distances.md). Hosted CI and Codex review are
-checked on the pull request during delivery; CodeRabbit is not a delivery gate.
+are recorded in [R24](R24-gower-distances.md).
+
+[PR #60](https://github.com/ThomasBury/arfs/pull/60) delivers these changes. Hosted
+Ruff and both push/PR installed-wheel matrices pass on f05cdba, with **1177 / 1177 /
+1161** tests in the PR matrix. Codex's first review completed with two P2 reports.
+Both fail to reproduce in the supported snapshots: check_cv already chooses KFold
+for continuous binomial proportions, and binary_logloss is a metric name that
+native LightGBM rejects as an objective before prediction. Real weighted fractional
+CV matches independent native GLM folds, fractional grid search passes for frames/
+arrays, and native binary labels/probabilities are correct. The exact checks and
+results are in [delivery evidence](evidence/r13-r24-delivery/commands.txt).
+The review threads receive these dispositions and Codex is asked to reconsider;
+no package-source or established-test changes are needed for these reports.
+CodeRabbit is not a delivery gate.
 
 **Release decision: defer the version bump and GitHub release.** The checkout
 and latest published release remain `3.0.0`. R25–R30, R32 and R33 remain pending,

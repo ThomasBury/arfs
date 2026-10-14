@@ -1,0 +1,47 @@
+PR: https://github.com/ThomasBury/arfs/pull/60
+Branch: fix/r13-r24-remediation; source base 64b0ce7; first reviewed head f05cdba.
+Package source and established tests are unchanged from the verified R24 wheel.
+Final release stays deferred: R25-R30, R32 and R33 remain pending.
+
+Hosted PR runtime run 38545016361 and Ruff run 38545016210 passed on f05cdba.
+Hosted push runtime run 38544987276 and Ruff run 38544987319 also passed.
+PR runtime logs: Python 3.9 locked 1177 passed; Python 3.12 locked 1177 passed;
+Python 3.12 newer 1161 passed. Ruff baseline: 390 total, zero new. Gate unit
+checks: two passed. Required review count is one; owner/admin bypass is permitted.
+Codex posts COMMENTED reviews, not approving reviews. The user's instruction
+explicitly authorizes merge after Codex review comments are addressed and CI passes.
+
+First Codex review 5516102265 completed on f05cdba with two P2 reports:
+https://github.com/ThomasBury/arfs/pull/60#discussion_r4269276904
+https://github.com/ThomasBury/arfs/pull/60#discussion_r4269276913
+The reports do not reproduce on locked or newer supported native APIs.
+No source patch or added compatibility handling is justified by the evidence.
+
+Before pushing the delivery evidence, execute the finalized assert-based check
+outside the checkout on installed R24 wheels, with environment:
+MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1.
+cp reviews/evidence/r13-r24-delivery/review_checks.py /tmp/arfs-pr60-review-checks.py
+/tmp/arfs-r24/py39-locked/bin/python -I /tmp/arfs-pr60-review-checks.py
+/tmp/arfs-r24/py312-locked/bin/python -I /tmp/arfs-pr60-review-checks.py
+/tmp/arfs-r24/py312-newer/bin/python -I /tmp/arfs-pr60-review-checks.py
+All assertions pass in all three cells; captured logs record native versions.
+Fractional binomial weighted CV is compared to independent statsmodels GLM fits
+on KFold train/test rows. Real grid search completes with frame and array input.
+Canonical binary native predictions match wrapper probabilities and 0/1 labels.
+The expected LightGBM Fatal log is caught native rejection of binary_logloss as
+objective; binary_logloss is a valid metric alongside objective='binary'.
+
+Context7 scikit-learn check_cv/cross-validation documentation and installed
+check_cv source confirm that classifier=True uses StratifiedKFold only for binary
+or multiclass target types; continuous targets use KFold. A caller-supplied CV
+splitter is kept, including explicit StratifiedKFold choices. Existing maintained
+splitter tests already cover fractional binomial targets. LightGBM's Parameters
+Core and Metric sections distinguish binary objective from binary_logloss metric.
+These checks address bot claims, not new statistical or backend capabilities.
+
+uv tool run --from ruff==0.17.0 ruff check reviews/evidence/r13-r24-delivery/review_checks.py
+uv tool run --from ruff==0.17.0 ruff format --check reviews/evidence/r13-r24-delivery/review_checks.py
+uv tool run --from ruff==0.17.0 python .github/scripts/check_ruff_baseline.py
+git diff --cached --check
+No new diagnostics. No package source/test changes; existing full-suite evidence
+continues to apply. Hosted checks run again for the delivery documentation head.
