@@ -22,6 +22,12 @@ replication or establish an F null distribution. Relative/exposure weights are
 supported by association coefficients, not given scale-invariant relevance.
 The categorical classification U-to-F transform is a ranking heuristic, not an
 ANOVA test. Mixed score normalization and ranking policy remain separate.
+
+Parallel association helpers preserve original column labels. n_jobs must be a
+nonzero integer: joblib resolves negative counts using the active backend and
+available CPUs; workers are capped to nonempty pair/column chunks. Results sort
+descending with stable ties in callback order. Matrix results have a fresh
+RangeIndex; no-pair matrices have row/col/val columns with float values.
 """
 
 import math
@@ -39,13 +45,13 @@ import scipy.stats as ss
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from sklearn.utils import safe_mask
 
-from multiprocessing import cpu_count
 from itertools import combinations, permutations, product
 from scipy.stats import rankdata
 from scipy.spatial.distance import pdist
 from functools import partial
 
 from .parallel import (
+    _effective_n_jobs,
     parallel_matrix_entries,
     parallel_df,
     _compute_series,
@@ -293,12 +299,6 @@ def theils_u_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop"):
         # explicitly store the unique 2-permutation of column names
         # permutations and not combinations because U is asymmetric
         comb_list = [comb for comb in permutations(cat_cols, 2)]
-        # define the number of cores
-        n_jobs = (
-            min(cpu_count(), len(cat_cols))
-            if n_jobs == -1
-            else min(cpu_count(), n_jobs)
-        )
         # parallelize jobs
         theil_u_matrix_entries = partial(
             _compute_matrix_entries, func_xyw=weighted_theils_u
@@ -355,12 +355,6 @@ def theils_u_series(X, target, sample_weight=None, n_jobs=1, handle_na="drop"):
     cat_cols = dtypes_dic["cat"]
 
     if cat_cols:
-        # define the number of cores
-        n_jobs = (
-            min(cpu_count(), len(cat_cols))
-            if n_jobs == -1
-            else min(cpu_count(), n_jobs)
-        )
         # parallelize jobs
         _theil_u = partial(_compute_series, func_xyw=weighted_theils_u)
         lst = parallel_df(
@@ -464,12 +458,6 @@ def cramer_v_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop"):
     if cat_cols and (len(cat_cols) >= 2):
         # explicitly store the unique 2-combinations of column names
         comb_list = [comb for comb in combinations(cat_cols, 2)]
-        # define the number of cores
-        n_jobs = (
-            min(cpu_count(), len(cat_cols))
-            if n_jobs == -1
-            else min(cpu_count(), n_jobs)
-        )
         _cramer_v_matrix_entries = partial(_compute_matrix_entries, func_xyw=cramer_v)
         lst = parallel_matrix_entries(
             func=_cramer_v_matrix_entries,
@@ -523,12 +511,6 @@ def cramer_v_series(X, target, sample_weight=None, n_jobs=1, handle_na="drop"):
 
     if cat_cols:
         X = X[cat_cols]
-        # define the number of cores
-        n_jobs = (
-            min(cpu_count(), len(cat_cols))
-            if n_jobs == -1
-            else min(cpu_count(), n_jobs)
-        )
         # parallelize jobs
         _cramer_v = partial(_compute_series, func_xyw=cramer_v)
         lst = parallel_df(
@@ -663,12 +645,6 @@ def correlation_ratio_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop"):
         # explicitly store the unique 2-combinations of column names
         # the first one should be the categorical predictor
         comb_list = list(product(cat_cols, num_cols))
-        # define the number of cores
-        n_jobs = (
-            min(cpu_count(), len(cat_cols))
-            if n_jobs == -1
-            else min(cpu_count(), n_jobs)
-        )
         # parallelize jobs
         corr_ratio_matrix_entries = partial(
             _compute_matrix_entries, func_xyw=correlation_ratio
@@ -724,12 +700,6 @@ def correlation_ratio_series(X, target, sample_weight=None, n_jobs=1, handle_na=
         pred_list = dtypes_dic["cat"]
 
     if pred_list:
-        # define the number of cores
-        n_jobs = (
-            min(cpu_count(), len(pred_list))
-            if n_jobs == -1
-            else min(cpu_count(), n_jobs)
-        )
         # parallelize jobs
         _corr_ratio = partial(_compute_series, func_xyw=correlation_ratio)
         lst = parallel_df(
@@ -974,7 +944,9 @@ def wcorr_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop", method="spea
     Returns
     -------
     pd.DataFrame
-        The Cramer's V matrix (lower triangular) in a tidy (long) format.
+        Both directions of each distinct numeric pair, sorted by val descending
+        with stable pair-order ties. No diagonal entries are included. A single
+        numeric column returns an empty row/col/val frame.
     """
     # sanity checks
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
@@ -985,14 +957,9 @@ def wcorr_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop", method="spea
     if num_cols:
         # explicitely store the unique 2-combinations of column names
         comb_list = [comb for comb in combinations(num_cols, 2)]
-        # define the number of cores
-        n_jobs = (
-            min(cpu_count(), len(num_cols))
-            if n_jobs == -1
-            else min(cpu_count(), n_jobs)
-        )
+        n_jobs = _effective_n_jobs(n_jobs, len(comb_list))
 
-        if (n_jobs > 1) or (method != "pearson"):
+        if (n_jobs > 1) or (method != "pearson") or not comb_list:
             _wcorr_method = partial(weighted_corr, method=method)
             _wcorr_method_entries = partial(
                 _compute_matrix_entries, func_xyw=_wcorr_method
@@ -1006,11 +973,15 @@ def wcorr_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop", method="spea
             )
             return lst
         else:
+            corr = weighted_correlation_1cpu(X, sample_weight, handle_na)
+            rows = []
+            for left, right in comb_list:
+                value = corr.at[left, right]
+                rows.extend([(left, right, value), (right, left, value)])
             return (
-                matrix_to_xy(weighted_correlation_1cpu(X, sample_weight, handle_na))
-                .to_frame()
-                .reset_index()
-                .rename(columns={"level_0": "row", "level_1": "col", 0: "val"})
+                pd.DataFrame(rows, columns=["row", "col", "val"])
+                .sort_values("val", ascending=False, kind="stable")
+                .reset_index(drop=True)
             )
     else:
         return None
@@ -1178,7 +1149,7 @@ def association_series(
     if normalize:
         assoc_series = (assoc_series - assoc_series.min()) / np.ptp(assoc_series)
 
-    return assoc_series.sort_values(ascending=False)
+    return assoc_series.sort_values(ascending=False, kind="stable")
 
 
 def association_matrix(
@@ -1258,9 +1229,11 @@ def association_matrix(
         )
         df_to_concat.append(w_nom_nom)
 
-    return (
-        pd.concat(df_to_concat, ignore_index=True) if df_to_concat else pd.DataFrame()
-    )
+    if not df_to_concat:
+        return parallel_matrix_entries(
+            _compute_matrix_entries, X, [], sample_weight, n_jobs
+        )
+    return pd.concat(df_to_concat, ignore_index=True)
 
 
 def _callable_association_series_fn(
@@ -1324,11 +1297,6 @@ def _callable_association_series_fn(
     if not pred_list:
         return None
 
-    # Define the number of cores
-    n_jobs = (
-        min(cpu_count(), len(pred_list)) if n_jobs == -1 else min(cpu_count(), n_jobs)
-    )
-
     # Setup parallel computation
     _assoc_fn = partial(_compute_series, func_xyw=assoc_fn)
     return parallel_df(
@@ -1389,11 +1357,6 @@ def _callable_association_matrix_fn(
     # Return None if no column combinations are available
     if not cols_comb:
         return None
-
-    # Define the number of cores
-    n_jobs = (
-        min(cpu_count(), len(cols_comb)) if n_jobs == -1 else min(cpu_count(), n_jobs)
-    )
 
     # Setup parallel computation
     _assoc_fn = partial(_compute_matrix_entries, func_xyw=assoc_fn)
@@ -1550,8 +1513,6 @@ def f_cat_regression_parallel(X, y, sample_weight=None, n_jobs=1, handle_na="dro
 
     X = X.drop(columns=[target])
 
-    # define the number of cores
-    n_jobs = min(cpu_count(), X.shape[1]) if n_jobs == -1 else min(cpu_count(), n_jobs)
     # parallelize jobs
     _f_stat_cat = partial(_compute_series, func_xyw=f_cat_regression)
     varying_cols = [c for c in cat_cols if X.loc[sample_weight > 0, c].nunique() > 1]
@@ -1563,7 +1524,7 @@ def f_cat_regression_parallel(X, y, sample_weight=None, n_jobs=1, handle_na="dro
         sample_weight=sample_weight,
         n_jobs=n_jobs,
     )
-    return pd.concat([result, constants]).sort_values(ascending=False)
+    return pd.concat([result, constants]).sort_values(ascending=False, kind="stable")
 
 
 def f_cont_regression_parallel(
@@ -1769,8 +1730,6 @@ def f_cont_classification_parallel(
     target = y.name
     X = X.drop(target, axis=1)
 
-    # define the number of cores
-    n_jobs = min(cpu_count(), X.shape[1]) if n_jobs == -1 else min(cpu_count(), n_jobs)
     # parallelize jobs
     _f_stat_cont_clf = partial(_compute_series, func_xyw=f_cont_classification)
     return parallel_df(

@@ -21,9 +21,11 @@ backlog: [R01](R01-installed-package.md), [R02/R03](R02-R03-compatibility.md),
 [R10](R10-leshy-support.md), [R11](R11-permutation-importance.md),
 [R12](R12-all-relevant-aggregation.md), [R13](R13-glm-scoring.md),
 [R14](R14-glm-design.md) and [R15](R15-glm-likelihood.md) are complete.
-**R16 alone is next**, with R06/R08 complete. Follow the
+R16–R28 and R31 are also complete; their handoffs are linked in
+[Remediation](REMEDIATION.md), including [R28](R28-parallel-contracts.md).
+**R29 alone is next**, with R03/R10/R17 complete. Follow the
 [session batching and handoff guidance](REMEDIATION.md#session-batching-and-handoffs):
-repair threshold selector identity, equality and fitted state in R16.
+repair plot coordinates, selection membership, thresholds and limits in R29.
 Future "implement the next batch" requests follow the
 [recorded groups](REMEDIATION.md#recorded-groups-for-next-batch-requests).
 Later concurrent tracks require completed prerequisites and a

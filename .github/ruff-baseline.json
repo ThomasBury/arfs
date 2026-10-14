@@ -238,9 +238,6 @@
     "UP006": 11,
     "UP035": 3
   },
-  "src/arfs/parallel.py": {
-    "I001": 1
-  },
   "src/arfs/preprocessing.py": {
     "B006": 2,
     "F401": 6,
