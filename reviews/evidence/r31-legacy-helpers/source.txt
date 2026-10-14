@@ -1,0 +1,45 @@
+........................................................................ [ 69%]
+...............................                                          [100%]
+=============================== warnings summary ===============================
+tests/test_dependency_apis.py::test_public_lasso_selector_fits
+  /tmp/arfs-r18/final/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1464: UserWarning: Elastic net fitting did not converge
+    warnings.warn("Elastic net fitting did not converge")
+
+tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+  /tmp/arfs-r18/final/py312-locked/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The MissingValueThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+  /tmp/arfs-r18/final/py312-locked/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The UniqueValuesThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /home/bsatom/Documents/arfs/src/arfs/benchmark.py:103: UserWarning: Tight layout not applied. The bottom and top margins cannot be made large enough to accommodate all Axes decorations.
+    fig.tight_layout()
+
+tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /home/bsatom/Documents/arfs/src/arfs/benchmark.py:108: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+    plt.show()
+
+tests/test_category_identity.py: 14 warnings
+  /home/bsatom/Documents/arfs/src/arfs/association.py:244: RuntimeWarning: Rounded U = 1.0 to 1. This is probably due to floating point precision issues.
+    warnings.warn(
+
+tests/test_category_identity.py::test_boolean_series_uses_nominal_statistic[1-bool]
+tests/test_category_identity.py::test_boolean_series_uses_nominal_statistic[1-boolean]
+  /home/bsatom/Documents/arfs/src/arfs/association.py:244: RuntimeWarning: Rounded U = 0.0 to 0. This is probably due to floating point precision issues.
+    warnings.warn(
+
+tests/test_category_identity.py::test_shared_encoder_callers_receive_distinct_codes[boost]
+  /home/bsatom/Documents/arfs/src/arfs/feature_selection/allrelevant.py:1543: UserWarning: [BoostAGroota]: using native variable importance might break the FS
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+103 passed, 29 warnings in 10.77s

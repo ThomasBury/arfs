@@ -1,0 +1,6 @@
+[LightGBM] [Fatal] Unknown objective type name: binary_logloss
+Data split: Train=48 samples, Validation=12 samples.
+Training up to 5 boosting rounds.
+Data split: Train=48 samples, Validation=12 samples.
+Training up to 5 boosting rounds.
+{"sklearn": "1.6.1", "lightgbm": "4.6.0", "splitter": "KFold", "fractional_binomial_weighted_cv": "matches native GLM", "fractional_binomial_grid_frame_and_array": "passed", "binary_labels_and_probabilities": "passed", "binary_logloss_objective": "rejected before prediction"}

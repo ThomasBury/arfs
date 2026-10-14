@@ -1,6 +1,6 @@
 # ARFS remediation handoff
 
-**Status: R01–R12 complete; R13–R33 pending. Next implementation group: R13 alone.**
+**Status: R01–R24 and R31 complete; R25–R30 and R32–R33 pending. Next implementation group: R25 → R26, conditional on policy/scope decisions.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
 a separate repair backlog. By default, a request to implement the next phase
@@ -12,6 +12,44 @@ Keep one distribution. Preserve unrelated changes and historical review
 evidence. Prefer existing helpers and supported native APIs; no compatibility
 layer, new backend, packaging split, or broad rewrite is required by this plan.
 Names below are phase IDs, not commit promises or a release schedule.
+
+## R13–R24 and R31 delivery — 2026-10-14
+
+The user authorized staging, topical Conventional Commits, a dedicated branch,
+a pull request, Codex bot review, fixes for its comments, merge and branch removal.
+Branch: `fix/r13-r24-remediation`, based on `64b0ce7` on remote `main`.
+The 25 existing phase commits already have topical Conventional Commit titles;
+they retain the phase histories and validation evidence below. This delivery
+includes completed R13–R24 and R31 only; it does not start the next repair group.
+
+The branch's package source and tests match the final R24 installed-wheel
+validation: **1177 passed** on Python 3.9 locked, **1177 passed** on Python 3.12
+locked and **1161 passed** on Python 3.12 newer. All 28 historical R24 distance
+checks pass unmasked in both 3.12 cells. Source/artifact hashes, dependency checks,
+lock validation, Ruff (**390 total, zero new**) and gate unit tests (**two passed**)
+are recorded in [R24](R24-gower-distances.md).
+
+[PR #60](https://github.com/ThomasBury/arfs/pull/60) delivers these changes. Hosted
+Ruff and both push/PR installed-wheel matrices pass on f05cdba, with **1177 / 1177 /
+1161** tests in the PR matrix. Codex's first review completed with two P2 reports.
+Both fail to reproduce in the supported snapshots: check_cv already chooses KFold
+for continuous binomial proportions, and binary_logloss is a metric name that
+native LightGBM rejects as an objective before prediction. Real weighted fractional
+CV matches independent native GLM folds, fractional grid search passes for frames/
+arrays, and native binary labels/probabilities are correct. The exact checks and
+results are in [delivery evidence](evidence/r13-r24-delivery/commands.txt).
+The review threads receive these dispositions and Codex is asked to reconsider;
+no package-source or established-test changes are needed for these reports.
+CodeRabbit is not a delivery gate.
+
+**Release decision: defer the version bump and GitHub release.** The checkout
+and latest published release remain `3.0.0`. R25–R30, R32 and R33 remain pending,
+including sampling weights/output/retries, nearest neighbors, parallel labels,
+plots, dataset fixtures, runnable documentation and final release evidence.
+The API changes in this branch remain under Unreleased in CHANGELOG.md; choose
+the next version after those blockers and R33 checks are complete. No tag or
+release is part of this delivery. The next recorded group remains **R25 → R26**,
+conditional on its weighting, tiny-input and exhaustion policies.
 
 ## R04–R12 delivery — 2026-10-13
 
@@ -74,10 +112,11 @@ record each outcome separately. Stop at a phase boundary if a new API or
 statistical decision, unresolved failure, or wider scope makes the batch too
 large. Session boundaries and repair phases are not published releases.
 
-R01–R12 are complete. The explicitly requested R02/R03 and R10/R11 batches
-were implemented and validated sequentially; R04–R09 were completed alone.
-Run **R13 alone** next, with R03/R05 complete. Later phases use the recorded grouping
-rules below; phases outside the three conditional pairs remain separate.
+R01–R24 and R31 are complete. The explicitly requested R02/R03, R10/R11 and
+R18/R31 batches were implemented and validated sequentially; R04–R09 were
+completed alone. The next recorded group is **R25 → R26**, with R05/R24 complete;
+settle its weighting, tiny-input and exhaustion policies before implementation. Later phases
+use the recorded grouping rules below; phases outside the three conditional pairs remain separate.
 
 | Phases | Session recommendation | Reason |
 | --- | --- | --- |
@@ -91,32 +130,80 @@ rules below; phases outside the three conditional pairs remain separate.
 | R09 | Complete; do not repeat | Bounded mixed relevance and coherent ranking are recorded in the [R09 handoff](R09-mrmr-ranking.md) |
 | R10 → R11 | Complete sequential batch; do not repeat | [R10](R10-leshy-support.md) and [R11](R11-permutation-importance.md) record support/history consistency and the agreed signed normalization policy |
 | R12 | Complete; do not repeat | [R12](R12-all-relevant-aggregation.md) records resolved objectives/output axes and the user-chosen median/mean shadow rules |
-| R13 | Run alone next | R03/R05 complete; repair response-scale scoring and independent folds |
+| R13 | Complete; do not repeat | [R13](R13-glm-scoring.md) records negative response-scale deviance, BIC direction and independent weighted folds |
+| R14 | Complete; do not repeat | [R14](R14-glm-design.md) records fitted design/schema, input/support metadata, current family/link and fit return |
+| R15 | Complete; do not repeat | [R15](R15-glm-likelihood.md) records zero-row omission, corrected criterion dimensions and truthful unpenalized refits |
+| R16 | Complete; do not repeat | [R16](R16-threshold-contracts.md) records unique names, aligned callbacks, strict equality, empty stages, stable ties and fitted metadata |
+| R17 | Complete; do not repeat | [R17](R17-importance-selection.md) records the crossing prefix, zero/nonfinite policy, one fit, equal-row explanation population and multiclass/backend repair |
+| R18 → R31 | Complete sequential batch; do not repeat | [R18](R18-ordinal-schema.md) and [R31](R31-legacy-helpers.md) record full encoder schema, owned inverse inputs and the approved legacy-helper removals |
+| R19 | Complete; do not repeat | [R19](R19-tree-partitions.md) records exact thresholds/leaf IDs, copied one-tree parameters, native missing routes and raw categorical/binary outputs |
+| R20 | Complete; do not repeat | [R20](R20-transformer-inputs.md) records reusable options, array/dictionary preparation, midpoint scalar names and Patsy row/intercept policy |
+| R21 | Complete; do not repeat | [R21](R21-gbm-contracts.md) records explicit split rejection, strict prediction schemas, objective aliases, categorical/offset boundaries and successful-refit state |
+| R22 | Complete; do not repeat | [R22](R22-gbm-persistence.md) records versioned wrapper artifacts, coherent validated loads, legacy-file rejection and staged writes |
+| R23 | Complete; do not repeat | [R23](R23-benchmark-contracts.md) records training-only encoding, array/name support, supported selectors and fresh configurations |
+| R24 | Complete; do not repeat | [R24](R24-gower-distances.md) records pooled float64 ranges, cross/self distances, pairwise missingness and feature-weight/input contracts |
+| R25 → R26 | Conditional next sequential batch | R05/R24 complete; resolve representative weighting, tiny inputs and bounded exhaustion before the affected phase |
 
 ### Recorded groups for next-batch requests
 
 When the user asks to "implement the next batch of RXX", read the current phase
-statuses in this file and use these groups. **The next batch is R13 alone.**
+statuses in this file and use these groups. **The next recorded group is R25 → R26**,
+conditional on its policy/scope decisions, with R05/R24 complete.
 R10/R11 are complete; their separate handoffs record support/history consistency,
 weighted permutation scoring and the user-chosen absolute-total normalization.
 R12 is complete: GrootCV uses maximum shadow medians across folds/repeats;
 BoostAGroota uses maximum shadow means across iterations, both divided by cutoff.
-R13's R03/R05 prerequisites are complete. A request for the next batch authorizes
-that one group,
-its affected callers, tests, local phase commits and handoff update; stop after
+R13 is complete: GLM scores are negative response-scale deviance; internal BIC
+selection still minimizes BIC, and weighted CV clones each fold with positional
+array/frame slicing and task-aware splits. R14 is complete: one fitted design
+aligns named schemas, preserves supplied constants and separates input/support
+metadata from generated-intercept output; fit uses current family/link and
+returns self. R15 is complete: zero-weight GLM rows are omitted before fitting,
+scoring and tuning; AIC/BIC use selected design rank and retained row count;
+nonfinite search criteria fail clearly. The unpenalized-refit contract replaces
+the near-ridge promise. R16 is complete: unique feature names, labelled statistic
+alignment, fit-time parameter validation, valid empty collinearity stages, input-order
+ties and fitted feature counts/guards. Strict equality and named projection are
+preserved. R17 is complete: selection includes the crossing positive feature,
+zero total selects nothing, nonfinite contributions fail and model output determines
+multiclass axes. The user chose one fit/removal of n_iterations and equal validation-row
+importance averaging with weighted training/loss. R18 → R31 is complete: full
+encoder metadata describes passthrough output, inverse owns writable codes, and
+current parameters apply at refit. The user chose removal of both public legacy
+helpers without shims. R19 is complete: numeric thresholds and leaf IDs define
+partitions, native missing routes and fit-time one-tree parameters are retained,
+and raw binary output is probabilities. R20 is complete: constructor options survive
+refits, arrays use fitted names/width, dictionaries retain their keys, midpoint
+scalar names work, and Patsy honors NA_action/intercept choices. Explicit drop
+removes predictor rows only. R21 is complete: group/stratified conflicts fail,
+named prediction schemas are strict, native category choices and objective aliases
+are honored, multiclass offsets retain their output axis, and successful refits
+replace fitted state. R22 is complete: versioned wrapper metadata survives loading,
+legacy Booster-only files are rejected, loaded state resets coherently and staged
+writes protect existing models before commit. Model/PNG replacement remains two
+separate operations. R23 is complete: encoders fit training rows only, arrays get
+stable names, GrootCV comparisons fail clearly and each supported comparison uses
+a fresh selector/model with copied seed state. R24 is complete: pooled float64
+ranges, actual cross/self indexing, pairwise available-feature weighting and NaN
+for undefined pairs, with validated input/mask/feature-weight contracts. Next is
+R25 → R26, conditional on policy/scope decisions, with R05/R24 complete.
+A request for the next batch authorizes that one group, its affected callers,
+tests, local phase commits and handoff update; stop after
 it. It does not authorize the following group or Git publication/release unless
 the user also requests those actions.
 
 | Later two-phase group | Prerequisites | Why it fits one session | Decision to settle before the affected phase |
 | --- | --- | --- | --- |
 | R10 → R11 (complete) | R05/R07 complete | Leshy support/history and weighted permutation importance share selector code | Settled: absolute-total normalization, all-zero stays zero, only positive mean permutation scores eligible |
-| **R18 → R31** | R06 complete | Encoder schema repairs and related legacy helpers share dtype/schema checks | Retain or remove the public legacy helpers |
+| **R18 → R31 (complete)** | R06/R18 complete | Encoder schema repairs and related legacy helpers share dtype/schema checks | Settled: remove both public legacy helpers without compatibility shims |
 | **R25 → R26** | R05 and R24 complete | Sampling output repairs and bounded isolation retries mostly share one module | Define weighting, tiny-input, and exhaustion behavior |
 
-R18 → R31 is the earliest eligible two-phase group after R06 and may be selected
-explicitly at that point. R10 → R11 has already been completed.
+R18 → R31 is complete in separate sequential local commits, with the explicit
+removal decision recorded in R31. R19–R24 are complete; R25 → R26 is the next
+conditional group, with R05/R24 complete.
+R10 → R11 has already been completed.
 R25 → R26 is larger and remains conditional on its scope and policy decisions
-being settled. These are sequential groups, not parallel agent assignments.
+being settled; its R05/R24 prerequisites are now complete. These are sequential groups, not parallel agent assignments.
 
 For an unnamed next-batch request, continue from the lowest-numbered Pending
 phase in the ordered table. If it is R10, R18, or R25, use its recorded pair once
@@ -376,9 +463,488 @@ GLM response-scale deviance/scoring, weighted CV/grid search and the historical
 Poisson signal counterexample. R14 design/intercept and R15 likelihood/refit
 decisions stay separate. R13–R33 remain pending; stop after this R12 group.
 
+## R13 result — 2026-10-13
+
+R13 is complete on `main`, committed separately as `28b9529` from the clean
+`64b0ce7` checkout. The [handoff](R13-glm-scoring.md) records negative total
+response-scale deviance, higher-is-better public/CV scores, retained BIC
+minimization, task-aware native folds, positional array/frame slicing and a
+fresh clone per fold. Variance weights, unit scale, mean total fold loss and
+unshuffled order remain explicit. Direct score callers must handle the new
+negative sign. R14 design/parameter and R15 likelihood/refit repairs stay separate.
+
+Fresh installed-wheel full suites pass: **py39-locked 566 passed;
+py312-locked 566 passed; py312-newer 550 passed**, including 33 maintained R13
+cases. Those cases fail 29 times on the unchanged R12 wheel; repaired source
+and affected boundary/API callers pass **217** tests. Fourteen historical R13
+cases and controls pass unmasked in both 3.12 snapshots. The seeded Poisson
+counterexample now chooses alpha=1 with independent mean fold deviance 31.7024,
+versus 236.7310 for the former null-model choice. Dependency/provenance checks,
+eight source/installed hashes, 19 source/sdist/wheel payloads, copied tests,
+`uv lock --check`, Ruff 0.17.0 baseline (**417 total, zero new**), gate unit
+tests (**two passed**), new-test lint/format, local links and `git diff --check`
+pass. Exact commands and Python/dependency versions are in the handoff/evidence.
+Hosted CI, full docs/notebooks, other platforms, optional backends, performance,
+full sklearn compliance and statistical calibration were not checked.
+
+**Next group: R14 alone**, with R13 complete. Resume from `1C F5/F7/F8/F10`,
+`EnetGLM.fit/predict`, selector fit/transform, constants, input/support metadata,
+current family/link parameters and summary integration. Settle the fitted
+intercept/input-schema contract before edits. R15's zero-weight likelihood,
+finite criteria and refit policy remain unresolved and separate. R14–R33 are
+pending; no R13 decision remains unresolved. Stop after this completed R13 group.
+
+## R14 result — 2026-10-13
+
+R14 is complete on `main`, committed separately as `3e3e7e3` from the clean
+`fb942fc` checkout. The [handoff](R14-glm-design.md) records one fitted design
+across prediction/transformation, preserved supplied constants under both
+intercept modes, collision-free generated intercept names, named-schema alignment
+and rejection of missing/extra/duplicate inputs, positional arrays, input/support
+versus coefficient-design metadata, current family/link resolution and fit return.
+A selected generated intercept remains in output and remains penalized; input
+metadata and support no longer include it. `fit_intercept=False` disables only
+automatic addition. No R14 API choice remains unresolved.
+
+Fresh installed-wheel full suites pass: **py39-locked 636 passed;
+py312-locked 636 passed; py312-newer 620 passed**, including 70 maintained R14
+cases. Those cases produce **67 failures and three passes** on the verified
+R13 wheel; source and affected R05/R13/API callers pass **287** tests. Original
+R14 diagnostics reproduce nine failures before repair; all **17** selected
+historical checks/controls pass unmasked in both repaired 3.12 snapshots.
+Dependency/provenance checks, eight installed/source hashes, 19 source/sdist/wheel
+payloads, copied tests, `uv lock --check`, Ruff 0.17.0 baseline (**417 total,
+zero new**), gate unit tests (**two passed**), new-test lint/format, handoff links
+and `git diff --check` pass. Real scaled pandas pipeline feature names and rendered
+summary HTML agree with input support. Exact commands, versions and results are
+in the handoff/evidence. Hosted CI, full docs/notebooks, other platforms, optional
+backends, performance, full sklearn compliance and statistical calibration were
+not checked.
+
+**Next group: R15 alone**, with R13/R14 complete. Resume from `1C F6/F11`,
+`EnetGLM.fit`, likelihood/BIC attributes and `grid_search_cv` candidate handling.
+Decide zero-weight likelihood row omission versus explicit rejection, reject
+all-invalid candidate criteria, document regularized selection followed by
+unpenalized refit and remove the near-ridge promise. Preserve R13 scoring and R14
+fitted design. R15–R33 remain pending; stop after this completed R14 group.
+
+## R15 result — 2026-10-13
+
+R15 is complete on `main`, committed separately as `51d44f2` from the clean
+`2577289` checkout. The [handoff](R15-glm-likelihood.md) records the chosen
+zero-weight policy: omit aligned rows before GLM fitting/scoring/tuning and
+before direct GLM CV splits. Positive weights stay unnormalized, responses and
+weights still validate before omission, and generic CV keeps its existing fold
+mass guards. Any nonfinite candidate criterion now fails with score/alpha
+context; backend exceptions propagate without silent candidate dropping.
+
+Independent likelihood checks exposed the backend refit's extra parameter/row
+in information-criterion bookkeeping. Wrapper AIC/BIC now use returned
+log-likelihood, retained observation count and selected design rank, counting
+mean parameters without dispersion. Raw backend summaries/results remain
+unchanged. The documented contract is regularized selection followed by
+unpenalized refitting; the near-ridge claim is removed, pure ridge/invalid
+mixtures fail clearly, and post-selection/variance-weight likelihood limits
+are explicit. API/method prose and two notebook explanatory sentences agree;
+notebook code, outputs and other cells are preserved. No R15 policy choice
+remains unresolved.
+
+Fresh installed-wheel full suites pass: **py39-locked 688 passed;
+py312-locked 688 passed; py312-newer 672 passed**, including 52 maintained R15
+cases. Those cases produce **41 failures and 11 passes** on the verified R14
+wheel; source and affected R05/R13/R14/API callers pass **339** tests. Original
+R15 likelihood/near-ridge diagnostics reproduce two failures before repair;
+all **12** selected historical checks/controls pass unmasked in both repaired
+3.12 snapshots. The old near-ridge expectation remains historical, replaced
+by independent checks of the truthful refit contract. Dependency/provenance,
+eight installed/source hashes, 19 source/sdist/wheel payloads, copied tests,
+`uv lock --check`, Ruff 0.17.0 baseline (**417 total, zero new**), gate unit
+tests (**two passed**), affected/new-test lint, new-test format, notebook
+preservation, handoff links and `git diff --check` pass. Exact commands, versions
+and results are in the handoff/evidence. Hosted CI, full docs/notebooks, other
+platforms, optional backends, performance, full sklearn compliance and
+statistical calibration were not checked.
+
+**Next group: R16 alone**, with R06/R08 complete. Resume from `03 F5–F9/F12`,
+`BaseThresholdSelector` in `base.py`, threshold selectors in `unsupervised.py`,
+callback label alignment, parameter validation, collinearity edge cases, stable
+ties and fitted metadata. Settle equality wording explicitly and preserve named
+projection if retained. R16–R33 remain pending; stop after this completed R15 group.
+
+## R16 result — 2026-10-13
+
+R16 is complete on `main` in local commit `2fa18e8`, based on clean `985b0a3`.
+The [handoff](R16-threshold-contracts.md) records duplicate-name rejection at
+fit/transform, aligned and validated callback statistics, current fit-time
+parameters, fitted feature counts and explicit support guards for all five
+selectors. Named projection remains permissive for extra/reordered columns
+and omitted rejected columns; missing selected names still raise KeyError.
+Strict threshold equality is preserved and documented. Unique/cardinality
+thresholds require integers >= 1; missingness/collinearity require finite real
+cutoffs in [0, 1]. No R16 policy choice remains unresolved.
+
+Collinearity handles zero/one candidates with correctly labelled zero matrices
+and boolean support while retaining existing observation/weight validation.
+Full matrices and tied elimination follow fitted input order. The shared name
+guard also reaches VariableImportance's fit/transform and metadata, leaving its
+importance arithmetic, iteration and optional-backend repairs to R17. API
+prose and the Unreleased changelog agree; historical evidence is preserved.
+Three repaired Ruff allowances are removed, with none added.
+
+Fresh installed-wheel suites pass outside the checkout without setuptools:
+**py39-locked 772 passed; py312-locked 772 passed; py312-newer 756 passed**.
+All **29** selected historical checks/controls pass unmasked in each 3.12
+snapshot. The 84 maintained R16 cases produce **73 failures and 11 passes**
+on the verified R15 wheel; final source/affected callers pass **321** tests.
+Dependency/provenance checks, eleven installed/source hashes, 19 source/sdist/
+wheel payloads and copied tests agree. `uv lock --check`, Ruff 0.17.0's gate
+(**414 total, zero new**), gate unit tests (**two passed**), new test/evidence
+lint and format, local links and `git diff --check` pass. Exact commands,
+versions and logs are in the handoff/evidence. Hosted CI, full docs/notebooks,
+full sklearn compliance, other platforms, optional backends, performance and
+statistical calibration were not checked.
+
+**Next group: R17 alone**, with R03/R05/R06 complete. Resume from
+`03 F1–F3/F11/F13`, `variable_importance.py` and its training/contribution callers.
+Settle crossing-prefix/zero-total selection, weighted explanation population
+and whether repeated identical fits should remain; test array multiclass and
+missing-backend errors. R17–R33 remain pending. Stop after this completed R16 group.
+
+## R17 result — 2026-10-13
+
+R17 is complete on `main` in local commit `6f44345`, based on clean `1e88c54`.
+The [handoff](R17-importance-selection.md) records the user-chosen one fit and
+removal of `n_iterations`, with no compatibility shim or new resampling mode.
+Training/validation loss retain observation weights; global importance averages
+validation rows equally, as the user chose. `verbose` uses native training-metric
+logging. None resolves the same default model parameters without mutable defaults.
+No R17 policy choice remains unresolved.
+
+Cumulative selection retains the crossing positive feature, excludes zeros,
+selects nothing at cutoff zero or zero total, and retains every positive feature
+at cutoff one despite rounding. Current finite [0, 1] thresholds validate at fit.
+Native output blocks exclude their bias columns and infer output count without
+pandas-only target calls. Native and optional outputs reuse the existing mean
+absolute/sum-over-outputs helper. Invalid native shapes/nonfinite contributions
+and totals fail clearly; missing fasttreeshap fails before encoding/training.
+API/changelog and one notebook paragraph agree. Notebook code, outputs,
+metadata and all other cells are preserved. Seven Ruff allowances are removed;
+none are added. Plot correctness remains R29.
+
+Fresh installed-wheel full suites pass outside the checkout without setuptools:
+**py39-locked 821 passed; py312-locked 821 passed; py312-newer 805 passed**.
+All **24** selected historical assertions/controls pass unmasked in both 3.12
+snapshots after an explicitly recorded disposable adaptation removing exactly
+two retired `n_iterations=1` arguments; original scripts/logs remain unchanged.
+Obsolete repeated-fit/iteration-average assertions are excluded, with the new
+one-fit contract tested directly. Original checks reproduce **11 failures and
+13 passes** before repair. The 49 maintained R17 cases produce **36 failures
+and 13 passes** on the verified R16 wheel; final source/affected callers pass
+**354** tests. Dependency/provenance, eleven installed/source hashes, 19 source/
+sdist/wheel payloads, copied tests, `uv lock --check`, Ruff 0.17.0's gate
+(**407 total, zero new**), gate unit tests (**two passed**), new/affected test
+and evidence lint/format, notebook preservation, links and `git diff --check`
+pass. Exact commands, versions and evidence are in the handoff. Hosted CI,
+full docs/notebooks, full sklearn compliance, other platforms, installed optional
+backend equivalence, performance and statistical calibration were not checked.
+
+**Next group: R18 → R31**, with R06 complete. Read `02 F8/F13/F14`,
+`OrdinalEncoderPandas` and its full schema/inverse/output-dtype callers for R18.
+Complete, validate and commit R18 before R31. Before R31, decide whether to
+retain or remove public `cat_var` and `validate_pandas_input`, tracing callers,
+exports and docs from `02 F15` and `06 F10`. Stop at that phase boundary if the
+API decision or wider scope remains unresolved. R18–R33 remain pending.
+Stop after this completed R17 group; no following-group work or publication is authorized.
+
+## R18 result — 2026-10-13
+
+R18 is complete in local commit `7df5daa` on `main`, based on clean `37cf6b2`.
+[R18](R18-ordinal-schema.md) records the
+owned native categorical encoder, full passthrough names/count, fitted-order
+schema, current dtype/unknown/missing parameters, nullable categorical input and
+non-mutating inverse. Native inverse receives writable owned codes to avoid the
+pandas 3 read-only-array failure. Decoded label dtypes are inferred by pandas;
+passthrough dtypes stay intact. No separate mapping or compatibility layer is added.
+
+Fresh installed-wheel suites pass: **Python 3.9 locked 856; Python 3.12 locked
+856; Python 3.12 newer 840**. All **7** original historical ordinal checks pass
+unmasked in both 3.12 cells. The 35 maintained cases fail on the verified R17
+wheel (**32 failed, 3 passed**). Exact commands, versions, provenance, interim
+pandas 3 failure, final payload hashes and check limits are in the handoff and
+[evidence](evidence/r18-ordinal-schema/commands.txt). Dependency/provenance,
+19 source/sdist/wheel payloads, lock, Ruff (**403 total, zero new**, four removed
+allowances), gate unit tests (**2 passed**), new-test/evidence lint/format, local
+links and whitespace pass. Hosted CI, full docs/notebooks, full sklearn compliance,
+optional numerical backends, other platforms, performance and calibration are skipped.
+
+**Next phase in this authorized batch: R31**, with R06/R18 complete. The user
+explicitly chose **remove both public legacy helpers** (`cat_var` and
+`validate_pandas_input`), without compatibility shims. Trace exports/docs, remove
+the dead benchmark comment, add removal/migration checks and commit R31 separately.
+Stop after R31; the next group then is R19 alone, with R05/R06/R18 complete.
+No following phase, publication, version bump or release is authorized.
+
+## R31 result — 2026-10-14
+
+R31 is complete in local commit `ffb7388` on `main`, based on the completed R18
+commit `7df5daa`.
+The user explicitly chose **remove both public legacy helpers**, without shims.
+[R31](R31-legacy-helpers.md) records removal of `cat_var` and
+`validate_pandas_input`, the dead benchmark comment and cat_var-only tqdm import.
+There were no active internal callers or explicit exports/docs listings. The
+Unreleased changelog and handoff explain the encoder/array migration and the
+intentional tuple/code-policy differences. Every retained function/class AST is
+unchanged by R31; no unrelated unused helper is removed.
+
+Fresh installed-wheel suites pass: **Python 3.9 locked 862; Python 3.12 locked
+862; Python 3.12 newer 846**. Six maintained removal/migration cases report
+**2 failed, 4 passed** on the verified R18 wheel. The historical missing-category
+and declared-array failures reproduce before removal; original reports/scripts
+remain intact. The original preprocessing diagnostic module imports cat_var at
+load, so it is not recollected after the intentional removal; maintained ordinal
+and removal suites run unmasked, with no injected helper. Exact commands,
+versions, provenance, payloads and check limits are in the handoff and
+[evidence](evidence/r31-legacy-helpers/commands.txt). Dependency/provenance,
+19 source/sdist/wheel payloads, lock, Ruff (**397 total, zero new**, six removed
+allowances), gate unit tests (**2 passed**), test/evidence lint/format, local links
+and whitespace pass. Hosted CI, full docs/notebooks, full sklearn compliance,
+optional numerical backends, other platforms, performance and calibration are skipped.
+
+**R18 → R31 batch complete. Next group: R19 alone**, with R05/R06/R18 complete.
+Read `02 F1/F2/F4/F5/F9` and TreeDiscretizer's fit/transform, actual tree partitions,
+collision/missing-value handling and copied fit-time parameters. R19–R30 and
+R32–R33 remain pending. Stop here; no next phase, publication, version bump or
+release is authorized by this batch. Passing it does not establish release readiness.
+
+## R19 result — 2026-10-14
+
+R19 is complete in local commit `6af7415` on `main`, based on clean `132e0e0`. [R19](R19-tree-partitions.md)
+records exact fitted numerical thresholds and leaf-ID intervals, distinct
+categorical leaf groups, removal of temporary prediction-column writes, current
+copied one-tree/task/bin parameters and aliases, shared categorical encoding in
+both branches, and native missing/unknown routes. All-missing numeric input has
+one (-inf, inf] leaf interval. Raw binary output is native probabilities. Labels
+and fitted maps change deliberately: leaf_interval_dic_ replaces tree_imputer,
+and categorical maps use leaf IDs with unambiguous readable labels. Refit old
+saved discretizers; no fitted-state compatibility shim is added. R20's remaining
+input/state/Patsy/midpoint decisions are not treated as complete.
+
+Fresh installed-wheel full suites pass: **Python 3.9 locked 922; Python 3.12 locked
+922; Python 3.12 newer 906**. All **14** adapted historical tree checks pass
+unmasked in both 3.12 cells. The 60 maintained cases report **49 failed, 11
+passed** on the verified R31 wheel; historical before checks reproduce **11
+failures and 3 controls**. The disposable historical copy removes only the cat_var
+import retired by R31; its diff/hashes and unchanged assertions are recorded.
+Original evidence remains intact. The initial repaired wheel passed its suites,
+then a caller probe caught an unnamed categorical-column regression; explicit
+column naming fixes it, with None/integer-name controls included in the final run.
+
+Exact commands, versions, provenance and limits are in the handoff and
+[evidence](evidence/r19-tree-partitions/commands.txt). Source/affected callers
+pass **338 tests**; newer tree/pandas source checks pass **65**. All dependency
+checks, 12 installed module hashes, 19 source/sdist/wheel payloads, lock, Ruff
+(**397 total, zero new**, unchanged allowances), gate unit tests (**2 passed**),
+new-test/evidence lint/format, local links and whitespace pass. Hosted CI, full
+docs/notebooks, full sklearn compliance, optional numerical backends, other
+platforms, performance, calibration and cross-process artifacts are skipped.
+The existing wrapper's 80/20 split remains; no improved held-out performance,
+optimal binning or group/fused-penalty equivalence is claimed.
+
+**Next group: R20 alone**, with R02/R18/R19 complete. Read `02 F6/F7/F10–F12`,
+TreeDiscretizer's resolved bin_features and array normalization, midpoint scalar
+names/refits, and Patsy formula/NA_action/intercept/row alignment. R20–R30 and
+R32–R33 remain pending; skip completed R31 at its numerical position. Stop after
+R19; no next phase, publication, version bump or release is authorized by this
+request. Passing this phase does not establish release readiness.
+
+## R20 result — 2026-10-14
+
+R20 is complete on `main`, based on clean `e030fde`, in local phase commit
+`cff3c59`. The [handoff](R20-transformer-inputs.md) records reusable constructor
+options, fitted bin_features_/cat_features_/cols_/formula_, shared fit/transform
+input preparation, scalar midpoint names and Patsy NA_action/intercept behavior.
+Named tree inputs require the full fitted schema/order; arrays use the fitted
+names and width. The existing intercept default is retained; explicit Patsy
+drop affects predictor rows only, leaving y/weight alignment with the caller.
+
+Fresh installed-wheel full suites pass **975 / 975 / 959** on Python 3.9 locked,
+Python 3.12 locked and Python 3.12 newer. All **16** adapted historical cases pass
+unmasked in both 3.12 cells. Source/caller checks pass **391** tests. The **53**
+maintained cases show **36 failed, 17 passed** before repair on the verified R19
+wheel; historical before checks show 11 failures/five controls. Python 3.12's
+inherited Patsy traceback-formatting crash blocks complete before-maintained
+reports; Python 3.9 supplies that evidence. Original historical evidence is intact.
+All 12 installed-module hashes and 19 source/sdist/wheel payloads match; fresh
+installs use no setuptools. Dependencies, lock, Ruff 0.17.0 (396 total, zero new),
+gate unit tests (two), new-test/evidence lint/format, local links and whitespace
+pass. The resolved preprocessing C414 allowance is removed. Exact commands,
+versions, interim harness corrections and check limits are recorded in the handoff.
+Hosted CI, full docs/notebooks/sklearn compliance, optional numerical backends,
+other platforms, performance/calibration, cross-process artifacts and implicit
+fit_transform evaluation-scope repair are not checked.
+
+**Next group: R21 alone**, with R05/R06 complete. Read `04 F1–F5/F8/F9`,
+GradientBoosting and its split/prediction/category/offset/refit callers. Record
+any necessary API choices before repairing those contracts; R22 persistence
+follows R21. R21–R30 and R32–R33 remain pending; R31 is complete. Stop after
+R20; passing this phase is not a release-readiness claim.
+
+## R21 result — 2026-10-14
+
+R21 is complete in local commit `6204a3f` on `main`, based on clean `d51c567`.
+[R21](R21-gbm-contracts.md) records explicit rejection of group/stratified
+conflicts, full ordered named prediction schemas and positional arrays, native
+name normalization, multiclass objective aliases, actual categorical support and
+explicit disable, finite multiclass offset matrices, and successful-refit state.
+Failed fits preserve the previous model's contract. Category/Boolean input and
+explicit numeric codes use native handling; unsupported object/string/time types
+receive conversion errors. No learned encoder or combined split is introduced.
+New-row offset predictions still require an external baseline on the raw scale.
+
+Fresh installed-wheel full suites pass: **Python 3.9 locked 1031; Python 3.12
+locked 1031; Python 3.12 newer 1015**. All **39** selected unchanged historical
+checks pass unmasked in both 3.12 cells. The 56 maintained cases report **45
+failed, 11 passed** on the verified R20 wheel; original selected counterexamples
+reproduce **15 failures** before repair. Rejection policies supersede historical
+successful-fit expectations and are checked in maintained tests. Exact commands,
+versions, provenance, payloads and limits are in the handoff and
+[evidence](evidence/r21-gbm-contracts/commands.txt). Affected source/callers pass
+**389 tests** before the last ordinary-load schema control; full installed suites
+include it. Dependency checks, 12 installed-module hashes, copied tests, 19
+source/sdist/wheel payloads, lock, Ruff (**395 total, zero new**, one removed
+allowance), gate unit tests (**2 passed**), test/evidence lint/format, local links
+and whitespace pass. Hosted CI, docs/notebooks, optional backends, other platforms,
+performance, calibration and cross-process artifact repairs remain unchecked.
+
+**Next group: R22 alone**, with R21 complete. Read `04 F10`, GradientBoosting's
+save/load and the fresh-process reload evidence. Persist offset/category/original-
+schema metadata and reset loaded state; decide legacy Booster-only handling
+without guessing the baseline contract. Keep trusted-input/type/error boundaries
+explicit and verify safe-write failures. R22–R30 and R32–R33 remain pending;
+R31 is complete. Stop here; no following phase, publication or release is included.
+
+## R22 result — 2026-10-14
+
+R22 is complete in local commit `4bd3681` on `main`, based on clean `4d0e240`.
+[R22](R22-gbm-persistence.md) records a versioned joblib dictionary with Booster,
+offset guard, category names and original fitted schema. Loading validates the
+artifact before replacing fitted state, clears validation data/curves and retains
+constructor options for the next fit. Legacy Booster-only files raise TypeError:
+refit and save again because their baseline contract is unknown. New-row offset
+predictions still require an external baseline on the raw scale. Joblib remains
+trusted-input only; metadata checks do not make unknown pickle files safe.
+
+Save stages serialization and optional PNG rendering on the destination filesystem
+and syncs the model file before replacement. Pre-commit failures preserve existing
+files. Model replacement is the commit point; a later PNG replacement failure
+propagates with the new model saved and the old PNG retained. This separate-file
+limit is explicit and tested; no joint transaction or power-loss durability is
+claimed. Existing filenames still overwrite and default paths remain relative.
+
+Fresh installed-wheel full suites pass: **Python 3.9 locked 1068; Python 3.12
+locked 1068; Python 3.12 newer 1052**. All **11** selected unchanged historical
+checks pass unmasked in both 3.12 cells. The 37 maintained cases report **33
+failed, 4 passed** on the verified R21 wheel; original counterexamples reproduce
+**3 failures**. Eight isolated-process cases exercise ordinary/offset regression,
+binary, multiclass-alias and category predictions on new rows. Affected source/
+callers pass **194 tests**, excluding those eight installed-only cases. Exact
+commands, versions, provenance and limitations are in the handoff and
+[evidence](evidence/r22-gbm-persistence/commands.txt). Dependency checks, 12 module
+hashes, copied tests, 19 source/sdist/wheel payloads, lock, Ruff (**395 total, zero
+new**), gate unit tests (**2 passed**), test/evidence lint/format, links and
+whitespace pass. Hosted CI, docs/notebooks, optional backends, other platforms,
+cross-version loading, hostile artifacts, concurrent writers, interruption/power-
+loss recovery, performance and calibration remain unchecked.
+
+**Next group: R23 alone**, with R07/R10–R12/R18/R21 complete. Read
+`04 F11/F12/F14/F15`, sklearn_pimp_bench, compare_varimp and their encoder/selector/
+model callers. Use training-only encoding, settle array/name support, reject
+unsupported GrootCV comparisons and construct fresh configurations for each run.
+R23–R30 and R32–R33 remain pending; R31 is complete. Stop here; no following
+phase, publication, version bump or release is included.
+
+## R23 result — 2026-10-14
+
+R23 is complete in local commit `ff8faa8` on `main`, based on clean
+`9a6a8b7`. [R23](R23-benchmark-contracts.md) records training-only encoder fitting,
+retained ndarray input with x0/x1/... names, preserved DataFrame model names and
+text-based highlighting. Held-out-only categories receive NaN unknown codes;
+the estimator must support missing values when these occur. Weighted training,
+validation scoring and classification stratification are retained.
+
+compare_varimp accepts Leshy/BoostAGroota and rejects GrootCV before training.
+Each model/method pair gets a freshly constructed selector and cloned estimator;
+caller objects remain unchanged. Integer seeds are reused; RandomState instances
+are copied at their current state, including advanced state from fitted templates.
+None and BoostAGroota's global shadow RNG keep their existing behavior. Leshy.fit
+refreshes backend flags for direct set_params/refits as well. This prints feature
+selections/plots, not common held-out predictive-performance comparisons.
+
+Fresh installed-wheel full suites pass **1088 / 1088 / 1072** in Python 3.9 locked /
+Python 3.12 locked / Python 3.12 newer. Five unchanged historical checks pass
+unmasked in both 3.12 cells. Original targeted checks reproduce **four failures**
+on the R22 wheel; 20 finalized maintained cases report **19 failed, one passed**
+there. Affected source/callers pass **316 tests**. Exact commands, versions and
+provenance are in the [handoff](R23-benchmark-contracts.md) and
+[evidence](evidence/r23-benchmark-contracts/commands.txt). All copied tests,
+12 installed source hashes, 19 source/sdist/wheel payloads, dependency checks,
+lock, Ruff (**395 total, zero new**), gate unit tests (**two passed**), changed-test/
+evidence lint/format, links and whitespace checks pass. Historical evidence is
+unchanged; GrootCV's old acceptance expectation is replaced by rejection tests.
+
+**Next group: R24 alone**, with R06 complete. Read `05 F1–F5`, gower_matrix and
+sampling/nearest-neighbor callers. Settle missing/no-comparable-pair behavior,
+repair stable numeric ranges and cross/self matrices, and validate input masks
+and distance feature weights with independent scalar references. R24–R30 and
+R32–R33 remain pending; R31 is complete. Hosted CI, docs/notebooks, optional
+backends, other platforms, performance and calibration remain unchecked.
+Stop here; no following phase, publication, version bump or release is included.
+
+## R24 result — 2026-10-14
+
+R24 is complete in local commit `5325b7f` on `main`, based on clean
+`4e50f38`. [R24](R24-gower-distances.md) records the user-chosen NaN result for
+pairs without comparable positive-weight features, including entirely missing
+diagonals. Missing features are omitted separately for each pair. Observed
+constant columns contribute zero and retain their denominator weights. Numeric
+ranges retain pooled X/Y observations, using float64 direct spans and centered
+scaling; infinities and overflowing spans fail clearly. Pairwise weight scaling
+prevents overflow and keeps tiny-weight-only pairs defined.
+
+Cross-matrices compute every pair, even with equal row counts; symmetry is used
+only for actual self-comparisons. Arrays, named reference Series, nullable dtypes,
+empty row axes and category masks have explicit validated contracts. DataFrame
+schema/order and nominal identity are preserved. Feature weights are positional
+column weights, not observation weights. The sample caller passes a Boolean
+category mask so integer names are safe. Sampling output/observation weights,
+isolation retries and key/query/nonfinite-neighbor selection remain R25–R27.
+Float64 output doubles the former float32 storage per entry and remains dense/
+quadratic for self-distances, using row-sized feature scratch.
+
+Fresh installed-wheel full suites pass **1177 / 1177 / 1161** in Python 3.9 locked /
+Python 3.12 locked / Python 3.12 newer. All **28** unchanged historical R24 checks
+pass unmasked in both 3.12 cells; the R23 locked wheel reports **17 failed, 11
+passed**. All **89** final maintained cases report **75 failed, 14 passed** on that
+verified before wheel. Affected source/dtype callers pass **139 tests**. Exact
+commands, versions and provenance are in the [handoff](R24-gower-distances.md) and
+[evidence](evidence/r24-gower-distances/commands.txt). All copied tests,
+13 installed source hashes, 19 source/sdist/wheel payloads, dependency checks,
+lock, Ruff (**390 total, zero new**, five allowances removed), gate unit tests
+(**two passed**), changed-test/evidence lint/format, links and whitespace pass.
+Historical evidence remains unchanged. Hosted CI, docs/notebooks, optional
+backends, other platforms, large matrix performance and calibration are unchecked.
+
+**Next recorded group: R25 → R26**, with R05/R24 complete, conditional on settling
+representative weighting, tiny-input and exhaustion policies. Read `05 F6–F10`,
+sample, isolation_forest, isof_find_sample and get_5_percent_splits. Complete and
+commit R25 before starting R26; stop at the phase boundary if scope or choices
+remain unresolved. R25–R30 and R32–R33 remain pending; R31 is complete.
+Stop here; no following phase, publication, version bump or release is included.
+
 ## Ordered phases
 
-R01–R12 are **Complete**; R13–R33 are **Pending**. The
+R01–R24 and R31 are **Complete**; R25–R30 and R32–R33 are **Pending**. The next
+recorded group is R25 → R26, conditional on policy/scope decisions. The
 [R01 handoff](R01-installed-package.md) records changes, decisions, exact checks,
 environment identities, inherited failures, and the resume point. Changes are
 committed as `6b675fd` on `fix/r01-installed-package` at checkpoint base `0270aca`;
@@ -404,9 +970,27 @@ MRMR ranking, uncommitted on `main` preserving R04–R08 work. The
 [R10 handoff](R10-leshy-support.md) and [R11 handoff](R11-permutation-importance.md)
 record the completed sequential batch in separate local commits. Earlier
 R04–R09 changes remain uncommitted; the commits rely on that checkout state.
-R12 alone is next, with R07 complete. Hosted CI and remaining
-release evidence are still pending. An ID such as `1A F3` means finding 3 in the linked original report. The complete
-ID-to-phase mapping follows the table.
+Those uncommitted notes are historical; the R04–R12 delivery above records
+their merged commits. [R13](R13-glm-scoring.md) is complete in local commit
+`28b9529` on `main`, based on `64b0ce7`. [R14](R14-glm-design.md) is complete
+in local commit `3e3e7e3` on `main`, based on `fb942fc`. [R15](R15-glm-likelihood.md)
+is complete in local commit `51d44f2` on `main`, based on `2577289`.
+[R16](R16-threshold-contracts.md) is complete in local commit `2fa18e8` on `main`,
+based on `985b0a3`. [R17](R17-importance-selection.md) is complete in local commit
+`6f44345` on `main`, based on `1e88c54`. [R18](R18-ordinal-schema.md) is complete
+in local commit `7df5daa`, based on `37cf6b2`. [R31](R31-legacy-helpers.md) is complete
+in local commit `ffb7388`, based on `7df5daa`. [R19](R19-tree-partitions.md) is complete
+in local commit `6af7415`, based on `132e0e0`. [R20](R20-transformer-inputs.md) is complete
+in local commit `cff3c59`, based on `e030fde`. [R21](R21-gbm-contracts.md) is complete
+in local commit `6204a3f`, based on `d51c567`. [R22](R22-gbm-persistence.md) is complete
+in local commit `4bd3681`, based on `4d0e240`. [R23](R23-benchmark-contracts.md) is
+complete in local commit `ff8faa8`, based on `9a6a8b7`. [R24](R24-gower-distances.md)
+is complete in local commit `5325b7f`, based on `4e50f38`. Next is the
+conditional R25 → R26 group, with R05/R24 complete.
+Hosted CI for R13–R24/R31 and remaining release evidence
+are still pending. An ID such
+as `1A F3` means finding 3 in the linked original report. The complete ID-to-phase
+mapping follows the table.
 
 | Phase | Smallest complete outcome | Depends on | Required validation |
 | --- | --- | --- | --- |
@@ -422,32 +1006,32 @@ ID-to-phase mapping follows the table.
 | **R10 — Leshy support/history consistency (Complete)** | Let support computation own the mask and use all actual history rows. [1B F1/F2](01b-all-relevant.md) | R07 | Confirmed-only, tentative-only, mixed and empty selections with `keep_weak` on/off; mask/count/transform agreement; two-iteration median and rejected ranking |
 | **R11 — Weighted signed permutation importance (Complete)** | Forward validation scoring weights; normalize permutation scores by absolute total, keep all-zero vectors zero and require positive mean evidence. [1B F3/F4](01b-all-relevant.md) | R05/R07 | Real weighted sklearn reference; negative-total and zero-total fixed vectors; both Leshy and BoostAGroota callers; no promotion of negative scores as positive evidence |
 | **R12 — Explicit all-relevant aggregation (Complete)** | Resolve GrootCV objective/output-axis handling, then choose the intended fold/shadow statistic for GrootCV and BoostAGroota and align prose. [1B F7–F9](01b-all-relevant.md) | R07 | Binary-to-multiclass and objective-alias real fits; exact hand examples with fold columns only; documented cutoff axes/order. Calibration remains a separate claim |
-| **R13 — Correct GLM scoring and independent CV** | Compute response-scale deviance once, expose a higher-is-better sklearn score while minimizing BIC correctly, pass stratification targets, slice documented arrays, clone each fold. [1C F2–F4/F9/F12](01c-weighted-glm-lasso.md) | R03/R05 | Independent Poisson/binomial/Gamma losses, real external GridSearchCV, binary fold splits, array/frame parity, stateful-estimator isolation; rerun the Poisson signal counterexample |
-| **R14 — Stable GLM design and parameters** | Use one fitted intercept/input-column contract across fit/predict/transform; derive the family/link at fit from current parameters; return self. [1C F5/F7/F8/F10](01c-weighted-glm-lasso.md) | R13 | Single-row prediction, existing constants, `fit_intercept=False`, reorder/missing/extra/duplicate names, arrays and support metadata, `set_params` vs fresh construction, chained fit/predict and summary integration |
-| **R15 — Honest likelihood and refit contract** | Decide zero-weight likelihood handling, reject all-invalid candidate criteria, describe regularized selection followed by unpenalized refit, remove the near-ridge promise. [1C F6/F11](01c-weighted-glm-lasso.md) | R13/R14 | Zero-weight equivalence to omission or clear rejection; all-nonfinite search fails; independent weighted Gaussian/Poisson BIC comparisons; documented coefficient/refit behavior and post-selection inference limit |
-| **R16 — Threshold selector identity/state** | Reject duplicate names or adopt consistent positions, align labelled callbacks, validate parameters at fit, handle zero/one-feature collinearity, stabilize ties and fitted metadata. Resolve equality wording explicitly. [03 F5–F9/F12](03-selector-contracts.md) | R06/R08 | Masks/names/output agree, reordered callback labels, invalid `set_params`, empty pipeline stages, multiple hash seeds, correct feature counts and NotFittedError. Preserve legitimate named projection if retained as the API |
-| **R17 — Truthful cumulative importance selection** | Keep the crossing feature, reject nonfinite contributions, define zero-total selection, handle array multiclass targets, and raise the optional-backend error. Use one fit unless actual reproducible resampling is required. [03 F1–F3/F11/F13](03-selector-contracts.md) | R03/R05/R06 | Hand `[.6,.3,.1]` thresholds, constant-response real fit, threshold 1, invalid contributions, three-class array/Series parity, iteration behavior and missing fastshap error before wasted training |
-| **R18 — Ordinal encoder full schema** | Keep categorical encoder validation separate from full passthrough metadata, copy inverse input, honor changed output dtype. [02 F8/F13/F14](02-preprocessing.md) | R06 | Mixed categorical/numeric `get_feature_names_out` and pandas `set_output`; unknown/missing values, input preservation, inverse, clone/refit and `set_params(output_dtype=...)` |
-| **R19 — Actual fitted tree partitions** | Derive bins from real thresholds/leaf membership, avoid temporary-column collisions, derive copied one-tree parameters at fit, apply encoding in raw mode, define missing/all-missing behavior. [02 F1/F2/F4/F5/F9](02-preprocessing.md) | R05/R06/R18 | Equal-valued leaves, binary probabilities vs leaf IDs, values between observed extrema and fitted splits, `x`/`x_g`, category named `missing_added`, all-missing column, parameter aliases and native weighted one-tree reference |
-| **R20 — Reusable transformer inputs and Patsy rows** | Separate constructor options from fitted state; normalize documented fit/transform inputs identically; honor Patsy `NA_action` and intercept choice; treat scalar midpoint name as one name. [02 F6/F7/F10–F12](02-preprocessing.md) | R02/R18/R19 | Refit different schemas, ndarray fit_transform, named dict formula, midpoint second fit/scalar name, Patsy raise/drop branches and row alignment. Document that a transformer cannot also drop y/weight rows |
-| **R21 — GBM prediction and split contracts** | Reject or explicitly prioritize incompatible group/stratification options; validate prediction schemas and objective aliases; state real categorical support/disable behavior; define multiclass offset input; reset fitted state. [04 F1–F5/F8/F9](04-training-and-benchmarks.md) | R05/R06 | Disjoint groups, reorder/replacement columns, label/probability shapes across aliases, explicit category disable, object/string/time error or fitted mapping, offset shapes, refits clearing flags/validation data/curves |
-| **R22 — Persist the wrapper contract** | Save/load required wrapper metadata with the Booster and reset state coherently. Define legacy Booster-only file handling without guessing an unknown offset contract. [04 F10](04-training-and-benchmarks.md) | R21 | Fresh-process ordinary/category/offset round trips, external baseline required for new rows, loading into previously fitted wrapper, invalid/missing artifact errors; trusted-input boundary stays explicit. Exercise safe write failure behavior before claiming durable persistence |
-| **R23 — Comparisons that run what they label** | Fit encoders on training rows only; settle documented array/name support; reject incompatible GrootCV comparisons; construct fresh selector/model combinations. [04 F11/F12/F14/F15](04-training-and-benchmarks.md) | R07/R10–R12/R18/R21 | Held-out-only category excluded from vocabulary; integer display names, array policy, real fitted estimator/method tracing, seed/backend state reset, weighted scoring retained |
-| **R24 — Valid Gower distances** | Use stable direct numeric ranges, distinguish cross/self matrices, handle pairwise missingness explicitly, normalize documented input/masks, validate feature weights. [05 F1–F5](05-sampling-and-parallel.md) | R06 | Hand scalar reference, translation/scale invariance, equal-sized different frames, missing/constant features, no-comparable-pair policy, arrays/Series/extension dtypes/sparse errors, valid feature-weight rescaling |
+| **R13 — Correct GLM scoring and independent CV (Complete)** | Compute response-scale deviance once, expose a higher-is-better sklearn score while minimizing BIC correctly, pass stratification targets, slice documented arrays, clone each fold. [1C F2–F4/F9/F12](01c-weighted-glm-lasso.md) | R03/R05 | Independent Poisson/binomial/Gamma losses, real external GridSearchCV, binary fold splits, array/frame parity, stateful-estimator isolation; rerun the Poisson signal counterexample |
+| **R14 — Stable GLM design and parameters (Complete)** | Use one fitted intercept/input-column contract across fit/predict/transform; derive the family/link at fit from current parameters; return self. [1C F5/F7/F8/F10](01c-weighted-glm-lasso.md) | R13 | Single-row prediction, existing constants, `fit_intercept=False`, reorder/missing/extra/duplicate names, arrays and support metadata, `set_params` vs fresh construction, chained fit/predict and summary integration |
+| **R15 — Honest likelihood and refit contract (Complete)** | Decide zero-weight likelihood handling, reject all-invalid candidate criteria, describe regularized selection followed by unpenalized refit, remove the near-ridge promise. [1C F6/F11](01c-weighted-glm-lasso.md) | R13/R14 | Zero-weight equivalence to omission or clear rejection; all-nonfinite search fails; independent weighted Gaussian/Poisson BIC comparisons; documented coefficient/refit behavior and post-selection inference limit |
+| **R16 — Threshold selector identity/state (Complete)** | Reject duplicate names or adopt consistent positions, align labelled callbacks, validate parameters at fit, handle zero/one-feature collinearity, stabilize ties and fitted metadata. Resolve equality wording explicitly. [03 F5–F9/F12](03-selector-contracts.md) | R06/R08 | Masks/names/output agree, reordered callback labels, invalid `set_params`, empty pipeline stages, multiple hash seeds, correct feature counts and NotFittedError. Preserve legitimate named projection if retained as the API |
+| **R17 — Truthful cumulative importance selection (Complete)** | Keep the crossing feature, reject nonfinite contributions, define zero-total selection, handle array multiclass targets, and raise the optional-backend error. Use one fit unless actual reproducible resampling is required. [03 F1–F3/F11/F13](03-selector-contracts.md) | R03/R05/R06 | Hand `[.6,.3,.1]` thresholds, constant-response real fit, threshold 1, invalid contributions, three-class array/Series parity, iteration behavior and missing fastshap error before wasted training |
+| **R18 — Ordinal encoder full schema (Complete)** | Keep categorical encoder validation separate from full passthrough metadata, copy inverse input, honor changed output dtype. [02 F8/F13/F14](02-preprocessing.md) | R06 | Mixed categorical/numeric `get_feature_names_out` and pandas `set_output`; unknown/missing values, input preservation, inverse, clone/refit and `set_params(output_dtype=...)` |
+| **R19 — Actual fitted tree partitions (Complete)** | Derive bins from real thresholds/leaf membership, avoid temporary-column collisions, derive copied one-tree parameters at fit, apply encoding in raw mode, define missing/all-missing behavior. [02 F1/F2/F4/F5/F9](02-preprocessing.md) | R05/R06/R18 | Equal-valued leaves, binary probabilities vs leaf IDs, values between observed extrema and fitted splits, `x`/`x_g`, category named `missing_added`, all-missing column, parameter aliases and native weighted one-tree reference |
+| **R20 — Reusable transformer inputs and Patsy rows (Complete)** | Separate constructor options from fitted state; normalize documented fit/transform inputs identically; honor Patsy `NA_action` and intercept choice; treat scalar midpoint name as one name. [02 F6/F7/F10–F12](02-preprocessing.md) | R02/R18/R19 | Refit different schemas, ndarray fit_transform, named dict formula, midpoint second fit/scalar name, Patsy raise/drop branches and row alignment. Document that a transformer cannot also drop y/weight rows |
+| **R21 — GBM prediction and split contracts (Complete)** | Reject or explicitly prioritize incompatible group/stratification options; validate prediction schemas and objective aliases; state real categorical support/disable behavior; define multiclass offset input; reset fitted state. [04 F1–F5/F8/F9](04-training-and-benchmarks.md) | R05/R06 | Disjoint groups, reorder/replacement columns, label/probability shapes across aliases, explicit category disable, object/string/time error or fitted mapping, offset shapes, refits clearing flags/validation data/curves |
+| **R22 — Persist the wrapper contract (Complete)** | Save/load required wrapper metadata with the Booster and reset state coherently. Define legacy Booster-only file handling without guessing an unknown offset contract. [04 F10](04-training-and-benchmarks.md) | R21 | Fresh-process ordinary/category/offset round trips, external baseline required for new rows, loading into previously fitted wrapper, invalid/missing artifact errors; trusted-input boundary stays explicit. Exercise safe write failure behavior before claiming durable persistence |
+| **R23 — Comparisons that run what they label (Complete)** | Fit encoders on training rows only; settle documented array/name support; reject incompatible GrootCV comparisons; construct fresh selector/model combinations. [04 F11/F12/F14/F15](04-training-and-benchmarks.md) | R07/R10–R12/R18/R21 | Held-out-only category excluded from vocabulary; integer display names, array policy, real fitted estimator/method tracing, seed/backend state reset, weighted scoring retained |
+| **R24 — Valid Gower distances (Complete)** | Use stable direct numeric ranges, distinguish cross/self matrices, handle pairwise missingness explicitly, normalize documented input/masks, validate feature weights. [05 F1–F5](05-sampling-and-parallel.md) | R06 | Hand scalar reference, translation/scale invariance, equal-sized different frames, missing/constant features, no-comparable-pair policy, arrays/Series/extension dtypes/sparse errors, valid feature-weight rescaling |
 | **R25 — Sampling returns the intended data** | Separate row weights from distance feature weights; choose weighted representative semantics or reject them; impute by column, avoid `label` collision, raise unknown methods and return original isolation-selected rows. [05 F6–F8/F10](05-sampling-and-parallel.md) | R05/R24 | N≠P and N=P weights, per-column means, original column/index/dtype schema, an existing `label`, selected categorical values, clear unsupported-method/weight errors |
 | **R26 — Bounded isolation attempts** | Advance retry state, bound size progression and define exhaustion/tiny-input behavior. Correct KS-p-value interpretation in API/example prose. [05 F9 and statistical limits](05-sampling-and-parallel.md) | R25 | Deterministic forced rejection reaches bounded termination; draw sizes follow the documented rule; 0/1/10-row inputs handled explicitly. A terminating sampler still has no representativeness guarantee |
 | **R27 — Query-aware nearest neighbors** | Use the actual one-row query, exclude its key, deduplicate eligible keys once, validate n/query and define insufficient-candidate/nonfinite behavior. [05 F11/F12](05-sampling-and-parallel.md) | R24 | Query changes result; duplicate IDs; enough/too few unique candidates; n=0/negative/too large; optional-query policy; only a query-by-candidate distance vector allocated |
 | **R28 — Parallel labels and bounded useful work** | Chunk original label objects without NumPy coercion; settle result order/empty schema and worker-count semantics, avoiding empty tasks. [05 F13 and resource boundaries](05-sampling-and-parallel.md) | R06/R08 | Integer/string and tuple/MultiIndex labels with one/two workers; propagated callback error; no-pair and empty work; supported negative counts; worker cap observed without a new execution framework |
 | **R29 — Plots match the data and selection** | Keep feature/subplot coordinates separate, color actual Leshy membership, include terminal importance thresholds, respect plot limits and linear feature positions, bypass singleton clustering. [06 F2–F7](06-utilities-and-workflows.md) | R03/R10/R17 | Render and inspect string/integer/single-panel target plots; masks disagreeing with importance order; threshold 1/one/no feature, plot_n limit, first cumulative point, input/figure ownership |
 | **R30 — Honest local dataset fixtures** | Use local RNG consistently, generate exactly the requested odd/even row count, correct Titanic's alone flag. [06 F8/F9/F15](06-utilities-and-workflows.md) | R04 | Caller RNG stream unchanged; reproducible features/targets/weights; strong/noise construction checks; odd size; network-free 0/1/2-relative fixture. Do not introduce a new data service |
-| **R31 — Retain or remove legacy helpers deliberately** | Decide the public status of `cat_var` and `validate_pandas_input`; if retained, preserve missingness/dtype and accept documented arrays. Remove truly obsolete duplicates/local-unused helpers only with an explicit API decision. [02 F15](02-preprocessing.md), [06 F10](06-utilities-and-workflows.md) | R06/R18 | Direct public helper tests and exports/docs updated; missing ≠ category; newer strings; arrays; active callers rechecked. No compatibility shim by default |
+| **R31 — Retain or remove legacy helpers deliberately (Complete)** | User chose removal of public `cat_var` and `validate_pandas_input`, without shims. Remove the dead benchmark comment and cat_var-only import; document encoder/array migration. [02 F15](02-preprocessing.md), [06 F10](06-utilities-and-workflows.md) | R06/R18 | Absent public helpers/exports; supported encoder keeps missing distinct, handles newer strings and owns inputs; active callers and retained function/class ASTs rechecked |
 | **R32 — Reproducible documentation workflows** | Repair classification/regression setup, sampling overwrite, time-series reduced-feature calls, README filename and local Sphinx source. Reconcile docs-extra/RTD/fastshap policy; qualify method/weight/backend claims after preceding choices. [05 F14](05-sampling-and-parallel.md), [06 F12–F14](06-utilities-and-workflows.md), [07 F1](07-final-assessment.md) | Relevant R01–R31 fixes for each example | Actual Sphinx build and local links; bounded clean-kernel basic/classification/regression/preprocessing examples; exact reduced-feature model input; size limit maintained. Record data substitutions, excluded optional cells, and remaining notebooks separately |
 | **R33 — Release evidence and remaining claims** | Run the repaired package gates and a justified support matrix. Reassess selection claims with meaningful held-out baselines and document remaining optional/performance limits; narrow unsupported claims instead of promising unbounded validation. | All release-blocking phases above | Fresh source/wheel/lock metadata agree; no workaround; established suite and promoted regressions pass; repeated-seed signal/null, weak/correlated/mixed/weighted cases appropriate to claims; fold-local preprocessing/selection; clean-process artifacts; docs build. Optional backends/platforms require their own tests before claiming support |
 
-R21's group/schema safeguards can be advanced immediately after R05/R06 if
-training-wrapper users are the priority; its dependencies do not require waiting
-for the intervening algorithm phases. Similarly independent R24–R28 work need
-not await GLM repairs. The default next group is now R13 alone. Do not parallelize
+R21's group/schema safeguards are complete, with R05/R06 prerequisites retained.
+R24 is complete; remaining R25–R28 work need not await GLM repairs. The next
+recorded group is R25 → R26, conditional on policy/scope decisions, with R05/R24
+complete. Do not parallelize
 edits to shared dtype/weight helpers without agreeing their contract first.
 
 ## Complete finding-to-phase map
@@ -478,7 +1062,7 @@ Cross-cutting side effects are tested in the affected phase as described above.
 | Shadow threshold rule and error control | R10–R12/R33; decide axes/mean/median/max explicitly. Correct binomial arithmetic or signal recovery is not whole-procedure calibration |
 | Threshold equality/empty output | R16/R17/R24; keep undefined/no-positive-mass distinct from zero effect. Document any intentional change in selected sets |
 | GLM intercept/likelihood/refit | R14/R15; fit-time design must govern inference. Weight-valid prediction loss does not automatically justify every likelihood/BIC or post-selection p-value |
-| Weighted global explanations | R17; ordinary mean absolute contributions currently average validation rows equally. Choose the population being summarized before changing that rule |
+| Weighted global explanations | R17 complete: the user chose equal averaging over validation rows, with weights retained in training and validation loss. API/docs and native references record that population |
 | Named schemas, optional features, legacy files/helpers | R01/R16/R21/R22/R31/R32; record permissive projection vs strict schema, styling/backend install policy, and old artifact/public-API behavior |
 | Sampling meaning | R24–R27; cluster representatives are synthetic rows, isolation returns sampled original rows. KS acceptance is not 95% representativeness or proven outlier removal |
 

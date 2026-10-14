@@ -1,0 +1,78 @@
+[
+  {
+    "command": [
+      "uv",
+      "lock",
+      "--check",
+      "--python",
+      "/tmp/arfs-r12/py312-locked/bin/python"
+    ],
+    "exit_code": 0,
+    "output": "Resolved 116 packages in 8ms\n"
+  },
+  {
+    "command": [
+      "uv",
+      "tool",
+      "run",
+      "--from",
+      "ruff==0.17.0",
+      "ruff",
+      "check",
+      "tests/test_glm_scoring.py"
+    ],
+    "exit_code": 0,
+    "output": "All checks passed!\n"
+  },
+  {
+    "command": [
+      "uv",
+      "tool",
+      "run",
+      "--from",
+      "ruff==0.17.0",
+      "ruff",
+      "format",
+      "--check",
+      "tests/test_glm_scoring.py"
+    ],
+    "exit_code": 0,
+    "output": "1 file already formatted\n"
+  },
+  {
+    "command": [
+      "uv",
+      "tool",
+      "run",
+      "--from",
+      "ruff==0.17.0",
+      "python",
+      ".github/scripts/check_ruff_baseline.py"
+    ],
+    "exit_code": 0,
+    "output": "Ruff: 417 total diagnostics; 0 new\n"
+  },
+  {
+    "command": [
+      "/tmp/arfs-r12/py312-locked/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      ".github/scripts",
+      "-p",
+      "test_*.py"
+    ],
+    "exit_code": 0,
+    "output": "..\n----------------------------------------------------------------------\nRan 2 tests in 0.001s\n\nOK\n"
+  },
+  {
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "exit_code": 0,
+    "output": ""
+  }
+]

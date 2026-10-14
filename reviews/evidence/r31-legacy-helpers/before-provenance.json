@@ -1,0 +1,13 @@
+{
+  "revision": "7df5daa",
+  "modules": {
+    "arfs.preprocessing": {
+      "path": "/tmp/arfs-r18/final/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py",
+      "sha256": "6ec360d8fb012d88a810ba0cbb536075c4e487fa9bc4cbe01bb21d76b312e895"
+    },
+    "arfs.utils": {
+      "path": "/tmp/arfs-r18/final/py312-locked/lib/python3.12/site-packages/arfs/utils.py",
+      "sha256": "5937df61224c6396e4da5559991867a01fee25547d97b832d4ee6a0559b10813"
+    }
+  }
+}

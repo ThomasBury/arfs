@@ -1,0 +1,209 @@
+..FFFFFFFFFFF.                                                           [100%]
+=================================== FAILURES ===================================
+__________ test_tree_bins_preserve_fitted_leaf_partition[regression] ___________
+/tmp/arfs-r19/historical/checks.py:160: in test_tree_bins_preserve_fitted_leaf_partition
+    assert_array_equal(leaves[:, None] == leaves[None, :], bins[:, None] == bins[None, :])
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 3198 / 57600 (5.55%)
+E    ACTUAL: array([[ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],...
+E    DESIRED: array([[ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],...
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+________ test_tree_bins_preserve_fitted_leaf_partition[classification] _________
+/tmp/arfs-r19/historical/checks.py:160: in test_tree_bins_preserve_fitted_leaf_partition
+    assert_array_equal(leaves[:, None] == leaves[None, :], bins[:, None] == bins[None, :])
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 26034 / 57600 (45.2%)
+E    ACTUAL: array([[ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],...
+E    DESIRED: array([[ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],
+E          [ True,  True,  True, ..., False, False, False],...
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'binary' as metric.
+Training up to 1 boosting rounds.
+_____________ test_tree_bins_preserve_leaf_between_observed_values _____________
+/tmp/arfs-r19/historical/checks.py:171: in test_tree_bins_preserve_leaf_between_observed_values
+    assert result.x.iloc[0] == result.x.iloc[1]
+E   AssertionError: assert Interval(79.0, 120.0, closed='right') == Interval(120.0, 160.0, closed='right')
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+______ test_tree_generated_column_name_cannot_change_another_feature_fit _______
+/tmp/arfs-r19/historical/checks.py:180: in test_tree_generated_column_name_cannot_change_another_feature_fit
+    assert_allclose(together.tree_dic['x_g'].model.predict(X[['x_g']]),
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-12
+E
+E   Mismatched elements: 240 / 240 (100%)
+E   Max absolute difference among violations: 2.30909086
+E   Max relative difference among violations: 3.84848472
+E    ACTUAL: array([-3.973643e-08,  1.937500e+00,  1.944444e+00,  2.909091e+00,
+E           2.909091e+00,  2.909091e+00,  2.909091e+00,  2.909091e+00,
+E           2.909091e+00,  2.909091e+00,  2.909091e+00,  2.909091e+00,...
+E    DESIRED: array([0.925   , 0.925   , 0.925   , 0.925   , 0.925   , 0.925   ,
+E          0.925   , 0.925   , 1.220339, 1.220339, 1.220339, 1.220339,
+E          1.220339, 1.220339, 1.220339, 1.220339, 1.220339, 1.220339,...
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+___________________ test_tree_updated_bin_limit_is_respected ___________________
+/tmp/arfs-r19/historical/checks.py:188: in test_tree_updated_bin_limit_is_respected
+    assert model.tree_dic['x'].model.dump_model()['tree_info'][0]['num_leaves'] <= 2
+E   assert 6 <= 2
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_____________________ test_tree_updated_task_is_respected ______________________
+/tmp/arfs-r19/historical/checks.py:195: in test_tree_updated_task_is_respected
+    assert model.tree_dic['x'].model.params['objective'] == 'binary'
+E   AssertionError: assert 'rmse' == 'binary'
+E
+E     - binary
+E     + rmse
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_____________ test_tree_single_tree_contract_survives_boost_params _____________
+/tmp/arfs-r19/historical/checks.py:202: in test_tree_single_tree_contract_survives_boost_params
+    assert model.tree_dic['x'].model.num_trees() == 1
+E   AssertionError: assert 2 == 1
+E    +  where 2 = num_trees()
+E    +    where num_trees = <lightgbm.basic.Booster object at 0x74380b5d9940>.num_trees
+E    +      where <lightgbm.basic.Booster object at 0x74380b5d9940> = GradientBoosting(cat_feat=None, params={'num_threads': 1, 'min_data_in_leaf': 5, 'learning_rate': 1, 'verbosity': -1, ...t_round': 1, 'max_leaf': 6}, stratified=False, show_learning_curve=False, verbose_eval=50, return_valid_features=False).model
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 3 boosting rounds.
+_____________ test_tree_constructor_preserves_parameter_dictionary _____________
+/tmp/arfs-r19/historical/checks.py:209: in test_tree_constructor_preserves_parameter_dictionary
+    assert params == PARAMS
+E   AssertionError: assert {'learning_ra...ound': 1, ...} == {'learning_ra...seed': 8, ...}
+E
+E     Omitting 5 identical items, use -vv to show
+E     Left contains 3 more items:
+E     {'max_leaf': 10, 'num_boost_round': 1, 'objective': 'rmse'}
+E     Use -v to get more diff
+_____________________ test_tree_raw_categorical_transform ______________________
+/tmp/arfs-r19/historical/checks.py:232: in test_tree_raw_categorical_transform
+    assert np.isfinite(model.transform(X).cat).all()
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:630: in transform
+    X[col] = self.tree_dic[col].predict(X[[col]])
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:357: in predict
+    y_pred_raw = self.model.predict(X)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:4767: in predict
+    return predictor.predict(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:1158: in predict
+    data = _data_from_pandas(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:868: in _data_from_pandas
+    _pandas_to_numpy(data, target_dtype=target_dtype),
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:814: in _pandas_to_numpy
+    _check_for_bad_pandas_dtypes(data.dtypes)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:805: in _check_for_bad_pandas_dtypes
+    raise ValueError(
+E   ValueError: pandas dtypes must be int, float or bool.
+E   Fields with bad pandas dtypes: cat: object
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_________________ test_tree_existing_missing_sentinel_category _________________
+/tmp/arfs-r19/historical/checks.py:239: in test_tree_existing_missing_sentinel_category
+    assert discretizer().fit_transform(X, y).cat.notna().all()
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/sklearn/base.py:921: in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:495: in fit
+    X, self.ordinal_encoder_dic = self._encode_categorical_features(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:551: in _encode_categorical_features
+    .cat.add_categories("missing_added")
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/accessor.py:112: in f
+    return self._delegate_method(name, *args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/arrays/categorical.py:2941: in _delegate_method
+    res = method(*args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/pandas/core/arrays/categorical.py:1330: in add_categories
+    raise ValueError(
+E   ValueError: new categories must not include old categories: {'missing_added'}
+____________________ test_tree_all_missing_numeric_feature _____________________
+/tmp/arfs-r19/historical/checks.py:246: in test_tree_all_missing_numeric_feature
+    assert discretizer().fit_transform(X, y).shape == X.shape
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/sklearn/base.py:921: in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:503: in fit
+    self._fit_tree_and_create_bins(X, col, y, sample_weight, is_categorical)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:603: in _fit_tree_and_create_bins
+    pred_values = tree.predict(np.expand_dims(non_nan_values, axis=1))
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:357: in predict
+    y_pred_raw = self.model.predict(X)
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:4767: in predict
+    return predictor.predict(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:1158: in predict
+    data = _data_from_pandas(
+/tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/lightgbm/basic.py:834: in _data_from_pandas
+    raise ValueError("Input data must be 2 dimensional and non empty.")
+E   ValueError: Input data must be 2 dimensional and non empty.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+=============================== warnings summary ===============================
+arfs-r19/historical/checks.py: 27 warnings
+  /tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/gbm.py:343: UserWarning: Model was trained with feature names, but input X for prediction is not a DataFrame. Converting.
+    warnings.warn(
+
+arfs-r19/historical/checks.py::test_tree_categorical_missing_unknown_and_input_preservation
+arfs-r19/historical/checks.py::test_tree_raw_categorical_transform
+  /tmp/arfs-r31/py312-locked/lib/python3.12/site-packages/arfs/preprocessing.py:584: DeprecationWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+    .apply(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ../../../../tmp/arfs-r19/historical/checks.py::test_tree_bins_preserve_fitted_leaf_partition[regression]
+FAILED ../../../../tmp/arfs-r19/historical/checks.py::test_tree_bins_preserve_fitted_leaf_partition[classification]
+FAILED ../../../../tmp/arfs-r19/historical/checks.py::test_tree_bins_preserve_leaf_between_observed_values
+FAILED ../../../../tmp/arfs-r19/historical/checks.py::test_tree_generated_column_name_cannot_change_another_feature_fit
+FAILED ../../../../tmp/arfs-r19/historical/checks.py::test_tree_updated_bin_limit_is_respected
+FAILED ../../../../tmp/arfs-r19/historical/checks.py::test_tree_updated_task_is_respected
+FAILED ../../../../tmp/arfs-r19/historical/checks.py::test_tree_single_tree_contract_survives_boost_params
+FAILED ../../../../tmp/arfs-r19/historical/checks.py::test_tree_constructor_preserves_parameter_dictionary
+FAILED ../../../../tmp/arfs-r19/historical/checks.py::test_tree_raw_categorical_transform
+FAILED ../../../../tmp/arfs-r19/historical/checks.py::test_tree_existing_missing_sentinel_category
+FAILED ../../../../tmp/arfs-r19/historical/checks.py::test_tree_all_missing_numeric_feature
+11 failed, 3 passed, 26 deselected, 29 warnings in 4.27s

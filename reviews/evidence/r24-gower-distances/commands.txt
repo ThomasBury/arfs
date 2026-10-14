@@ -1,0 +1,77 @@
+Checkout: /home/bsatom/Documents/arfs; clean main @ 4e50f38.
+R24 alone; next recorded group R25 -> R26, conditional on policy/scope decisions.
+R05/R24 prerequisites complete. No publication or release.
+
+Source/baseline runs: MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1.
+Installed-cell environment additionally sets:
+UV_CACHE_DIR=/tmp/arfs-r04/cache MPLCONFIGDIR=/tmp/arfs-r24/mpl-<cell>
+MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2
+PYTHONHASHSEED=0 PYTHONDONTWRITEBYTECODE=1. Installed runs remove PYTHONPATH
+and use isolated Python outside the checkout. Generated artifacts are trusted.
+
+Historical selection used verbatim in the before and installed after runs:
+mixed_gower_feature or rectangular_gower or numeric_translation or equal_size_cross or actual_ranges or pairwise_missing_gower or array_category_index or array_boolean_mask or extension_dtype_auto or inferred_string_gower or gower_reference_series or sparse_has or reordered_frame or invalid_feature_weights or zero_feature_weight
+
+Before historical (unchanged checks.py copied from review 05):
+/tmp/arfs-r23/py312-locked/bin/python -I -m pytest /tmp/arfs-r24/historical/checks.py -k 'mixed_gower_feature or rectangular_gower or numeric_translation or equal_size_cross or actual_ranges or pairwise_missing_gower or array_category_index or array_boolean_mask or extension_dtype_auto or inferred_string_gower or gower_reference_series or sparse_has or reordered_frame or invalid_feature_weights or zero_feature_weight' --runxfail -q --tb=short -p no:cacheprovider
+before-historical.txt: 17 failed, 11 passed, 51 deselected.
+Original historical scripts/reports/logs are preserved. R25-R28 checks are not
+part of this phase's historical distance selection.
+
+Final maintained regressions copied into /tmp/arfs-r24:
+/tmp/arfs-r23/py312-locked/bin/python -I -m pytest /tmp/arfs-r24/test_gower_distances.py -q --tb=short -p no:cacheprovider
+before-final.txt: 75 failed, 14 passed (89 cases).
+before-environment.json records packages/provenance and asserts no setuptools.
+All 13 installed-module hashes match git show 4e50f38:src/<module>.py, including
+sampling.py. Copied before tests have identical bytes to final maintained tests.
+
+Final affected source/dtype callers:
+PYTHONPATH=src /tmp/arfs-r23/py312-locked/bin/python -m pytest tests/test_gower_distances.py tests/test_category_identity.py -q --tb=short -p no:cacheprovider
+source-final.txt: 139 passed, 17 existing warnings.
+
+uv export --locked --extra test --no-emit-project --output-file /tmp/arfs-r24/locked-requirements.txt
+uv build --python /tmp/arfs-r23/py312-locked/bin/python --out-dir /tmp/arfs-r24/dist
+uv lock --check --python /tmp/arfs-r23/py312-locked/bin/python
+/tmp/arfs-r23/py312-locked/bin/python /tmp/arfs-r24/check_payloads.py
+payloads.json: all 19 source/sdist/wheel files match, including three data payloads.
+
+Orchestrators validate.py, environment.py, check_payloads.py are reused from R23,
+with phase paths, R23 base interpreters and historical selection changed; sampling
+is added to the environment's module hashes. Exact copies run from /tmp/arfs-r24.
+Fresh venvs install the locked export or checked-in newer requirements plus the
+rebuilt wheel, check dependencies, verify all copied tests and 13 installed
+source-module hashes, then run outside checkout with -I and no setuptools.
+/tmp/arfs-r23/py312-locked/bin/python /tmp/arfs-r24/validate.py py39-locked
+/tmp/arfs-r23/py312-locked/bin/python /tmp/arfs-r24/validate.py py312-locked
+/tmp/arfs-r23/py312-locked/bin/python /tmp/arfs-r24/validate.py py312-newer
+Full-suite results: 1177 / 1177 / 1161.
+Per-cell commands.json records exact argv/cwd/exit codes. Environment JSON records
+all package versions, paths, hashes and interpreter versions. Both Python 3.12
+cells run all 28 historical distance checks with --runxfail. These include
+hand-weighted references, input preservation, scale, cross/self, missingness,
+mask/input/dtype and weight errors without editing historical assertions.
+
+uv tool run --from ruff==0.17.0 python .github/scripts/check_ruff_baseline.py
+Ruff: 390 total, zero new. Five sampling allowances removed with replaced code.
+/tmp/arfs-r23/py312-locked/bin/python -m unittest discover -s .github/scripts -p 'test_*.py'
+Two passed.
+uv tool run --from ruff==0.17.0 ruff check tests/test_gower_distances.py reviews/evidence/r24-gower-distances/*.py
+uv tool run --from ruff==0.17.0 ruff format --check src/arfs/sampling.py tests/test_gower_distances.py reviews/evidence/r24-gower-distances/*.py
+Both pass. Local handoff links and git diff --check checked before commits.
+
+User chose NaN for pairs with no comparable positive-weight features, including
+entirely missing diagonals. Pooled X/Y numeric ranges retained. Observed constants
+contribute zero and keep denominator weights. Cluster daisy's official Gower
+formula/missingness documentation checked:
+https://stat.ethz.ch/R-manual/R-devel/library/cluster/html/daisy.html
+Context7 /pandas-dev/pandas/v2.2.3: infer_objects uses soft object conversion,
+leaving string labels uncoerced. Source/tests verify nullable and missing-sentinel
+behavior in the locked and newer snapshots. Row-sized pair weight scaling avoids
+overflow and preserves tiny weights when heavier features are missing.
+
+Skipped hosted CI, docs/notebook execution, optional backends, other platforms,
+large matrix performance and calibration. Output uses float64 (twice float32's
+storage) and remains dense/quadratic for self-comparisons. Unrepresentable numeric
+spans fail clearly; arbitrary integer/decimal precision is not promised. Undefined
+pairs are NaN, with downstream sample/topn repairs pending R25-R27. No release.
+New log lines have display-only trailing whitespace removed for git diff --check.

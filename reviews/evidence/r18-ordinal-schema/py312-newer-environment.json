@@ -1,0 +1,97 @@
+{
+  "arfs_version": "3.0.0",
+  "executable": "/tmp/arfs-r18/final/py312-newer/bin/python",
+  "modules": {
+    "arfs.association": {
+      "path": "/tmp/arfs-r18/final/py312-newer/lib/python3.12/site-packages/arfs/association.py",
+      "sha256": "5c93ccd6cd56b076415bb4255cc0d2b6ac37c108183fab86179647c36ceb1c55"
+    },
+    "arfs.benchmark": {
+      "path": "/tmp/arfs-r18/final/py312-newer/lib/python3.12/site-packages/arfs/benchmark.py",
+      "sha256": "19b785d434c7aa2feebbbac20d76ae350edf5e345efb6020607a0a9ac385385a"
+    },
+    "arfs.feature_selection.allrelevant": {
+      "path": "/tmp/arfs-r18/final/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/allrelevant.py",
+      "sha256": "5314db03119d6ee0329d51d047b2585f6dcd418f289cf6104be3ee6aae3b9008"
+    },
+    "arfs.feature_selection.base": {
+      "path": "/tmp/arfs-r18/final/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/base.py",
+      "sha256": "535cceb371963675511c4de9abf2fd52fce52469741738b100d273e693ceac4e"
+    },
+    "arfs.feature_selection.lasso": {
+      "path": "/tmp/arfs-r18/final/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/lasso.py",
+      "sha256": "92bb4cf3537f5feba61d8f719fade72fa65d3b3d7879a31bb5a3fb216e4ac655"
+    },
+    "arfs.feature_selection.mrmr": {
+      "path": "/tmp/arfs-r18/final/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/mrmr.py",
+      "sha256": "df4cbcc2d7c230c5ceb1c662e559fb4ab6b75ee5dc9b2e700df021a1e0670be9"
+    },
+    "arfs.feature_selection.unsupervised": {
+      "path": "/tmp/arfs-r18/final/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/unsupervised.py",
+      "sha256": "48a0c02f838bdd116fb12dd664d7fbce10422c249441cabb83cc5109d7cdbe97"
+    },
+    "arfs.feature_selection.variable_importance": {
+      "path": "/tmp/arfs-r18/final/py312-newer/lib/python3.12/site-packages/arfs/feature_selection/variable_importance.py",
+      "sha256": "4be573af92a5ce321df89e6000e23b13959a655fc9875919b520b2132d22ef99"
+    },
+    "arfs.gbm": {
+      "path": "/tmp/arfs-r18/final/py312-newer/lib/python3.12/site-packages/arfs/gbm.py",
+      "sha256": "3c46834be43731237417cf99ce46b43329281ded4ae54b2ac91891a7930dc659"
+    },
+    "arfs.parallel": {
+      "path": "/tmp/arfs-r18/final/py312-newer/lib/python3.12/site-packages/arfs/parallel.py",
+      "sha256": "9fe944ab0543bd1c338025d92dede2aa7c5c008d36efd82f8af1e7da915862a7"
+    },
+    "arfs.preprocessing": {
+      "path": "/tmp/arfs-r18/final/py312-newer/lib/python3.12/site-packages/arfs/preprocessing.py",
+      "sha256": "6ec360d8fb012d88a810ba0cbb536075c4e487fa9bc4cbe01bb21d76b312e895"
+    },
+    "arfs.utils": {
+      "path": "/tmp/arfs-r18/final/py312-newer/lib/python3.12/site-packages/arfs/utils.py",
+      "sha256": "5937df61224c6396e4da5559991867a01fee25547d97b832d4ee6a0559b10813"
+    }
+  },
+  "packages": {
+    "Jinja2": "3.1.6",
+    "MarkupSafe": "3.0.3",
+    "Pygments": "2.21.0",
+    "arfs": "3.0.0",
+    "cloudpickle": "3.1.2",
+    "contourpy": "1.4.0",
+    "coverage": "7.16.2",
+    "cycler": "0.12.1",
+    "fonttools": "4.66.1",
+    "formulaic": "1.2.2",
+    "iniconfig": "2.3.1",
+    "interface_meta": "2.0.1",
+    "joblib": "1.6.0",
+    "kiwisolver": "1.5.1",
+    "lightgbm": "4.7.0",
+    "matplotlib": "3.11.2",
+    "narwhals": "2.27.1",
+    "numpy": "2.5.4",
+    "packaging": "26.3",
+    "pandas": "3.0.6",
+    "patsy": "1.0.3",
+    "pillow": "12.3.0",
+    "pluggy": "1.6.0",
+    "pyparsing": "3.3.3",
+    "pytest": "9.1.1",
+    "pytest-cov": "7.1.0",
+    "python-dateutil": "2.9.0.post0",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1",
+    "seaborn": "0.13.2",
+    "shap": "0.53.0",
+    "six": "1.17.0",
+    "slicer": "0.0.8",
+    "statsmodels": "0.15.0",
+    "threadpoolctl": "3.7.0",
+    "tqdm": "4.70.1",
+    "typing_extensions": "4.16.0",
+    "wrapt": "2.5.0"
+  },
+  "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+  "python": "3.12.7 (main, Oct  8 2024, 00:20:25) [Clang 18.1.8 ]",
+  "setuptools_installed": false
+}

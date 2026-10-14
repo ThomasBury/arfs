@@ -1,0 +1,18 @@
+........................................................................ [ 51%]
+...................................................................      [100%]
+=============================== warnings summary ===============================
+tests/test_category_identity.py: 14 warnings
+  /home/bsatom/Documents/arfs/src/arfs/association.py:244: RuntimeWarning: Rounded U = 1.0 to 1. This is probably due to floating point precision issues.
+    warnings.warn(
+
+tests/test_category_identity.py::test_boolean_series_uses_nominal_statistic[1-bool]
+tests/test_category_identity.py::test_boolean_series_uses_nominal_statistic[1-boolean]
+  /home/bsatom/Documents/arfs/src/arfs/association.py:244: RuntimeWarning: Rounded U = 0.0 to 0. This is probably due to floating point precision issues.
+    warnings.warn(
+
+tests/test_category_identity.py::test_shared_encoder_callers_receive_distinct_codes[boost]
+  /home/bsatom/Documents/arfs/src/arfs/feature_selection/allrelevant.py:1545: UserWarning: [BoostAGroota]: using native variable importance might break the FS
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+139 passed, 17 warnings in 10.87s

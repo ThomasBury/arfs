@@ -1,0 +1,53 @@
+........................................................................ [ 40%]
+........................................................................ [ 80%]
+....................................                                     [100%]
+=============================== warnings summary ===============================
+tests/test_dependency_apis.py::test_public_lasso_selector_fits
+  /tmp/arfs-r17/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1464: UserWarning: Elastic net fitting did not converge
+    warnings.warn("Elastic net fitting did not converge")
+
+tests/test_dependency_apis.py: 3 warnings
+tests/test_importance_selection.py: 1 warning
+tests/test_threshold_contracts.py: 22 warnings
+  /tmp/arfs-r17/py312-locked/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The MissingValueThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+tests/test_dependency_apis.py: 6 warnings
+tests/test_threshold_contracts.py: 22 warnings
+  /tmp/arfs-r17/py312-locked/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The UniqueValuesThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /home/bsatom/Documents/arfs/src/arfs/benchmark.py:104: UserWarning: Tight layout not applied. The bottom and top margins cannot be made large enough to accommodate all Axes decorations.
+    fig.tight_layout()
+
+tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /home/bsatom/Documents/arfs/src/arfs/benchmark.py:109: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+    plt.show()
+
+tests/test_importance_selection.py: 39 warnings
+tests/test_threshold_contracts.py: 21 warnings
+  /tmp/arfs-r17/py312-locked/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The VariableImportance or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+tests/test_threshold_contracts.py: 22 warnings
+  /tmp/arfs-r17/py312-locked/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The CardinalityThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+tests/test_threshold_contracts.py::test_duplicate_fit_and_transform_names_rejected[CollinearityThreshold]
+tests/test_threshold_contracts.py::test_metadata_named_projection_clone_and_refit[CollinearityThreshold]
+tests/test_threshold_contracts.py::test_metadata_named_projection_clone_and_refit[CollinearityThreshold]
+tests/test_threshold_contracts.py::test_metadata_named_projection_clone_and_refit[CollinearityThreshold]
+  /home/bsatom/Documents/arfs/src/arfs/association.py:808: RuntimeWarning: invalid value encountered in scalar divide
+    return wcov(x, y, w) / np.sqrt(wcov(x, x, w) * wcov(y, y, w))
+
+tests/test_threshold_contracts.py: 34 warnings
+  /tmp/arfs-r17/py312-locked/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The CollinearityThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+tests/test_threshold_contracts.py: 15 warnings
+  /tmp/arfs-r17/py312-locked/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The BaseThresholdSelector or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+180 passed, 192 warnings in 18.82s

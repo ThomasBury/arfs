@@ -12,11 +12,11 @@ Module Structure:
 
 # Settings and libraries
 from __future__ import print_function
-from tqdm.auto import tqdm
+from numbers import Integral
+from collections.abc import Mapping
 
 # pandas
 import pandas as pd
-from pandas.api.types import IntervalDtype
 
 # numpy
 import numpy as np
@@ -27,6 +27,7 @@ import re
 # sklearn
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.utils.validation import check_is_fitted
 
 # patsy
 from patsy import dmatrix, EvalEnvironment, ModelDesc, INTERCEPT
@@ -44,7 +45,6 @@ np.random.seed(7)
 
 
 class OrdinalEncoderPandas(OrdinalEncoder):
-    # class OrdinalEncoderPandas(BaseEstimator, TransformerMixin):
     """Encode categorical features as an integer array and returns a pandas DF.
     The features are converted to ordinal integers. This results in
     a single column of integers (0 to n_categories - 1) per feature.
@@ -64,14 +64,15 @@ class OrdinalEncoderPandas(OrdinalEncoder):
     exclude_cols : list of str, optional
         columns to not encode
     output_dtype : number type, default np.float64
-        Desired dtype of output.
-    handle_unknown : {'error', 'use_encoded_value'}, default='error'
+        Desired dtype of encoded columns, resolved at fit. Passthrough columns
+        keep their dtype.
+    handle_unknown : {'error', 'use_encoded_value'}, default='use_encoded_value'
         When set to 'error' an error will be raised in case an unknown
         categorical feature is present during transform. When set to
         'use_encoded_value', the encoded value of unknown categories will be
         set to the value given for the parameter `unknown_value`. In
         `inverse_transform`, an unknown category will be denoted as None.
-    unknown_value : int or np.nan, default=None
+    unknown_value : int or np.nan, default=np.nan
         When the parameter handle_unknown is set to 'use_encoded_value', this
         parameter is required and will set the encoded value of unknown
         categories. It has to be distinct from the values used to encode any of
@@ -80,18 +81,20 @@ class OrdinalEncoderPandas(OrdinalEncoder):
     encoded_missing_value : int or np.nan, default=np.nan
         Encoded value of missing categories. If set to `np.nan`, then the `dtype`
         parameter must be a float dtype.
-    return_pandas_categorical : bool, defult=False
+    return_pandas_categorical : bool, default=False
         return encoded columns as pandas category dtype or as float
 
     Attributes
     ----------
     categories_ : list of arrays
-        The categories of each feature determined during ``fit`` (in order of
-        the features in X and corresponding with the output of ``transform``).
+        The categories of encoded features determined during ``fit``, in
+        ``categorical_features_`` order. Passthrough columns have no entry.
         This does not include categories that weren't seen during ``fit``.
     feature_names_in_ : ndarray of shape (`n_features_in_`,)
-        Names of features seen during :term:`fit`. Defined only when `X`
-        has feature names that are all strings.
+        Full input column names, including passthrough columns. Transform and
+        inverse_transform require these same columns in the fitted order.
+    n_features_in_ : int
+        Full input width, including passthrough columns.
 
     Examples
     --------
@@ -104,7 +107,7 @@ class OrdinalEncoderPandas(OrdinalEncoder):
 
     def __init__(
         self,
-        dtype_include=["category", "object", "bool"],
+        dtype_include=["category", "object", "string", "bool"],
         dtype_exclude=[np.number],
         pattern=None,
         exclude_cols=None,
@@ -156,12 +159,35 @@ class OrdinalEncoderPandas(OrdinalEncoder):
             exclude_cols=self.exclude_cols,
         )
 
-        self.feature_names_in_ = X.columns.to_numpy()
+        if not isinstance(X, pd.DataFrame):
+            raise TypeError("X must be a pandas DataFrame.")
+        if not X.columns.is_unique:
+            raise ValueError("X columns must be unique.")
         self.categorical_features_ = cat_features_selector(X)
-
-        super(OrdinalEncoderPandas, self).fit(X[self.categorical_features_])
-        # self.feature_names_in_ = X.columns.to_numpy()
+        # The categorical encoder owns its subset schema; ours describes all output.
+        self.encoder_ = OrdinalEncoder(
+            dtype=self.output_dtype,
+            handle_unknown=self.handle_unknown,
+            unknown_value=self.unknown_value,
+            encoded_missing_value=self.encoded_missing_value,
+        )
+        self.encoder_.fit(
+            X[self.categorical_features_].astype(object).where(
+                X[self.categorical_features_].notna(), np.nan
+            )
+        )
+        self.categories_ = self.encoder_.categories_
+        self.feature_names_in_ = X.columns.to_numpy(copy=True)
+        self.n_features_in_ = X.shape[1]
+        self.dtype = self.output_dtype
         return self
+
+    def _check_schema(self, X):
+        check_is_fitted(self, "n_features_in_")
+        if not isinstance(X, pd.DataFrame):
+            raise TypeError("X must be a pandas DataFrame.")
+        if not X.columns.equals(pd.Index(self.feature_names_in_)):
+            raise ValueError("X columns must match the fitted columns in order.")
 
     def transform(self, X, y=None, sample_weight=None):
         """
@@ -177,10 +203,13 @@ class OrdinalEncoderPandas(OrdinalEncoder):
         X_out : pd.DataFrame (n_samples, n_features)
             Transformed input.
         """
+        self._check_schema(X)
         X_trans = X.copy()
-        X_trans[self.categorical_features_] = super(
-            OrdinalEncoderPandas, self
-        ).transform(X_trans[self.categorical_features_])
+        X_trans[self.categorical_features_] = self.encoder_.transform(
+            X[self.categorical_features_].astype(object).where(
+                X[self.categorical_features_].notna(), np.nan
+            )
+        )
 
         if self.return_pandas_categorical:
             X_trans[self.categorical_features_] = X_trans[
@@ -195,7 +224,7 @@ class OrdinalEncoderPandas(OrdinalEncoder):
         and returns a transformed version of `X`.
         Parameters
         ----------
-        X : array-like of shape (n_samples, n_features)
+        X : pd.DataFrame of shape (n_samples, n_features)
             Input samples.
         y :  array-like of shape (n_samples,) or (n_samples, n_outputs), \
                 default=None
@@ -204,21 +233,18 @@ class OrdinalEncoderPandas(OrdinalEncoder):
             Additional fit parameters.
         Returns
         -------
-        X_new : ndarray array of shape (n_samples, n_features_new)
-            Transformed array.
+        X_new : pd.DataFrame of shape (n_samples, n_features)
+            Encoded columns and unchanged passthrough columns.
         """
-        self = self.fit(X)
+        self.fit(X, y)
         return self.transform(X)
 
     def inverse_transform(self, X):
         """
         Convert the data back to the original representation.
-        When unknown categories are encountered (all zeros in the
-        one-hot encoding), ``None`` is used to represent this category. If the
-        feature with the unknown category has a dropped category, the dropped
-        category will be its inverse.
-        For a given input feature, if there is an infrequent category,
-        'infrequent_sklearn' will be used to represent the infrequent category.
+        Distinct unknown codes decode to None; fitted missing codes decode to
+        np.nan. When both codes are np.nan (the default), they decode as missing.
+        Returns a copy and leaves passthrough columns unchanged.
 
         Parameters
         ----------
@@ -230,10 +256,14 @@ class OrdinalEncoderPandas(OrdinalEncoder):
             Inverse transformed array.
         """
 
-        X[self.categorical_features_] = super(
-            OrdinalEncoderPandas, self
-        ).inverse_transform(X[self.categorical_features_])
-        return X
+        self._check_schema(X)
+        X_trans = X.copy()
+        if self.categorical_features_:
+            # Native inverse decoding writes into codes; pandas may expose read-only arrays.
+            X_trans[self.categorical_features_] = self.encoder_.inverse_transform(
+                X[self.categorical_features_].to_numpy(copy=True)
+            )
+        return X_trans
 
 
 class dtype_column_selector:
@@ -325,72 +355,6 @@ class dtype_column_selector:
         return cols.tolist()
 
 
-def cat_var(data, col_excl=None, return_cat=True):
-    """Ad hoc categorical encoding (as integer). Automatically detect the non-numerical columns,
-    save the index and name of those columns, encode them as integer,
-    save the direct and inverse mappers as
-    dictionaries.
-    Return the data-set with the encoded columns with a data type either int or pandas categorical.
-
-    Parameters
-    ----------
-    data: pd.DataFrame
-        the dataset
-    col_excl: list of str, default=None
-        the list of columns names not being encoded (e.g. the ID column)
-    return_cat: bool, default=True
-        return encoded object columns as pandas categoricals or not.
-
-    Returns
-    -------
-    df: pd.DataFrame
-        the dataframe with encoded columns
-    cat_var_df: pd.DataFrame
-        the dataframe with the indices and names of the categorical columns
-    inv_mapper: dict
-        the dictionary to map integer --> category
-    mapper: dict
-        the dictionary to map category --> integer
-    """
-    df = data.copy()
-    if col_excl is None:
-        non_num_cols = list(
-            set(list(df.columns)) - set(list(df.select_dtypes(include=[np.number])))
-        )
-    else:
-        non_num_cols = list(
-            set(list(df.columns))
-            - set(list(df.select_dtypes(include=[np.number])))
-            - set(col_excl)
-        )
-    cat_var_index = [df.columns.get_loc(c) for c in non_num_cols if c in df]
-    cat_var_df = pd.DataFrame({"cat_ind": cat_var_index, "cat_name": non_num_cols})
-    # avoid having datetime objects as keys in the mapping dic
-    date_cols = [s for s in list(df) if "date" in s]
-    df.loc[:, date_cols] = df.loc[:, date_cols].astype(str)
-    cols_need_mapped = cat_var_df.cat_name.to_list()
-    inv_mapper = {
-        col: dict(enumerate(df[col].astype("category").cat.categories))
-        for col in df[cols_need_mapped]
-    }
-    mapper = {
-        col: {v: k for k, v in inv_mapper[col].items()} for col in df[cols_need_mapped]
-    }
-    progress_bar = tqdm(cols_need_mapped)
-    for c in progress_bar:
-        progress_bar.set_description("Processing {0:<30}".format(c))
-        df.loc[:, c] = df.loc[:, c].map(mapper[c]).fillna(0).astype(int)
-        # I could have use df[c].update(df[c].map(mapper[c])) while slower,
-        # prevents values not included in an incomplete map from being changed to nans.
-        # But then I could have outputs
-        # with mixed types in the case of different dtypes mapping (like str -> int).
-        # This would eventually break any flow.
-        # Map is faster than replace
-    if return_cat:
-        df.loc[:, non_num_cols] = df.loc[:, non_num_cols].astype("category")
-    return df, cat_var_df, inv_mapper, mapper
-
-
 class TreeDiscretizer(BaseEstimator, TransformerMixin):
     """
     Discretize continuous and/or categorical data using univariate regularized trees, returning a pandas DataFrame.
@@ -403,34 +367,43 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
     For example, preprocessing with a discretizer can introduce nonlinearity to linear models.
     For more advanced possibilities, particularly smooth ones, you can refer to the section on generating polynomial features.
     The TreeDiscretizer function utilizes univariate regularized trees, with one tree per column to be binned.
-    It finds the optimal partition and returns numerical intervals for numerical continuous columns and pd.Categorical for categorical columns.
+    It returns the fitted tree's numerical intervals for continuous columns and
+    pd.Categorical leaf groups for categorical columns. Split thresholds and
+    leaf IDs determine the partition, even when separate leaves predict the same value.
     This approach groups similar levels together, reducing dimensionality and regularizing the model.
 
-    TreeDiscretizer handles missing values for both numerical and categorical predictors,
-    eliminating the need for encoding categorical predictors separately.
+    Missing numerical values and missing/unknown categories follow the fitted
+    tree's native missing-value route. An all-missing numerical feature has one
+    bin, (-inf, inf]; no observed-value imputation is invented.
 
     Notes
     -----
-    This is a substitution to proper regularization schemes such as:
-    - GroupLasso: Categorical predictors, which are usually encoded as multiple dummy variables,
-                  are considered together rather than separately.
-    - FusedLasso: Takes into account the ordering of the features.
+    Retains GradientBoosting's fixed 80/20 training/validation split. Fit this
+    supervised transformer only on training folds. Binning does not implement
+    GroupLasso or FusedLasso penalties or guarantee better held-out performance.
+    Named transforms require the full fitted column names and order. Arrays
+    receive pred_0, pred_1, etc. at fit; later arrays use the fitted names and
+    must have the fitted width. Output is always a copied DataFrame.
 
     Parameters
     ----------
     bin_features : List of string or None
         The list of names of the variable that has to be binned, or "all", "numerical" or "categorical"
         for splitting and grouping all, only numerical or only categorical columns.
-    n_bins : int
-        The number of bins that has to be created while binning the variables in the "bin_features" list.
+    n_bins : int, default=10
+        Maximum number of leaves/bins per feature, at least 2. A constant or
+        all-missing feature can have fewer bins, including a single bin.
     n_bins_max : int, optional
         The maximum number of levels that a categorical column can have to avoid being binned.
     num_bins_as_category: bool, default=False
         Save the numeric bins as pandas category or as pandas interval.
-    boost_params : dict
-        The boosting parameters dictionary.
-    raw : bool
-        Returns raw levels (non-human-interpretable) or levels matching the original ones.
+    boost_params : dict, optional
+        Additional LightGBM parameters, copied at fit. Current task, one boosting
+        round and n_bins take precedence over objective, iteration and leaf-count
+        aliases. The supplied dictionary is not modified.
+    raw : bool, default=False
+        Return native tree response values instead of intervals/group labels.
+        Binary classification returns probabilities, not class labels or logits.
     task : str
         Either regression or classification (binary).
 
@@ -439,14 +412,20 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
     tree_dic : dict
         The dictionary keys are binned column names and items are the univariate trees.
     bin_upper_bound_dic : dict
-        The upper bound of the numerical intervals.
+        Exact numerical split thresholds, bounded by negative/positive infinity.
     cat_bin_dict : dict
-        The mapping dictionary for the categorical columns.
-    tree_imputer : dict
-        The missing values are split by the tree and lead to similar splits and are mapped to this value.
+        Categorical leaf-ID-to-label mappings. Labels include the leaf ID so
+        equal predictions or truncated display text cannot merge groups.
+    boost_params_ : dict
+        Resolved fit-time parameters; boost_params remains the constructor input.
+    leaf_interval_dic_ : dict
+        Numerical leaf-ID-to-interval mappings. Missing values use their fitted
+        leaf's interval; interval endpoints describe numerical comparisons.
     ordinal_encoder_dic : dict
         Dictionary with the fitted encoder, if any.
-    cat_features : list
+    bin_features_ : list
+        Resolved columns to bin; bin_features remains the constructor option.
+    cat_features_ : list
         Names of the found categorical columns.
 
     Methods
@@ -475,33 +454,13 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         raw=False,
         task="regression",
     ):
-        if (boost_params is not None) & (not isinstance(boost_params, dict)):
-            raise TypeError("boost_kwargs should be a dictionary")
-
         self.bin_features = bin_features
         self.n_bins = n_bins
         self.n_bins_max = n_bins_max
         self.num_bins_as_category = num_bins_as_category
-        self.boost_params = {}
+        self.boost_params = boost_params
         self.raw = raw
         self.task = task
-        if boost_params is not None:
-            self.boost_params = boost_params
-
-        # force some params
-        if self.task == "regression":
-            self.boost_params["objective"] = "rmse"
-        elif self.task == "classification":
-            self.boost_params["objective"] = "binary"
-
-        self.boost_params["num_boost_round"] = 1
-        self.boost_params["max_leaf"] = self.n_bins
-        self.tree_dic = {}
-        self.bin_upper_bound_dic = {}
-        self.cat_bin_dict = {}
-        self.tree_imputer = {}
-        self.ordinal_encoder_dic = {}
-        self.cat_features = None
 
     def fit(self, X, y, sample_weight=None):
         """
@@ -521,36 +480,89 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         self : object
             Returns self.
         """
-        X, self.feature_names_in_ = self._prepare_input_dataframe(X)
-        self.bin_features, self.cat_features = self._determine_bin_and_cat_features(
-            X, self.bin_features, self.cat_features
+        if self.boost_params is not None and not isinstance(self.boost_params, dict):
+            raise TypeError("boost_params must be a dictionary or None.")
+        if (
+            isinstance(self.n_bins, (bool, np.bool_))
+            or not isinstance(self.n_bins, Integral)
+            or self.n_bins < 2
+        ):
+            raise ValueError("n_bins must be an integer at least 2.")
+        if self.task not in ("regression", "classification"):
+            raise ValueError("task must be 'regression' or binary 'classification'.")
+        self.boost_params_ = (
+            self.boost_params.copy() if self.boost_params is not None else {}
         )
-        self.n_unique_table_ = X[self.bin_features].nunique()
-        self.bin_features = self._filter_bin_features(
-            self.bin_features, self.n_unique_table_, self.n_bins_max
+        # Remove conflicting aliases before both the wrapper and LightGBM resolve them.
+        for name in (
+            "num_iterations",
+            "num_iteration",
+            "n_iter",
+            "num_tree",
+            "num_trees",
+            "num_round",
+            "num_rounds",
+            "nrounds",
+            "num_boost_round",
+            "n_estimators",
+            "max_iter",
+            "num_leaves",
+            "num_leaf",
+            "max_leaves",
+            "max_leaf",
+            "max_leaf_nodes",
+            "objective",
+            "app",
+            "application",
+            "loss",
+            "objective_type",
+        ):
+            self.boost_params_.pop(name, None)
+        self.boost_params_.update(
+            objective="rmse" if self.task == "regression" else "binary",
+            num_iterations=1,
+            num_boost_round=1,
+            num_leaves=int(self.n_bins),
+        )
+        self.tree_dic = {}
+        self.bin_upper_bound_dic = {}
+        self.cat_bin_dict = {}
+        self.ordinal_encoder_dic = {}
+        self.leaf_interval_dic_ = {}
+        X, self.feature_names_in_ = self._prepare_input_dataframe(X)
+        if not X.columns.is_unique:
+            raise ValueError("Feature names must be unique.")
+        self.n_features_in_ = X.shape[1]
+        self.bin_features_, self.cat_features_ = self._determine_bin_and_cat_features(
+            X, self.bin_features
+        )
+        self.n_unique_table_ = X[self.bin_features_].nunique()
+        self.bin_features_ = self._filter_bin_features(
+            self.bin_features_, self.n_unique_table_, self.n_bins_max
         )
         X, self.ordinal_encoder_dic = self._encode_categorical_features(
-            X, self.bin_features, self.cat_features
+            X, self.bin_features_, self.cat_features_
         )
 
-        for col in self.bin_features:
-            is_categorical = (self.cat_features is not None) and (
-                col in self.cat_features
-            )
+        for col in self.bin_features_:
+            is_categorical = col in self.cat_features_
             self._fit_tree_and_create_bins(X, col, y, sample_weight, is_categorical)
 
         return self
 
-    def _prepare_input_dataframe(self, X):
-        X = X.copy()
-
+    def _prepare_input_dataframe(self, X, fitting=True):
         if not isinstance(X, pd.DataFrame):
             X = pd.DataFrame(X)
-            X.columns = [f"pred_{i}" for i in range(X.shape[1])]
+            if fitting:
+                X.columns = [f"pred_{i}" for i in range(X.shape[1])]
+            else:
+                if X.shape[1] != self.n_features_in_:
+                    raise ValueError("Array width must match the fitted input.")
+                X.columns = self.feature_names_in_
 
-        return X, X.columns.to_numpy()
+        return X.copy(), X.columns.to_numpy()
 
-    def _determine_bin_and_cat_features(self, X, bin_features, cat_features):
+    def _determine_bin_and_cat_features(self, X, bin_features):
         if bin_features is None or (
             isinstance(bin_features, str) and (bin_features == "numerical")
         ):
@@ -558,13 +570,13 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         elif isinstance(bin_features, str) and (bin_features == "all"):
             bin_features = list(X.columns)
         elif isinstance(bin_features, str) and (bin_features == "categorical"):
-            bin_features = list(X.select_dtypes(["category", "object", "bool"]).columns)
+            bin_features = create_dtype_dict(X, dic_keys="dtypes")["cat"]
 
-        # Calculate cat_features by subtracting bin_features from all numeric columns
-        cat_features = list(
-            set(bin_features)
-            - set(list(X[bin_features].select_dtypes("number").columns))
-        )
+        cat_features = [
+            col
+            for col in bin_features
+            if col not in X[bin_features].select_dtypes("number").columns
+        ]
         return bin_features, cat_features
 
     def _filter_bin_features(self, bin_features, n_unique_table_, n_bins_max):
@@ -578,71 +590,57 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         ordinal_encoder_dic = {}
         for col in bin_features:
             if col in cat_features:
-                # encode and create a category for missing
-                encoder = OrdinalEncoder(
-                    handle_unknown="use_encoded_value", unknown_value=np.nan
-                )
-                X[col] = (
-                    X[col]
-                    .astype("category")
-                    .cat.add_categories("missing_added")
-                    .fillna("missing_added")
-                )
+                encoder = OrdinalEncoderPandas(dtype_include=None, dtype_exclude=None)
                 ordinal_encoder_dic[col] = encoder.fit(X[[col]])
-                dum = encoder.transform(X[[col]])
-                if isinstance(dum, pd.DataFrame):
-                    X[col] = dum.values.ravel()
-                else:
-                    X[col] = dum.ravel()
+                X[col] = encoder.transform(X[[col]])[col]
 
         return X, ordinal_encoder_dic
 
     def _fit_tree_and_create_bins(self, X, col, y, sample_weight, is_categorical):
-        gbm_param = self.boost_params.copy()
+        gbm_param = self.boost_params_.copy()
         tree = GradientBoosting(
-            cat_feat=None, params=gbm_param, show_learning_curve=False
+            cat_feat=None, params=gbm_param, show_learning_curve=False, verbose_eval=0
         )
         tree.fit(X[[col]], y, sample_weight=sample_weight)
         self.tree_dic[col] = tree
 
-        # Create bins and handle categorical features
-        X[f"{col}_g"] = tree.predict(X[[col]])
-
+        if tree.model.num_trees() != 1:
+            raise ValueError("TreeDiscretizer requires exactly one tree per feature.")
         if is_categorical:
-            dum = self.ordinal_encoder_dic[col].inverse_transform(X[[col]])
-            if isinstance(dum, pd.DataFrame):
-                X[col] = dum.values.ravel()
-            else:
-                X[col] = dum.ravel()
-
-            self.cat_bin_dict[col] = (
-                X[[f"{col}_g", col]]
-                .groupby(f"{col}_g")
-                .apply(
-                    lambda x: concat_or_group(col, x, max_length=25)
-                )  # " / ".join(map(str, x[col].unique())))
-                .to_dict()
-            )
+            original = self.ordinal_encoder_dic[col].inverse_transform(X[[col]])[col]
+            leaves = tree.predict_raw(X[[col]], pred_leaf=True).ravel()
+            self.cat_bin_dict[col] = {
+                leaf: f"{leaf}: {concat_or_group(col, group.to_frame(name=col), max_length=25)}"
+                for leaf, group in original.groupby(leaves, sort=True)
+            }
         else:
-            bin_array = (
-                X[[f"{col}_g", col]]
-                .groupby(f"{col}_g")
-                .aggregate("max")
-                .sort_values(col)
-                .values.ravel()
+            intervals = {}
+
+            def collect(node, lower, upper):
+                if "split_index" not in node:
+                    intervals[node.get("leaf_index", 0)] = pd.Interval(lower, upper)
+                    return
+                if node["decision_type"] != "<=":
+                    raise ValueError(
+                        "TreeDiscretizer requires numerical univariate splits."
+                    )
+                threshold = float(node["threshold"])
+                collect(node["left_child"], lower, threshold)
+                collect(node["right_child"], threshold, upper)
+
+            collect(
+                tree.model.dump_model()["tree_info"][0]["tree_structure"],
+                -np.inf,
+                np.inf,
             )
-            bin_array = np.delete(bin_array, [np.argmax(bin_array)])
-            bin_array = np.unique(np.append(bin_array, [-np.inf, np.inf]))
-            self.bin_upper_bound_dic[col] = bin_array
-
-            nan_pred_val = tree.predict(np.expand_dims([np.nan], axis=1))[0]
-            non_nan_values = X[col].dropna().unique()
-            pred_values = tree.predict(np.expand_dims(non_nan_values, axis=1))
-            self.tree_imputer[col] = non_nan_values.flat[
-                np.abs(pred_values - nan_pred_val).argmin()
-            ]
-
-        del tree
+            self.leaf_interval_dic_[col] = intervals
+            self.bin_upper_bound_dic[col] = np.unique(
+                [
+                    bound
+                    for interval in intervals.values()
+                    for bound in (interval.left, interval.right)
+                ]
+            )
 
     def transform(self, X):
         """
@@ -659,39 +657,31 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         X : pd.DataFrame
             DataFrame with the binned and grouped columns.
         """
-        X = X.copy()
+        check_is_fitted(self, "feature_names_in_")
+        X, names = self._prepare_input_dataframe(X, fitting=False)
+        if not np.array_equal(names, self.feature_names_in_):
+            raise ValueError("Feature names and order must match the fitted input.")
 
-        for col in self.bin_features:
+        for col in self.bin_features_:
+            frame = X[[col]]
+            if col in self.ordinal_encoder_dic:
+                frame = self.ordinal_encoder_dic[col].transform(frame)
             if self.raw:
-                # predict each univariate tree
-                X[col] = self.tree_dic[col].predict(X[[col]])
+                X[col] = self.tree_dic[col].predict_raw(frame)
             else:
-                if (self.cat_features is not None) and (col in self.cat_features):
-                    # apply the systematic imputation (missing might be grouped
-                    # with other categories depending on the results of the tree
-                    # splitting)
-                    X[col] = (
-                        X[col]
-                        .astype("category")
-                        .cat.add_categories("missing_added")
-                        .fillna("missing_added")
-                    )
-                    dum = self.ordinal_encoder_dic[col].transform(X[[col]])
-                    X[col] = self.tree_dic[col].predict(dum)
-                    X[col] = X[col].map(self.cat_bin_dict[col])
+                leaves = pd.Series(
+                    self.tree_dic[col].predict_raw(frame, pred_leaf=True).ravel(),
+                    index=X.index,
+                )
+                if col in self.ordinal_encoder_dic:
+                    X[col] = pd.Categorical(leaves.map(self.cat_bin_dict[col]))
                 else:
-                    # retrieve the association the tree learnt for missing values
-                    X[col] = X[col].fillna(self.tree_imputer[col])
-                    # apply the binning
-                    X[col] = pd.cut(
-                        X[col],
-                        bins=self.bin_upper_bound_dic[col],
-                        include_lowest=True,
-                        precision=2,
-                    )
-
-                    if not self.num_bins_as_category:
-                        X[col] = X[col].astype(IntervalDtype())
+                    intervals = self.leaf_interval_dic_[col]
+                    X[col] = leaves.map(intervals)
+                    if self.num_bins_as_category:
+                        X[col] = pd.Categorical(
+                            X[col], categories=sorted(intervals.values()), ordered=True
+                        )
         return X
 
 
@@ -761,17 +751,17 @@ class IntervalToMidpoint(BaseEstimator, TransformerMixin):
         self : IntervalToMidpoint
             The fitted transformer object.
         """
-        data = X.copy()
-
-        if self.cols == "all":
-            self.cols = data.columns
+        if isinstance(self.cols, str):
+            self.cols_ = list(X.columns) if self.cols == "all" else [self.cols]
+        else:
+            self.cols_ = list(self.cols)
 
         self.float_interval_cols_ = create_dtype_dict(X, dic_keys="dtypes")[
             "num_interval"
         ]
-        self.columns_to_transform_ = list(
-            set(self.cols).intersection(set(self.float_interval_cols_))
-        )
+        self.columns_to_transform_ = [
+            col for col in self.float_interval_cols_ if col in self.cols_
+        ]
         return self
 
     def transform(self, X: pd.DataFrame):
@@ -788,6 +778,7 @@ class IntervalToMidpoint(BaseEstimator, TransformerMixin):
         X : pd.DataFrame
             The transformed data with numerical intervals replaced by their midpoints.
         """
+        check_is_fitted(self, "columns_to_transform_")
         X = X.copy()
         for c in self.columns_to_transform_:
             X[c] = find_interval_midpoint(X[c])
@@ -839,12 +830,12 @@ def transform_interval_to_midpoint(
     TypeError :
         If the input data is not a pandas DataFrame.
     """
-    if cols == "all":
-        cols = X.columns
+    if isinstance(cols, str):
+        cols = list(X.columns) if cols == "all" else [cols]
 
     X = X.copy()
     float_interval_cols_ = create_dtype_dict(X, dic_keys="dtypes")["num_interval"]
-    columns_to_transform_ = list(set(cols).intersection(set(float_interval_cols_)))
+    columns_to_transform_ = [col for col in float_interval_cols_ if col in cols]
     for c in columns_to_transform_:
         X[c] = find_interval_midpoint(X[c])
     return X
@@ -879,48 +870,48 @@ def find_interval_midpoint(interval_series: pd.Series) -> np.ndarray:
 class PatsyTransformer(BaseEstimator, TransformerMixin):
     """Transformer using patsy-formulas.
 
-    PatsyTransformer transforms a pandas DataFrame (or dict-like)
-    according to the formula and produces a numpy array.
+    PatsyTransformer transforms a pandas DataFrame, named dictionary or array
+    according to the formula. Arrays receive names pred_0, pred_1, etc. at fit;
+    later arrays use the fitted names and must have the same width.
 
     Parameters
     ----------
-    formula : string or formula-like
-        Pasty formula used to transform the data.
+    formula : string or ModelDesc, default=None
+        Patsy formula used to transform the data. None infers a new formula
+        at each fit, excluding the named target if it appears in the input.
 
-    add_intercept : boolean, default=False
-        Whether to add an intercept. By default scikit-learn has built-in
-        intercepts for all models, so we don't add an intercept to the data,
-        even if one is specified in the formula.
+    add_intercept : boolean, default=True
+        Allow the formula's intercept. False removes it even if specified;
+        True respects explicit formula exclusions such as "0 + x".
 
     eval_env : environment or int, default=0
         Environment in which to evaluate the formula.
-        Defaults to the scope in which PatsyModel was instantiated.
+        Pass a Patsy EvalEnvironment for explicit callable bindings.
 
     NA_action : string or NAAction, default="drop"
         What to do with rows that contain missing values. You can ``"drop"``
         them, ``"raise"`` an error, or for customization, pass an `NAAction`
         object.  See ``patsy.NAAction`` for details on what values count as
         'missing' (and how to alter this).
+        Drop removes predictor rows only; this transformer cannot also align
+        y or sample weights. Use "raise" in pipelines that require every row.
+
+    return_type : string, default="dataframe"
+        Output type: pandas DataFrame or NumPy array.
 
     Attributes
     ----------
-    feature_names_ : list of string
+    feature_names_in_ : ndarray
         Column names / keys of training data.
-
-    return_type : string, default="dataframe"
-        data type that transform method will return. Default is ``"dataframe"``
-        for numpy array, but if you would like to get Pandas dataframe (for
-        example for using it in scikit transformers with dataframe as input
-        use ``"dataframe"`` and if numpy array use ``"ndarray"``)
+    formula_ : string or ModelDesc
+        Resolved fitted formula; the constructor's formula stays unchanged.
+    design_ : DesignInfo
+        Fitted design, including stateful transforms and categorical levels.
 
     Note
     ----
-    PastyTransformer does by default not add an intercept, even if you
-    specified it in the formula. You need to set add_intercept=True.
-
     As scikit-learn transformers can not output y, the formula
-    should not contain a left hand side.  If you need to transform both
-    features and targets, use PatsyModel.
+    should not contain a left hand side.
     """
 
     def __init__(
@@ -964,23 +955,18 @@ class PatsyTransformer(BaseEstimator, TransformerMixin):
         return self._fit_transform(data, y)
 
     def _fit_transform(self, data, y=None):
-        if not isinstance(data, pd.DataFrame):
-            data = pd.DataFrame(data)
-            data.columns = [f"pred_{i}" for i in range(data.shape[1])]
-
-        if not isinstance(y, pd.Series):
-            y = pd.Series(y)
-            y.name = "target"
-
-        target_name = y.name if y is not None else "y"
-        self.formula = self.formula or " + ".join(
-            data.columns.difference([target_name])
-        )
+        data = self._prepare_input_dataframe(data)
+        self.feature_names_in_ = data.columns.to_numpy()
+        self.n_features_in_ = data.shape[1]
+        target_name = y.name if isinstance(y, pd.Series) else None
+        formula = self.formula
+        if formula is None:
+            formula = " + ".join(data.columns.difference([target_name])) or "1"
+        self.formula_ = _drop_intercept(formula, self.add_intercept)
         eval_env = EvalEnvironment.capture(self.eval_env, reference=2)
-        # self.formula = _drop_intercept(self.formula, self.add_intercept)
 
         design = dmatrix(
-            self.formula,
+            self.formula_,
             data,
             NA_action=self.NA_action,
             return_type="dataframe",
@@ -993,6 +979,18 @@ class PatsyTransformer(BaseEstimator, TransformerMixin):
         else:
             return np.array(design)
 
+    def _prepare_input_dataframe(self, data, fitting=True):
+        if isinstance(data, (pd.DataFrame, Mapping)):
+            return pd.DataFrame(data).copy()
+        data = pd.DataFrame(data).copy()
+        if fitting:
+            data.columns = [f"pred_{i}" for i in range(data.shape[1])]
+        else:
+            if data.shape[1] != self.n_features_in_:
+                raise ValueError("Array width must match the fitted input.")
+            data.columns = self.feature_names_in_
+        return data
+
     def transform(self, data):
         """Transform with estimator using formula.
 
@@ -1004,10 +1002,12 @@ class PatsyTransformer(BaseEstimator, TransformerMixin):
         data : dict-like (pandas dataframe)
             Input data. Column names need to match variables in formula.
         """
-        if self.return_type == "dataframe":
-            return dmatrix(self.design_, data, return_type="dataframe")
-        else:
-            return np.array(dmatrix(self.design_, data))
+        check_is_fitted(self, "design_")
+        data = self._prepare_input_dataframe(data, fitting=False)
+        design = dmatrix(
+            self.design_, data, NA_action=self.NA_action, return_type="dataframe"
+        )
+        return design if self.return_type == "dataframe" else np.array(design)
 
 
 def _drop_intercept(formula, add_intercept):
@@ -1015,7 +1015,8 @@ def _drop_intercept(formula, add_intercept):
     if not add_intercept:
         if not isinstance(formula, ModelDesc):
             formula = ModelDesc.from_formula(formula)
-        if INTERCEPT in formula.rhs_termlist:
-            formula.rhs_termlist.remove(INTERCEPT)
-        return formula
+        return ModelDesc(
+            formula.lhs_termlist,
+            [term for term in formula.rhs_termlist if term != INTERCEPT],
+        )
     return formula

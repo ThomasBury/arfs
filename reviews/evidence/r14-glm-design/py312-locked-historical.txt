@@ -1,0 +1,13 @@
+.................                                                        [100%]
+=============================== warnings summary ===============================
+reviews/evidence/01c-weighted-glm-lasso/checks.py::test_supported_family_predict_matches_direct_response_mean[negativebinomial-None]
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:1367: ValueWarning: Negative binomial dispersion parameter alpha not set. Using default value alpha=1.0.
+    warnings.warn("Negative binomial dispersion parameter alpha not "
+
+reviews/evidence/01c-weighted-glm-lasso/checks.py::test_set_params_rebuilds_model_objective[params1]
+reviews/evidence/01c-weighted-glm-lasso/checks.py::test_set_params_rebuilds_model_objective[params1]
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1464: UserWarning: Elastic net fitting did not converge
+    warnings.warn("Elastic net fitting did not converge")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+17 passed, 16 deselected, 3 warnings in 5.54s

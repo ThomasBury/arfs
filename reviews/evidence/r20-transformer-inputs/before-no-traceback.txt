@@ -1,0 +1,142 @@
+FFFFFFFFFFFF....F.FFFINTERNALERROR> Traceback (most recent call last):
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/main.py", line 283, in wrap_session
+INTERNALERROR>     session.exitstatus = doit(config, session) or 0
+INTERNALERROR>                          ^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/main.py", line 337, in _main
+INTERNALERROR>     config.hook.pytest_runtestloop(session=session)
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pluggy/_hooks.py", line 513, in __call__
+INTERNALERROR>     return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+INTERNALERROR>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pluggy/_manager.py", line 120, in _hookexec
+INTERNALERROR>     return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+INTERNALERROR>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pluggy/_callers.py", line 139, in _multicall
+INTERNALERROR>     raise exception.with_traceback(exception.__traceback__)
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pluggy/_callers.py", line 122, in _multicall
+INTERNALERROR>     teardown.throw(exception)  # type: ignore[union-attr]
+INTERNALERROR>     ^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/logging.py", line 803, in pytest_runtestloop
+INTERNALERROR>     return (yield)  # Run all the tests.
+INTERNALERROR>             ^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pluggy/_callers.py", line 122, in _multicall
+INTERNALERROR>     teardown.throw(exception)  # type: ignore[union-attr]
+INTERNALERROR>     ^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/terminal.py", line 673, in pytest_runtestloop
+INTERNALERROR>     result = yield
+INTERNALERROR>              ^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pluggy/_callers.py", line 103, in _multicall
+INTERNALERROR>     res = hook_impl.function(*args)
+INTERNALERROR>           ^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/main.py", line 362, in pytest_runtestloop
+INTERNALERROR>     item.config.hook.pytest_runtest_protocol(item=item, nextitem=nextitem)
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pluggy/_hooks.py", line 513, in __call__
+INTERNALERROR>     return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+INTERNALERROR>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pluggy/_manager.py", line 120, in _hookexec
+INTERNALERROR>     return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+INTERNALERROR>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pluggy/_callers.py", line 139, in _multicall
+INTERNALERROR>     raise exception.with_traceback(exception.__traceback__)
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pluggy/_callers.py", line 122, in _multicall
+INTERNALERROR>     teardown.throw(exception)  # type: ignore[union-attr]
+INTERNALERROR>     ^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/warnings.py", line 112, in pytest_runtest_protocol
+INTERNALERROR>     return (yield)
+INTERNALERROR>             ^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pluggy/_callers.py", line 122, in _multicall
+INTERNALERROR>     teardown.throw(exception)  # type: ignore[union-attr]
+INTERNALERROR>     ^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/assertion/__init__.py", line 176, in pytest_runtest_protocol
+INTERNALERROR>     return (yield)
+INTERNALERROR>             ^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pluggy/_callers.py", line 122, in _multicall
+INTERNALERROR>     teardown.throw(exception)  # type: ignore[union-attr]
+INTERNALERROR>     ^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/unittest.py", line 429, in pytest_runtest_protocol
+INTERNALERROR>     res = yield
+INTERNALERROR>           ^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pluggy/_callers.py", line 122, in _multicall
+INTERNALERROR>     teardown.throw(exception)  # type: ignore[union-attr]
+INTERNALERROR>     ^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/faulthandler.py", line 88, in pytest_runtest_protocol
+INTERNALERROR>     return (yield)
+INTERNALERROR>             ^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pluggy/_callers.py", line 103, in _multicall
+INTERNALERROR>     res = hook_impl.function(*args)
+INTERNALERROR>           ^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/runner.py", line 113, in pytest_runtest_protocol
+INTERNALERROR>     runtestprotocol(item, nextitem=nextitem)
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/runner.py", line 132, in runtestprotocol
+INTERNALERROR>     reports.append(call_and_report(item, "call", log))
+INTERNALERROR>                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/runner.py", line 244, in call_and_report
+INTERNALERROR>     report: TestReport = ihook.pytest_runtest_makereport(item=item, call=call)
+INTERNALERROR>                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pluggy/_hooks.py", line 513, in __call__
+INTERNALERROR>     return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+INTERNALERROR>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pluggy/_manager.py", line 120, in _hookexec
+INTERNALERROR>     return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+INTERNALERROR>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pluggy/_callers.py", line 139, in _multicall
+INTERNALERROR>     raise exception.with_traceback(exception.__traceback__)
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pluggy/_callers.py", line 122, in _multicall
+INTERNALERROR>     teardown.throw(exception)  # type: ignore[union-attr]
+INTERNALERROR>     ^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/tmpdir.py", line 310, in pytest_runtest_makereport
+INTERNALERROR>     rep = yield
+INTERNALERROR>           ^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pluggy/_callers.py", line 122, in _multicall
+INTERNALERROR>     teardown.throw(exception)  # type: ignore[union-attr]
+INTERNALERROR>     ^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/skipping.py", line 269, in pytest_runtest_makereport
+INTERNALERROR>     rep = yield
+INTERNALERROR>           ^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/pluggy/_callers.py", line 103, in _multicall
+INTERNALERROR>     res = hook_impl.function(*args)
+INTERNALERROR>           ^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/runner.py", line 368, in pytest_runtest_makereport
+INTERNALERROR>     return TestReport.from_item_and_call(item, call)
+INTERNALERROR>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/reports.py", line 376, in from_item_and_call
+INTERNALERROR>     longrepr = item.repr_failure(excinfo)
+INTERNALERROR>                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/python.py", line 1669, in repr_failure
+INTERNALERROR>     return self._repr_failure_py(excinfo, style=style)
+INTERNALERROR>            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/nodes.py", line 456, in _repr_failure_py
+INTERNALERROR>     return excinfo.getrepr(
+INTERNALERROR>            ^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/_code/code.py", line 690, in getrepr
+INTERNALERROR>     return fmt.repr_excinfo(self)
+INTERNALERROR>            ^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/_code/code.py", line 1058, in repr_excinfo
+INTERNALERROR>     reprtraceback = self.repr_traceback(excinfo_)
+INTERNALERROR>                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/_code/code.py", line 992, in repr_traceback
+INTERNALERROR>     self.repr_traceback_entry(entry, excinfo if last == entry else None)
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/_code/code.py", line 955, in repr_traceback_entry
+INTERNALERROR>     lines.extend(self.get_exconly(excinfo, indent=4))
+INTERNALERROR>                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/_code/code.py", line 884, in get_exconly
+INTERNALERROR>     exlines = excinfo.exconly(tryshort=True).split("\n")
+INTERNALERROR>               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/_pytest/_code/code.py", line 592, in exconly
+INTERNALERROR>     lines = format_exception_only(self.type, self.value)
+INTERNALERROR>             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/traceback.py", line 156, in format_exception_only
+INTERNALERROR>     te = TracebackException(type(value), value, None, compact=True)
+INTERNALERROR>          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/traceback.py", line 790, in __init__
+INTERNALERROR>     cause = TracebackException(
+INTERNALERROR>             ^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/traceback.py", line 767, in __init__
+INTERNALERROR>     suggestion = _compute_suggestion_error(exc_value, exc_traceback, wrong_name)
+INTERNALERROR>                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+INTERNALERROR>   File "/home/bsatom/.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/traceback.py", line 1091, in _compute_suggestion_error
+INTERNALERROR>     list(frame.f_locals)
+INTERNALERROR>   File "/tmp/arfs-r19/final/py312-locked/lib/python3.12/site-packages/patsy/eval.py", line 56, in __getitem__
+INTERNALERROR>     raise KeyError(key)
+INTERNALERROR> KeyError: 0
+
+16 failed, 5 passed in 3.62s

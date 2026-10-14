@@ -1,0 +1,90 @@
+[
+  {
+    "command": [
+      "uv",
+      "venv",
+      "--python",
+      "/tmp/arfs-r31/py312-locked/bin/python",
+      "/tmp/arfs-r21/py312-locked"
+    ],
+    "cwd": "/home/bsatom/Documents/arfs",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "uv",
+      "pip",
+      "install",
+      "--python",
+      "/tmp/arfs-r21/py312-locked/bin/python",
+      "-r",
+      "/tmp/arfs-r21/locked-requirements.txt",
+      "/tmp/arfs-r21/dist/arfs-3.0.0-py3-none-any.whl"
+    ],
+    "cwd": "/home/bsatom/Documents/arfs",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "uv",
+      "pip",
+      "check",
+      "--python",
+      "/tmp/arfs-r21/py312-locked/bin/python"
+    ],
+    "cwd": "/home/bsatom/Documents/arfs",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/tmp/arfs-r21/py312-locked/bin/python",
+      "-I",
+      "-c",
+      "import matplotlib.font_manager"
+    ],
+    "cwd": "/home/bsatom/Documents/arfs",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/tmp/arfs-r21/py312-locked/bin/python",
+      "-I",
+      "/tmp/arfs-r21/environment.py"
+    ],
+    "cwd": "/home/bsatom/Documents/arfs",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/tmp/arfs-r21/py312-locked/bin/python",
+      "-I",
+      "-m",
+      "pytest",
+      "tests",
+      "-q",
+      "--tb=short",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "cwd": "/tmp/arfs-r21/run-py312-locked",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/tmp/arfs-r21/py312-locked/bin/python",
+      "-I",
+      "-m",
+      "pytest",
+      "/tmp/arfs-r21/historical/checks.py",
+      "-k",
+      "split_positions or invalid_lengths or weighted_native or prediction_shapes or unfitted or reordered_features or replacement_feature or multiclass_aliases or native_categories or none_disables or initial_scores_match or multiclass_initial or refit_resets or custom_metric or early_stopping or custom_objective or default_metric or parameter_alias",
+      "--runxfail",
+      "-q",
+      "--tb=short",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "cwd": "/tmp/arfs-r21/run-py312-locked",
+    "exit_code": 0
+  }
+]

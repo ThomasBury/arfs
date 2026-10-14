@@ -1,0 +1,90 @@
+[
+  {
+    "command": [
+      "uv",
+      "venv",
+      "--python",
+      "/tmp/arfs-r16/py312-newer/bin/python",
+      "/tmp/arfs-r17/py312-newer"
+    ],
+    "cwd": "/home/bsatom/Documents/arfs",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "uv",
+      "pip",
+      "install",
+      "--python",
+      "/tmp/arfs-r17/py312-newer/bin/python",
+      "-r",
+      "/home/bsatom/Documents/arfs/.github/requirements/runtime-newer-py312.txt",
+      "/tmp/arfs-r17/dist/arfs-3.0.0-py3-none-any.whl"
+    ],
+    "cwd": "/home/bsatom/Documents/arfs",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "uv",
+      "pip",
+      "check",
+      "--python",
+      "/tmp/arfs-r17/py312-newer/bin/python"
+    ],
+    "cwd": "/home/bsatom/Documents/arfs",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/tmp/arfs-r17/py312-newer/bin/python",
+      "-I",
+      "-c",
+      "import matplotlib.font_manager"
+    ],
+    "cwd": "/home/bsatom/Documents/arfs",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/tmp/arfs-r17/py312-newer/bin/python",
+      "-I",
+      "/tmp/arfs-r17/environment.py"
+    ],
+    "cwd": "/home/bsatom/Documents/arfs",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/tmp/arfs-r17/py312-newer/bin/python",
+      "-I",
+      "-m",
+      "pytest",
+      "tests",
+      "-q",
+      "--tb=short",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "cwd": "/tmp/arfs-r17/run-py312-newer",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/tmp/arfs-r17/py312-newer/bin/python",
+      "-I",
+      "-m",
+      "pytest",
+      "/tmp/arfs-r17/historical/checks.py",
+      "-k",
+      "cumulative_threshold or real_zero_importance or nonfinite_contributions or real_dominant or real_multiclass or missing_fasttreeshap or controlled_multiclass_aggregation or real_pipeline_weights or real_task_fit or importance_rejects or invalid_thresholds",
+      "--runxfail",
+      "-q",
+      "--tb=short",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "cwd": "/tmp/arfs-r17/run-py312-newer",
+    "exit_code": 0
+  }
+]

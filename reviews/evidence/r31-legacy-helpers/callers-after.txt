@@ -1,0 +1,3 @@
+rg -n cat_var|validate_pandas_input src docs README.md
+No active source, notebook or documentation references remain (rg exit 1).
+Names remain in the intentional-removal tests, Unreleased migration note and historical evidence.

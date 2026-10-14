@@ -11,7 +11,7 @@ Module Structure:
 """
 
 from __future__ import print_function
-from tqdm.auto import trange
+from numbers import Integral, Real
 
 # pandas
 import pandas as pd
@@ -25,7 +25,7 @@ from sklearn.base import BaseEstimator
 from sklearn.feature_selection._base import SelectorMixin
 
 # ARFS
-from .base import BaseThresholdSelector
+from .base import BaseThresholdSelector, _validate_dataframe
 from ..utils import create_dtype_dict
 from ..association import (
     association_matrix,
@@ -56,7 +56,7 @@ def _missing_ratio(df):
             ) / n_samples
         else:
             missing_counts[column] = df[column].isnull().sum() / n_samples
-    return pd.Series(missing_counts)
+    return pd.Series(missing_counts, dtype=float)
 
 
 class MissingValueThreshold(BaseThresholdSelector):
@@ -68,7 +68,9 @@ class MissingValueThreshold(BaseThresholdSelector):
     Parameters
     ----------
     threshold: float, default = .05
-        Features with a training-set missing larger than this threshold will be removed.
+        Finite cutoff in [0, 1]. Retain features with a missing fraction strictly
+        below it; equality is rejected. Zero rejects all features, including complete
+        ones; one rejects fully missing features. NaN and numeric infinities count as missing.
 
     Returns
     -------
@@ -105,6 +107,11 @@ class MissingValueThreshold(BaseThresholdSelector):
             greater_than_threshold=False,
         )
 
+    def _validate_params(self):
+        super()._validate_params()
+        if not 0 <= self.threshold <= 1:
+            raise ValueError("threshold must be in [0, 1].")
+
 
 def _pandas_count_unique_values(X):
     if not isinstance(X, pd.DataFrame):
@@ -114,15 +121,15 @@ def _pandas_count_unique_values(X):
 
 class UniqueValuesThreshold(BaseThresholdSelector):
     """Feature selector that removes all features with zero variance (single unique values)
-    or remove columns with less unique values than threshold
+    or with at most threshold unique nonmissing values.
     This feature selection algorithm looks only at the features (X),
     not the desired outputs (y), and can thus be used for unsupervised learning.
 
     Parameters
     ----------
     threshold: int, default = 1
-        Features with a training-set missing larger than this threshold will be removed.
-        The thresold should be >= 1
+        Integer >= 1. Retain features with strictly more unique nonmissing
+        values than this cutoff; equality is rejected.
 
     Returns
     -------
@@ -159,6 +166,11 @@ class UniqueValuesThreshold(BaseThresholdSelector):
             greater_than_threshold=True,
         )
 
+    def _validate_params(self):
+        super()._validate_params()
+        if not isinstance(self.threshold, Integral) or self.threshold < 1:
+            raise ValueError("threshold must be an integer >= 1.")
+
 
 def _pandas_count_unique_values_cat_features(X):
     """
@@ -189,15 +201,15 @@ def _pandas_count_unique_values_cat_features(X):
 
 
 class CardinalityThreshold(BaseThresholdSelector):
-    """Feature selector that removes all categorical features with more unique values than threshold
+    """Feature selector that removes categorical features with at least threshold unique values.
     This feature selection algorithm looks only at the features (X),
     not the desired outputs (y), and can thus be used for unsupervised learning.
 
     Parameters
     ----------
     threshold: int, default = 1000
-        Features with a training-set missing larger than this threshold will be removed.
-        The thresold should be >= 1
+        Integer >= 1. Retain features with a categorical nonmissing cardinality
+        strictly below this cutoff; equality is rejected. Numeric features count as zero.
 
     Returns
     -------
@@ -234,6 +246,11 @@ class CardinalityThreshold(BaseThresholdSelector):
             greater_than_threshold=False,
         )
 
+    def _validate_params(self):
+        super()._validate_params()
+        if not isinstance(self.threshold, Integral) or self.threshold < 1:
+            raise ValueError("threshold must be an integer >= 1.")
+
 
 class CollinearityThreshold(SelectorMixin, BaseEstimator):
     """Feature selector that removes collinear features.
@@ -253,8 +270,9 @@ class CollinearityThreshold(SelectorMixin, BaseEstimator):
     Parameters
     ----------
     threshold : float, default = .8
-        Features with a training-set missing larger than this threshold will be removed
-        The thresold should be > 0 and =< 1
+        Finite cutoff in [0, 1]. Remove associations strictly above it in absolute
+        value; equality is retained. Equal connection totals drop the first feature
+        in fitted input order. Zero/one-feature inputs have no pairs and retain all columns.
     method : str, default = "association"
         method for computing the association matrix. Either "association" or "correlation".
         Correlation leads to encoding of categorical variables as numeric
@@ -266,6 +284,12 @@ class CollinearityThreshold(SelectorMixin, BaseEstimator):
         the numeric-numeric association measure
     nom_num_assoc : str or callable, default = "correlation_ratio"
         the numeric-categorical association measure
+
+    Notes
+    -----
+    X must have unique column names. Transform projects selected names in fitted
+    order; extra/reordered columns and omitted rejected columns are accepted.
+    Missing selected columns raise KeyError. Empty selections preserve the row index.
 
     Returns
     -------
@@ -315,12 +339,6 @@ class CollinearityThreshold(SelectorMixin, BaseEstimator):
         self.num_num_assoc = num_num_assoc
         self.nom_num_assoc = nom_num_assoc
 
-        if self.method not in ["association", "correlation"]:
-            raise ValueError("``method`` should be 'association' or 'correlation'")
-
-        if (self.threshold > 1.0) or (self.threshold < 0.0):
-            raise ValueError("``threshold`` should be larger than 0 and smaller than 1")
-
     def fit(self, X, y=None, sample_weight=None):
         """Learn empirical associtions from X.
 
@@ -341,14 +359,20 @@ class CollinearityThreshold(SelectorMixin, BaseEstimator):
             Returns the instance itself.
         """
 
-        if isinstance(X, pd.DataFrame):
-            self.feature_names_in_ = X.columns.to_numpy()
-        else:
-            raise TypeError("X is not a dataframe")
+        _validate_dataframe(X)
+        if (
+            isinstance(self.threshold, (bool, np.bool_))
+            or not isinstance(self.threshold, Real)
+            or not np.isfinite(self.threshold)
+            or not 0 <= self.threshold <= 1
+        ):
+            raise ValueError("threshold must be a finite real number in [0, 1].")
+        if self.method not in ["association", "correlation"]:
+            raise ValueError("method should be 'association' or 'correlation'.")
+        suffix_dic = create_dtype_dict(X)
+        feature_names = X.columns.to_numpy(copy=True)
 
-        self.suffix_dic = create_dtype_dict(X)
-
-        if self.method == "correlation":
+        if self.method == "correlation" and X.shape[1] >= 2:
             encoder = OrdinalEncoderPandas()
             X = encoder.fit_transform(X)
             del encoder
@@ -361,26 +385,33 @@ class CollinearityThreshold(SelectorMixin, BaseEstimator):
             num_num_assoc=self.num_num_assoc,
             nom_num_assoc=self.nom_num_assoc,
         )
-        self.assoc_matrix_ = xy_to_matrix(assoc_matrix)
+        self.assoc_matrix_ = (
+            pd.DataFrame(0.0, index=X.columns, columns=X.columns)
+            if assoc_matrix.empty
+            else xy_to_matrix(assoc_matrix).reindex(
+                index=X.columns, columns=X.columns, fill_value=0
+            )
+        )
 
         to_drop = _recursive_collinear_elimination(self.assoc_matrix_, self.threshold)
 
-        self.support_ = np.asarray(
-            [True if c not in to_drop else False for c in X.columns]
-        )
+        self.feature_names_in_ = feature_names
+        self.n_features_in_ = X.shape[1]
+        self.suffix_dic = suffix_dic
+        self.support_ = np.asarray([c not in to_drop for c in X.columns], dtype=bool)
         self.selected_features_ = self.feature_names_in_[self.support_]
         self.not_selected_features_ = self.feature_names_in_[~self.support_]
 
         return self
 
     def _get_support_mask(self):
-        check_is_fitted(self)
+        check_is_fitted(self, "support_")
 
         return self.support_
 
     def transform(self, X):
-        if not isinstance(X, pd.DataFrame):
-            raise TypeError("X is not a dataframe")
+        check_is_fitted(self, "support_")
+        _validate_dataframe(X)
         return X[self.selected_features_]
 
     def _more_tags(self):
@@ -430,7 +461,10 @@ def _most_collinear(association_matrix_abs, threshold):
     rows_to_drop = association_matrix_abs.loc[
         (association_matrix_abs > threshold).any(axis=1), :
     ].index.values
-    to_drop = list(set(cols_to_drop).union(set(rows_to_drop)))
+    to_drop = association_matrix_abs.columns[
+        association_matrix_abs.columns.isin(cols_to_drop)
+        | association_matrix_abs.columns.isin(rows_to_drop)
+    ].tolist()
     if not to_drop:
         return None, None
     # for features in `to_drop` sum up their column and row values to find
@@ -439,7 +473,7 @@ def _most_collinear(association_matrix_abs, threshold):
     most_collinear_series += association_matrix_abs.loc[to_drop, :].sum(axis=1)
     # not necessarily but avoids exceeding 1
     most_collinear_series /= 2
-    return most_collinear_series.sort_values(ascending=False).index[0], to_drop
+    return most_collinear_series.idxmax(), to_drop
 
 
 def _recursive_collinear_elimination(association_matrix, threshold):

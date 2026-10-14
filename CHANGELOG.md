@@ -2,8 +2,25 @@
 
 # Unreleased
 
+ - Correct Gower numeric scaling, cross-matrix indexing and pairwise missing-value weights. Return NaN for undefined pairs, validate feature weights and category masks, support nullable dtypes and reference Series, and retain pooled numeric ranges with float64 output.
+
+ - Fit benchmark encoders on training rows only, support ndarray inputs and integer display names, and compare fresh Leshy/BoostAGroota configurations without mutating caller objects. Reject GrootCV in cross-estimator comparisons and refresh Leshy backend flags at fit time.
+
+ - Save versioned GBM artifacts with the offset guard, category names and original prediction schema. Validate metadata before replacing loaded state and clear stale validation data/curves. Reject legacy Booster-only files because their baseline contract is unknown; refit and save again. Stage model and optional PNG writes before replacement; the PNG remains a separate file, and its replacement can fail after the model commits. Joblib artifacts require trusted input and a compatible environment.
+
+ - Reject conflicting GBM group/stratified splitting and mismatched prediction schemas. Handle multiclass objective aliases and finite positional initial-score matrices; clear stale state after successful refits. Restrict automatic categories to pandas category/bool, honor explicit categorical disable, and explain unsupported dtype conversion. Initial-score predictions still require a new external baseline on the raw scale.
+
+ - Preserve TreeDiscretizer, IntervalToMidpoint and PatsyTransformer constructor options across refits. Resolve fitted columns/formulas in bin_features_, cat_features_, cols_ and formula_; normalize array inputs consistently and preserve Patsy dictionary names. Named tree transforms require the full fitted schema; arrays require its width. Honor scalar midpoint names and Patsy's NA_action/add_intercept options. Explicit Patsy dropping removes predictor rows only, so targets and weights must be aligned by the caller.
+ - Make TreeDiscretizer bins follow exact fitted thresholds and leaf IDs, preserve predictor columns, and use copied current one-tree parameters. Apply categorical encoding in raw mode; binary raw values are probabilities. Missing/unknown values follow native routes, including all-missing single-leaf bins. Categorical maps now use leaf IDs; leaf_interval_dic_ replaces tree_imputer.
+ - Remove the public legacy helpers cat_var and validate_pandas_input. Use OrdinalEncoderPandas for fitted categorical encoding/inverse decoding; use pandas .to_numpy() for array extraction and keep existing NumPy arrays directly. The encoder returns a DataFrame, not cat_var's four-item tuple; no compatibility shim is provided.
+ - Keep OrdinalEncoderPandas full input/output names separate from categorical validation, preserve inverse inputs and honor output_dtype on refit. Nullable strings and booleans are encoded with native missing/unknown handling; transforms require the fitted column order.
  - Validate response and observation-weight inputs, preserve category identity, and correct weighted association arithmetic.
  - Correct MRMR ranking, categorical shadow controls, Leshy support/history, weighted permutation scoring, and GrootCV output/threshold aggregation.
+ - Return negative response-scale GLM deviance for sklearn scoring, preserve BIC minimization, and repair weighted CV splits, NumPy inputs and fold isolation.
+ - Reuse fitted GLM designs for single-row inference, align named schemas, preserve supplied constants and resolve current family/link parameters at fit. Input/support metadata now excludes generated intercepts.
+ - Omit zero-weight GLM rows before fitting/scoring/tuning, correct AIC/BIC dimensions and reject nonfinite search criteria. Document unpenalized post-selection refits and reject unsupported pure ridge fits.
+ - Reject duplicate threshold-selector names, align labelled statistics, validate current parameters and expose fitted feature counts. Preserve named projection and strict threshold equality; handle empty collinearity stages and break ties in input order.
+ - Make VariableImportance use one fit and remove n_iterations. Keep the cumulative crossing feature, exclude zero importance, reject nonfinite contributions and fix array multiclass/optional-backend errors. Training remains weighted; global importance averages validation rows equally.
  - Test installed wheels on Python 3.9 and 3.12 with locked dependencies, plus a newer Python 3.12 snapshot.
  - Keep the next version and release pending the remaining remediation blockers and R33 release checks.
 

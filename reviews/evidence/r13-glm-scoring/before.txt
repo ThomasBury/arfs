@@ -1,0 +1,362 @@
+FFFFFFFFFFFFF.F.FFFFFFFFFFFFFF..F                                        [100%]
+=================================== FAILURES ===================================
+__ test_score_is_negative_independent_response_scale_deviance[False-gaussian] __
+tests/test_glm_scoring.py:60: in test_score_is_negative_independent_response_scale_deviance
+    assert_allclose(model.score(X, y, weights), -expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 310.49666245
+E   Max relative difference among violations: 2.
+E    ACTUAL: array(155.248331)
+E    DESIRED: array(-155.248331)
+__ test_score_is_negative_independent_response_scale_deviance[False-poisson] ___
+tests/test_glm_scoring.py:60: in test_score_is_negative_independent_response_scale_deviance
+    assert_allclose(model.score(X, y, weights), -expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 3958566.46592373
+E   Max relative difference among violations: 21669.32558016
+E    ACTUAL: array(3958383.785274)
+E    DESIRED: array(-182.680649)
+__ test_score_is_negative_independent_response_scale_deviance[False-binomial] __
+tests/test_glm_scoring.py:60: in test_score_is_negative_independent_response_scale_deviance
+    assert_allclose(model.score(X, y, weights), -expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 324.6896752
+E   Max relative difference among violations: 2.38144792
+E    ACTUAL: array(188.348388)
+E    DESIRED: array(-136.341287)
+___ test_score_is_negative_independent_response_scale_deviance[False-gamma] ____
+tests/test_glm_scoring.py:60: in test_score_is_negative_independent_response_scale_deviance
+    assert_allclose(model.score(X, y, weights), -expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 760.26851189
+E   Max relative difference among violations: 8.4816608
+E    ACTUAL: array(670.631761)
+E    DESIRED: array(-89.63675)
+__ test_score_is_negative_independent_response_scale_deviance[True-gaussian] ___
+tests/test_glm_scoring.py:60: in test_score_is_negative_independent_response_scale_deviance
+    assert_allclose(model.score(X, y, weights), -expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 326.65799144
+E   Max relative difference among violations: 2.
+E    ACTUAL: array(163.328996)
+E    DESIRED: array(-163.328996)
+___ test_score_is_negative_independent_response_scale_deviance[True-poisson] ___
+tests/test_glm_scoring.py:60: in test_score_is_negative_independent_response_scale_deviance
+    assert_allclose(model.score(X, y, weights), -expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 5506720.62415629
+E   Max relative difference among violations: 35908.71394554
+E    ACTUAL: array(5506567.270833)
+E    DESIRED: array(-153.353323)
+__ test_score_is_negative_independent_response_scale_deviance[True-binomial] ___
+tests/test_glm_scoring.py:60: in test_score_is_negative_independent_response_scale_deviance
+    assert_allclose(model.score(X, y, weights), -expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 370.49762326
+E   Max relative difference among violations: 2.44510482
+E    ACTUAL: array(218.971349)
+E    DESIRED: array(-151.526274)
+____ test_score_is_negative_independent_response_scale_deviance[True-gamma] ____
+tests/test_glm_scoring.py:60: in test_score_is_negative_independent_response_scale_deviance
+    assert_allclose(model.score(X, y, weights), -expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 798.59956186
+E   Max relative difference among violations: 10.29711445
+E    ACTUAL: array(721.043897)
+E    DESIRED: array(-77.555665)
+_ test_cv_matches_independent_weighted_least_squares_by_position[False-False] __
+tests/test_glm_scoring.py:89: in test_cv_matches_independent_weighted_least_squares_by_position
+    assert_allclose(actual, expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 5 / 5 (100%)
+E   Max absolute difference among violations: 81.91553702
+E   Max relative difference among violations: 2.
+E    ACTUAL: array([32.17766 , 34.016819, 33.28186 , 25.521041, 40.957769])
+E    DESIRED: array([-32.17766 , -34.016819, -33.28186 , -25.521041, -40.957769])
+__ test_cv_matches_independent_weighted_least_squares_by_position[False-True] __
+tests/test_glm_scoring.py:82: in test_cv_matches_independent_weighted_least_squares_by_position
+    actual = weighted_cross_val_score(
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:337: in weighted_cross_val_score
+    scores = parallel(
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:1918: in __call__
+    return output if self.return_generator else list(output)
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:1847: in _get_sequential_output
+    res = func(*args, **kwargs)
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:386: in _fit_and_score
+    X_train, X_test = X.iloc[train_index, :], X.iloc[test_index, :]
+E   AttributeError: 'numpy.ndarray' object has no attribute 'iloc'
+__ test_cv_matches_independent_weighted_least_squares_by_position[True-False] __
+tests/test_glm_scoring.py:89: in test_cv_matches_independent_weighted_least_squares_by_position
+    assert_allclose(actual, expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 5 / 5 (100%)
+E   Max absolute difference among violations: 83.27192064
+E   Max relative difference among violations: 2.
+E    ACTUAL: array([39.413658, 32.762617, 41.63596 , 23.450764, 37.020319])
+E    DESIRED: array([-39.413658, -32.762617, -41.63596 , -23.450764, -37.020319])
+__ test_cv_matches_independent_weighted_least_squares_by_position[True-True] ___
+tests/test_glm_scoring.py:82: in test_cv_matches_independent_weighted_least_squares_by_position
+    actual = weighted_cross_val_score(
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:337: in weighted_cross_val_score
+    scores = parallel(
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:1918: in __call__
+    return output if self.return_generator else list(output)
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:1847: in _get_sequential_output
+    res = func(*args, **kwargs)
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:386: in _fit_and_score
+    X_train, X_test = X.iloc[train_index, :], X.iloc[test_index, :]
+E   AttributeError: 'numpy.ndarray' object has no attribute 'iloc'
+__________ test_folds_clone_and_preserve_caller_state[False-False-1] ___________
+tests/test_glm_scoring.py:113: in test_folds_clone_and_preserve_caller_state
+    assert_array_equal(scores, [1, 1, 1])
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 2 / 3 (66.7%)
+E   Max absolute difference among violations: 2
+E   Max relative difference among violations: 2.
+E    ACTUAL: array([1, 2, 3])
+E    DESIRED: array([1, 1, 1])
+___________ test_folds_clone_and_preserve_caller_state[False-True-1] ___________
+tests/test_glm_scoring.py:113: in test_folds_clone_and_preserve_caller_state
+    assert_array_equal(scores, [1, 1, 1])
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 2 / 3 (66.7%)
+E   Max absolute difference among violations: 2
+E   Max relative difference among violations: 2.
+E    ACTUAL: array([1, 2, 3])
+E    DESIRED: array([1, 1, 1])
+___________ test_folds_clone_and_preserve_caller_state[True-False-1] ___________
+tests/test_glm_scoring.py:113: in test_folds_clone_and_preserve_caller_state
+    assert_array_equal(scores, [1, 1, 1])
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 3 / 3 (100%)
+E   Max absolute difference among violations: 3
+E   Max relative difference among violations: 3.
+E    ACTUAL: array([2, 3, 4])
+E    DESIRED: array([1, 1, 1])
+___________ test_folds_clone_and_preserve_caller_state[True-False-2] ___________
+tests/test_glm_scoring.py:113: in test_folds_clone_and_preserve_caller_state
+    assert_array_equal(scores, [1, 1, 1])
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 3 / 3 (100%)
+E   Max absolute difference among violations: 1
+E   Max relative difference among violations: 1.
+E    ACTUAL: array([2, 2, 2])
+E    DESIRED: array([1, 1, 1])
+___________ test_folds_clone_and_preserve_caller_state[True-True-1] ____________
+tests/test_glm_scoring.py:113: in test_folds_clone_and_preserve_caller_state
+    assert_array_equal(scores, [1, 1, 1])
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 3 / 3 (100%)
+E   Max absolute difference among violations: 3
+E   Max relative difference among violations: 3.
+E    ACTUAL: array([2, 3, 4])
+E    DESIRED: array([1, 1, 1])
+___________ test_folds_clone_and_preserve_caller_state[True-True-2] ____________
+tests/test_glm_scoring.py:113: in test_folds_clone_and_preserve_caller_state
+    assert_array_equal(scores, [1, 1, 1])
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/numpy/_utils/__init__.py:85: in wrapper
+    return fun(*args, **kwargs)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Arrays are not equal
+E
+E   Mismatched elements: 3 / 3 (100%)
+E   Max absolute difference among violations: 1
+E   Max relative difference among violations: 1.
+E    ACTUAL: array([2, 2, 2])
+E    DESIRED: array([1, 1, 1])
+_ test_splitter_uses_task_and_target_instead_of_unique_value_count[estimator0-y0-False] _
+tests/test_glm_scoring.py:149: in test_splitter_uses_task_and_target_instead_of_unique_value_count
+    assert weighted_cross_val_score(estimator, X, y, cv=3, n_jobs=1) == expected
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:341: in weighted_cross_val_score
+    for train_index, test_index in splitter.split(X)
+E   TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'
+_ test_splitter_uses_task_and_target_instead_of_unique_value_count[estimator1-y1-False] _
+tests/test_glm_scoring.py:149: in test_splitter_uses_task_and_target_instead_of_unique_value_count
+    assert weighted_cross_val_score(estimator, X, y, cv=3, n_jobs=1) == expected
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:341: in weighted_cross_val_score
+    for train_index, test_index in splitter.split(X)
+E   TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'
+_ test_splitter_uses_task_and_target_instead_of_unique_value_count[estimator2-y2-False] _
+tests/test_glm_scoring.py:149: in test_splitter_uses_task_and_target_instead_of_unique_value_count
+    assert weighted_cross_val_score(estimator, X, y, cv=3, n_jobs=1) == expected
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:341: in weighted_cross_val_score
+    for train_index, test_index in splitter.split(X)
+E   TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'
+_ test_splitter_uses_task_and_target_instead_of_unique_value_count[estimator3-y3-True] _
+tests/test_glm_scoring.py:149: in test_splitter_uses_task_and_target_instead_of_unique_value_count
+    assert weighted_cross_val_score(estimator, X, y, cv=3, n_jobs=1) == expected
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:341: in weighted_cross_val_score
+    for train_index, test_index in splitter.split(X)
+E   TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'
+_ test_splitter_uses_task_and_target_instead_of_unique_value_count[estimator4-y4-False] _
+tests/test_glm_scoring.py:149: in test_splitter_uses_task_and_target_instead_of_unique_value_count
+    assert weighted_cross_val_score(estimator, X, y, cv=3, n_jobs=1) == expected
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:341: in weighted_cross_val_score
+    for train_index, test_index in splitter.split(X)
+E   TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'
+_ test_splitter_uses_task_and_target_instead_of_unique_value_count[estimator5-y5-True] _
+tests/test_glm_scoring.py:149: in test_splitter_uses_task_and_target_instead_of_unique_value_count
+    assert weighted_cross_val_score(estimator, X, y, cv=3, n_jobs=1) == expected
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:337: in weighted_cross_val_score
+    scores = parallel(
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:1918: in __call__
+    return output if self.return_generator else list(output)
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:1847: in _get_sequential_output
+    res = func(*args, **kwargs)
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:386: in _fit_and_score
+    X_train, X_test = X.iloc[train_index, :], X.iloc[test_index, :]
+E   AttributeError: 'numpy.ndarray' object has no attribute 'iloc'
+_______ test_binary_selector_and_grid_match_stratified_reference[False] ________
+tests/test_glm_scoring.py:172: in test_binary_selector_and_grid_match_stratified_reference
+    ).fit(features, y, w)
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:603: in fit
+    self.best_estimator_ = grid_search_cv(
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:478: in grid_search_cv
+    scores = weighted_cross_val_score(
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:341: in weighted_cross_val_score
+    for train_index, test_index in splitter.split(X)
+E   TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'
+________ test_binary_selector_and_grid_match_stratified_reference[True] ________
+tests/test_glm_scoring.py:172: in test_binary_selector_and_grid_match_stratified_reference
+    ).fit(features, y, w)
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:603: in fit
+    self.best_estimator_ = grid_search_cv(
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:478: in grid_search_cv
+    scores = weighted_cross_val_score(
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:341: in weighted_cross_val_score
+    for train_index, test_index in splitter.split(X)
+E   TypeError: StratifiedKFold.split() missing 1 required positional argument: 'y'
+__________ test_poisson_signal_grid_minimizes_actual_deviance[False] ___________
+tests/test_glm_scoring.py:203: in test_poisson_signal_grid_minimizes_actual_deviance
+    assert model.alpha == grid[np.argmin(losses)]
+E   AssertionError: assert np.float64(10.0) == np.float64(1.0)
+E    +  where np.float64(10.0) = EnetGLM(L1_wt=1.0, alpha=np.float64(10.0), family='poisson').alpha
+___________ test_poisson_signal_grid_minimizes_actual_deviance[True] ___________
+tests/test_glm_scoring.py:194: in test_poisson_signal_grid_minimizes_actual_deviance
+    model = grid_search_cv(
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:478: in grid_search_cv
+    scores = weighted_cross_val_score(
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:337: in weighted_cross_val_score
+    scores = parallel(
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:1918: in __call__
+    return output if self.return_generator else list(output)
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/joblib/parallel.py:1847: in _get_sequential_output
+    res = func(*args, **kwargs)
+/tmp/arfs-r12/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:386: in _fit_and_score
+    X_train, X_test = X.iloc[train_index, :], X.iloc[test_index, :]
+E   AttributeError: 'numpy.ndarray' object has no attribute 'iloc'
+________ test_real_external_sklearn_search_maximizes_negative_deviance _________
+tests/test_glm_scoring.py:227: in test_real_external_sklearn_search_maximizes_negative_deviance
+    assert search.best_params_["alpha"] == 0.001
+E   assert 1000 == 0.001
+=========================== short test summary info ============================
+FAILED tests/test_glm_scoring.py::test_score_is_negative_independent_response_scale_deviance[False-gaussian]
+FAILED tests/test_glm_scoring.py::test_score_is_negative_independent_response_scale_deviance[False-poisson]
+FAILED tests/test_glm_scoring.py::test_score_is_negative_independent_response_scale_deviance[False-binomial]
+FAILED tests/test_glm_scoring.py::test_score_is_negative_independent_response_scale_deviance[False-gamma]
+FAILED tests/test_glm_scoring.py::test_score_is_negative_independent_response_scale_deviance[True-gaussian]
+FAILED tests/test_glm_scoring.py::test_score_is_negative_independent_response_scale_deviance[True-poisson]
+FAILED tests/test_glm_scoring.py::test_score_is_negative_independent_response_scale_deviance[True-binomial]
+FAILED tests/test_glm_scoring.py::test_score_is_negative_independent_response_scale_deviance[True-gamma]
+FAILED tests/test_glm_scoring.py::test_cv_matches_independent_weighted_least_squares_by_position[False-False]
+FAILED tests/test_glm_scoring.py::test_cv_matches_independent_weighted_least_squares_by_position[False-True]
+FAILED tests/test_glm_scoring.py::test_cv_matches_independent_weighted_least_squares_by_position[True-False]
+FAILED tests/test_glm_scoring.py::test_cv_matches_independent_weighted_least_squares_by_position[True-True]
+FAILED tests/test_glm_scoring.py::test_folds_clone_and_preserve_caller_state[False-False-1]
+FAILED tests/test_glm_scoring.py::test_folds_clone_and_preserve_caller_state[False-True-1]
+FAILED tests/test_glm_scoring.py::test_folds_clone_and_preserve_caller_state[True-False-1]
+FAILED tests/test_glm_scoring.py::test_folds_clone_and_preserve_caller_state[True-False-2]
+FAILED tests/test_glm_scoring.py::test_folds_clone_and_preserve_caller_state[True-True-1]
+FAILED tests/test_glm_scoring.py::test_folds_clone_and_preserve_caller_state[True-True-2]
+FAILED tests/test_glm_scoring.py::test_splitter_uses_task_and_target_instead_of_unique_value_count[estimator0-y0-False]
+FAILED tests/test_glm_scoring.py::test_splitter_uses_task_and_target_instead_of_unique_value_count[estimator1-y1-False]
+FAILED tests/test_glm_scoring.py::test_splitter_uses_task_and_target_instead_of_unique_value_count[estimator2-y2-False]
+FAILED tests/test_glm_scoring.py::test_splitter_uses_task_and_target_instead_of_unique_value_count[estimator3-y3-True]
+FAILED tests/test_glm_scoring.py::test_splitter_uses_task_and_target_instead_of_unique_value_count[estimator4-y4-False]
+FAILED tests/test_glm_scoring.py::test_splitter_uses_task_and_target_instead_of_unique_value_count[estimator5-y5-True]
+FAILED tests/test_glm_scoring.py::test_binary_selector_and_grid_match_stratified_reference[False]
+FAILED tests/test_glm_scoring.py::test_binary_selector_and_grid_match_stratified_reference[True]
+FAILED tests/test_glm_scoring.py::test_poisson_signal_grid_minimizes_actual_deviance[False]
+FAILED tests/test_glm_scoring.py::test_poisson_signal_grid_minimizes_actual_deviance[True]
+FAILED tests/test_glm_scoring.py::test_real_external_sklearn_search_maximizes_negative_deviance
+29 failed, 4 passed in 29.61s

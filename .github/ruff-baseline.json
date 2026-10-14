@@ -224,24 +224,15 @@
     "PLR0124": 1
   },
   "src/arfs/feature_selection/unsupervised.py": {
-    "F401": 1,
     "I001": 1,
-    "SIM210": 1,
     "UP010": 1
   },
   "src/arfs/feature_selection/variable_importance.py": {
-    "B006": 2,
-    "B018": 1,
     "I001": 1,
-    "PLR0402": 1,
-    "PLW0133": 1,
-    "SIM211": 1,
-    "UP010": 1,
-    "UP030": 1,
-    "UP032": 1
+    "PLR0402": 1
   },
   "src/arfs/gbm.py": {
-    "BLE001": 2,
+    "BLE001": 1,
     "FA100": 35,
     "I001": 1,
     "UP006": 11,
@@ -252,25 +243,16 @@
   },
   "src/arfs/preprocessing.py": {
     "B006": 2,
-    "C414": 5,
     "F401": 6,
     "FA100": 2,
     "I001": 1,
-    "PLW0642": 1,
     "UP006": 2,
-    "UP008": 3,
     "UP010": 1,
-    "UP030": 1,
-    "UP032": 1,
     "UP035": 3
   },
   "src/arfs/sampling.py": {
     "C414": 1,
-    "I001": 1,
-    "PIE808": 1,
-    "PLW0133": 1,
-    "RUF059": 1,
-    "SIM210": 2
+    "PLW0133": 1
   },
   "src/arfs/utils.py": {
     "I001": 1,

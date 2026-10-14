@@ -1,0 +1,76 @@
+Checkout: /home/bsatom/Documents/arfs; clean main @ 1e88c54.
+R17 alone. User chose one fit/removal of n_iterations and equal validation-row averaging.
+No publication, version bump, dependency, wrapper split or shared aggregation change.
+
+Runtime environment (full values in validate.py):
+UV_CACHE_DIR=/tmp/arfs-r04/cache MPLBACKEND=Agg
+MPLCONFIGDIR=/tmp/arfs-r17/mpl-$cell OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 PYTHONHASHSEED=0
+PYTHONDONTWRITEBYTECODE=1; installed-wheel runs remove PYTHONPATH.
+
+Before (copied maintained tests against verified installed R16 wheel):
+cd /tmp/arfs-r17/before
+/tmp/arfs-r16/py312-locked/bin/python -I -m pytest tests/test_importance_selection.py -q --tb=short -p no:cacheprovider
+Result: 36 failed, 13 passed, exit 1 in before-final.txt (49 cases).
+Initial 47-case probe: 34 failed, 13 passed in before.txt.
+before-provenance.json verifies installed variable_importance.py against 1e88c54.
+
+Source (PYTHONPATH=src, checkout cwd):
+/tmp/arfs-r16/py312-locked/bin/python -m pytest tests/test_importance_selection.py tests/test_threshold_contracts.py tests/test_observation_boundaries.py tests/test_allrelevant_aggregation.py tests/test_dependency_apis.py -q --tb=short -p no:cacheprovider
+Result: 354 passed in source-final.txt. Initial 47-case source probe: 352 passed
+in source.txt. Two final references cover cutoff-one rounding and stable ties/refits.
+
+uv build --python /tmp/arfs-r16/py312-locked/bin/python --out-dir /tmp/arfs-r17/dist
+uv export --locked --extra test --no-emit-project --output-file /tmp/arfs-r17/locked-requirements.txt
+uv lock --check --python /tmp/arfs-r16/py312-locked/bin/python
+/tmp/arfs-r16/py312-locked/bin/python /tmp/arfs-r17/check_payloads.py
+Payload result: all 19 source/sdist/wheel files match; three data payloads.
+
+Exact orchestrators validate.py, environment.py and check_payloads.py are retained
+in this directory and copied to /tmp/arfs-r17 before running. They create fresh
+venvs with the verified R16 interpreters. Older installed packages are not used
+by repaired-wheel tests. Disposable environments must be recreated if absent.
+/tmp/arfs-r16/py312-locked/bin/python /tmp/arfs-r17/validate.py py39-locked
+/tmp/arfs-r16/py312-locked/bin/python /tmp/arfs-r17/validate.py py312-locked
+/tmp/arfs-r16/py312-locked/bin/python /tmp/arfs-r17/validate.py py312-newer
+Result: 821 / 821 / 805 passed, respectively.
+Per-cell *-commands.json records venv, install, dependency, isolated provenance,
+full-suite and adapted historical commands, working directories and exit codes.
+Locked pins come from uv.lock; newer pins are .github/requirements/runtime-newer-py312.txt.
+Copied tests match source bytes; eleven installed module hashes match source. No setuptools.
+
+Historical selection (same expression before/after, --runxfail):
+cumulative_threshold or real_zero_importance or nonfinite_contributions or real_dominant
+or real_multiclass or missing_fasttreeshap or controlled_multiclass_aggregation
+or real_pipeline_weights or real_task_fit or importance_rejects or invalid_thresholds
+Before command:
+/tmp/arfs-r16/py312-locked/bin/python -I -m pytest /home/bsatom/Documents/arfs/reviews/evidence/03-selector-contracts/checks.py -k 'cumulative_threshold or real_zero_importance or nonfinite_contributions or real_dominant or real_multiclass or missing_fasttreeshap or controlled_multiclass_aggregation or real_pipeline_weights or real_task_fit or importance_rejects or invalid_thresholds' --runxfail -q --tb=short -p no:cacheprovider
+Result: 11 failed, 13 passed, 49 deselected; before-historical.txt.
+After commands are recorded verbatim in each Python 3.12 command manifest.
+A disposable copy /tmp/arfs-r17/historical/checks.py removes exactly two literal
+'n_iterations=1,' strings from the original historical script; the diff and hashes
+are historical-api-adaptation.patch/json. All assertions and other code are unchanged.
+Original evidence is preserved. Retired repeated-fit/iteration-average expectations
+are excluded; maintained tests assert one fit and rejection of the removed parameter.
+After: 24 passed unmasked in each Python 3.12 snapshot.
+
+uv tool run --from ruff==0.17.0 python .github/scripts/check_ruff_baseline.py
+Result: 407 total diagnostics; zero new. Seven allowances removed, none added.
+/tmp/arfs-r16/py312-locked/bin/python -m unittest discover -s .github/scripts -p 'test_*.py'
+Result: two passed.
+uv tool run --from ruff==0.17.0 ruff check tests/test_importance_selection.py tests/test_threshold_contracts.py reviews/evidence/r17-importance-selection/*.py
+uv tool run --from ruff==0.17.0 ruff format --check tests/test_importance_selection.py tests/test_threshold_contracts.py reviews/evidence/r17-importance-selection/*.py
+Result: both pass. Changed source retains I001 and PLR0402 only.
+git diff --check
+Local handoff links resolve; REMEDIATION.md's new handoff link is checked.
+Notebook JSON comparison against 1e88c54 changes only markdown cell 31's source;
+code, saved outputs, notebook metadata and all other cells are identical.
+
+Context7: LightGBM prediction shape and bias-column contracts. Real native CPU
+references cover regression/binary/multiclass and weighted categorical pipelines.
+Optional backend fixtures cover list/array aggregation and missing-import precedence;
+installed fasttreeshap numerical equivalence is not claimed.
+Hosted CI, full docs/notebooks, full sklearn compliance, other platforms,
+optional numerical backends, performance and statistical calibration are skipped.
+R18–R33 remain pending; next group R18 -> R31 requires the public legacy-helper decision.
+Completed log carriage returns and trailing whitespace are removed before commit.

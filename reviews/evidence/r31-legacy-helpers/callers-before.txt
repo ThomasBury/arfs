@@ -1,0 +1,9 @@
+tests/test_legacy_helpers.py:16:    [("arfs.preprocessing", "cat_var"), ("arfs.utils", "validate_pandas_input")],
+src/arfs/preprocessing.py:358:def cat_var(data, col_excl=None, return_cat=True):
+src/arfs/preprocessing.py:378:    cat_var_df: pd.DataFrame
+src/arfs/preprocessing.py:396:    cat_var_index = [df.columns.get_loc(c) for c in non_num_cols if c in df]
+src/arfs/preprocessing.py:397:    cat_var_df = pd.DataFrame({"cat_ind": cat_var_index, "cat_name": non_num_cols})
+src/arfs/preprocessing.py:401:    cols_need_mapped = cat_var_df.cat_name.to_list()
+src/arfs/preprocessing.py:421:    return df, cat_var_df, inv_mapper, mapper
+src/arfs/benchmark.py:59:    # X, cat_var_df, inv_mapper, mapper = cat_var(X)
+src/arfs/utils.py:282:def validate_pandas_input(arg):

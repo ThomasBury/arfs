@@ -1,0 +1,518 @@
+FFFFFFFFFFFF....F.FFFFFFFFFFFFFF....FF.F....F.FFF..FF                    [100%]
+=================================== FAILURES ===================================
+____ test_tree_refit_resolves_current_schema_without_changing_options[all] _____
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:28: in test_tree_refit_resolves_current_schema_without_changing_options
+    assert model.bin_features == rule
+E   AssertionError: assert ['x', 'cat'] == 'all'
+E    +  where ['x', 'cat'] = TreeDiscretizer(bin_features=['x', 'cat'],\n                boost_params={'learning_rate': 1, 'min_data_in_leaf': 5,\n                              'num_threads': 1, 'seed': 8, 'verbosity': -1},\n                n_bins=3).bin_features
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_ test_tree_refit_resolves_current_schema_without_changing_options[numerical] __
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:28: in test_tree_refit_resolves_current_schema_without_changing_options
+    assert model.bin_features == rule
+E   AssertionError: assert ['x'] == 'numerical'
+E    +  where ['x'] = TreeDiscretizer(bin_features=['x'],\n                boost_params={'learning_rate': 1, 'min_data_in_leaf': 5,\n                              'num_threads': 1, 'seed': 8, 'verbosity': -1},\n                n_bins=3).bin_features
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_ test_tree_refit_resolves_current_schema_without_changing_options[categorical] _
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:28: in test_tree_refit_resolves_current_schema_without_changing_options
+    assert model.bin_features == rule
+E   AssertionError: assert ['cat'] == 'categorical'
+E    +  where ['cat'] = TreeDiscretizer(bin_features=['cat'],\n                boost_params={'learning_rate': 1, 'min_data_in_leaf': 5,\n                              'num_threads': 1, 'seed': 8, 'verbosity': -1},\n                n_bins=3).bin_features
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+____ test_tree_refit_resolves_current_schema_without_changing_options[None] ____
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:28: in test_tree_refit_resolves_current_schema_without_changing_options
+    assert model.bin_features == rule
+E   AssertionError: assert ['x'] == None
+E    +  where ['x'] = TreeDiscretizer(bin_features=['x'],\n                boost_params={'learning_rate': 1, 'min_data_in_leaf': 5,\n                              'num_threads': 1, 'seed': 8, 'verbosity': -1},\n                n_bins=3).bin_features
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_ test_tree_array_fit_transform_matches_named_frame_and_preserves_input[False] _
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:48: in test_tree_array_fit_transform_matches_named_frame_and_preserves_input
+    actual = model.fit_transform(array, y)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/base.py:921: in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/arfs/preprocessing.py:655: in transform
+    frame = X[[col]]
+E   IndexError: only integers, slices (`:`), ellipsis (`...`), numpy.newaxis (`None`) and integer or boolean arrays are valid indices
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_ test_tree_array_fit_transform_matches_named_frame_and_preserves_input[True] __
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:48: in test_tree_array_fit_transform_matches_named_frame_and_preserves_input
+    actual = model.fit_transform(array, y)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/base.py:921: in fit_transform
+    return self.fit(X, y, **fit_params).transform(X)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/arfs/preprocessing.py:655: in transform
+    frame = X[[col]]
+E   IndexError: only integers, slices (`:`), ellipsis (`...`), numpy.newaxis (`None`) and integer or boolean arrays are valid indices
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_______ test_tree_explicit_columns_and_filter_remain_constructor_options _______
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:63: in test_tree_explicit_columns_and_filter_remain_constructor_options
+    assert model.bin_features is columns
+E   AssertionError: assert ['x'] is ['x', 'small']
+E    +  where ['x'] = TreeDiscretizer(bin_features=['x'],\n                boost_params={'learning_rate': 1, 'min_data_in_leaf': 5,\n                              'num_threads': 1, 'seed': 8, 'verbosity': -1},\n                n_bins_max=3).bin_features
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_____________ test_tree_rejects_changed_full_named_schema[reorder] _____________
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:87: in test_tree_rejects_changed_full_named_schema
+    model.transform(query)
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+_____________ test_tree_rejects_changed_full_named_schema[replace] _____________
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:87: in test_tree_rejects_changed_full_named_schema
+    model.transform(query)
+E   Failed: DID NOT RAISE <class 'ValueError'>
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+____________ test_tree_rejects_changed_full_named_schema[duplicate] ____________
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:87: in test_tree_rejects_changed_full_named_schema
+    model.transform(query)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/arfs/preprocessing.py:662: in transform
+    self.tree_dic[col].predict_raw(frame, pred_leaf=True).ravel(),
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/arfs/gbm.py:424: in predict_raw
+    return self.model.predict(X, **kwargs)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/lightgbm/basic.py:4767: in predict
+    return predictor.predict(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/lightgbm/basic.py:1204: in predict
+    preds, nrow = self.__pred_for_np2d(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/lightgbm/basic.py:1361: in __pred_for_np2d
+    return self.__inner_predict_np2d(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/lightgbm/basic.py:1307: in __inner_predict_np2d
+    _safe_call(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/lightgbm/basic.py:313: in _safe_call
+    raise LightGBMError(_LIB.LGBM_GetLastError().decode("utf-8"))
+E   lightgbm.basic.LightGBMError: The number of features in data (2) is not the same as it was in training data (1).
+E   You can set ``predict_disable_shape_check=true`` to discard this error, but please be aware what you are doing.
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+----------------------------- Captured stderr call -----------------------------
+[LightGBM] [Fatal] The number of features in data (2) is not the same as it was in training data (1).
+You can set ``predict_disable_shape_check=true`` to discard this error, but please be aware what you are doing.
+_ test_midpoint_scalar_and_sequence_selection_preserve_input[interval-estimator] _
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:114: in test_midpoint_scalar_and_sequence_selection_preserve_input
+    assert_allclose(actual.interval, [1, 3])
+/tmp/arfs-r04/python/cpython-3.9.25-linux-x86_64-gnu/lib/python3.9/contextlib.py:79: in inner
+    return func(*args, **kwds)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/numpy/testing/_private/utils.py:1679: in compare
+    return np._core.numeric.isclose(x, y, rtol=rtol, atol=atol,
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/numpy/_core/numeric.py:2417: in isclose
+    result = (less_equal(abs(x-y), atol + rtol * abs(y))
+E   TypeError: bad operand type for abs(): 'pandas._libs.interval.Interval'
+_ test_midpoint_scalar_and_sequence_selection_preserve_input[interval-function] _
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:114: in test_midpoint_scalar_and_sequence_selection_preserve_input
+    assert_allclose(actual.interval, [1, 3])
+/tmp/arfs-r04/python/cpython-3.9.25-linux-x86_64-gnu/lib/python3.9/contextlib.py:79: in inner
+    return func(*args, **kwds)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/numpy/testing/_private/utils.py:1679: in compare
+    return np._core.numeric.isclose(x, y, rtol=rtol, atol=atol,
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/numpy/_core/numeric.py:2417: in isclose
+    result = (less_equal(abs(x-y), atol + rtol * abs(y))
+E   TypeError: bad operand type for abs(): 'pandas._libs.interval.Interval'
+__ test_midpoint_scalar_and_sequence_selection_preserve_input[all-estimator] ___
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:111: in test_midpoint_scalar_and_sequence_selection_preserve_input
+    assert model.cols is cols
+E   AssertionError: assert Index(['interval', 'second', 'number'], dtype='object') is 'all'
+E    +  where Index(['interval', 'second', 'number'], dtype='object') = IntervalToMidpoint(cols=Index(['interval', 'second', 'number'], dtype='object')).cols
+__________ test_midpoint_refit_and_clone_rediscover_interval_columns ___________
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:127: in test_midpoint_refit_and_clone_rediscover_interval_columns
+    model.fit(X)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/arfs/preprocessing.py:745: in fit
+    if self.cols == "all":
+E   ValueError: The truth value of an array with more than one element is ambiguous. Use a.any() or a.all()
+_ test_patsy_fit_and_transform_use_same_names_and_owned_inputs[frame-dataframe] _
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:154: in test_patsy_fit_and_transform_use_same_names_and_owned_inputs
+    assert model.n_features_in_ == 2
+E   AttributeError: 'PatsyTransformer' object has no attribute 'n_features_in_'
+_ test_patsy_fit_and_transform_use_same_names_and_owned_inputs[frame-ndarray] __
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:154: in test_patsy_fit_and_transform_use_same_names_and_owned_inputs
+    assert model.n_features_in_ == 2
+E   AttributeError: 'PatsyTransformer' object has no attribute 'n_features_in_'
+_ test_patsy_fit_and_transform_use_same_names_and_owned_inputs[dict-dataframe] _
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/compat.py:40: in call_and_wrap_exc
+    return f(*args, **kwargs)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:179: in eval
+    return eval(code, {}, VarLookupDict([inner_namespace] + self._namespaces))
+E   NameError: name 'x' is not defined
+
+The above exception was the direct cause of the following exception:
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:151: in test_patsy_fit_and_transform_use_same_names_and_owned_inputs
+    actual = model.fit_transform(data)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/arfs/preprocessing.py:943: in fit_transform
+    return self._fit_transform(data, y)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/arfs/preprocessing.py:961: in _fit_transform
+    design = dmatrix(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/highlevel.py:296: in dmatrix
+    (lhs, rhs) = _do_highlevel_design(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/highlevel.py:164: in _do_highlevel_design
+    design_infos = _try_incr_builders(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/highlevel.py:56: in _try_incr_builders
+    return design_matrix_builders(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/build.py:743: in design_matrix_builders
+    factor_states = _factors_memorize(all_factors, data_iter_maker, eval_env)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/build.py:407: in _factors_memorize
+    factor.memorize_chunk(state, which_pass, data)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:592: in memorize_chunk
+    self._eval(state["memorize_code"][obj_name], state, data)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:582: in _eval
+    return call_and_wrap_exc(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/compat.py:43: in call_and_wrap_exc
+    raise new_exc from e
+E   patsy.PatsyError: Error evaluating factor: NameError: name 'x' is not defined
+E       center(x) + z
+E       ^^^^^^^^^
+__ test_patsy_fit_and_transform_use_same_names_and_owned_inputs[dict-ndarray] __
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/compat.py:40: in call_and_wrap_exc
+    return f(*args, **kwargs)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:179: in eval
+    return eval(code, {}, VarLookupDict([inner_namespace] + self._namespaces))
+E   NameError: name 'x' is not defined
+
+The above exception was the direct cause of the following exception:
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:151: in test_patsy_fit_and_transform_use_same_names_and_owned_inputs
+    actual = model.fit_transform(data)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/arfs/preprocessing.py:943: in fit_transform
+    return self._fit_transform(data, y)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/arfs/preprocessing.py:961: in _fit_transform
+    design = dmatrix(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/highlevel.py:296: in dmatrix
+    (lhs, rhs) = _do_highlevel_design(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/highlevel.py:164: in _do_highlevel_design
+    design_infos = _try_incr_builders(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/highlevel.py:56: in _try_incr_builders
+    return design_matrix_builders(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/build.py:743: in design_matrix_builders
+    factor_states = _factors_memorize(all_factors, data_iter_maker, eval_env)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/build.py:407: in _factors_memorize
+    factor.memorize_chunk(state, which_pass, data)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:592: in memorize_chunk
+    self._eval(state["memorize_code"][obj_name], state, data)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:582: in _eval
+    return call_and_wrap_exc(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/compat.py:43: in call_and_wrap_exc
+    raise new_exc from e
+E   patsy.PatsyError: Error evaluating factor: NameError: name 'x' is not defined
+E       center(x) + z
+E       ^^^^^^^^^
+_ test_patsy_fit_and_transform_use_same_names_and_owned_inputs[array-dataframe] _
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/compat.py:40: in call_and_wrap_exc
+    return f(*args, **kwargs)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:179: in eval
+    return eval(code, {}, VarLookupDict([inner_namespace] + self._namespaces))
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:53: in __getitem__
+    return d[key]
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:53: in __getitem__
+    return d[key]
+E   IndexError: only integers, slices (`:`), ellipsis (`...`), numpy.newaxis (`None`) and integer or boolean arrays are valid indices
+
+The above exception was the direct cause of the following exception:
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:152: in test_patsy_fit_and_transform_use_same_names_and_owned_inputs
+    assert_allclose(model.transform(data), actual)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/arfs/preprocessing.py:987: in transform
+    return dmatrix(self.design_, data, return_type="dataframe")
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/highlevel.py:296: in dmatrix
+    (lhs, rhs) = _do_highlevel_design(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/highlevel.py:168: in _do_highlevel_design
+    return build_design_matrices(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/build.py:954: in build_design_matrices
+    value, is_NA = _eval_factor(factor_info, data, NA_action)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/build.py:68: in _eval_factor
+    result = factor.eval(factor_info.state, data)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:599: in eval
+    return self._eval(memorize_state["eval_code"], memorize_state, data)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:582: in _eval
+    return call_and_wrap_exc(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/compat.py:43: in call_and_wrap_exc
+    raise new_exc from e
+E   patsy.PatsyError: Error evaluating factor: IndexError: only integers, slices (`:`), ellipsis (`...`), numpy.newaxis (`None`) and integer or boolean arrays are valid indices
+E       center(pred_0) + pred_1
+E       ^^^^^^^^^^^^^^
+_ test_patsy_fit_and_transform_use_same_names_and_owned_inputs[array-ndarray] __
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/compat.py:40: in call_and_wrap_exc
+    return f(*args, **kwargs)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:179: in eval
+    return eval(code, {}, VarLookupDict([inner_namespace] + self._namespaces))
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:53: in __getitem__
+    return d[key]
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:53: in __getitem__
+    return d[key]
+E   IndexError: only integers, slices (`:`), ellipsis (`...`), numpy.newaxis (`None`) and integer or boolean arrays are valid indices
+
+The above exception was the direct cause of the following exception:
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:152: in test_patsy_fit_and_transform_use_same_names_and_owned_inputs
+    assert_allclose(model.transform(data), actual)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/arfs/preprocessing.py:989: in transform
+    return np.array(dmatrix(self.design_, data))
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/highlevel.py:296: in dmatrix
+    (lhs, rhs) = _do_highlevel_design(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/highlevel.py:168: in _do_highlevel_design
+    return build_design_matrices(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/build.py:954: in build_design_matrices
+    value, is_NA = _eval_factor(factor_info, data, NA_action)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/build.py:68: in _eval_factor
+    result = factor.eval(factor_info.state, data)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:599: in eval
+    return self._eval(memorize_state["eval_code"], memorize_state, data)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:582: in _eval
+    return call_and_wrap_exc(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/compat.py:43: in call_and_wrap_exc
+    raise new_exc from e
+E   patsy.PatsyError: Error evaluating factor: IndexError: only integers, slices (`:`), ellipsis (`...`), numpy.newaxis (`None`) and integer or boolean arrays are valid indices
+E       center(pred_0) + pred_1
+E       ^^^^^^^^^^^^^^
+_ test_patsy_array_transform_uses_fitted_frame_names_and_validates_width[dataframe] _
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/compat.py:40: in call_and_wrap_exc
+    return f(*args, **kwargs)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:179: in eval
+    return eval(code, {}, VarLookupDict([inner_namespace] + self._namespaces))
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:53: in __getitem__
+    return d[key]
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:53: in __getitem__
+    return d[key]
+E   IndexError: only integers, slices (`:`), ellipsis (`...`), numpy.newaxis (`None`) and integer or boolean arrays are valid indices
+
+The above exception was the direct cause of the following exception:
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:167: in test_patsy_array_transform_uses_fitted_frame_names_and_validates_width
+    assert_allclose(model.transform(X.to_numpy()), model.transform(X))
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/arfs/preprocessing.py:987: in transform
+    return dmatrix(self.design_, data, return_type="dataframe")
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/highlevel.py:296: in dmatrix
+    (lhs, rhs) = _do_highlevel_design(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/highlevel.py:168: in _do_highlevel_design
+    return build_design_matrices(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/build.py:954: in build_design_matrices
+    value, is_NA = _eval_factor(factor_info, data, NA_action)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/build.py:68: in _eval_factor
+    result = factor.eval(factor_info.state, data)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:599: in eval
+    return self._eval(memorize_state["eval_code"], memorize_state, data)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:582: in _eval
+    return call_and_wrap_exc(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/compat.py:43: in call_and_wrap_exc
+    raise new_exc from e
+E   patsy.PatsyError: Error evaluating factor: IndexError: only integers, slices (`:`), ellipsis (`...`), numpy.newaxis (`None`) and integer or boolean arrays are valid indices
+E       x + z
+E       ^
+_ test_patsy_array_transform_uses_fitted_frame_names_and_validates_width[ndarray] _
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/compat.py:40: in call_and_wrap_exc
+    return f(*args, **kwargs)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:179: in eval
+    return eval(code, {}, VarLookupDict([inner_namespace] + self._namespaces))
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:53: in __getitem__
+    return d[key]
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:53: in __getitem__
+    return d[key]
+E   IndexError: only integers, slices (`:`), ellipsis (`...`), numpy.newaxis (`None`) and integer or boolean arrays are valid indices
+
+The above exception was the direct cause of the following exception:
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:167: in test_patsy_array_transform_uses_fitted_frame_names_and_validates_width
+    assert_allclose(model.transform(X.to_numpy()), model.transform(X))
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/arfs/preprocessing.py:989: in transform
+    return np.array(dmatrix(self.design_, data))
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/highlevel.py:296: in dmatrix
+    (lhs, rhs) = _do_highlevel_design(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/highlevel.py:168: in _do_highlevel_design
+    return build_design_matrices(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/build.py:954: in build_design_matrices
+    value, is_NA = _eval_factor(factor_info, data, NA_action)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/build.py:68: in _eval_factor
+    result = factor.eval(factor_info.state, data)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:599: in eval
+    return self._eval(memorize_state["eval_code"], memorize_state, data)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/eval.py:582: in _eval
+    return call_and_wrap_exc(
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/patsy/compat.py:43: in call_and_wrap_exc
+    raise new_exc from e
+E   patsy.PatsyError: Error evaluating factor: IndexError: only integers, slices (`:`), ellipsis (`...`), numpy.newaxis (`None`) and integer or boolean arrays are valid indices
+E       x + z
+E       ^
+_ test_patsy_automatic_formula_refit_clone_target_exclusion_and_current_options _
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:176: in test_patsy_automatic_formula_refit_clone_target_exclusion_and_current_options
+    assert model.formula is None
+E   AssertionError: assert 'x' is None
+E    +  where 'x' = PatsyTransformer(formula='x').formula
+__ test_patsy_missing_raise_applies_during_fit_and_transform[raise-dataframe] __
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:198: in test_patsy_missing_raise_applies_during_fit_and_transform
+    model.transform(pd.DataFrame({"x": [3.0, np.nan]}, index=[10, 20]))
+E   Failed: DID NOT RAISE <class 'patsy.PatsyError'>
+___ test_patsy_missing_raise_applies_during_fit_and_transform[raise-ndarray] ___
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:198: in test_patsy_missing_raise_applies_during_fit_and_transform
+    model.transform(pd.DataFrame({"x": [3.0, np.nan]}, index=[10, 20]))
+E   Failed: DID NOT RAISE <class 'patsy.PatsyError'>
+_ test_patsy_missing_raise_applies_during_fit_and_transform[policy1-dataframe] _
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:198: in test_patsy_missing_raise_applies_during_fit_and_transform
+    model.transform(pd.DataFrame({"x": [3.0, np.nan]}, index=[10, 20]))
+E   Failed: DID NOT RAISE <class 'patsy.PatsyError'>
+__ test_patsy_missing_raise_applies_during_fit_and_transform[policy1-ndarray] __
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:198: in test_patsy_missing_raise_applies_during_fit_and_transform
+    model.transform(pd.DataFrame({"x": [3.0, np.nan]}, index=[10, 20]))
+E   Failed: DID NOT RAISE <class 'patsy.PatsyError'>
+_ test_patsy_intercept_choice_matches_native_without_mutating_formula[False-x] _
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:237: in test_patsy_intercept_choice_matches_native_without_mutating_formula
+    assert_frame_equal(actual, dmatrix(native, X, return_type="dataframe"))
+E   AssertionError: DataFrame are different
+E
+E   DataFrame shape mismatch
+E   [left]:  (2, 2)
+E   [right]: (2, 1)
+_ test_patsy_intercept_choice_matches_native_without_mutating_formula[False-1 + x] _
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:237: in test_patsy_intercept_choice_matches_native_without_mutating_formula
+    assert_frame_equal(actual, dmatrix(native, X, return_type="dataframe"))
+E   AssertionError: DataFrame are different
+E
+E   DataFrame shape mismatch
+E   [left]:  (2, 2)
+E   [right]: (2, 1)
+_ test_patsy_intercept_choice_matches_native_without_mutating_formula[False-formula3] _
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:237: in test_patsy_intercept_choice_matches_native_without_mutating_formula
+    assert_frame_equal(actual, dmatrix(native, X, return_type="dataframe"))
+E   AssertionError: DataFrame are different
+E
+E   DataFrame shape mismatch
+E   [left]:  (2, 2)
+E   [right]: (2, 1)
+___________ test_patsy_pipeline_reuses_fitted_center_and_row_policy ____________
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:249: in test_patsy_pipeline_reuses_fitted_center_and_row_policy
+    pipe.transform(pd.DataFrame({"x": [np.nan]}))
+E   Failed: DID NOT RAISE <class 'patsy.PatsyError'>
+___________________ test_transformer_unfitted_errors[model1] ___________________
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:257: in test_transformer_unfitted_errors
+    model.transform(pd.DataFrame({"x": [1.0]}))
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/arfs/preprocessing.py:771: in transform
+    for c in self.columns_to_transform_:
+E   AttributeError: 'IntervalToMidpoint' object has no attribute 'columns_to_transform_'
+___________________ test_transformer_unfitted_errors[model2] ___________________
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:257: in test_transformer_unfitted_errors
+    model.transform(pd.DataFrame({"x": [1.0]}))
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/arfs/preprocessing.py:987: in transform
+    return dmatrix(self.design_, data, return_type="dataframe")
+E   AttributeError: 'PatsyTransformer' object has no attribute 'design_'
+_________________ test_tree_array_query_uses_named_fit_schema __________________
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:264: in test_tree_array_query_uses_named_fit_schema
+    model.transform(X.to_numpy()), model.transform(X).reset_index(drop=True)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/utils/_set_output.py:319: in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+/tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/arfs/preprocessing.py:655: in transform
+    frame = X[[col]]
+E   IndexError: only integers, slices (`:`), ellipsis (`...`), numpy.newaxis (`None`) and integer or boolean arrays are valid indices
+----------------------------- Captured stdout call -----------------------------
+Data split: Train=192 samples, Validation=48 samples.
+No 'metric' provided, using objective 'rmse' as metric.
+Training up to 1 boosting rounds.
+____________ test_patsy_keeps_explicit_evaluation_environment[fit] _____________
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:294: in test_patsy_keeps_explicit_evaluation_environment
+    assert_allclose(model.transform({"x": [3.0]})["double(x)"], [6])
+/tmp/arfs-r04/python/cpython-3.9.25-linux-x86_64-gnu/lib/python3.9/contextlib.py:79: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   (shapes (2,), (1,) mismatch)
+E    ACTUAL: array([3., 3.])
+E    DESIRED: array([6])
+_______ test_patsy_keeps_explicit_evaluation_environment[fit_transform] ________
+/tmp/arfs-r20/before/tests/test_transformer_inputs.py:294: in test_patsy_keeps_explicit_evaluation_environment
+    assert_allclose(model.transform({"x": [3.0]})["double(x)"], [6])
+/tmp/arfs-r04/python/cpython-3.9.25-linux-x86_64-gnu/lib/python3.9/contextlib.py:79: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=0
+E
+E   (shapes (2,), (1,) mismatch)
+E    ACTUAL: array([3., 3.])
+E    DESIRED: array([6])
+=========================== short test summary info ============================
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_tree_refit_resolves_current_schema_without_changing_options[all]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_tree_refit_resolves_current_schema_without_changing_options[numerical]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_tree_refit_resolves_current_schema_without_changing_options[categorical]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_tree_refit_resolves_current_schema_without_changing_options[None]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_tree_array_fit_transform_matches_named_frame_and_preserves_input[False]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_tree_array_fit_transform_matches_named_frame_and_preserves_input[True]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_tree_explicit_columns_and_filter_remain_constructor_options
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_tree_rejects_changed_full_named_schema[reorder]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_tree_rejects_changed_full_named_schema[replace]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_tree_rejects_changed_full_named_schema[duplicate]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_midpoint_scalar_and_sequence_selection_preserve_input[interval-estimator]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_midpoint_scalar_and_sequence_selection_preserve_input[interval-function]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_midpoint_scalar_and_sequence_selection_preserve_input[all-estimator]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_midpoint_refit_and_clone_rediscover_interval_columns
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_patsy_fit_and_transform_use_same_names_and_owned_inputs[frame-dataframe]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_patsy_fit_and_transform_use_same_names_and_owned_inputs[frame-ndarray]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_patsy_fit_and_transform_use_same_names_and_owned_inputs[dict-dataframe]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_patsy_fit_and_transform_use_same_names_and_owned_inputs[dict-ndarray]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_patsy_fit_and_transform_use_same_names_and_owned_inputs[array-dataframe]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_patsy_fit_and_transform_use_same_names_and_owned_inputs[array-ndarray]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_patsy_array_transform_uses_fitted_frame_names_and_validates_width[dataframe]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_patsy_array_transform_uses_fitted_frame_names_and_validates_width[ndarray]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_patsy_automatic_formula_refit_clone_target_exclusion_and_current_options
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_patsy_missing_raise_applies_during_fit_and_transform[raise-dataframe]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_patsy_missing_raise_applies_during_fit_and_transform[raise-ndarray]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_patsy_missing_raise_applies_during_fit_and_transform[policy1-dataframe]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_patsy_missing_raise_applies_during_fit_and_transform[policy1-ndarray]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_patsy_intercept_choice_matches_native_without_mutating_formula[False-x]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_patsy_intercept_choice_matches_native_without_mutating_formula[False-1 + x]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_patsy_intercept_choice_matches_native_without_mutating_formula[False-formula3]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_patsy_pipeline_reuses_fitted_center_and_row_policy
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_transformer_unfitted_errors[model1]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_transformer_unfitted_errors[model2]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_tree_array_query_uses_named_fit_schema
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_patsy_keeps_explicit_evaluation_environment[fit]
+FAILED ../../../../tmp/arfs-r20/before/tests/test_transformer_inputs.py::test_patsy_keeps_explicit_evaluation_environment[fit_transform]
+36 failed, 17 passed in 7.99s

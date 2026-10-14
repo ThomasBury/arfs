@@ -1,0 +1,107 @@
+........................................................................ [  7%]
+........................................................................ [ 15%]
+........................................................................ [ 23%]
+........................................................................ [ 31%]
+........................................................................ [ 39%]
+........................................................................ [ 46%]
+........................................................................ [ 54%]
+........................................................................ [ 62%]
+........................................................................ [ 70%]
+........................................................................ [ 78%]
+........................................................................ [ 85%]
+........................................................................ [ 93%]
+..........................................................               [100%]
+=============================== warnings summary ===============================
+arfs-r19/final/run-py39-locked/tests/test_allrelevant.py: 35 warnings
+arfs-r19/final/run-py39-locked/tests/test_allrelevant_aggregation.py: 2 warnings
+  /tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/shap/explainers/_tree.py:544: UserWarning: LightGBM binary classifier with TreeExplainer shap values output has changed to a list of ndarray
+    warnings.warn(
+
+arfs-r19/final/run-py39-locked/tests/test_allrelevant_aggregation.py: 2 warnings
+arfs-r19/final/run-py39-locked/tests/test_category_identity.py: 1 warning
+arfs-r19/final/run-py39-locked/tests/test_observation_boundaries.py: 12 warnings
+arfs-r19/final/run-py39-locked/tests/test_runtime_baseline.py: 1 warning
+arfs-r19/final/run-py39-locked/tests/test_shadow_contracts.py: 1 warning
+  /tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/arfs/feature_selection/allrelevant.py:1543: UserWarning: [BoostAGroota]: using native variable importance might break the FS
+    warnings.warn(
+
+arfs-r19/final/run-py39-locked/tests/test_category_identity.py: 14 warnings
+arfs-r19/final/run-py39-locked/tests/test_mrmr_ranking.py: 27 warnings
+arfs-r19/final/run-py39-locked/tests/test_statistical_arithmetic.py: 22 warnings
+  /tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/arfs/association.py:244: RuntimeWarning: Rounded U = 1.0 to 1. This is probably due to floating point precision issues.
+    warnings.warn(
+
+arfs-r19/final/run-py39-locked/tests/test_category_identity.py: 2 warnings
+arfs-r19/final/run-py39-locked/tests/test_observation_boundaries.py: 2 warnings
+arfs-r19/final/run-py39-locked/tests/test_statistical_arithmetic.py: 6 warnings
+  /tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/arfs/association.py:244: RuntimeWarning: Rounded U = 0.0 to 0. This is probably due to floating point precision issues.
+    warnings.warn(
+
+arfs-r19/final/run-py39-locked/tests/test_dependency_apis.py: 1 warning
+arfs-r19/final/run-py39-locked/tests/test_glm_likelihood.py: 14 warnings
+arfs-r19/final/run-py39-locked/tests/test_observation_boundaries.py: 10 warnings
+  /tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/statsmodels/genmod/generalized_linear_model.py:1464: UserWarning: Elastic net fitting did not converge
+    warnings.warn("Elastic net fitting did not converge")
+
+arfs-r19/final/run-py39-locked/tests/test_dependency_apis.py: 3 warnings
+arfs-r19/final/run-py39-locked/tests/test_importance_selection.py: 1 warning
+arfs-r19/final/run-py39-locked/tests/test_threshold_contracts.py: 22 warnings
+  /tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The MissingValueThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+arfs-r19/final/run-py39-locked/tests/test_dependency_apis.py: 6 warnings
+arfs-r19/final/run-py39-locked/tests/test_runtime_baseline.py: 2 warnings
+arfs-r19/final/run-py39-locked/tests/test_threshold_contracts.py: 22 warnings
+  /tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The UniqueValuesThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+arfs-r19/final/run-py39-locked/tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+arfs-r19/final/run-py39-locked/tests/test_observation_boundaries.py::test_benchmark_weights_match_independent_reference[regression]
+arfs-r19/final/run-py39-locked/tests/test_observation_boundaries.py::test_benchmark_weights_match_independent_reference[classification]
+  /tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/arfs/benchmark.py:103: UserWarning: Tight layout not applied. The bottom and top margins cannot be made large enough to accommodate all Axes decorations.
+    fig.tight_layout()
+
+arfs-r19/final/run-py39-locked/tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+arfs-r19/final/run-py39-locked/tests/test_observation_boundaries.py::test_benchmark_weights_match_independent_reference[regression]
+arfs-r19/final/run-py39-locked/tests/test_observation_boundaries.py::test_benchmark_weights_match_independent_reference[classification]
+  /tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/arfs/benchmark.py:108: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+    plt.show()
+
+arfs-r19/final/run-py39-locked/tests/test_importance_selection.py: 39 warnings
+arfs-r19/final/run-py39-locked/tests/test_threshold_contracts.py: 21 warnings
+  /tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The VariableImportance or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+arfs-r19/final/run-py39-locked/tests/test_leshy_support.py: 10 warnings
+  /tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The Leshy or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+arfs-r19/final/run-py39-locked/tests/test_mrmr_ranking.py: 12 warnings
+  /tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The MinRedundancyMaxRelevance or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+arfs-r19/final/run-py39-locked/tests/test_mrmr_ranking.py: 6 warnings
+arfs-r19/final/run-py39-locked/tests/test_statistical_arithmetic.py: 4 warnings
+arfs-r19/final/run-py39-locked/tests/test_threshold_contracts.py: 4 warnings
+  /tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/arfs/association.py:808: RuntimeWarning: invalid value encountered in scalar divide
+    return wcov(x, y, w) / np.sqrt(wcov(x, x, w) * wcov(y, y, w))
+
+arfs-r19/final/run-py39-locked/tests/test_mrmr_ranking.py::test_constant_predictors_and_response_have_zero_default_relevance[regression]
+arfs-r19/final/run-py39-locked/tests/test_mrmr_ranking.py::test_constant_predictors_and_response_have_zero_default_relevance[classification]
+  /tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/arfs/association.py:1464: UserWarning: Features [0] are constant.
+    warnings.warn("Features [0] are constant.", UserWarning)
+
+arfs-r19/final/run-py39-locked/tests/test_threshold_contracts.py: 22 warnings
+  /tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The CardinalityThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+arfs-r19/final/run-py39-locked/tests/test_threshold_contracts.py: 34 warnings
+  /tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The CollinearityThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+arfs-r19/final/run-py39-locked/tests/test_threshold_contracts.py: 15 warnings
+  /tmp/arfs-r19/final/py39-locked/lib/python3.9/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The BaseThresholdSelector or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+922 passed, 383 warnings in 174.70s (0:02:54)

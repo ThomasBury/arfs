@@ -1,0 +1,140 @@
+FFFFFFFFFFFFFFFFFF.                                                      [100%]
+=================================== FAILURES ===================================
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[False-bic-nan] _
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[False-bic-inf] _
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[False-bic--inf] _
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[False-deviance-nan] _
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[False-deviance-inf] _
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[False-deviance--inf] _
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[True-bic-nan] __
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[True-bic-inf] __
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[True-bic--inf] _
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[True-deviance-nan] _
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[True-deviance-inf] _
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[True-deviance--inf] _
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+__ test_real_all_invalid_gaussian_bic_search_fails_instead_of_selecting_first __
+tests/test_glm_likelihood.py:66: in test_real_all_invalid_gaussian_bic_search_fails_instead_of_selecting_first
+    lasso.grid_search_cv(X, np.zeros(len(X)), w, n_iterations=3)
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:526: in grid_search_cv
+    estimator.fit(X=X, y=y, sample_weight=sample_weight)
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:225: in fit
+    result = model.fit_regularized(
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1454: in fit_regularized
+    result = fit_elasticnet(self, method=method,
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/base/elastic_net.py:236: in fit_elasticnet
+    rslt = model1.fit(maxiter=0)
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1192: in fit
+    return self._fit_irls(start_params=start_params, maxiter=maxiter,
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1309: in _fit_irls
+    raise ValueError("The first guess on the deviance function "
+E   ValueError: The first guess on the deviance function returned a nan.  This could be a boundary  problem and should be reported.
+
+During handling of the above exception, another exception occurred:
+tests/test_glm_likelihood.py:65: in test_real_all_invalid_gaussian_bic_search_fails_instead_of_selecting_first
+    with pytest.raises(ValueError, match="bic.*alpha=.*finite"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'bic.*alpha=.*finite'
+E    Input: 'The first guess on the deviance function returned a nan.  This could be a boundary  problem and should be reported.'
+_______ test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[0] _______
+tests/test_glm_likelihood.py:73: in test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error
+    lasso.EnetGLM(L1_wt=L1_wt).fit(X, y, w)
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:230: in fit
+    self.bse_ = self.result.bse
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/base/wrapper.py:34: in __getattribute__
+    obj = getattr(results, attr)
+E   AttributeError: 'RegularizedResults' object has no attribute 'bse'
+_____ test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[-0.1] ______
+tests/test_glm_likelihood.py:72: in test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error
+    with pytest.raises(ValueError, match="L1_wt"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+______ test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[1.1] ______
+tests/test_glm_likelihood.py:72: in test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error
+    with pytest.raises(ValueError, match="L1_wt"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+______ test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[nan] ______
+tests/test_glm_likelihood.py:72: in test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error
+    with pytest.raises(ValueError, match="L1_wt"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+______ test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[inf] ______
+tests/test_glm_likelihood.py:72: in test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error
+    with pytest.raises(ValueError, match="L1_wt"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+=============================== warnings summary ===============================
+tests/test_glm_likelihood.py::test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[nan]
+tests/test_glm_likelihood.py::test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[inf]
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1464: UserWarning: Elastic net fitting did not converge
+    warnings.warn("Elastic net fitting did not converge")
+
+tests/test_glm_likelihood.py::test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[inf]
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/base/elastic_net.py:43: RuntimeWarning: invalid value encountered in scalar multiply
+    pen_llf = alpha[k] * (1 - L1_wt) * np.sum(params**2) / 2
+
+tests/test_glm_likelihood.py::test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[inf]
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/base/elastic_net.py:49: RuntimeWarning: invalid value encountered in scalar multiply
+    pen_grad = alpha[k] * (1 - L1_wt) * params
+
+tests/test_glm_likelihood.py::test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[inf]
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/base/elastic_net.py:329: RuntimeWarning: invalid value encountered in scalar multiply
+    d = b - c*x
+
+tests/test_glm_likelihood.py::test_tiny_l1_returns_unpenalized_refit_without_claiming_ridge_shrinkage
+  /home/bsatom/Documents/arfs/tests/test_glm_likelihood.py:85: FutureWarning: Series.__getitem__ treating keys as positions is deprecated. In a future version, integer keys will always be treated as labels (consistent with DataFrame behavior). To access a value by position, use `ser.iloc[pos]`
+    assert abs(model.coef_[1]) > 5 * abs(penalized.params[1])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[False-bic-nan]
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[False-bic-inf]
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[False-bic--inf]
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[False-deviance-nan]
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[False-deviance-inf]
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[False-deviance--inf]
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[True-bic-nan]
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[True-bic-inf]
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[True-bic--inf]
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[True-deviance-nan]
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[True-deviance-inf]
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[True-deviance--inf]
+FAILED tests/test_glm_likelihood.py::test_real_all_invalid_gaussian_bic_search_fails_instead_of_selecting_first
+FAILED tests/test_glm_likelihood.py::test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[0]
+FAILED tests/test_glm_likelihood.py::test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[-0.1]
+FAILED tests/test_glm_likelihood.py::test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[1.1]
+FAILED tests/test_glm_likelihood.py::test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[nan]
+FAILED tests/test_glm_likelihood.py::test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[inf]
+18 failed, 1 passed, 6 warnings in 3.53s

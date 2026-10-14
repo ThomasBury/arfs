@@ -1,0 +1,10 @@
+--- reviews/evidence/02-preprocessing/checks.py
++++ /tmp/arfs-r20/historical/checks.py
+@@ -19,7 +19,6 @@
+     OrdinalEncoderPandas,
+     PatsyTransformer,
+     TreeDiscretizer,
+-    cat_var,
+     dtype_column_selector,
+     find_interval_midpoint,
+     transform_interval_to_midpoint,

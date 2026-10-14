@@ -1,13 +1,15 @@
 """This module provide methods for sampling large datasets for reducing the running time"""
 
+from collections import Counter
+
 import numpy as np
 import pandas as pd
 from scipy.sparse import issparse
-from collections import Counter
+from scipy.stats import ks_2samp
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.ensemble import IsolationForest
-from scipy.stats import ks_2samp
-from .utils import is_list_of_str, is_list_of_bool, is_list_of_int
+
+from .utils import _is_categorical_dtype
 
 
 def sample(df, n=1000, sample_weight=None, method="gower"):
@@ -52,7 +54,9 @@ def sample(df, n=1000, sample_weight=None, method="gower"):
             X[num_cols] = X[num_cols].fillna(X[num_cols].mean().iloc[0])
 
         # no need for scaling, it is built-in the computation of the Gower distance
-        gd = gower_matrix(X, cat_features=non_num_cols, weight=sample_weight)
+        gd = gower_matrix(
+            X, cat_features=X.columns.isin(non_num_cols), weight=sample_weight
+        )
 
         labels = AgglomerativeClustering(
             n_clusters=n, metric="precomputed", linkage="complete"
@@ -83,228 +87,181 @@ def get_most_common(srs):
     return my_counter.most_common(1)[0][0]
 
 
-def gower_matrix(
-    data_x,
-    data_y=None,
-    weight=None,
-    cat_features="auto",
-):
-    """Computes the gower distances between X and Y
-
-    Gower is a similarity measure for categorical, boolean and numerical mixed
-    data.
+def gower_matrix(data_x, data_y=None, weight=None, cat_features="auto"):
+    """Compute pairwise Gower dissimilarities for numeric and nominal features.
 
     Parameters
     ----------
-    data_x : np.array or pd.DataFrame
-        The data for computing the Gower distance
-    data_y : np.array or pd.DataFrame or pd.Series, optional
-        The reference matrix or vector to compare with, optional
-    weight : np.array or pd.Series, optional
-        sample weight, optional
-    cat_features : list of str or bool or int, optional
-        auto-detect cat features or a list of cat features, by default 'auto'
+    data_x : ndarray or pandas.DataFrame, shape (n_x, n_features)
+        Input rows. DataFrame columns must be unique.
+    data_y : ndarray, pandas.DataFrame or pandas.Series, optional
+        Reference rows with the same feature order and width. A Series is one
+        named reference row. Named inputs must have matching columns in order.
+        If omitted, compare data_x with itself.
+    weight : array-like, shape (n_features,), optional
+        Feature weights, not row/sample weights. Must be finite, nonnegative
+        and contain positive mass; zero-weight features do not contribute.
+    cat_features : "auto" or sequence of str, bool or int, optional
+        Infer nominal columns using pandas dtype rules (strings, objects,
+        categories and booleans). Arrays use soft per-column dtype inference.
+        Otherwise use DataFrame column names, a full Boolean mask, or zero-based
+        column positions. An empty sequence means all features are numeric.
+        Integer entries always mean positions, including on integer-named frames.
 
     Returns
     -------
-    np.array
-        The Gower distance matrix, shape (n_samples, n_samples)
+    ndarray of float64, shape (n_x, n_y)
+        Weighted mean dissimilarities in [0, 1]. Missing features are omitted
+        separately for each pair. A pair with no comparable positive-weight
+        features returns NaN, including the diagonal of an entirely missing row.
 
     Notes
     -----
-    The non-numeric features, and numeric feature ranges are determined from X and not Y.
+    Numeric ranges pool observed values from both inputs; observed constant
+    numeric features contribute zero but retain their weight in the denominator.
+    Numeric values are converted to float64 and must be finite or missing, with
+    a representable max-minus-min range. Nominal values use equality, without
+    string conversion. Ordinal and asymmetric-binary scoring are not implemented.
+    The dense output requires quadratic storage for a self-comparison.
 
     Raises
     ------
     TypeError
-        If two dataframes are passed but have different number of columns
-    TypeError
-        If two arrays are passed but have different number of columns
-    TypeError
-        Sparse matrices are not supported
-    TypeError
-        if a list of categorical columns is passed, it should be a list of strings or integers or boolean values
+        For sparse/unsupported input, non-matrix shape, mismatched named schemas,
+        unsupported categorical masks, or nonnumeric values in numeric columns.
+    ValueError
+        For mismatched widths, duplicate/no columns, invalid masks or feature
+        weights, infinite numeric values, or an overflowing numeric range.
     """
-    # function checks
-    X = data_x
-    if data_y is None:
-        Y = data_x
-    else:
-        Y = data_y
-    if not isinstance(X, np.ndarray):
-        y_col = Y.columns if isinstance(Y, pd.DataFrame) else Y.index
-        if not np.array_equal(X.columns, y_col):
-            raise TypeError("X and Y must have same columns!")
-    else:
-        if not X.shape[1] == Y.shape[1]:
-            raise TypeError("X and Y must have same y-dim!")
-    if issparse(X) or issparse(Y):
+    if issparse(data_x) or issparse(data_y):
         raise TypeError("Sparse matrices are not supported!")
+    self_comparison = data_y is None or data_y is data_x
+    X = data_x
+    Y = data_x if data_y is None else data_y
+    if isinstance(Y, pd.Series):
+        Y = Y.to_frame().T
+    for matrix in (X, Y):
+        if not isinstance(matrix, (np.ndarray, pd.DataFrame)) or matrix.ndim != 2:
+            raise TypeError("X and Y must be two-dimensional arrays or DataFrames.")
+    if X.shape[1] != Y.shape[1]:
+        raise ValueError("X and Y must have the same number of features.")
+    if (
+        isinstance(X, pd.DataFrame)
+        and isinstance(Y, pd.DataFrame)
+        and not X.columns.equals(Y.columns)
+    ):
+        raise TypeError("X and Y must have same columns in order!")
+    for matrix in (X, Y):
+        if isinstance(matrix, pd.DataFrame) and not matrix.columns.is_unique:
+            raise ValueError("Feature columns must be unique.")
+    n_features = X.shape[1]
+    if n_features == 0:
+        raise ValueError("At least one feature is required.")
+    named = isinstance(X, pd.DataFrame)
+    if not named:
+        X = pd.DataFrame(X)
+        X = X.where(X.notna(), np.nan).infer_objects()
+    if not isinstance(Y, pd.DataFrame):
+        Y = pd.DataFrame(Y, columns=X.columns)
 
-    x_n_rows, x_n_cols = X.shape
-    y_n_rows, y_n_cols = Y.shape
-
-    if cat_features == "auto":
-        if not isinstance(X, np.ndarray):
-            is_number = np.vectorize(lambda x: not np.issubdtype(x, np.number))
-            cat_features = is_number(X.dtypes)
-        else:
-            cat_features = np.zeros(x_n_cols, dtype=bool)
-            for col in range(x_n_cols):
-                if not np.issubdtype(type(X[0, col]), np.number):
-                    cat_features[col] = True
+    if isinstance(cat_features, str) and cat_features == "auto":
+        categorical = np.array([_is_categorical_dtype(dtype) for dtype in X.dtypes])
     else:
-        # force categorical columns (if integer encoded for instance)
-        if is_list_of_str(cat_features):
-            cat_feat = [True if c in cat_features else False for c in X.columns]
-            cat_features = np.array(cat_feat)
-        elif is_list_of_bool(cat_features):
-            cat_features = np.array(cat_features)
-        elif is_list_of_int(cat_features):
-            cat_feat = [
-                True if c in cat_features else False for c in range(len(X.columns))
-            ]
-            cat_features = np.array(cat_feat)
+        mask = np.asarray(cat_features, dtype=object)
+        if mask.ndim != 1:
+            raise TypeError("cat_features must be auto or a one-dimensional sequence.")
+        categorical = np.zeros(n_features, dtype=bool)
+        if mask.size == 0:
+            pass
+        elif all(isinstance(v, (bool, np.bool_)) for v in mask):
+            if len(mask) != n_features:
+                raise ValueError(
+                    "Boolean cat_features must have one entry per feature."
+                )
+            categorical = mask.astype(bool)
+        elif all(
+            isinstance(v, (int, np.integer)) and not isinstance(v, (bool, np.bool_))
+            for v in mask
+        ):
+            if any(v < 0 or v >= n_features for v in mask):
+                raise ValueError("Categorical column positions are out of range.")
+            categorical[mask.astype(int)] = True
+        elif all(isinstance(v, str) for v in mask):
+            if not named:
+                raise TypeError("Named cat_features require a DataFrame.")
+            if not set(mask).issubset(X.columns):
+                raise ValueError("cat_features contains unknown column names.")
+            categorical = X.columns.isin(mask)
         else:
             raise TypeError(
-                "If not 'auto' cat_features should be a list of strings, integers or Booleans"
+                "cat_features must contain only names, positions or Booleans."
             )
 
-    # print(cat_features)
-
-    if not isinstance(X, np.ndarray):
-        X = np.asarray(X)
-    if not isinstance(Y, np.ndarray):
-        Y = np.asarray(Y)
-
-    Z = np.concatenate((X, Y))
-
-    x_index = range(0, x_n_rows)
-    y_index = range(x_n_rows, x_n_rows + y_n_rows)
-
-    Z_num = Z[:, np.logical_not(cat_features)]
-
-    num_cols = Z_num.shape[1]
-    num_ranges = np.zeros(num_cols)
-    num_max = np.zeros(num_cols)
-
-    for col in range(num_cols):
-        col_array = Z_num[:, col].astype(np.float32)
-        max_ = np.nanmax(col_array)
-        min_ = np.nanmin(col_array)
-
-        if np.isnan(max_):
-            max_ = 0.0
-        if np.isnan(min_):
-            min_ = 0.0
-        num_max[col] = max_
-        num_ranges[col] = (1 - min_ / max_) if (max_ != 0) else 0.0
-
-    # This is to normalize the numeric values between 0 and 1.
-    Z_num = np.divide(
-        Z_num.astype(float),
-        num_max.astype(float),
-        out=np.zeros_like(Z_num).astype(float),
-        where=num_max != 0,
-    )
-    Z_cat = Z[:, cat_features]
-
-    if weight is None:
-        weight = np.ones(Z.shape[1])
-
-    # print(weight)
-
-    weight_cat = weight[cat_features]
-    weight_num = weight[np.logical_not(cat_features)]
-
-    out = np.zeros((x_n_rows, y_n_rows), dtype=np.float32)
-
-    weight_sum = weight.sum()
-
-    X_cat = Z_cat[x_index,]
-    X_num = Z_num[x_index,]
-    Y_cat = Z_cat[y_index,]
-    Y_num = Z_num[y_index,]
-
-    # print(X_cat,X_num,Y_cat,Y_num)
-
-    for i in range(x_n_rows):
-        j_start = i
-        if x_n_rows != y_n_rows:
-            j_start = 0
-        # call the main function
-        res = _gower_distance_row(
-            X_cat[i, :],
-            X_num[i, :],
-            Y_cat[j_start:y_n_rows, :],
-            Y_num[j_start:y_n_rows, :],
-            weight_cat,
-            weight_num,
-            weight_sum,
-            num_ranges,
+    if np.iscomplexobj(weight):
+        raise ValueError("Feature weights must be real numbers.")
+    weights = np.ones(n_features) if weight is None else np.asarray(weight, dtype=float)
+    if weights.ndim != 1 or len(weights) != n_features:
+        raise ValueError("weight must have one entry per feature.")
+    if not np.isfinite(weights).all() or (weights < 0).any() or not (weights > 0).any():
+        raise ValueError(
+            "Feature weights must be finite, nonnegative and have positive mass."
         )
-        # print(res)
-        out[i, j_start:] = res
-        if x_n_rows == y_n_rows:
-            out[i:, j_start] = res
 
+    values = np.concatenate((X.to_numpy(dtype=object), Y.to_numpy(dtype=object)))
+    available = ~pd.isna(values)
+    values[~available] = 0
+    try:
+        numeric = values[:, ~categorical].astype(float)
+    except (TypeError, ValueError) as exc:
+        raise TypeError("Non-categorical features must be numeric.") from exc
+    if not np.isfinite(numeric).all():
+        raise ValueError("Numeric features must be finite or missing.")
+    for col, pos in enumerate(np.flatnonzero(~categorical)):
+        observed = numeric[available[:, pos], col]
+        if observed.size:
+            minimum = observed.min()
+            with np.errstate(over="ignore"):
+                span = observed.max() - minimum
+            if not np.isfinite(span):
+                raise ValueError("Numeric feature range exceeds float64 capacity.")
+            numeric[:, col] = np.where(available[:, pos], numeric[:, col], minimum)
+            numeric[:, col] = (numeric[:, col] - minimum) / span if span else 0.0
+    nominal = values[:, categorical]
+    n_x, n_y = len(X), len(Y)
+    out = np.empty((n_x, n_y), dtype=float)
+    for i in range(n_x):
+        start = i if self_comparison else 0
+        res = _gower_distance_row(
+            nominal[i],
+            numeric[i],
+            nominal[n_x + start :],
+            numeric[n_x + start :],
+            available[i] & available[n_x + start :],
+            weights,
+            categorical,
+        )
+        out[i, start:] = res
+        if self_comparison:
+            out[start:, i] = res
     return out
 
 
-def _gower_distance_row(
-    xi_cat,
-    xi_num,
-    xj_cat,
-    xj_num,
-    feature_weight_cat,
-    feature_weight_num,
-    feature_weight_sum,
-    ranges_of_numeric,
-):
-    """Compute a row of the Gower matrix
-
-    Parameters
-    ----------
-    xi_cat : np.array
-        categorical row of the X matrix
-    xi_num : np.array
-        numerical row of the X matrix
-    xj_cat : np.array
-        categorical row of the X matrix
-    xj_num : np.array
-        numerical row of the X matrix
-    feature_weight_cat : np.array
-        weight vector for the categorical features
-    feature_weight_num : np.array
-        weight vector for the numerical features
-    feature_weight_sum : float
-        The sum of the weights
-    ranges_of_numeric : np.array
-        range of the scaled numerical features (between 0 and 1)
-
-    Returns
-    -------
-    np.array : array
-        a row vector of the Gower distance
-    """
-    # categorical columns
-    sij_cat = np.where(xi_cat == xj_cat, np.zeros_like(xi_cat), np.ones_like(xi_cat))
-    sum_cat = np.multiply(feature_weight_cat, sij_cat).sum(axis=1)
-
-    # numerical columns
-    abs_delta = np.absolute(xi_num - xj_num)
-    sij_num = np.divide(
-        abs_delta,
-        ranges_of_numeric,
-        out=np.zeros_like(abs_delta),
-        where=ranges_of_numeric != 0,
+def _gower_distance_row(xi_cat, xi_num, xj_cat, xj_num, available, weight, categorical):
+    """Weight each pair by its available features, using only row-sized scratch."""
+    delta = np.empty(available.shape, dtype=float)
+    delta[:, categorical] = xi_cat != xj_cat
+    delta[:, ~categorical] = np.abs(xi_num - xj_num)
+    pair_weights = np.where(available, weight, 0.0)
+    # Scale within each pair so large weights cannot overflow the weighted mean.
+    maximum = pair_weights.max(axis=1, keepdims=True)
+    np.divide(pair_weights, maximum, out=pair_weights, where=maximum > 0)
+    denominator = pair_weights.sum(axis=1)
+    return np.divide(
+        (delta * pair_weights).sum(axis=1),
+        denominator,
+        out=np.full(len(xj_num), np.nan),
+        where=denominator > 0,
     )
-
-    sum_num = np.multiply(feature_weight_num, sij_num).sum(axis=1)
-    sums = np.add(sum_cat, sum_num)
-    sum_sij = np.divide(sums, feature_weight_sum)
-
-    return sum_sij
 
 
 def smallest_indices(ary, n):

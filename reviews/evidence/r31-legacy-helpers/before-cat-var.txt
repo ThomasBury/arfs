@@ -1,0 +1,14 @@
+.F                                                                       [100%]
+=================================== FAILURES ===================================
+___________ test_cat_var_missing_is_distinct_from_observed_category ____________
+reviews/evidence/02-preprocessing/checks.py:353: in test_cat_var_missing_is_distinct_from_observed_category
+    assert result.cat.iloc[0] != result.cat.iloc[1]
+E   assert 0 != 0
+----------------------------- Captured stderr call -----------------------------
+
+  0%|          | 0/1 [00:00<?, ?it/s]
+Processing cat                           :   0%|          | 0/1 [00:00<?, ?it/s]
+Processing cat                           : 100%|██████████| 1/1 [00:00<00:00, 552.03it/s]
+=========================== short test summary info ============================
+FAILED reviews/evidence/02-preprocessing/checks.py::test_cat_var_missing_is_distinct_from_observed_category
+1 failed, 1 passed, 38 deselected in 2.06s

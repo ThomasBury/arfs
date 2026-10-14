@@ -1,0 +1,451 @@
+FFFFFFFFFFFF.FFFFF.FFFFFFFFFFFFFFFFFFFFFFF....F.....                     [100%]
+=================================== FAILURES ===================================
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[False-bic-nan] _
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[False-bic-inf] _
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[False-bic--inf] _
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[False-deviance-nan] _
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[False-deviance-inf] _
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[False-deviance--inf] _
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[True-bic-nan] __
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[True-bic-inf] __
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[True-bic--inf] _
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[True-deviance-nan] _
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[True-deviance-inf] _
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_ test_search_rejects_nonfinite_criteria_with_candidate_context[True-deviance--inf] _
+tests/test_glm_likelihood.py:57: in test_search_rejects_nonfinite_criteria_with_candidate_context
+    with pytest.raises(ValueError, match=rf"{score}.*alpha=.*finite"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+_______ test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[0] _______
+tests/test_glm_likelihood.py:73: in test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error
+    lasso.EnetGLM(L1_wt=L1_wt).fit(X, y, w)
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/arfs/feature_selection/lasso.py:230: in fit
+    self.bse_ = self.result.bse
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/base/wrapper.py:34: in __getattribute__
+    obj = getattr(results, attr)
+E   AttributeError: 'RegularizedResults' object has no attribute 'bse'
+_____ test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[-0.1] ______
+tests/test_glm_likelihood.py:72: in test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error
+    with pytest.raises(ValueError, match="L1_wt"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+______ test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[1.1] ______
+tests/test_glm_likelihood.py:72: in test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error
+    with pytest.raises(ValueError, match="L1_wt"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+______ test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[nan] ______
+tests/test_glm_likelihood.py:72: in test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error
+    with pytest.raises(ValueError, match="L1_wt"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+______ test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[inf] ______
+tests/test_glm_likelihood.py:72: in test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error
+    with pytest.raises(ValueError, match="L1_wt"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+___ test_weighted_bic_matches_independent_likelihood_formula[0.001-gaussian] ___
+tests/test_glm_likelihood.py:109: in test_weighted_bic_matches_independent_likelihood_formula
+    assert_allclose(model.bic_, expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 5.04385801
+E   Max relative difference among violations: 0.01106208
+E    ACTUAL: array(461.002954)
+E    DESIRED: array(455.959096)
+___ test_weighted_bic_matches_independent_likelihood_formula[0.001-poisson] ____
+tests/test_glm_likelihood.py:109: in test_weighted_bic_matches_independent_likelihood_formula
+    assert_allclose(model.bic_, expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 5.04385801
+E   Max relative difference among violations: 0.008245
+E    ACTUAL: array(616.791176)
+E    DESIRED: array(611.747318)
+_____ test_weighted_bic_matches_independent_likelihood_formula[1-gaussian] _____
+tests/test_glm_likelihood.py:109: in test_weighted_bic_matches_independent_likelihood_formula
+    assert_allclose(model.bic_, expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 5.03056892
+E   Max relative difference among violations: 0.01124286
+E    ACTUAL: array(452.476135)
+E    DESIRED: array(447.445566)
+_____ test_weighted_bic_matches_independent_likelihood_formula[1-poisson] ______
+tests/test_glm_likelihood.py:109: in test_weighted_bic_matches_independent_likelihood_formula
+    assert_allclose(model.bic_, expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 5.03056892
+E   Max relative difference among violations: 0.008347
+E    ACTUAL: array(607.710735)
+E    DESIRED: array(602.680166)
+____ test_weighted_bic_matches_independent_likelihood_formula[10-gaussian] _____
+tests/test_glm_likelihood.py:109: in test_weighted_bic_matches_independent_likelihood_formula
+    assert_allclose(model.bic_, expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 5.01727984
+E   Max relative difference among violations: 0.00591666
+E    ACTUAL: array(853.009068)
+E    DESIRED: array(847.991788)
+_____ test_weighted_bic_matches_independent_likelihood_formula[10-poisson] _____
+tests/test_glm_likelihood.py:109: in test_weighted_bic_matches_independent_likelihood_formula
+    assert_allclose(model.bic_, expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 5.01727984
+E   Max relative difference among violations: 0.00359317
+E    ACTUAL: array(1401.35585)
+E    DESIRED: array(1396.33857)
+_ test_zero_weight_fit_and_score_equal_physical_row_omission[False-gaussian-None] _
+tests/test_glm_likelihood.py:135: in test_zero_weight_fit_and_score_equal_physical_row_omission
+    assert model.model.nobs == keep.sum()
+E   assert 150 == np.int64(112)
+E    +  where 150 = <statsmodels.genmod.generalized_linear_model.GLM object at 0x735c4c734fb0>.nobs
+E    +    where <statsmodels.genmod.generalized_linear_model.GLM object at 0x735c4c734fb0> = EnetGLM(L1_wt=1, alpha=0.001).model
+E    +  and   np.int64(112) = <built-in method sum of numpy.ndarray object at 0x735c4c79e130>()
+E    +    where <built-in method sum of numpy.ndarray object at 0x735c4c79e130> = array([False,  True,  True,  True, False,  True,  True,  True, False,\n        True,  True,  True, False,  True,  True,...        True, False,  True,  True,  True, False,  True,  True,  True,\n       False,  True,  True,  True, False,  True]).sum
+_ test_zero_weight_fit_and_score_equal_physical_row_omission[False-poisson-None] _
+tests/test_glm_likelihood.py:135: in test_zero_weight_fit_and_score_equal_physical_row_omission
+    assert model.model.nobs == keep.sum()
+E   AssertionError: assert 150 == np.int64(112)
+E    +  where 150 = <statsmodels.genmod.generalized_linear_model.GLM object at 0x735c4d184bc0>.nobs
+E    +    where <statsmodels.genmod.generalized_linear_model.GLM object at 0x735c4d184bc0> = EnetGLM(L1_wt=1, alpha=0.001, family='poisson').model
+E    +  and   np.int64(112) = <built-in method sum of numpy.ndarray object at 0x735c4c763bd0>()
+E    +    where <built-in method sum of numpy.ndarray object at 0x735c4c763bd0> = array([False,  True,  True,  True, False,  True,  True,  True, False,\n        True,  True,  True, False,  True,  True,...        True, False,  True,  True,  True, False,  True,  True,  True,\n       False,  True,  True,  True, False,  True]).sum
+_ test_zero_weight_fit_and_score_equal_physical_row_omission[False-binomial-None] _
+tests/test_glm_likelihood.py:135: in test_zero_weight_fit_and_score_equal_physical_row_omission
+    assert model.model.nobs == keep.sum()
+E   AssertionError: assert 150 == np.int64(112)
+E    +  where 150 = <statsmodels.genmod.generalized_linear_model.GLM object at 0x735c4c70e0f0>.nobs
+E    +    where <statsmodels.genmod.generalized_linear_model.GLM object at 0x735c4c70e0f0> = EnetGLM(L1_wt=1, alpha=0.001, family='binomial').model
+E    +  and   np.int64(112) = <built-in method sum of numpy.ndarray object at 0x735c4c7f32d0>()
+E    +    where <built-in method sum of numpy.ndarray object at 0x735c4c7f32d0> = array([False,  True,  True,  True, False,  True,  True,  True, False,\n        True,  True,  True, False,  True,  True,...        True, False,  True,  True,  True, False,  True,  True,  True,\n       False,  True,  True,  True, False,  True]).sum
+_ test_zero_weight_fit_and_score_equal_physical_row_omission[False-gamma-log] __
+tests/test_glm_likelihood.py:135: in test_zero_weight_fit_and_score_equal_physical_row_omission
+    assert model.model.nobs == keep.sum()
+E   AssertionError: assert 150 == np.int64(112)
+E    +  where 150 = <statsmodels.genmod.generalized_linear_model.GLM object at 0x735c4d200fb0>.nobs
+E    +    where <statsmodels.genmod.generalized_linear_model.GLM object at 0x735c4d200fb0> = EnetGLM(L1_wt=1, alpha=0.001, family='gamma', link='log').model
+E    +  and   np.int64(112) = <built-in method sum of numpy.ndarray object at 0x735c4c7f00f0>()
+E    +    where <built-in method sum of numpy.ndarray object at 0x735c4c7f00f0> = array([False,  True,  True,  True, False,  True,  True,  True, False,\n        True,  True,  True, False,  True,  True,...        True, False,  True,  True,  True, False,  True,  True,  True,\n       False,  True,  True,  True, False,  True]).sum
+_ test_zero_weight_fit_and_score_equal_physical_row_omission[True-gaussian-None] _
+tests/test_glm_likelihood.py:135: in test_zero_weight_fit_and_score_equal_physical_row_omission
+    assert model.model.nobs == keep.sum()
+E   assert 150 == np.int64(112)
+E    +  where 150 = <statsmodels.genmod.generalized_linear_model.GLM object at 0x735c4c7a9700>.nobs
+E    +    where <statsmodels.genmod.generalized_linear_model.GLM object at 0x735c4c7a9700> = EnetGLM(L1_wt=1, alpha=0.001).model
+E    +  and   np.int64(112) = <built-in method sum of numpy.ndarray object at 0x735c4c7a7e70>()
+E    +    where <built-in method sum of numpy.ndarray object at 0x735c4c7a7e70> = array([False,  True,  True,  True, False,  True,  True,  True, False,\n        True,  True,  True, False,  True,  True,...        True, False,  True,  True,  True, False,  True,  True,  True,\n       False,  True,  True,  True, False,  True]).sum
+_ test_zero_weight_fit_and_score_equal_physical_row_omission[True-poisson-None] _
+tests/test_glm_likelihood.py:135: in test_zero_weight_fit_and_score_equal_physical_row_omission
+    assert model.model.nobs == keep.sum()
+E   AssertionError: assert 150 == np.int64(112)
+E    +  where 150 = <statsmodels.genmod.generalized_linear_model.GLM object at 0x735c4c7ab0b0>.nobs
+E    +    where <statsmodels.genmod.generalized_linear_model.GLM object at 0x735c4c7ab0b0> = EnetGLM(L1_wt=1, alpha=0.001, family='poisson').model
+E    +  and   np.int64(112) = <built-in method sum of numpy.ndarray object at 0x735c4c7a7990>()
+E    +    where <built-in method sum of numpy.ndarray object at 0x735c4c7a7990> = array([False,  True,  True,  True, False,  True,  True,  True, False,\n        True,  True,  True, False,  True,  True,...        True, False,  True,  True,  True, False,  True,  True,  True,\n       False,  True,  True,  True, False,  True]).sum
+_ test_zero_weight_fit_and_score_equal_physical_row_omission[True-binomial-None] _
+tests/test_glm_likelihood.py:135: in test_zero_weight_fit_and_score_equal_physical_row_omission
+    assert model.model.nobs == keep.sum()
+E   AssertionError: assert 150 == np.int64(112)
+E    +  where 150 = <statsmodels.genmod.generalized_linear_model.GLM object at 0x735c4c73df40>.nobs
+E    +    where <statsmodels.genmod.generalized_linear_model.GLM object at 0x735c4c73df40> = EnetGLM(L1_wt=1, alpha=0.001, family='binomial').model
+E    +  and   np.int64(112) = <built-in method sum of numpy.ndarray object at 0x735c4c7d5650>()
+E    +    where <built-in method sum of numpy.ndarray object at 0x735c4c7d5650> = array([False,  True,  True,  True, False,  True,  True,  True, False,\n        True,  True,  True, False,  True,  True,...        True, False,  True,  True,  True, False,  True,  True,  True,\n       False,  True,  True,  True, False,  True]).sum
+__ test_zero_weight_fit_and_score_equal_physical_row_omission[True-gamma-log] __
+tests/test_glm_likelihood.py:135: in test_zero_weight_fit_and_score_equal_physical_row_omission
+    assert model.model.nobs == keep.sum()
+E   AssertionError: assert 150 == np.int64(112)
+E    +  where 150 = <statsmodels.genmod.generalized_linear_model.GLM object at 0x735c4c73d520>.nobs
+E    +    where <statsmodels.genmod.generalized_linear_model.GLM object at 0x735c4c73d520> = EnetGLM(L1_wt=1, alpha=0.001, family='gamma', link='log').model
+E    +  and   np.int64(112) = <built-in method sum of numpy.ndarray object at 0x735c4c7d6b50>()
+E    +    where <built-in method sum of numpy.ndarray object at 0x735c4c7d6b50> = array([False,  True,  True,  True, False,  True,  True,  True, False,\n        True,  True,  True, False,  True,  True,...        True, False,  True,  True,  True, False,  True,  True,  True,\n       False,  True,  True,  True, False,  True]).sum
+_ test_zero_weight_selector_tuning_matches_omission_before_splitting[False-bic] _
+tests/test_glm_likelihood.py:160: in test_zero_weight_selector_tuning_matches_omission_before_splitting
+    assert model.best_estimator_.alpha == reference.best_estimator_.alpha
+E   assert np.float64(0.001) == np.float64(0.1)
+E    +  where np.float64(0.001) = EnetGLM(L1_wt=1.0, alpha=np.float64(0.001)).alpha
+E    +    where EnetGLM(L1_wt=1.0, alpha=np.float64(0.001)) = LassoFeatureSelection(n_iterations=4, n_jobs=1).best_estimator_
+E    +  and   np.float64(0.1) = EnetGLM(L1_wt=1.0, alpha=np.float64(0.1)).alpha
+E    +    where EnetGLM(L1_wt=1.0, alpha=np.float64(0.1)) = LassoFeatureSelection(n_iterations=4, n_jobs=1).best_estimator_
+_ test_zero_weight_selector_tuning_matches_omission_before_splitting[False-deviance] _
+tests/test_glm_likelihood.py:164: in test_zero_weight_selector_tuning_matches_omission_before_splitting
+    assert model.best_estimator_.model.nobs == keep.sum()
+E   AssertionError: assert 150 == np.int64(112)
+E    +  where 150 = <statsmodels.genmod.generalized_linear_model.GLM object at 0x735c4c73d6d0>.nobs
+E    +    where <statsmodels.genmod.generalized_linear_model.GLM object at 0x735c4c73d6d0> = EnetGLM(L1_wt=1.0, alpha=np.float64(0.001)).model
+E    +      where EnetGLM(L1_wt=1.0, alpha=np.float64(0.001)) = LassoFeatureSelection(n_iterations=4, n_jobs=1, score='deviance').best_estimator_
+E    +  and   np.int64(112) = <built-in method sum of numpy.ndarray object at 0x735c4c623e70>()
+E    +    where <built-in method sum of numpy.ndarray object at 0x735c4c623e70> = array([False,  True,  True,  True, False,  True,  True,  True, False,\n        True,  True,  True, False,  True,  True,...        True, False,  True,  True,  True, False,  True,  True,  True,\n       False,  True,  True,  True, False,  True]).sum
+_ test_zero_weight_selector_tuning_matches_omission_before_splitting[True-bic] _
+tests/test_glm_likelihood.py:160: in test_zero_weight_selector_tuning_matches_omission_before_splitting
+    assert model.best_estimator_.alpha == reference.best_estimator_.alpha
+E   assert np.float64(0.001) == np.float64(0.1)
+E    +  where np.float64(0.001) = EnetGLM(L1_wt=1.0, alpha=np.float64(0.001)).alpha
+E    +    where EnetGLM(L1_wt=1.0, alpha=np.float64(0.001)) = LassoFeatureSelection(n_iterations=4, n_jobs=1).best_estimator_
+E    +  and   np.float64(0.1) = EnetGLM(L1_wt=1.0, alpha=np.float64(0.1)).alpha
+E    +    where EnetGLM(L1_wt=1.0, alpha=np.float64(0.1)) = LassoFeatureSelection(n_iterations=4, n_jobs=1).best_estimator_
+_ test_zero_weight_selector_tuning_matches_omission_before_splitting[True-deviance] _
+tests/test_glm_likelihood.py:164: in test_zero_weight_selector_tuning_matches_omission_before_splitting
+    assert model.best_estimator_.model.nobs == keep.sum()
+E   AssertionError: assert 150 == np.int64(112)
+E    +  where 150 = <statsmodels.genmod.generalized_linear_model.GLM object at 0x735c4c736690>.nobs
+E    +    where <statsmodels.genmod.generalized_linear_model.GLM object at 0x735c4c736690> = EnetGLM(L1_wt=1.0, alpha=np.float64(0.001)).model
+E    +      where EnetGLM(L1_wt=1.0, alpha=np.float64(0.001)) = LassoFeatureSelection(n_iterations=4, n_jobs=1, score='deviance').best_estimator_
+E    +  and   np.int64(112) = <built-in method sum of numpy.ndarray object at 0x735c4c620e70>()
+E    +    where <built-in method sum of numpy.ndarray object at 0x735c4c620e70> = array([False,  True,  True,  True, False,  True,  True,  True, False,\n        True,  True,  True, False,  True,  True,...        True, False,  True,  True,  True, False,  True,  True,  True,\n       False,  True,  True,  True, False,  True]).sum
+______ test_direct_glm_cv_omits_zero_weight_rows_before_folds[1-gaussian] ______
+tests/test_glm_likelihood.py:183: in test_direct_glm_cv_omits_zero_weight_rows_before_folds
+    assert_allclose(actual, expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 2 / 3 (66.7%)
+E   Max absolute difference among violations: 0.23518746
+E   Max relative difference among violations: 0.00657617
+E    ACTUAL: array([-45.977765, -35.998787, -36.124272])
+E    DESIRED: array([-45.978629, -35.763599, -36.124272])
+______ test_direct_glm_cv_omits_zero_weight_rows_before_folds[1-binomial] ______
+tests/test_glm_likelihood.py:183: in test_direct_glm_cv_omits_zero_weight_rows_before_folds
+    assert_allclose(actual, expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 3 / 3 (100%)
+E   Max absolute difference among violations: 26.8024238
+E   Max relative difference among violations: 0.62442585
+E    ACTUAL: array([-16.120886, -38.844909,  -9.372566])
+E    DESIRED: array([-42.923309, -32.776259,  -7.885394])
+______ test_direct_glm_cv_omits_zero_weight_rows_before_folds[2-gaussian] ______
+tests/test_glm_likelihood.py:183: in test_direct_glm_cv_omits_zero_weight_rows_before_folds
+    assert_allclose(actual, expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 2 / 3 (66.7%)
+E   Max absolute difference among violations: 0.23518746
+E   Max relative difference among violations: 0.00657617
+E    ACTUAL: array([-45.977765, -35.998787, -36.124272])
+E    DESIRED: array([-45.978629, -35.763599, -36.124272])
+----------------------------- Captured stderr call -----------------------------
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:648: RuntimeWarning: divide by zero encountered in divide
+  ll_obs += -np.log(scale / var_weights) - np.log(2 * np.pi)
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:578: RuntimeWarning: invalid value encountered in divide
+  tmp /= self.iweights * self.n_trials
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:648: RuntimeWarning: divide by zero encountered in divide
+  ll_obs += -np.log(scale / var_weights) - np.log(2 * np.pi)
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:578: RuntimeWarning: invalid value encountered in divide
+  tmp /= self.iweights * self.n_trials
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1464: UserWarning: Elastic net fitting did not converge
+  warnings.warn("Elastic net fitting did not converge")
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:648: RuntimeWarning: divide by zero encountered in divide
+  ll_obs += -np.log(scale / var_weights) - np.log(2 * np.pi)
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1891: RuntimeWarning: invalid value encountered in scalar subtract
+  prsq = 1 - np.exp((self.llnull - self.llf) * (2 / self.nobs))
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1464: UserWarning: Elastic net fitting did not converge
+  warnings.warn("Elastic net fitting did not converge")
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:648: RuntimeWarning: divide by zero encountered in divide
+  ll_obs += -np.log(scale / var_weights) - np.log(2 * np.pi)
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1891: RuntimeWarning: invalid value encountered in scalar subtract
+  prsq = 1 - np.exp((self.llnull - self.llf) * (2 / self.nobs))
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:648: RuntimeWarning: divide by zero encountered in divide
+  ll_obs += -np.log(scale / var_weights) - np.log(2 * np.pi)
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:578: RuntimeWarning: invalid value encountered in divide
+  tmp /= self.iweights * self.n_trials
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1464: UserWarning: Elastic net fitting did not converge
+  warnings.warn("Elastic net fitting did not converge")
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:648: RuntimeWarning: divide by zero encountered in divide
+  ll_obs += -np.log(scale / var_weights) - np.log(2 * np.pi)
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1891: RuntimeWarning: invalid value encountered in scalar subtract
+  prsq = 1 - np.exp((self.llnull - self.llf) * (2 / self.nobs))
+______ test_direct_glm_cv_omits_zero_weight_rows_before_folds[2-binomial] ______
+tests/test_glm_likelihood.py:183: in test_direct_glm_cv_omits_zero_weight_rows_before_folds
+    assert_allclose(actual, expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 3 / 3 (100%)
+E   Max absolute difference among violations: 26.8024238
+E   Max relative difference among violations: 0.62442585
+E    ACTUAL: array([-16.120886, -38.844909,  -9.372566])
+E    DESIRED: array([-42.923309, -32.776259,  -7.885394])
+----------------------------- Captured stderr call -----------------------------
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:578: RuntimeWarning: invalid value encountered in divide
+  tmp /= self.iweights * self.n_trials
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:578: RuntimeWarning: invalid value encountered in divide
+  tmp /= self.iweights * self.n_trials
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1464: UserWarning: Elastic net fitting did not converge
+  warnings.warn("Elastic net fitting did not converge")
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1464: UserWarning: Elastic net fitting did not converge
+  warnings.warn("Elastic net fitting did not converge")
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:578: RuntimeWarning: invalid value encountered in divide
+  tmp /= self.iweights * self.n_trials
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1464: UserWarning: Elastic net fitting did not converge
+  warnings.warn("Elastic net fitting did not converge")
+_______ test_zero_weight_rows_do_not_determine_training_intercept_design _______
+tests/test_glm_likelihood.py:193: in test_zero_weight_rows_do_not_determine_training_intercept_design
+    assert model.added_intercept_ is None
+E   AssertionError: assert 'Intercept' is None
+E    +  where 'Intercept' = EnetGLM(L1_wt=1, alpha=0.001).added_intercept_
+___ test_information_criteria_use_selected_design_rank_for_redundant_columns ___
+tests/test_glm_likelihood.py:226: in test_information_criteria_use_selected_design_rank_for_redundant_columns
+    assert_allclose(model.bic_, -2 * llf + np.log(len(y)) * rank, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 10.06113784
+E   Max relative difference among violations: 0.02206588
+E    ACTUAL: array(466.020234)
+E    DESIRED: array(455.959096)
+=============================== warnings summary ===============================
+tests/test_glm_likelihood.py: 78 warnings
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1464: UserWarning: Elastic net fitting did not converge
+    warnings.warn("Elastic net fitting did not converge")
+
+tests/test_glm_likelihood.py::test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[inf]
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/base/elastic_net.py:43: RuntimeWarning: invalid value encountered in scalar multiply
+    pen_llf = alpha[k] * (1 - L1_wt) * np.sum(params**2) / 2
+
+tests/test_glm_likelihood.py::test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[inf]
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/base/elastic_net.py:49: RuntimeWarning: invalid value encountered in scalar multiply
+    pen_grad = alpha[k] * (1 - L1_wt) * params
+
+tests/test_glm_likelihood.py::test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[inf]
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/base/elastic_net.py:329: RuntimeWarning: invalid value encountered in scalar multiply
+    d = b - c*x
+
+tests/test_glm_likelihood.py: 116 warnings
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:648: RuntimeWarning: divide by zero encountered in divide
+    ll_obs += -np.log(scale / var_weights) - np.log(2 * np.pi)
+
+tests/test_glm_likelihood.py: 67 warnings
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:578: RuntimeWarning: invalid value encountered in divide
+    tmp /= self.iweights * self.n_trials
+
+tests/test_glm_likelihood.py: 58 warnings
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1891: RuntimeWarning: invalid value encountered in scalar subtract
+    prsq = 1 - np.exp((self.llnull - self.llf) * (2 / self.nobs))
+
+tests/test_glm_likelihood.py::test_zero_weight_fit_and_score_equal_physical_row_omission[False-gamma-log]
+tests/test_glm_likelihood.py::test_zero_weight_fit_and_score_equal_physical_row_omission[False-gamma-log]
+tests/test_glm_likelihood.py::test_zero_weight_fit_and_score_equal_physical_row_omission[True-gamma-log]
+tests/test_glm_likelihood.py::test_zero_weight_fit_and_score_equal_physical_row_omission[True-gamma-log]
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:810: RuntimeWarning: divide by zero encountered in log
+    ll_obs = weight_scale * np.log(weight_scale * endog_mu)
+
+tests/test_glm_likelihood.py::test_zero_weight_fit_and_score_equal_physical_row_omission[False-gamma-log]
+tests/test_glm_likelihood.py::test_zero_weight_fit_and_score_equal_physical_row_omission[False-gamma-log]
+tests/test_glm_likelihood.py::test_zero_weight_fit_and_score_equal_physical_row_omission[True-gamma-log]
+tests/test_glm_likelihood.py::test_zero_weight_fit_and_score_equal_physical_row_omission[True-gamma-log]
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:810: RuntimeWarning: invalid value encountered in multiply
+    ll_obs = weight_scale * np.log(weight_scale * endog_mu)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[False-bic-nan]
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[False-bic-inf]
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[False-bic--inf]
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[False-deviance-nan]
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[False-deviance-inf]
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[False-deviance--inf]
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[True-bic-nan]
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[True-bic-inf]
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[True-bic--inf]
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[True-deviance-nan]
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[True-deviance-inf]
+FAILED tests/test_glm_likelihood.py::test_search_rejects_nonfinite_criteria_with_candidate_context[True-deviance--inf]
+FAILED tests/test_glm_likelihood.py::test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[0]
+FAILED tests/test_glm_likelihood.py::test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[-0.1]
+FAILED tests/test_glm_likelihood.py::test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[1.1]
+FAILED tests/test_glm_likelihood.py::test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[nan]
+FAILED tests/test_glm_likelihood.py::test_unsupported_ridge_or_invalid_mixture_has_clear_fit_error[inf]
+FAILED tests/test_glm_likelihood.py::test_weighted_bic_matches_independent_likelihood_formula[0.001-gaussian]
+FAILED tests/test_glm_likelihood.py::test_weighted_bic_matches_independent_likelihood_formula[0.001-poisson]
+FAILED tests/test_glm_likelihood.py::test_weighted_bic_matches_independent_likelihood_formula[1-gaussian]
+FAILED tests/test_glm_likelihood.py::test_weighted_bic_matches_independent_likelihood_formula[1-poisson]
+FAILED tests/test_glm_likelihood.py::test_weighted_bic_matches_independent_likelihood_formula[10-gaussian]
+FAILED tests/test_glm_likelihood.py::test_weighted_bic_matches_independent_likelihood_formula[10-poisson]
+FAILED tests/test_glm_likelihood.py::test_zero_weight_fit_and_score_equal_physical_row_omission[False-gaussian-None]
+FAILED tests/test_glm_likelihood.py::test_zero_weight_fit_and_score_equal_physical_row_omission[False-poisson-None]
+FAILED tests/test_glm_likelihood.py::test_zero_weight_fit_and_score_equal_physical_row_omission[False-binomial-None]
+FAILED tests/test_glm_likelihood.py::test_zero_weight_fit_and_score_equal_physical_row_omission[False-gamma-log]
+FAILED tests/test_glm_likelihood.py::test_zero_weight_fit_and_score_equal_physical_row_omission[True-gaussian-None]
+FAILED tests/test_glm_likelihood.py::test_zero_weight_fit_and_score_equal_physical_row_omission[True-poisson-None]
+FAILED tests/test_glm_likelihood.py::test_zero_weight_fit_and_score_equal_physical_row_omission[True-binomial-None]
+FAILED tests/test_glm_likelihood.py::test_zero_weight_fit_and_score_equal_physical_row_omission[True-gamma-log]
+FAILED tests/test_glm_likelihood.py::test_zero_weight_selector_tuning_matches_omission_before_splitting[False-bic]
+FAILED tests/test_glm_likelihood.py::test_zero_weight_selector_tuning_matches_omission_before_splitting[False-deviance]
+FAILED tests/test_glm_likelihood.py::test_zero_weight_selector_tuning_matches_omission_before_splitting[True-bic]
+FAILED tests/test_glm_likelihood.py::test_zero_weight_selector_tuning_matches_omission_before_splitting[True-deviance]
+FAILED tests/test_glm_likelihood.py::test_direct_glm_cv_omits_zero_weight_rows_before_folds[1-gaussian]
+FAILED tests/test_glm_likelihood.py::test_direct_glm_cv_omits_zero_weight_rows_before_folds[1-binomial]
+FAILED tests/test_glm_likelihood.py::test_direct_glm_cv_omits_zero_weight_rows_before_folds[2-gaussian]
+FAILED tests/test_glm_likelihood.py::test_direct_glm_cv_omits_zero_weight_rows_before_folds[2-binomial]
+FAILED tests/test_glm_likelihood.py::test_zero_weight_rows_do_not_determine_training_intercept_design
+FAILED tests/test_glm_likelihood.py::test_information_criteria_use_selected_design_rank_for_redundant_columns
+41 failed, 11 passed, 330 warnings in 16.71s

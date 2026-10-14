@@ -1,0 +1,40 @@
+........................................................................ [ 18%]
+........................................................................ [ 37%]
+........................................................................ [ 55%]
+........................................................................ [ 74%]
+........................................................................ [ 92%]
+.............................                                            [100%]
+=============================== warnings summary ===============================
+tests/test_importance_selection.py: 39 warnings
+  /tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The VariableImportance or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+tests/test_importance_selection.py::test_weighted_training_equal_validation_row_population
+  /tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The MissingValueThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+tests/test_observation_boundaries.py::test_zero_weight_category_equivalent_to_removal[weighted_theils_u]
+tests/test_observation_boundaries.py::test_zero_weight_category_equivalent_to_removal[weighted_theils_u]
+  /home/bsatom/Documents/arfs/src/arfs/association.py:244: RuntimeWarning: Rounded U = 0.0 to 0. This is probably due to floating point precision issues.
+    warnings.warn(
+
+tests/test_observation_boundaries.py: 12 warnings
+  /home/bsatom/Documents/arfs/src/arfs/feature_selection/allrelevant.py:1543: UserWarning: [BoostAGroota]: using native variable importance might break the FS
+    warnings.warn(
+
+tests/test_observation_boundaries.py: 10 warnings
+  /tmp/arfs-r20/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1464: UserWarning: Elastic net fitting did not converge
+    warnings.warn("Elastic net fitting did not converge")
+
+tests/test_observation_boundaries.py::test_benchmark_weights_match_independent_reference[regression]
+tests/test_observation_boundaries.py::test_benchmark_weights_match_independent_reference[classification]
+  /home/bsatom/Documents/arfs/src/arfs/benchmark.py:103: UserWarning: Tight layout not applied. The bottom and top margins cannot be made large enough to accommodate all Axes decorations.
+    fig.tight_layout()
+
+tests/test_observation_boundaries.py::test_benchmark_weights_match_independent_reference[regression]
+tests/test_observation_boundaries.py::test_benchmark_weights_match_independent_reference[classification]
+  /home/bsatom/Documents/arfs/src/arfs/benchmark.py:108: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+    plt.show()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+389 passed, 68 warnings in 17.82s

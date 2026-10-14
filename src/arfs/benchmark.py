@@ -12,6 +12,8 @@ Module Structure:
 from __future__ import print_function, division
 
 import itertools
+import numpy as np
+import pandas as pd
 from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.inspection import permutation_importance
@@ -19,6 +21,7 @@ from sklearn.inspection import permutation_importance
 from sklearn.base import clone
 
 from .preprocessing import OrdinalEncoderPandas
+from .feature_selection.allrelevant import Leshy, BoostAGroota
 from .utils import validate_sample_weight, validate_target
 
 
@@ -30,9 +33,12 @@ def sklearn_pimp_bench(model, X, y, task="regression", sample_weight=None):
     model: object
         An estimator that has not been fitted, sklearn compatible.
     X : ndarray or DataFrame, shape (n_samples, n_features)
-        Data on which permutation importance will be computed.
-    y : array-like or None, shape (n_samples, ) or (n_samples, n_classes)
-        Targets for supervised or None for unsupervised.
+        Predictors, split before fitting the category encoder. Two-dimensional
+        arrays receive names x0, x1, ...; DataFrame names are preserved.
+        Held-out unknown categories use the encoder's default NaN code, so the
+        estimator must support missing values when these occur.
+    y : array-like, shape (n_samples,)
+        Supervised targets.
     task : str, optional
         kind of task, either 'regression' or 'classification', by default 'regression'
     sample_weight : array-like of shape (n_samples,), optional
@@ -49,17 +55,12 @@ def sklearn_pimp_bench(model, X, y, task="regression", sample_weight=None):
         if task is not 'regression' or 'classification'
     """
 
-    # for lightGBM cat feat as contiguous int
-    # https://lightgbm.readthedocs.io/en/latest/Advanced-Topics.html
-    # same for Random Forest and XGBoost (OHE leads to deep and sparse trees).
-    # For illustrations, see
-    # https://towardsdatascience.com/one-hot-encoding-is-making-
-    # your-tree-based-ensembles-worse-heres-why-d64b282b5769
-
-    # X, cat_var_df, inv_mapper, mapper = cat_var(X)
+    if isinstance(X, np.ndarray) and X.ndim == 2:
+        X = pd.DataFrame(X, columns=[f"x{i}" for i in range(X.shape[1])])
+    elif not isinstance(X, pd.DataFrame):
+        raise TypeError("X must be a pandas DataFrame or a two-dimensional ndarray.")
     validate_target(y, len(X))
     sample_weight = validate_sample_weight(sample_weight, len(X))
-    X = OrdinalEncoderPandas().fit_transform(X)
 
     if task == "regression":
         stratify = None
@@ -78,10 +79,11 @@ def sklearn_pimp_bench(model, X, y, task="regression", sample_weight=None):
         )
         w_train, w_test = None, None
 
-    # lightgbm faster and better than RF
-
     validate_sample_weight(w_train, len(X_train))
     validate_sample_weight(w_test, len(X_test))
+    encoder = OrdinalEncoderPandas().fit(X_train)
+    X_train = encoder.transform(X_train)
+    X_test = encoder.transform(X_test)
     model.fit(X_train, y_train, sample_weight=w_train)
     result = permutation_importance(
         model,
@@ -97,26 +99,34 @@ def sklearn_pimp_bench(model, X, y, task="regression", sample_weight=None):
     # Plot (5 predictors per inch)
     fig, ax = plt.subplots(figsize=(16, X.shape[1] / 5))
     ax.boxplot(
-        result.importances[sorted_idx].T, vert=False, tick_labels=X_test.columns[sorted_idx]
+        result.importances[sorted_idx].T,
+        vert=False,
+        tick_labels=X_test.columns[sorted_idx],
     )
     ax.set_title("Permutation Importances (test set)")
     ax.tick_params(axis="both", which="major", labelsize=9)
     fig.tight_layout()
-    indices = [i for i, s in enumerate(X_test.columns[sorted_idx]) if "random" in s]
-    [fig.gca().get_yticklabels()[idx].set_color("red") for idx in indices]
-    indices = [i for i, s in enumerate(X_test.columns[sorted_idx]) if "genuine" in s]
-    [fig.gca().get_yticklabels()[idx].set_color("green") for idx in indices]
+    highlight_tick("random", fig)
+    highlight_tick("genuine", fig, color="green")
     plt.show()
     return fig
 
 
 def compare_varimp(feat_selector, models, X, y, sample_weight=None):
-    """Utility function to compare the results for the three possible kind of feature importance
+    """Print selections and plot SHAP, permutation and native importance.
+
+    Each model/method pair gets a fresh selector and estimator. Constructor
+    parameters are copied from feat_selector; integer seeds are reused and
+    RandomState instances are copied at their current state for each pair.
+    None and BoostAGroota's global shadow RNG retain their usual unseeded
+    behavior. The supplied selector and models are not fitted or modified.
+    This is not a held-out predictive-performance comparison.
 
     Parameters
     ----------
     feat_selector : object
-        an instance of either Leshy, BoostaGRoota or GrootCV
+        An instance of Leshy or BoostAGroota. GrootCV uses its own LightGBM
+        training and importance path and cannot compare these configurations.
     models : list of objects
         list of tree based scikit-learn estimators
     X : pd.DataFrame, shape (n_samples, n_features)
@@ -125,7 +135,16 @@ def compare_varimp(feat_selector, models, X, y, sample_weight=None):
         the target (same length as X)
     sample_weight : None or pd.Series, optional
         sample weights if any, by default None
+    Raises
+    ------
+    TypeError
+        If feat_selector is not Leshy or BoostAGroota.
     """
+
+    if not isinstance(feat_selector, (Leshy, BoostAGroota)):
+        raise TypeError(
+            "feat_selector must be Leshy or BoostAGroota; GrootCV is unsupported."
+        )
 
     varimp_list = ["shap", "pimp", "native"]
     for model, varimp in itertools.product(models, varimp_list):
@@ -138,16 +157,15 @@ def compare_varimp(feat_selector, models, X, y, sample_weight=None):
             )
             + "=" * 20
         )
-        # change the varimp
-        feat_selector.importance = varimp
-        # change model
-        mod_clone = clone(model, safe=True)
-        feat_selector.estimator = mod_clone
+        params = clone(feat_selector.get_params(deep=False), safe=False)
+        params["importance"] = varimp
+        params["estimator"] = clone(model)
+        selector = type(feat_selector)(**params)
         # fit the feature selector
-        feat_selector.fit(X=X, y=y, sample_weight=sample_weight)
+        selector.fit(X=X, y=y, sample_weight=sample_weight)
         # print the results
-        print(feat_selector.selected_features_)
-        fig = feat_selector.plot_importance(n_feat_per_inch=5)
+        print(selector.selected_features_)
+        fig = selector.plot_importance(n_feat_per_inch=5)
 
         if fig is not None:
             # highlight synthetic random variable

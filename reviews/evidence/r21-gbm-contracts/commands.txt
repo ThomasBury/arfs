@@ -1,0 +1,70 @@
+Checkout: /home/bsatom/Documents/arfs; clean main @ d51c567.
+R21 alone; next group R22 alone, with R21 complete. No publication or release.
+
+Source/baseline runs use MPLBACKEND=Agg OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1.
+Installed-cell environment additionally sets:
+UV_CACHE_DIR=/tmp/arfs-r04/cache MPLCONFIGDIR=/tmp/arfs-r21/mpl-<cell>
+MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2
+PYTHONHASHSEED=0 PYTHONDONTWRITEBYTECODE=1.
+Installed runs remove PYTHONPATH and use isolated Python outside the checkout.
+
+Before historical:
+/tmp/arfs-r20/py312-locked/bin/python -I -m pytest /tmp/arfs-r21/historical/checks.py -k 'stratification_and_groups or reordered_features or replacement_feature or multiclass_aliases or advertised_auto or none_disables or multiclass_initial or refit_resets' --runxfail -q --tb=short -p no:cacheprovider
+before-historical.txt: 15 failed, 56 deselected.
+Historical script is copied without edits; original scripts/reports/logs unchanged.
+
+Final maintained regressions copied into /tmp/arfs-r21/before:
+/tmp/arfs-r20/py312-locked/bin/python -I -m pytest /tmp/arfs-r21/before/test_gbm_contracts.py -q --tb=short -p no:cacheprovider
+before-final.txt: 45 failed, 11 passed (56 cases).
+The before-environment.json records packages/provenance and asserts no setuptools.
+All 12 installed-module hashes match git show d51c567:src/<module>.py.
+The final baseline uses the same test bodies as the maintained suite.
+
+Affected source/callers (55 R21 cases, before the last loader schema control):
+PYTHONPATH=src /tmp/arfs-r20/py312-locked/bin/python -m pytest tests/test_gbm_contracts.py tests/test_tree_partitions.py tests/test_transformer_inputs.py tests/test_importance_selection.py tests/test_observation_boundaries.py -q --tb=short -p no:cacheprovider
+source-final.txt: 389 passed; 68 existing warnings.
+The complete installed-wheel runs include all 56 finalized R21 cases.
+
+uv export --locked --extra test --no-emit-project --output-file /tmp/arfs-r21/locked-requirements.txt
+uv build --python /tmp/arfs-r20/py312-locked/bin/python --out-dir /tmp/arfs-r21/dist
+uv lock --check --python /tmp/arfs-r20/py312-locked/bin/python
+/tmp/arfs-r20/py312-locked/bin/python /tmp/arfs-r21/check_payloads.py
+payloads.json: all 19 source/sdist/wheel files match, including three data payloads.
+
+Orchestrators validate.py, environment.py, check_payloads.py are copied from R20,
+with phase paths and historical selection changed. Exact copies run from /tmp/arfs-r21.
+They create fresh venvs from matching R31 interpreters, install the locked export
+or checked-in newer requirements and the newly built wheel, check dependencies,
+verify all copied tests and 12 installed-module hashes, then run outside checkout
+with -I and without the setuptools workaround.
+/tmp/arfs-r20/py312-locked/bin/python /tmp/arfs-r21/validate.py py39-locked
+/tmp/arfs-r20/py312-locked/bin/python /tmp/arfs-r21/validate.py py312-locked
+/tmp/arfs-r20/py312-locked/bin/python /tmp/arfs-r21/validate.py py312-newer
+Per-cell commands.json records exact argv/cwd/exit codes. Environment JSON records
+all package versions, paths, hashes and interpreter versions. Python 3.12 cells
+run the unchanged historical cases selected in validate.py with --runxfail.
+Group-conflict and unsupported-dtype policy changes are tested in the maintained
+suite: old historical cases only assert successful fitting, so they cannot verify
+these explicit rejection policies. The old native missing-feature check asserts
+a backend exception type, superseded by the wrapper's ValueError schema guard;
+maintained cases cover missing columns and validate_features=False bypass attempts.
+
+uv tool run --from ruff==0.17.0 python .github/scripts/check_ruff_baseline.py
+Ruff: 395 total, zero new. Remove one resolved GBM BLE001 allowance.
+/tmp/arfs-r20/py312-locked/bin/python -m unittest discover -s .github/scripts -p 'test_*.py'
+Two passed.
+uv tool run --from ruff==0.17.0 ruff check tests/test_gbm_contracts.py reviews/evidence/r21-gbm-contracts/*.py
+uv tool run --from ruff==0.17.0 ruff format --check src/arfs/gbm.py tests/test_gbm_contracts.py reviews/evidence/r21-gbm-contracts/*.py
+Both pass. Local handoff links and git diff --check checked before commits.
+
+Context7 /websites/lightgbm_readthedocs_io_en_stable: Dataset categorical_feature
+and native dtype handling, multiclass init_score forms, objective aliases and
+Booster prediction controls. Independent native references verify real category
+choices, weighted fits, raw contributions and multiclass validation loss.
+
+Skipped hosted CI, docs/notebook execution, full sklearn compliance, optional
+backends, GPU/distributed training, ranking/query datasets, other platforms,
+performance, statistical calibration and cross-process artifact repairs.
+R22 owns offset/category/original-schema persistence, legacy file handling,
+trusted-input boundary and safe-write behavior. No release-readiness claim.
+New log lines have display-only trailing whitespace removed for git diff --check.

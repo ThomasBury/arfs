@@ -1,0 +1,190 @@
+............F......FFFFFF............................................... [ 21%]
+........................................................................ [ 43%]
+........................................................................ [ 64%]
+........................................................................ [ 86%]
+.....F.......................................                            [100%]
+=================================== FAILURES ===================================
+__ test_real_all_invalid_gaussian_bic_search_fails_instead_of_selecting_first __
+tests/test_glm_likelihood.py:66: in test_real_all_invalid_gaussian_bic_search_fails_instead_of_selecting_first
+    lasso.grid_search_cv(X, np.zeros(len(X)), w, n_iterations=3)
+src/arfs/feature_selection/lasso.py:543: in grid_search_cv
+    estimator.fit(X=X, y=y, sample_weight=sample_weight)
+src/arfs/feature_selection/lasso.py:232: in fit
+    result = model.fit_regularized(
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1454: in fit_regularized
+    result = fit_elasticnet(self, method=method,
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/base/elastic_net.py:236: in fit_elasticnet
+    rslt = model1.fit(maxiter=0)
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1192: in fit
+    return self._fit_irls(start_params=start_params, maxiter=maxiter,
+/tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1309: in _fit_irls
+    raise ValueError("The first guess on the deviance function "
+E   ValueError: The first guess on the deviance function returned a nan.  This could be a boundary  problem and should be reported.
+
+During handling of the above exception, another exception occurred:
+tests/test_glm_likelihood.py:65: in test_real_all_invalid_gaussian_bic_search_fails_instead_of_selecting_first
+    with pytest.raises(ValueError, match="bic.*alpha=.*finite"):
+E   AssertionError: Regex pattern did not match.
+E    Regex: 'bic.*alpha=.*finite'
+E    Input: 'The first guess on the deviance function returned a nan.  This could be a boundary  problem and should be reported.'
+___ test_weighted_bic_matches_independent_likelihood_formula[0.001-gaussian] ___
+tests/test_glm_likelihood.py:109: in test_weighted_bic_matches_independent_likelihood_formula
+    assert_allclose(model.bic_, expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 5.04385801
+E   Max relative difference among violations: 0.01106208
+E    ACTUAL: array(461.002954)
+E    DESIRED: array(455.959096)
+___ test_weighted_bic_matches_independent_likelihood_formula[0.001-poisson] ____
+tests/test_glm_likelihood.py:109: in test_weighted_bic_matches_independent_likelihood_formula
+    assert_allclose(model.bic_, expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 5.04385801
+E   Max relative difference among violations: 0.008245
+E    ACTUAL: array(616.791176)
+E    DESIRED: array(611.747318)
+_____ test_weighted_bic_matches_independent_likelihood_formula[1-gaussian] _____
+tests/test_glm_likelihood.py:109: in test_weighted_bic_matches_independent_likelihood_formula
+    assert_allclose(model.bic_, expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 5.03056892
+E   Max relative difference among violations: 0.01124286
+E    ACTUAL: array(452.476135)
+E    DESIRED: array(447.445566)
+_____ test_weighted_bic_matches_independent_likelihood_formula[1-poisson] ______
+tests/test_glm_likelihood.py:109: in test_weighted_bic_matches_independent_likelihood_formula
+    assert_allclose(model.bic_, expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 5.03056892
+E   Max relative difference among violations: 0.008347
+E    ACTUAL: array(607.710735)
+E    DESIRED: array(602.680166)
+____ test_weighted_bic_matches_independent_likelihood_formula[10-gaussian] _____
+tests/test_glm_likelihood.py:109: in test_weighted_bic_matches_independent_likelihood_formula
+    assert_allclose(model.bic_, expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 5.01727984
+E   Max relative difference among violations: 0.00591666
+E    ACTUAL: array(853.009068)
+E    DESIRED: array(847.991788)
+_____ test_weighted_bic_matches_independent_likelihood_formula[10-poisson] _____
+tests/test_glm_likelihood.py:109: in test_weighted_bic_matches_independent_likelihood_formula
+    assert_allclose(model.bic_, expected, atol=1e-8)
+../../.local/share/uv/python/cpython-3.12.7-linux-x86_64-gnu/lib/python3.12/contextlib.py:81: in inner
+    return func(*args, **kwds)
+E   AssertionError:
+E   Not equal to tolerance rtol=1e-07, atol=1e-08
+E
+E   Mismatched elements: 1 / 1 (100%)
+E   Max absolute difference among violations: 5.01727984
+E   Max relative difference among violations: 0.00359317
+E    ACTUAL: array(1401.35585)
+E    DESIRED: array(1396.33857)
+_______________ test_glm_cross_validation_rejects_zero_mass_fold _______________
+tests/test_observation_boundaries.py:260: in test_glm_cross_validation_rejects_zero_mass_fold
+    with pytest.raises(ValueError, match="positive"):
+E   Failed: DID NOT RAISE <class 'ValueError'>
+=============================== warnings summary ===============================
+tests/test_glm_likelihood.py::test_tiny_l1_returns_unpenalized_refit_without_claiming_ridge_shrinkage
+  /home/bsatom/Documents/arfs/tests/test_glm_likelihood.py:85: FutureWarning: Series.__getitem__ treating keys as positions is deprecated. In a future version, integer keys will always be treated as labels (consistent with DataFrame behavior). To access a value by position, use `ser.iloc[pos]`
+    assert abs(model.coef_[1]) > 5 * abs(penalized.params[1])
+
+tests/test_glm_likelihood.py: 13 warnings
+tests/test_observation_boundaries.py: 5 warnings
+tests/test_dependency_apis.py: 1 warning
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1464: UserWarning: Elastic net fitting did not converge
+    warnings.warn("Elastic net fitting did not converge")
+
+tests/test_observation_boundaries.py::test_zero_weight_category_equivalent_to_removal[weighted_theils_u]
+tests/test_observation_boundaries.py::test_zero_weight_category_equivalent_to_removal[weighted_theils_u]
+  /home/bsatom/Documents/arfs/src/arfs/association.py:244: RuntimeWarning: Rounded U = 0.0 to 0. This is probably due to floating point precision issues.
+    warnings.warn(
+
+tests/test_observation_boundaries.py: 12 warnings
+  /home/bsatom/Documents/arfs/src/arfs/feature_selection/allrelevant.py:1543: UserWarning: [BoostAGroota]: using native variable importance might break the FS
+    warnings.warn(
+
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/generalized_linear_model.py:1342: PerfectSeparationWarning: Perfect separation or prediction detected, parameter may not be identified
+    warnings.warn(msg, category=PerfectSeparationWarning)
+
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:188: RuntimeWarning: invalid value encountered in divide
+    return np.sum(resid_dev * freq_weights * var_weights / scale)
+
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:647: RuntimeWarning: divide by zero encountered in divide
+    ll_obs = -var_weights * (endog - mu) ** 2 / scale
+
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:648: RuntimeWarning: divide by zero encountered in log
+    ll_obs += -np.log(scale / var_weights) - np.log(2 * np.pi)
+
+tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/statsmodels/genmod/families/family.py:648: RuntimeWarning: invalid value encountered in add
+    ll_obs += -np.log(scale / var_weights) - np.log(2 * np.pi)
+
+tests/test_observation_boundaries.py::test_benchmark_weights_match_independent_reference[regression]
+tests/test_observation_boundaries.py::test_benchmark_weights_match_independent_reference[classification]
+tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /home/bsatom/Documents/arfs/src/arfs/benchmark.py:104: UserWarning: Tight layout not applied. The bottom and top margins cannot be made large enough to accommodate all Axes decorations.
+    fig.tight_layout()
+
+tests/test_observation_boundaries.py::test_benchmark_weights_match_independent_reference[regression]
+tests/test_observation_boundaries.py::test_benchmark_weights_match_independent_reference[classification]
+tests/test_dependency_apis.py::test_benchmark_real_permutation_plot
+  /home/bsatom/Documents/arfs/src/arfs/benchmark.py:109: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+    plt.show()
+
+tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The MissingValueThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+tests/test_dependency_apis.py::test_summary_real_pipeline_renders_html
+  /tmp/arfs-r14/py312-locked/lib/python3.12/site-packages/sklearn/utils/_tags.py:354: DeprecationWarning: The UniqueValuesThreshold or classes from which it inherits use `_get_tags` and `_more_tags`. Please define the `__sklearn_tags__` method, or inherit from `sklearn.base.BaseEstimator` and/or other appropriate mixins such as `sklearn.base.TransformerMixin`, `sklearn.base.ClassifierMixin`, `sklearn.base.RegressorMixin`, and `sklearn.base.OutlierMixin`. From scikit-learn 1.7, not defining `__sklearn_tags__` will raise an error.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_glm_likelihood.py::test_real_all_invalid_gaussian_bic_search_fails_instead_of_selecting_first
+FAILED tests/test_glm_likelihood.py::test_weighted_bic_matches_independent_likelihood_formula[0.001-gaussian]
+FAILED tests/test_glm_likelihood.py::test_weighted_bic_matches_independent_likelihood_formula[0.001-poisson]
+FAILED tests/test_glm_likelihood.py::test_weighted_bic_matches_independent_likelihood_formula[1-gaussian]
+FAILED tests/test_glm_likelihood.py::test_weighted_bic_matches_independent_likelihood_formula[1-poisson]
+FAILED tests/test_glm_likelihood.py::test_weighted_bic_matches_independent_likelihood_formula[10-gaussian]
+FAILED tests/test_glm_likelihood.py::test_weighted_bic_matches_independent_likelihood_formula[10-poisson]
+FAILED tests/test_observation_boundaries.py::test_glm_cross_validation_rejects_zero_mass_fold
+8 failed, 325 passed, 55 warnings in 20.50s

@@ -22,11 +22,31 @@ import pandas as pd
 import numpy as np
 import statsmodels.api as sm
 from sklearn.base import BaseEstimator, TransformerMixin, RegressorMixin
-from sklearn.base import clone
-from sklearn.model_selection import StratifiedKFold, KFold
+from sklearn.base import clone, is_classifier
+from sklearn.model_selection import check_cv
+from sklearn.utils.validation import check_is_fitted
 from joblib import Parallel, delayed
 from typing import Union, Optional
 from ..utils import validate_sample_weight, validate_target
+
+
+def _glm_frame(X):
+    if not isinstance(X, pd.DataFrame):
+        X = np.asarray(X)
+        if X.ndim != 2:
+            raise ValueError("X must be two-dimensional.")
+        X = pd.DataFrame(X, columns=[f"pred_{i}" for i in range(X.shape[1])])
+    if not X.columns.is_unique:
+        raise ValueError("X must not contain duplicate columns.")
+    return X
+
+
+def _positive_weight_rows(X, y, sample_weight):
+    if sample_weight is not None and np.any(sample_weight == 0):
+        keep = sample_weight > 0
+        X = X.iloc[keep] if isinstance(X, pd.DataFrame) else np.asarray(X)[keep]
+        return X, np.asarray(y)[keep], sample_weight[keep]
+    return X, y, sample_weight
 
 
 def _map_family_link(family: str = "gaussian", link: Optional[str] = None):
@@ -55,7 +75,16 @@ def _map_family_link(family: str = "gaussian", link: Optional[str] = None):
 
 class EnetGLM(BaseEstimator, RegressorMixin):
     """
-    Elastic Net Generalized Linear Model.
+    Elastic-net variable selection followed by an unpenalized GLM refit.
+
+    The penalty chooses nonzero coefficients; returned coefficients and
+    predictions use an unpenalized refit on those columns. Summary statistics
+    use the selection data and do not provide valid post-selection inference.
+    Zero-weight rows are omitted before fitting and scoring, after response
+    and weight validation. AIC/BIC count the rank of selected mean parameters,
+    excluding dispersion, and use the retained observation count. Variance-
+    weighted fixed-scale families have a quasi-likelihood interpretation;
+    finite information criteria do not establish calibrated model selection.
 
     Parameters
     ----------
@@ -65,19 +94,31 @@ class EnetGLM(BaseEstimator, RegressorMixin):
     link : str, optional
         the GLM link function. It can be any of the: "identity", "log", "logit", "probit", "cloglog", "inverse_squared"
     alpha : float, optional (default=0.0)
-        The elastic net mixing parameter. 0 <= alpha <= 1.
-        alpha = 0 is equivalent to ridge regression, alpha = 1 is equivalent to lasso regression.
-    L1_wt : float, optional (default=0.0)
-        The weight of the L1 penalty term. 0 <= L1_wt <= 1.
-        The `L1_wt` parameter represents the weight of the L1 penalty term in the model and
-        should be within the range 0 to 1. A value of 0 corresponds to ridge regression,
-        while a value of 1 corresponds to lasso regression. However, for obtaining statistics,
-        `L1_wt` should be set to a value greater than 0. If it is set to 0.0, statsmodels returns
-        a ridge regularized wrapper without refitting the model, making the statistics unavailable
-        and breaking the class. Nevertheless, you can set `L1_wt` to a very small value, such as 1e-9,
-        to obtain close-to-ridge behavior while still obtaining the necessary statistics.
+        Penalty strength, not the mixing fraction. Zero uses a tiny positive
+        fitting penalty (1e-9) to retain the backend refit/statistics path.
+    L1_wt : float, optional (default=1e-6)
+        L1 fraction of the selection penalty, with 0 < L1_wt <= 1.
+        One selects using lasso; smaller values mix L1 and L2 penalties before
+        refitting. Returned coefficients do not retain ridge shrinkage. Pure
+        ridge (zero) is unsupported because its backend result lacks refit
+        statistics required by this wrapper.
     fit_intercept : bool, optional (default=True)
-        Whether to fit an intercept term in the model.
+        Add an intercept only when training inputs have no nonzero constant.
+        Supplied columns, including constants, are always preserved. The fitted
+        design governs prediction; named inputs are aligned to training names,
+        while arrays must have the fitted input width and order.
+
+    Attributes
+    ----------
+    feature_names_in_ : ndarray
+        Original input names; arrays receive names pred_0, pred_1, etc.
+    n_features_in_ : int
+        Number of original input columns.
+    design_feature_names_ : ndarray
+        Actual coefficient names, including an automatically added intercept.
+    added_intercept_ : str or None
+        Name of the generated column, or None when none was added. The name
+        is Intercept, with a numbered suffix if an input already uses it.
     """
 
     def __init__(
@@ -101,16 +142,11 @@ class EnetGLM(BaseEstimator, RegressorMixin):
             The penalty weight. If a scalar, the same penalty weight applies to all variables in the model.
             If a vector, it must have the same length as params, and contains a penalty weight for each coefficient.
         L1_wt :
-            The `L1_wt` parameter represents the weight of the L1 penalty term in the model and
-            should be within the range 0 to 1. A value of 0 corresponds to ridge regression,
-            while a value of 1 corresponds to lasso regression. However, for obtaining statistics,
-            `L1_wt` should be set to a value greater than 0. If it is set to 0.0, statsmodels returns
-            a ridge regularized wrapper without refitting the model, making the statistics unavailable
-            and breaking the class. Nevertheless, you can set `L1_wt` to a very small value, such as 1e-9,
-            to obtain close-to-ridge behavior while still obtaining the necessary statistics.
+            L1 fraction of the selection penalty, with 0 < L1_wt <= 1.
+            The surviving columns are then refit without regularization.
 
         fit_intercept :
-            Whether to fit an intercept term in the model.
+            Add an intercept only if no nonzero constant was supplied.
         """
         self.family = family
         self.link = link
@@ -119,7 +155,6 @@ class EnetGLM(BaseEstimator, RegressorMixin):
         self.model = None
         self.result = None
         self.fit_intercept = fit_intercept
-        self.objective = _map_family_link(family=family, link=link)
 
     def fit(
         self,
@@ -128,27 +163,18 @@ class EnetGLM(BaseEstimator, RegressorMixin):
         sample_weight: Optional[Union[np.ndarray, pd.Series]] = None,
     ):
         """
-        Fit the model to the data.
+        Fit using the current family/link parameters and record one design.
 
         Notes
         -----
-        In statsmodels and GLMs in general, you can use either an offset or a weight to account for
-        differences in exposure between observations. However, if you choose to use an offset,
-        you need to pass the number of cases (ncl) instead of the frequency and set the offset to
-        the logarithm of the exposure due to the log link function. It is recommended to use the frequency
-        and the weights instead of the offset because this ensures that all models have the same inputs.
-        To use the frequency and the weights, you can fit the model using the following code:
-
-        ```python
-        self.model = sm.GLM(endog=y, exog=X, var_weights=sample_weight, family=self.family)
-        ```
-
-        This is equivalent to using the exposure and the log of the exposure internally, which can be done using the following code:
-
-        ```python
-        self.model = sm.GLM(endog=y, exog=sm.add_constant(X), exposure=sample_weight, family=sm.families.Poisson())
-        self.result = self.model.fit()
-        ```
+        For Poisson rates with a log link, positive exposure as a variance
+        weight gives corresponding coefficient estimates and prediction loss
+        to counts with log-exposure as an offset. This equivalence does not
+        extend to arbitrary family/weight combinations. Fixed-scale variance-
+        weighted likelihoods have a quasi-likelihood interpretation; ordinary
+        likelihood-based significance claims are not justified by finite BIC.
+        Zero-weight rows do not determine the design, penalty scaling or
+        likelihood observation count. Positive weights are not normalized.
 
         Parameters
         ----------
@@ -170,42 +196,73 @@ class EnetGLM(BaseEstimator, RegressorMixin):
         # see the if kwargs.get("L1_wt", 1) == 0 condition in
         # https://www.statsmodels.org/dev/_modules/statsmodels/genmod/generalized_linear_model.html#GLM.fit_regularized
         # workaround to get the statistics
-        if self.alpha == 0.0:
-            self.alpha = 1e-9
+        alpha = 1e-9 if self.alpha == 0.0 else self.alpha
+        if not 0 < self.L1_wt <= 1:
+            raise ValueError("L1_wt must satisfy 0 < L1_wt <= 1 for an unpenalized refit.")
 
-        validate_target(y, len(X))
+        y = validate_target(y, len(X)).to_numpy()
         sample_weight = validate_sample_weight(sample_weight, len(X))
-        if not isinstance(X, pd.DataFrame):
-            X = pd.DataFrame(X)
-            X.columns = [f"pred_{i}" for i in range(X.shape[1])]
-
+        X = _glm_frame(X)
+        X, y, sample_weight = _positive_weight_rows(X, y, sample_weight)
+        input_names = X.columns.to_numpy(copy=True)
+        added_intercept = None
         if self.fit_intercept:
-            X = sm.add_constant(X)
-            X = X.rename(columns={"const": "Intercept"})
-        else:
-            X = drop_existing_sm_constant_from_df(X)
+            design = sm.add_constant(X, has_constant="skip")
+            if design.shape[1] > X.shape[1]:
+                added_intercept = "Intercept"
+                suffix = 1
+                while added_intercept in X.columns:
+                    added_intercept = f"Intercept_{suffix}"
+                    suffix += 1
+                design.columns = [added_intercept, *X.columns]
+            X = design
 
-        self.n_features_in_ = X.shape[1]
-
-        self.model = sm.GLM(
+        objective = _map_family_link(family=self.family, link=self.link)
+        model = sm.GLM(
             endog=y,
             exog=X,
             var_weights=sample_weight,
-            family=self.objective,
+            family=objective,
         )
 
-        self.result = self.model.fit_regularized(
-            method="elastic_net", alpha=self.alpha, L1_wt=self.L1_wt, refit=True
+        result = model.fit_regularized(
+            method="elastic_net", alpha=alpha, L1_wt=self.L1_wt, refit=True
         )
+        self.model, self.result, self.objective = model, result, objective
         self.coef_ = self.result.params
         self.bse_ = self.result.bse
         self.deviance_ = self.result.deviance
         self.pseudo_rsquared_ = self.result.pseudo_rsquared()
-        self.aic_ = self.result.aic
-        self.bic_ = self.result.bic_llf
+        selected = np.asarray(self.coef_) != 0
+        k_params = np.linalg.matrix_rank(model.exog[:, selected]) if selected.any() else 0
+        # The backend refit's IC bookkeeping counts an extra parameter and row.
+        self.aic_ = -2 * self.result.llf + 2 * k_params
+        self.bic_ = -2 * self.result.llf + np.log(model.nobs) * k_params
         self.pvalues_ = self.result.pvalues
         self.tvalues_ = self.result.tvalues
         self.pearson_chi2_ = self.result.pearson_chi2
+        self.feature_names_in_ = input_names
+        self.n_features_in_ = len(input_names)
+        self.design_feature_names_ = X.columns.to_numpy(copy=True)
+        self.added_intercept_ = added_intercept
+        return self
+
+    def _prepare_design(self, X):
+        check_is_fitted(self, "design_feature_names_")
+        named = isinstance(X, pd.DataFrame)
+        X = _glm_frame(X)
+        if X.shape[1] != self.n_features_in_:
+            raise ValueError("X must have the fitted number of input features.")
+        if named:
+            if not X.columns.isin(self.feature_names_in_).all():
+                raise ValueError("X columns must match the fitted input columns.")
+            X = X.loc[:, self.feature_names_in_]
+        else:
+            X.columns = self.feature_names_in_
+        if self.added_intercept_ is not None:
+            X = X.copy()
+            X.insert(0, self.added_intercept_, 1.0)
+        return X
 
     def predict(self, X):
         """
@@ -224,20 +281,12 @@ class EnetGLM(BaseEstimator, RegressorMixin):
 
         Raises
         ------
-        ValueError
+        NotFittedError
             If the model has not been fit.
+        ValueError
+            If input columns are duplicated or differ from the fitted schema.
         """
-        if self.model is None:
-            raise ValueError("Fit the model first.")
-
-        if not isinstance(X, pd.DataFrame):
-            X = pd.DataFrame(X)
-            X.columns = [f"pred_{i}" for i in range(X.shape[1])]
-
-        if self.fit_intercept:
-            X = sm.add_constant(X)
-            X = X.rename(columns={"const": "Intercept"})
-
+        X = self._prepare_design(X)
         return self.result.predict(X)
 
     def get_coef(self):
@@ -258,7 +307,7 @@ class EnetGLM(BaseEstimator, RegressorMixin):
         sample_weight: Optional[Union[np.ndarray, pd.Series]] = None,
     ):
         """
-        Return the deviance of the fitted model.
+        Return negative response-scale deviance (higher is better).
 
         Parameters
         ----------
@@ -270,15 +319,16 @@ class EnetGLM(BaseEstimator, RegressorMixin):
 
         Returns
         -------
-        deviance : float
-            The deviance of the fitted model.
+        score : float
+            Negative total deviance, using variance weights and unit scale.
         """
-        validate_target(y, len(X))
+        y = validate_target(y, len(X)).to_numpy()
         sample_weight = validate_sample_weight(sample_weight, len(X))
-        mu = self.objective.link.inverse(self.predict(X))
+        X, y, sample_weight = _positive_weight_rows(X, y, sample_weight)
+        mu = self.predict(X)
 
         var_weights = sample_weight if sample_weight is not None else 1.0
-        return self.objective.deviance(endog=y, mu=mu, var_weights=var_weights)
+        return -self.objective.deviance(endog=y, mu=mu, var_weights=var_weights)
 
     def summary(self):
         """
@@ -288,6 +338,13 @@ class EnetGLM(BaseEstimator, RegressorMixin):
         -------
         summary : str
             The summary of the fitted model.
+
+        Notes
+        -----
+        These statistics use the same data as variable selection and do not
+        account for that selection; ordinary p-values are not selection-adjusted.
+        The backend summary is returned unchanged. Its information criteria
+        can differ from the wrapper's rank/count-corrected aic_ and bic_.
         """
         return self.result.summary()
 
@@ -305,27 +362,32 @@ def weighted_cross_val_score(estimator, X, y, sample_weight=None, cv=5, n_jobs=-
     y : array-like of shape (n_samples,)
         The target variable.
     sample_weight : array-like of shape (n_samples,), optional
-        The sample weights for each data point.
+        The sample weights for each data point. For an EnetGLM argument,
+        zero-weight rows are omitted before splitting. Other estimators retain
+        their existing zero-weight and positive-fold-mass contracts.
     cv : int, default=5
-        The number of cross-validation folds.
+        The number of cross-validation folds. Classifiers and binomial GLMs
+        with discrete targets use stratified folds; other targets use KFold.
     n_jobs:
         the number of processes
 
     Returns
     -------
-    scores : array of shape (cv,)
-        The list of scores for each fold.
-    average_score : float
-        The average score across all folds.
+    scores : list of length cv
+        Each independent clone's validation score, with validation weights
+        when supplied. EnetGLM returns negative total deviance per fold.
 
     """
 
     validate_target(y, len(X))
     sample_weight = validate_sample_weight(sample_weight, len(X))
-    # logging.info("Starting cross-validation...")
-
-    splitter = (
-        KFold(n_splits=cv) if len(np.unique(y)) > 2 else StratifiedKFold(n_splits=cv)
+    if isinstance(estimator, EnetGLM):
+        X, y, sample_weight = _positive_weight_rows(X, y, sample_weight)
+    splitter = check_cv(
+        cv,
+        y,
+        classifier=is_classifier(estimator)
+        or getattr(estimator, "family", None) == "binomial",
     )
 
     if not hasattr(estimator, "score") or not callable(getattr(estimator, "score")):
@@ -338,10 +400,9 @@ def weighted_cross_val_score(estimator, X, y, sample_weight=None, cv=5, n_jobs=-
             delayed(_fit_and_score)(
                 estimator, X, y, train_index, test_index, sample_weight
             )
-            for train_index, test_index in splitter.split(X)
+            for train_index, test_index in splitter.split(X, y)
         )
 
-    # logging.info("Finished cross-validation.")
     return scores
 
 
@@ -369,7 +430,7 @@ def _fit_and_score(
     test_index : np.ndarray
         Array of indices representing the test data.
     sample_weight : Optional[Union[pd.Series, np.ndarray]], default=None
-        Sample weights to be used during training. Can be either a pandas Series or a numpy array.
+        Sample weights for the chosen estimator, as a pandas Series or NumPy array.
 
     Returns
     -------
@@ -383,8 +444,12 @@ def _fit_and_score(
     """
     y = validate_target(y, len(X)).to_numpy()
     sample_weight = validate_sample_weight(sample_weight, len(X))
-    X_train, X_test = X.iloc[train_index, :], X.iloc[test_index, :]
+    if isinstance(X, pd.DataFrame):
+        X_train, X_test = X.iloc[train_index, :], X.iloc[test_index, :]
+    else:
+        X_train, X_test = X[train_index, :], X[test_index, :]
     y_train, y_test = y[train_index], y[test_index]
+    estimator = clone(estimator)
 
     if sample_weight is not None:
         sample_weight_train = validate_sample_weight(
@@ -423,7 +488,8 @@ def grid_search_cv(
     y : Union[pd.Series, np.ndarray]
         The target values, can be either a pandas Series or a numpy array.
     sample_weight : Optional[Union[pd.Series, np.ndarray]], default=None
-        Sample weights to be used during training. Can be either a pandas Series or a numpy array.
+        Variance weights, as a pandas Series or NumPy array. Zero-weight rows
+        are omitted before fitting or forming validation folds.
     n_iterations : int, default=10
         Number of iterations for the grid search.
     family : str, default="gaussian"
@@ -431,7 +497,11 @@ def grid_search_cv(
     link : str, optional
         the GLM link function. It can be any of the: "identity", "log", "logit", "probit", "cloglog", "inverse_squared"
     score : str, default="bic"
-        The score to use for model selection. Options: "bic" (Bayesian Information Criterion) or "mean_cv" (mean cross-validation score).
+        Options: "bic" minimizes training BIC; "deviance" minimizes the mean
+        total validation deviance across five folds (maximizes negative scores).
+    fit_intercept : bool, default=True
+        Add an intercept when no nonzero training constant exists. Supplied
+        columns are preserved.
     n_jobs:
         the number of processes
 
@@ -443,7 +513,8 @@ def grid_search_cv(
     Raises
     ------
     ValueError
-        If the input data is not of the correct format or if an invalid family or score value is provided.
+        If the inputs, family or score are invalid, or any candidate criterion
+        is nonfinite. The search fails without discarding invalid candidates.
     """
     estimator = EnetGLM(
         family=family, link=link, L1_wt=1.0, fit_intercept=fit_intercept
@@ -457,6 +528,7 @@ def grid_search_cv(
     if score not in ["bic", "deviance"]:
         raise ValueError("Invalid score value. Options are: 'bic' or 'deviance'.")
 
+    X, y, sample_weight = _positive_weight_rows(X, y, sample_weight)
     grid = np.logspace(-3, 3, n_iterations)
     param_score = []
 
@@ -479,8 +551,12 @@ def grid_search_cv(
                 estimator, X, y, sample_weight=sample_weight, cv=5, n_jobs=n_jobs
             )
             param_score.append(np.mean(scores))
-    # min deviance or min BIC
-    best_alpha_value = grid[np.argmin(param_score)]
+        if not np.isfinite(param_score[-1]):
+            raise ValueError(
+                f"{score} for alpha={param:g} is not finite; cannot compare penalty candidates."
+            )
+    best_index = np.argmin(param_score) if score == "bic" else np.argmax(param_score)
+    best_alpha_value = grid[best_index]
     best_estimator = clone(estimator)
     best_estimator.set_params(
         **{
@@ -497,7 +573,10 @@ def grid_search_cv(
 
 class LassoFeatureSelection(BaseEstimator, TransformerMixin):
     """
-    LassoFeatureSelection performs feature selection using GLM Lasso regularization.
+    LassoFeatureSelection selects variables with a penalty and refits surviving
+    columns in an unpenalized GLM. Returned coefficients do not retain shrinkage.
+    Zero-weight rows are omitted before fitting and tuning. Any nonfinite search
+    criterion raises an error rather than returning an arbitrary penalty.
 
     Parameters
     ----------
@@ -509,9 +588,14 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
     n_iterations : int, default=10
         Number of iterations for the grid search.
     score : str, default="bic"
-        The score to use for model selection. Options: "bic" (Bayesian Information Criterion) or "mean_cv" (mean cross-validation score).
+        Options: "bic" minimizes training BIC; "deviance" minimizes the mean
+        total validation deviance across five folds (maximizes negative scores).
     n_jobs: int, default=-1
         the number of processes. -1 means all the processes
+    fit_intercept : bool, default=True
+        Add an intercept when no nonzero training constant exists. Supplied
+        columns are preserved. A selected generated intercept is included in
+        transform output, but not in input metadata or support_.
 
     Attributes
     ----------
@@ -524,9 +608,16 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
     selected_features_ : ndarray
         The selected feature names.
     support_ : ndarray
-        The support of selected features (True for selected, False otherwise).
+        Support for original input columns, excluding a generated intercept.
+    design_feature_names_ : ndarray
+        Names of the fitted design, including a generated intercept if needed.
+    design_support_ : ndarray
+        Nonzero-coefficient support for the fitted design. A selected generated
+        intercept remains in transform output and selected_features_.
     feature_names_in_ : ndarray
         The input feature names.
+    n_features_in_ : int
+        Number of original input columns, excluding a generated intercept.
     score : str
         The score used for model selection.
     n_jobs: int
@@ -537,8 +628,8 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
     fit(X, y=None, sample_weight=None)
         Fit the LassoFeatureSelection model and select the best features.
     transform(X)
-        Transform the input data to keep only the selected features.
-    get_feature_names_out()
+        Apply the fitted design and retain its selected columns.
+    get_feature_names_out(input_features=None)
         Get the names of the selected features.
 
     """
@@ -555,10 +646,6 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
         self.family = family
         self.link = link
         self.n_iterations = n_iterations
-        self.best_estimator_ = None
-        self.selected_features_ = None
-        self.support_ = None
-        self.feature_names_in_ = None
         self.score = score
         self.fit_intercept = fit_intercept
         self.n_jobs = n_jobs
@@ -587,19 +674,7 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
             The fitted LassoFeatureSelection model.
 
         """
-        if not isinstance(X, pd.DataFrame):
-            X = pd.DataFrame(X)
-            X.columns = [f"pred_{i}" for i in range(X.shape[1])]
-
-        if not self.fit_intercept:
-            X = drop_existing_sm_constant_from_df(X)
-
-        self.feature_names_in_ = (
-            X.columns.insert(0, "Intercept")
-            if self.fit_intercept and "Intercept" not in X.columns
-            else X.columns
-        )
-
+        X = _glm_frame(X)
         self.best_estimator_ = grid_search_cv(
             family=self.family,
             link=self.link,
@@ -611,13 +686,23 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
             fit_intercept=self.fit_intercept,
             n_jobs=self.n_jobs,
         )
-        self.support_ = self.best_estimator_.coef_ != 0
-        self.selected_features_ = self.feature_names_in_[self.support_]
+        self.feature_names_in_ = self.best_estimator_.feature_names_in_.copy()
+        self.n_features_in_ = self.best_estimator_.n_features_in_
+        self.design_feature_names_ = self.best_estimator_.design_feature_names_.copy()
+        self.design_support_ = np.asarray(self.best_estimator_.coef_) != 0
+        self.support_ = self.design_support_[
+            pd.Index(self.design_feature_names_).get_indexer(self.feature_names_in_)
+        ]
+        self.selected_features_ = self.design_feature_names_[self.design_support_]
         return self
 
     def transform(self, X: Union[pd.DataFrame, np.ndarray]) -> pd.DataFrame:
         """
-        Transform the input data to keep only the selected features.
+        Apply the fitted design and retain its selected columns.
+
+        Named inputs are aligned to the complete fitted input schema; missing,
+        extra or duplicate columns are rejected. Arrays use fitted input order.
+        A generated intercept is recreated even for a single row.
 
         Parameters
         ----------
@@ -626,26 +711,22 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
 
         Returns
         -------
-        Union[pd.DataFrame, np.ndarray]
+        pd.DataFrame
             The transformed data with only the selected features.
 
         """
 
-        if self.fit_intercept:
-            X = sm.add_constant(X)
+        check_is_fitted(self, "selected_features_")
+        return self.best_estimator_._prepare_design(X)[self.selected_features_]
 
-        if not isinstance(X, pd.DataFrame):
-            X = pd.DataFrame(X)
-            # if not a DF, assuming the col orders is
-            # the same, as required anyway
-            X.columns = self.feature_names_in_
-
-        X = X.rename(columns={"const": "Intercept"}) if "const" in X.columns else X
-        return X[self.selected_features_]
-
-    def get_feature_names_out(self) -> np.ndarray:
+    def get_feature_names_out(self, input_features=None) -> np.ndarray:
         """
         Get the names of the selected features.
+
+        Parameters
+        ----------
+        input_features : array-like, optional
+            If supplied, must match the original input names and order.
 
         Returns
         -------
@@ -653,7 +734,12 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
             The names of the selected features.
 
         """
-        return self.feature_names_in_[self.support_]
+        check_is_fitted(self, "selected_features_")
+        if input_features is not None and not np.array_equal(
+            input_features, self.feature_names_in_
+        ):
+            raise ValueError("input_features must match feature_names_in_.")
+        return self.selected_features_.copy()
 
 
 def drop_existing_sm_constant_from_df(X):

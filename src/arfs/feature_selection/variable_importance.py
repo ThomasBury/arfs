@@ -7,8 +7,7 @@ Module Structure:
 - ``VariableImportance`` main class for identifying non-important features
 """
 
-from __future__ import print_function
-from tqdm.auto import trange
+from numbers import Real
 
 # pandas
 import pandas as pd
@@ -26,6 +25,8 @@ from sklearn.base import BaseEstimator
 from sklearn.feature_selection._base import SelectorMixin
 
 # ARFS
+from .allrelevant import _compute_importance
+from .base import _validate_dataframe
 from ..utils import reset_plot
 from ..gbm import GradientBoosting
 from ..preprocessing import OrdinalEncoderPandas
@@ -34,12 +35,10 @@ from ..preprocessing import OrdinalEncoderPandas
 class VariableImportance(SelectorMixin, BaseEstimator):
     """Feature selector that removes predictors with zero or low variable importance.
 
-    Identify the features with zero/low importance according to SHAP values of a lightgbm.
-    The gbm can be trained with early stopping using a utils set to prevent overfitting.
-    The feature importances are averaged over `n_iterations` to reduce the variance.
-    The predictors are then ranked from the most important to the least important and the
-    cumulative variable importance is computed. All the predictors not contributing (VI=0) or
-    contributing to less than the threshold to the cumulative importance are removed.
+    Fit one LightGBM with early stopping, then rank predictors by mean absolute
+    validation-row contributions, summed over model outputs. Retain the smallest
+    positive-importance prefix reaching the requested cumulative share, including
+    the crossing feature. Equal importances follow input order.
 
     Parameters
     ----------
@@ -48,17 +47,28 @@ class VariableImportance(SelectorMixin, BaseEstimator):
         be sure to use a consistent objective function
     encode : boolean, default = True
         Whether or not to encode the predictors
-    n_iterations : int, default = 10
-        Number of iterations, the more iterations, the smaller the variance
     threshold : float, default = .99
-        The selector computes the cumulative feature importance and ranks
-        the predictors from the most important to the least important.
-        All the predictors contributing to less than this value are rejected.
-    lgb_kwargs : dictionary of keyword arguments
-        dictionary of lightgbm estimators parameters with at least the objective function {'objective':'rmse'}
+        Finite share in [0, 1]. Zero selects nothing; one selects every predictor
+        with positive importance. An all-zero total selects nothing at any cutoff.
+    lgb_kwargs : dict or None, default=None
+        LightGBM parameters with an objective. None uses objective='rmse' and
+        zero_as_missing=False. Caller dictionaries are preserved.
     encoder_kwargs : dictionary of keyword arguments, optional
         dictionary of the :class:`OrdinalEncoderPandas` parameters
+    fastshap : bool, default=False
+        Use optional fasttreeshap; a missing backend raises ImportError before training.
+    verbose : int, default=-1
+        Training metric log frequency; nonpositive values disable metric logging.
 
+    Notes
+    -----
+    X must have unique column names. Transform projects selected names in fitted
+    order; extra/reordered columns and omitted rejected columns are accepted.
+    Missing selected columns raise KeyError; duplicate columns are rejected.
+    Observation weights affect training and validation loss. Global importance
+    averages validation rows equally, even with weights; it describes the observed
+    validation rows rather than a weight-adjusted population. The split is fixed
+    by the training wrapper. One fit does not estimate resampling variability.
 
     Returns
     -------
@@ -69,20 +79,15 @@ class VariableImportance(SelectorMixin, BaseEstimator):
     ----------
     n_features_in_ : int
         number of input predictors
-    assoc_matrix_ : pd.DataFrame
-        the square association matrix
-    collinearity_summary_ : pd.DataFrame
-        the pairs of collinear features and the association values
+    feature_importances_summary_ : pd.DataFrame
+        Ranked finite importance, normalized share and cumulative share. Both
+        shares are zero when total importance is zero.
     support_ : list of bool
         the list of the selected X-columns
     selected_features_ : list of str
         the list of names of selected features
     not_selected_features_ : list of str
         the list of names of rejected features
-    fastshap : boolean
-        enable or not the fasttreeshap implementation
-    verbose : int, default = -1
-        controls the progress bar, > 1 print out progress
 
     Example
     -------
@@ -100,24 +105,19 @@ class VariableImportance(SelectorMixin, BaseEstimator):
         self,
         task="regression",
         encode=True,
-        n_iterations=10,
         threshold=0.99,
-        lgb_kwargs={"objective": "rmse", "zero_as_missing": False},
+        lgb_kwargs=None,
         encoder_kwargs=None,
         fastshap=False,
         verbose=-1,
     ):
         self.task = task
         self.encode = encode
-        self.n_iterations = n_iterations
         self.threshold = threshold
         self.lgb_kwargs = lgb_kwargs
         self.encoder_kwargs = encoder_kwargs
         self.verbose = verbose
         self.fastshap = fastshap
-
-        if (self.threshold > 1.0) or (self.threshold < 0.0):
-            raise ValueError("``threshold`` should be larger than 0 and smaller than 1")
 
     def fit(self, X, y, sample_weight=None):
         """Learn variable importance from X and y, supervised learning.
@@ -127,9 +127,8 @@ class VariableImportance(SelectorMixin, BaseEstimator):
         X : pd.DataFrame, shape (n_samples, n_features)
             Data from which to compute variances, where `n_samples` is
             the number of samples and `n_features` is the number of features.
-        y : any, default=None
-            Ignored. This parameter exists only for compatibility with
-            sklearn.pipeline.Pipeline.
+        y : array-like, shape (n_samples,)
+            Finite, nonmissing responses, aligned by row position.
         sample_weight : pd.Series, optional, shape (n_samples,)
             weights for computing the statistics (e.g. weighted average)
 
@@ -139,10 +138,15 @@ class VariableImportance(SelectorMixin, BaseEstimator):
             Returns the instance itself.
         """
 
-        if isinstance(X, pd.DataFrame):
-            self.feature_names_in_ = X.columns.to_numpy()
-        else:
-            raise TypeError("X is not a dataframe")
+        _validate_dataframe(X)
+        if (
+            isinstance(self.threshold, (bool, np.bool_))
+            or not isinstance(self.threshold, Real)
+            or not np.isfinite(self.threshold)
+            or not 0 <= self.threshold <= 1
+        ):
+            raise ValueError("threshold must be a finite real number in [0, 1].")
+        feature_names = X.columns.to_numpy(copy=True)
 
         feature_importances = _compute_varimp_lgb(
             X=X,
@@ -150,7 +154,6 @@ class VariableImportance(SelectorMixin, BaseEstimator):
             sample_weight=sample_weight,
             encode=self.encode,
             task=self.task,
-            n_iterations=self.n_iterations,
             verbose=self.verbose,
             encoder_kwargs=self.encoder_kwargs,
             lgb_kwargs=self.lgb_kwargs,
@@ -159,23 +162,25 @@ class VariableImportance(SelectorMixin, BaseEstimator):
 
         self.feature_importances_summary_ = feature_importances
 
-        support_ordered = (
-            self.feature_importances_summary_["cumulative_importance"] >= self.threshold
+        keep = (feature_importances["importance"] > 0) & (
+            (self.threshold == 1)
+            | (
+                feature_importances["cumulative_importance"].shift(fill_value=0)
+                < self.threshold
+            )
         )
-        to_drop = list(
-            self.feature_importances_summary_.loc[support_ordered, "feature"]
-        )
+        selected = feature_importances.loc[keep, "feature"].tolist()
 
-        self.support_ = np.asarray(
-            [False if c in to_drop else True for c in self.feature_names_in_]
-        )
+        self.support_ = np.asarray([c in selected for c in feature_names], dtype=bool)
+        self.feature_names_in_ = feature_names
+        self.n_features_in_ = X.shape[1]
         self.selected_features_ = self.feature_names_in_[self.support_]
         self.not_selected_features_ = self.feature_names_in_[~self.support_]
 
         return self
 
     def _get_support_mask(self):
-        check_is_fitted(self)
+        check_is_fitted(self, "support_")
 
         return self.support_
 
@@ -199,8 +204,8 @@ class VariableImportance(SelectorMixin, BaseEstimator):
             if the input is not a pd.DataFrame
         """
 
-        if not isinstance(X, pd.DataFrame):
-            raise TypeError("X is not a dataframe")
+        check_is_fitted(self, "support_")
+        _validate_dataframe(X)
         return X[self.selected_features_]
 
     def fit_transform(self, X, y=None, sample_weight=None):
@@ -328,17 +333,24 @@ def _compute_varimp_lgb(
     sample_weight=None,
     encode=False,
     task="regression",
-    n_iterations=10,
     verbose=-1,
     fastshap=True,
     encoder_kwargs=None,
-    lgb_kwargs={"objective": "rmse", "zero_as_missing": False},
+    lgb_kwargs=None,
 ):
+    """One weighted fit; equal-row absolute importance, summed over outputs."""
+    _validate_dataframe(X)
     if task not in ["regression", "classification", "multiclass"]:
-        raise ValueError('Task must be either "classification" or "regression"')
-
+        raise ValueError('Task must be "classification", "regression" or "multiclass".')
     if y is None:
         raise ValueError("No training labels provided.")
+    if fastshap:
+        try:
+            from fasttreeshap import TreeExplainer as FastTreeExplainer
+        except ImportError as exc:
+            raise ImportError(
+                "fasttreeshap is not installed; install it or use fastshap=False."
+            ) from exc
 
     if encode:
         encoder = (
@@ -346,105 +358,72 @@ def _compute_varimp_lgb(
             if encoder_kwargs is not None
             else OrdinalEncoderPandas()
         )
-        X = encoder.fit(X).transform(X)
-        del encoder
-    # Extract feature names
-    feature_names = list(X.columns)
-    # Empty array for feature importances
-    feature_importance_values = np.zeros(len(feature_names))
-    progress_bar = trange(n_iterations) if verbose > 1 else range(n_iterations)
-
-    # Iterate through each fold
-    for _ in progress_bar:
-        if verbose > 1:
-            progress_bar.set_description("Iteration nb: {0:<3}".format(_))
-
-        # lgb_kwargs['verbose'] = -1
-        gbm_model = GradientBoosting(
-            cat_feat="auto",
-            stratified=False,
-            params=lgb_kwargs,
-            show_learning_curve=False,
-            return_valid_features=True,
-            verbose_eval=0,
+        X = encoder.fit_transform(X)
+    params = (
+        {"objective": "rmse", "zero_as_missing": False}
+        if lgb_kwargs is None
+        else lgb_kwargs
+    )
+    gbm_model = GradientBoosting(
+        cat_feat="auto",
+        stratified=False,
+        params=params,
+        show_learning_curve=False,
+        return_valid_features=True,
+        verbose_eval=verbose,
+    )
+    gbm_model.fit(X=X, y=y, sample_weight=sample_weight)
+    if fastshap:
+        explainer = FastTreeExplainer(
+            gbm_model.model,
+            algorithm="auto",
+            shortcut=False,
+            feature_perturbation="tree_path_dependent",
         )
-
-        gbm_model.fit(X=X, y=y, sample_weight=sample_weight)
-
-        # pimp cool but too slow
-        # perm_imp =  permutation_importance(
-        # model, valid_features, valid_labels, n_repeats=10, random_state=42, n_jobs=-1
-        # )
-        # perm_imp = perm_imp.importances_mean
-        if fastshap:
-            try:
-                from fasttreeshap import TreeExplainer as FastTreeExplainer
-            except ImportError:
-                ImportError("fasttreeshap is not installed")
-
-            explainer = FastTreeExplainer(
-                gbm_model.model,
-                algorithm="auto",
-                shortcut=False,
-                feature_perturbation="tree_path_dependent",
+        shap_matrix = explainer.shap_values(gbm_model.valid_features)
+    else:
+        shap_matrix = gbm_model.model.predict(
+            gbm_model.valid_features, pred_contrib=True
+        )
+    values = (
+        np.stack(shap_matrix, axis=-1)
+        if isinstance(shap_matrix, list)
+        else np.asarray(shap_matrix)
+    )
+    if not np.isfinite(values).all():
+        raise ValueError("SHAP contributions must be finite.")
+    if not fastshap:
+        n_rows, n_features = gbm_model.valid_features.shape
+        block_size = n_features + 1
+        if (
+            values.ndim != 2
+            or values.shape[0] != n_rows
+            or values.shape[1] == 0
+            or values.shape[1] % block_size
+        ):
+            raise ValueError(
+                "Native SHAP contributions must have shape (rows, (features + 1) * outputs)."
             )
-            shap_matrix = explainer.shap_values(gbm_model.valid_features)
-            if isinstance(shap_matrix, list):
-                # For LightGBM classifier, RF, in sklearn API, SHAP returns a list of arrays
-                # https://github.com/slundberg/shap/issues/526
-                shap_imp = np.mean([np.abs(sv).mean(0) for sv in shap_matrix], axis=0)
-            else:
-                shap_imp = np.abs(shap_matrix).mean(0)
-        else:
-            shap_matrix = gbm_model.model.predict(
-                gbm_model.valid_features, pred_contrib=True
-            )
-            # the dim changed in lightGBM >= 3.0.0
-            if task == "multiclass":
-                # X_SHAP_values (array-like of shape = [n_samples, n_features + 1]
-                # or shape = [n_samples, (n_features + 1) * n_classes])
-                # index starts from 0
-                n_features_plus_bias = gbm_model.valid_features.shape[1] + 1
-                n_samples = gbm_model.valid_features.shape[0]
-                y_freq_table = pd.Series(y.fillna(0)).value_counts(normalize=True)
-                n_classes = y_freq_table.size
-
-                # Reshape the array to [n_samples, n_features + 1, n_classes]
-                reshaped_values = shap_matrix.reshape(
-                    n_samples, n_classes, n_features_plus_bias
-                )
-
-                # Since we need (n_samples, n_features + 1, n_classes), transpose the second and third dimensions
-                reshaped_values = reshaped_values.transpose(0, 2, 1)
-                reshaped_values = reshaped_values[:, :-1, :]
-                reshaped_values.shape
-                # Sum the contributions for each class ignoring the bias term
-                # average on all the samples
-                shap_imp = np.abs(reshaped_values).sum(axis=-1).mean(axis=0)
-            else:
-                # for binary, only one class is returned, for regression a single column added as well
-                shap_imp = np.mean(np.abs(shap_matrix[:, :-1]), axis=0)
-
-        # Record the feature importances
-        feature_importance_values += (
-            shap_imp / n_iterations
-        )  # model.feature_importances_ / n_iterations
+        # Native output has a bias column in every output block; TreeExplainer does not.
+        values = values.reshape(n_rows, -1, block_size)[:, :, :-1].transpose(0, 2, 1)
+    importance = dict(
+        _compute_importance(
+            gbm_model.valid_features, values, params, params["objective"], fastshap
+        )
+    )
     feature_importances = pd.DataFrame(
-        {"feature": feature_names, "importance": feature_importance_values}
+        {"feature": X.columns, "importance": [importance[c] for c in X.columns]}
     )
-    # Sort features according to importance
     feature_importances = feature_importances.sort_values(
-        "importance", ascending=False
+        "importance", ascending=False, kind="stable"
     ).reset_index(drop=True)
-    # Normalize the feature importances to add up to one
+    total = feature_importances["importance"].sum()
+    if not np.isfinite(total):
+        raise ValueError("Total feature importance must be finite.")
     feature_importances["normalized_importance"] = (
-        feature_importances["importance"] / feature_importances["importance"].sum()
+        feature_importances["importance"] / total if total > 0 else 0.0
     )
-    feature_importances["cumulative_importance"] = np.cumsum(
-        feature_importances["normalized_importance"]
+    feature_importances["cumulative_importance"] = (
+        feature_importances["importance"].cumsum() / total if total > 0 else 0.0
     )
-    # Extract the features with zero importance
-    # record_zero_importance = feature_importances[
-    #     feature_importances["importance"] == 0.0
-    # ]
     return feature_importances

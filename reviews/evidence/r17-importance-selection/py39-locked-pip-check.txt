@@ -1,0 +1,3 @@
+Using Python 3.9.25 environment at: /tmp/arfs-r17/py39-locked
+Checked 41 packages in 1ms
+All installed packages are compatible

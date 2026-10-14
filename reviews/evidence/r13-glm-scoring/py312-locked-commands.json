@@ -1,0 +1,90 @@
+[
+  {
+    "command": [
+      "uv",
+      "venv",
+      "--python",
+      "/tmp/arfs-r12/py312-locked/bin/python",
+      "/tmp/arfs-r13/py312-locked"
+    ],
+    "cwd": "/home/bsatom/Documents/arfs",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "uv",
+      "pip",
+      "install",
+      "--python",
+      "/tmp/arfs-r13/py312-locked/bin/python",
+      "-r",
+      "/tmp/arfs-r13/locked-requirements.txt",
+      "/tmp/arfs-r13/dist/arfs-3.0.0-py3-none-any.whl"
+    ],
+    "cwd": "/home/bsatom/Documents/arfs",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "uv",
+      "pip",
+      "check",
+      "--python",
+      "/tmp/arfs-r13/py312-locked/bin/python"
+    ],
+    "cwd": "/home/bsatom/Documents/arfs",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/tmp/arfs-r13/py312-locked/bin/python",
+      "-I",
+      "-c",
+      "import matplotlib.font_manager"
+    ],
+    "cwd": "/home/bsatom/Documents/arfs",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/tmp/arfs-r13/py312-locked/bin/python",
+      "-I",
+      "/home/bsatom/Documents/arfs/reviews/evidence/r05-observation-boundaries/environment.py"
+    ],
+    "cwd": "/home/bsatom/Documents/arfs",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/tmp/arfs-r13/py312-locked/bin/python",
+      "-I",
+      "-m",
+      "pytest",
+      "tests",
+      "-q",
+      "--tb=short",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "cwd": "/tmp/arfs-r13/run-py312-locked",
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/tmp/arfs-r13/py312-locked/bin/python",
+      "-I",
+      "-m",
+      "pytest",
+      "/home/bsatom/Documents/arfs/reviews/evidence/01c-weighted-glm-lasso/checks.py",
+      "-k",
+      "poisson_cv_chooses or binary_deviance_selector or array_cv_matches or sklearn_search or cv_folds_are_independent or bic_grid_matches or poisson_rate_weights or poisson_bic_differences or supported_family_predict",
+      "--runxfail",
+      "-q",
+      "--tb=short",
+      "-p",
+      "no:cacheprovider"
+    ],
+    "cwd": "/tmp/arfs-r13/run-py312-locked",
+    "exit_code": 0
+  }
+]

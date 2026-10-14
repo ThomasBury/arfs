@@ -1,0 +1,16 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+___________________ test_validate_pandas_input_accepts_array ___________________
+/tmp/arfs-r18/final/py312-locked/lib/python3.12/site-packages/arfs/utils.py:294: in validate_pandas_input
+    return arg.values
+E   AttributeError: 'numpy.ndarray' object has no attribute 'values'
+
+During handling of the above exception, another exception occurred:
+reviews/evidence/06-utilities-and-workflows/checks.py:249: in test_validate_pandas_input_accepts_array
+    np.testing.assert_array_equal(u.validate_pandas_input(x),x)
+/tmp/arfs-r18/final/py312-locked/lib/python3.12/site-packages/arfs/utils.py:296: in validate_pandas_input
+    raise TypeError("input needs to be a numpy array or pandas data frame.")
+E   TypeError: input needs to be a numpy array or pandas data frame.
+=========================== short test summary info ============================
+FAILED reviews/evidence/06-utilities-and-workflows/checks.py::test_validate_pandas_input_accepts_array
+1 failed, 24 deselected in 2.76s
