@@ -2,6 +2,8 @@
 
 # Unreleased
 
+ - Repair documentation examples, optional-backend setup, sampling limits and reduced-feature time-series calls. Build HTML from the local docs directory using the project docs extra and a system Pandoc executable; render saved notebook outputs without executing optional or large workloads. Remove unused Pandoc Python/tabs dependencies, fix API markup and qualify method, weighting and validation claims.
+
  - Use local seeded random draws for synthetic datasets and Titanic/cancer augmentation, including weights, without altering NumPy's global stream. Generate exact odd/even regression row counts and mark Titanic passengers alone only when they have no relatives.
 
  - Make plots follow the displayed data and fitted selection: preserve target-plot feature labels and single-panel layouts, color Leshy boxes by membership, and honor VariableImportance plot limits and terminal thresholds. Keep cumulative feature positions linear and shares relative to all features; render singleton association matrices without clustering.

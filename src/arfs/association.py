@@ -1532,16 +1532,9 @@ def f_cont_regression_parallel(
 ):
     """Univariate linear regression tests returning F-statistic.
 
-    Quick linear model for testing the effect of a single regressor,
-    sequentially for many regressors.
-    This is done in 2 steps:
-    1. The cross-correlation between each regressor and the target is computed using:
-           E[(X[:, i] - mean(X[:, i])) * (y - mean(y))] / (std(X[:, i]) * std(y))
-    2. It is converted to an F score ranks features in the same order if all the features
-       are positively correlated with the target.
-    Note that it is therefore recommended as a feature selection criterion to identify
-    potentially predictive features for a downstream classifier, irrespective of
-    the sign of the association with the target variable.
+    Compute each predictor's weighted Pearson correlation with the response,
+    then convert its squared correlation to an F ranking score. Positive and
+    negative associations of equal magnitude receive the same score.
 
     Parameters
     ----------
@@ -1556,18 +1549,8 @@ def f_cont_regression_parallel(
     handle_na : str, optional
         Either drop rows with NaN, fill NaN with 0, or do nothing, by default "drop".
     force_finite : bool, optional
-        Whether or not to force the F-statistics and associated p-values to
-        be finite. There are two cases where the F-statistic is expected to not
-        be finite:
-        - when the target `y` or some features in `X` are constant. In this
-          case, the Pearson's R correlation is not defined leading to obtain
-          `np.nan` values in the F-statistic and p-value. When
-          `force_finite=True`, the F-statistic is set to `0.0` and the
-          associated p-value is set to `1.0`.
-        - when a feature in `X` is perfectly correlated (or
-          anti-correlated) with the target `y`. In this case, the F-statistic
-          is expected to be `np.inf`. When `force_finite=True`, the F-statistic
-          is set to `np.finfo(dtype).max`.
+        Replace undefined scores with zero and infinite scores with the
+        maximum finite float. No p-values are returned.
 
     Returns
     -------
@@ -1752,10 +1735,8 @@ def f_cat_classification_parallel(
     """
     Univariate information dependence, expressed as a ranking heuristic.
 
-    It ranks features in the same order if all the features are positively correlated with the target.
-    Note that it is therefore recommended as a feature selection criterion to identify
-    potentially predictive features for a downstream classifier, irrespective of
-    the sign of the association with the target variable.
+    Convert weighted Theil-U dependence to a ranking score. This transform
+    does not establish an F null distribution or calibrated significance.
 
     Parameters
     ----------
@@ -1770,18 +1751,8 @@ def f_cat_classification_parallel(
     handle_na : str, optional
         Either drop rows with NaN, fill NaN with 0, or do nothing, by default "drop".
     force_finite : bool, optional
-        Whether or not to force the F-statistics and associated p-values to
-        be finite. There are two cases where the F-statistic is expected to not
-        be finite:
-            - when the target `y` or some features in `X` are constant. In this
-              case, the Pearson's R correlation is not defined leading to obtain
-              `np.nan` values in the F-statistic and p-value. When
-              `force_finite=True`, the F-statistic is set to `0.0` and the
-              associated p-value is set to `1.0`.
-            - when a feature in `X` is perfectly correlated (or
-              anti-correlated) with the target `y`. In this case, the F-statistic
-              is expected to be `np.inf`. When `force_finite=True`, the F-statistic
-              is set to `np.finfo(dtype).max`.
+        Replace undefined scores with zero and infinite scores with the
+        maximum finite float. No p-values are returned.
 
     Returns
     -------

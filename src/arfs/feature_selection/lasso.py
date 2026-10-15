@@ -344,7 +344,7 @@ class EnetGLM(BaseEstimator, RegressorMixin):
         These statistics use the same data as variable selection and do not
         account for that selection; ordinary p-values are not selection-adjusted.
         The backend summary is returned unchanged. Its information criteria
-        can differ from the wrapper's rank/count-corrected aic_ and bic_.
+        can differ from the wrapper's rank/count-corrected ``aic_`` and ``bic_``.
         """
         return self.result.summary()
 
@@ -595,7 +595,7 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
     fit_intercept : bool, default=True
         Add an intercept when no nonzero training constant exists. Supplied
         columns are preserved. A selected generated intercept is included in
-        transform output, but not in input metadata or support_.
+        transform output, but not in input metadata or ``support_``.
 
     Attributes
     ----------
@@ -613,7 +613,7 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
         Names of the fitted design, including a generated intercept if needed.
     design_support_ : ndarray
         Nonzero-coefficient support for the fitted design. A selected generated
-        intercept remains in transform output and selected_features_.
+        intercept remains in transform output and ``selected_features_``.
     feature_names_in_ : ndarray
         The input feature names.
     n_features_in_ : int
@@ -623,14 +623,6 @@ class LassoFeatureSelection(BaseEstimator, TransformerMixin):
     n_jobs: int
         the number of processes. -1 means all the processes
 
-    Methods
-    -------
-    fit(X, y=None, sample_weight=None)
-        Fit the LassoFeatureSelection model and select the best features.
-    transform(X)
-        Apply the fitted design and retain its selected columns.
-    get_feature_names_out(input_features=None)
-        Get the names of the selected features.
 
     """
 

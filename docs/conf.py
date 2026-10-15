@@ -4,45 +4,13 @@
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
-# -- Path setup --------------------------------------------------------------
+from arfs import __version__
 
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-#
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
-import sys
-import os
-import datetime
-
-sys.path.insert(0, os.path.abspath("../../arfs"))
 # -- Project information -----------------------------------------------------
-
 project = "arfs"
 copyright = "2024, Thomas Bury"
 author = "Thomas Bury"
-
-# The full version, including alpha/beta/rc tags
-release = "3.0.0"
-
-# If extensions (or modules to document with autodoc) are in another
-# directory, add these directories to sys.path here. If the directory is
-# relative to the documentation root, use os.path.abspath to make it
-# absolute, like shown here.
-# sys.path.append(os.path.join(os.path.abspath(os.pardir)))
-
-# Don't add the same path again, remove the following line:
-# sys.path.insert(0, os.path.abspath(".."))
-
-sys.path.append(os.path.abspath(os.path.join(__file__, "../../src")))
-autodoc_mock_imports = ["_tkinter", "sphinx_tabs.tabs"]
-
-# Get the project root dir, which is the parent dir of this
-cwd = os.getcwd()
-project_root = os.path.dirname(cwd)
-
+release = __version__
 
 # -- General configuration ---------------------------------------------------
 
@@ -57,17 +25,25 @@ extensions = [
     "sphinx_autodoc_typehints",
     "sphinx_copybutton",
     "nbsphinx",
-    "sphinx_tabs.tabs",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ["_templates"]
+templates_path = []
 autosummary_generate = True
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+exclude_patterns = ["_build", "build", "Thumbs.db", ".DS_Store"]
+autosectionlabel_prefix_document = True
+autosectionlabel_maxdepth = 1
+# These sklearn-generated helpers link to sklearn's own metadata-routing guide.
+autodoc_default_options = {
+    "exclude-members": "set_fit_request,set_score_request,set_transform_request,set_inverse_transform_request"
+}
+
+# Execution is checked separately; optional and large examples must not run on build.
+nbsphinx_execute = "never"
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -106,6 +82,6 @@ napoleon_use_admonition_for_references = False
 napoleon_use_ivar = True
 napoleon_use_param = True
 napoleon_use_rtype = False
-napoleon_preprocess_types = True
+napoleon_preprocess_types = False
 napoleon_type_aliases = None
 napoleon_attr_annotations = True

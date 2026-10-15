@@ -1,15 +1,10 @@
 {
-  "docs/conf.py": {
-    "F401": 1,
-    "I001": 1
-  },
   "docs/notebooks/arfs_boruta_borutaShap_comparison.ipynb": {
     "F401": 14,
     "F811": 2,
     "I001": 2
   },
   "docs/notebooks/arfs_classification.ipynb": {
-    "F821": 1,
     "I001": 1
   },
   "docs/notebooks/arfs_grootcv_custom_params.ipynb": {
@@ -32,7 +27,6 @@
     "PIE800": 1
   },
   "docs/notebooks/arfs_regression.ipynb": {
-    "F821": 1,
     "I001": 1
   },
   "docs/notebooks/arfs_shap_vs_fastshap.ipynb": {
