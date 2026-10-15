@@ -2,6 +2,8 @@
 
 # Unreleased
 
+ - Make plots follow the displayed data and fitted selection: preserve target-plot feature labels and single-panel layouts, color Leshy boxes by membership, and honor VariableImportance plot limits and terminal thresholds. Keep cumulative feature positions linear and shares relative to all features; render singleton association matrices without clustering.
+
  - Preserve mixed integer/string and tuple/MultiIndex labels in parallel association work. Use joblib's negative worker-count semantics, cap workers to nonempty chunks, propagate callback errors and return typed empty results. Sort results with stable ties and a consistent matrix index. Serial Pearson now returns both directions of distinct pairs without diagonal entries, matching the parallel path while retaining its native matrix calculation.
 
  - Make Gower nearest neighbors use the explicit one-row query, exclude its identifier and return the nearest finite-distance row per remaining key. Use linear distance storage, stable input-order ties and validated nonnegative counts; raise for too few eligible neighbors. Support Series queries and preserve candidate dtype inference. smallest_indices now returns only finite values and empty arrays for zero, without nonfinite-value replacement.

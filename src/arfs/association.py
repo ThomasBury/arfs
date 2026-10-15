@@ -2055,7 +2055,8 @@ def cluster_sq_matrix(sq_matrix, method="ward"):
     Parameters
     ----------
     sq_matrix : pd.DataFrame
-        A square correlation matrix.
+        A nonempty square correlation matrix. A singleton is returned as a copy
+        without clustering, preserving its value even when undefined.
     method : str, optional
         The linkage method, by default "ward".
 
@@ -2071,6 +2072,10 @@ def cluster_sq_matrix(sq_matrix, method="ward"):
     >>> assoc = association_matrix(iris_df, plot=False)
     >>> assoc_clustered = cluster_sq_matrix(assoc, method="complete")
     """
+    if sq_matrix.shape[0] == 0 or sq_matrix.shape[0] != sq_matrix.shape[1]:
+        raise ValueError("sq_matrix must be a nonempty square matrix.")
+    if len(sq_matrix) == 1:
+        return sq_matrix.copy()
     d = pdist(sq_matrix.values)
     L = sch.linkage(d, method=method)
     ind = sch.fcluster(L, 0.5 * d.max(), "distance")
@@ -2263,6 +2268,8 @@ def plot_association_matrix(
     matplotlib.figure and matplotlib.axes.Axes
         the figure and the axes
     """
+    assoc_mat = cluster_sq_matrix(assoc_mat)
+
     # default size if None
     if figsize is None:
         ncol = len(assoc_mat)
@@ -2273,7 +2280,6 @@ def plot_association_matrix(
         fig, ax = plt.subplots(figsize=figsize)
     else:
         fig = ax.get_figure()
-    assoc_mat = cluster_sq_matrix(assoc_mat)
 
     # provide default to imshow
     if imgshow_kw is None:

@@ -355,6 +355,8 @@ class Leshy(SelectorMixin, BaseEstimator):
         """Boxplot of the variable importance, ordered by magnitude
         The max shadow variable importance illustrated by the dashed line.
         Requires to apply the fit method first.
+        Colors follow fitted membership; tentative features remain yellow when
+        keep_weak includes them in the selection.
 
         Parameters
         ----------
@@ -382,19 +384,15 @@ class Leshy(SelectorMixin, BaseEstimator):
             fig, ax = plt.subplots(figsize=(16, vimp_df.shape[1] / n_feat_per_inch))
             bp = vimp_df.plot(**PLOT_KWARGS, ax=ax)
 
-            n_strong = sum(self.support_)
-            n_weak = np.sum(self.support_weak_)
-            n_discarded = np.sum(~(self.support_ | self.support_weak_))
-            box_face_col = (
-                [BLUE] * n_strong + [YELLOW] * n_weak + ["gray"] * n_discarded
+            box_face_col = pd.Series(
+                np.where(
+                    self.support_weak_, YELLOW, np.where(self.support_, BLUE, "gray")
+                ),
+                index=self.feature_names_in_,
             )
-            for c in range(len(box_face_col)):
-                bp.findobj(mpl.patches.Patch)[len(self.support_) - c - 1].set_facecolor(
-                    box_face_col[c]
-                )
-                bp.findobj(mpl.patches.Patch)[len(self.support_) - c - 1].set_color(
-                    box_face_col[c]
-                )
+            for patch, color in zip(bp.patches, box_face_col.loc[vimp_df.columns]):
+                patch.set_facecolor(color)
+                patch.set_color(color)
 
             xrange = vimp_df.max(skipna=True).max(skipna=True) - vimp_df.min(
                 skipna=True
