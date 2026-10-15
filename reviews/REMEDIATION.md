@@ -1,6 +1,6 @@
 # ARFS remediation handoff
 
-**Status: R01–R29 and R31 complete; R30 and R32–R33 pending. Next implementation group: R30 alone, with R04 complete.**
+**Status: R01–R31 complete; R32–R33 pending. Next implementation group: R32 alone, with R01–R31 complete.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
 a separate repair backlog. By default, a request to implement the next phase
@@ -213,10 +213,10 @@ record each outcome separately. Stop at a phase boundary if a new API or
 statistical decision, unresolved failure, or wider scope makes the batch too
 large. Session boundaries and repair phases are not published releases.
 
-R01–R29 and R31 are complete. The explicitly requested R02/R03, R10/R11,
+R01–R31 are complete. The explicitly requested R02/R03, R10/R11,
 R18/R31 and R25/R26 batches were implemented and validated sequentially.
-The next recorded group is **R30 alone**, with R04 complete. Remaining
-phases R30, R32 and R33 each run separately.
+The next recorded group is **R32 alone**, with R01–R31 complete. Remaining
+phases R32 and R33 each run separately.
 
 | Phases | Session recommendation | Reason |
 | --- | --- | --- |
@@ -246,13 +246,14 @@ phases R30, R32 and R33 each run separately.
 | R27 | Complete; do not repeat | [R27](R27-nearest-neighbors.md) records actual queries, key exclusion/deduplication, finite-only stable ranking and count/schema boundaries |
 | R28 | Complete; do not repeat | [R28](R28-parallel-contracts.md) records original labels, stable ordering, typed empty results and native worker counts capped to useful work |
 | R29 | Complete; do not repeat | [R29](R29-plot-contracts.md) records feature coordinates, membership colors, fitted cutoffs, display limits and singleton clustering |
-| R30 | Next; run alone | R04 complete; use local RNG, exact row counts and the correct Titanic alone flag |
+| R30 | Complete; do not repeat | [R30](R30-dataset-fixtures.md) records isolated reproducible draws, exact row counts and the correct Titanic alone flag |
+| R32 | Next; run alone | R01–R31 complete; repair and execute documentation workflows and settle optional dependency/claim boundaries |
 
 ### Recorded groups for next-batch requests
 
 When the user asks to "implement the next batch of RXX", read the current phase
-statuses in this file and use these groups. **The next recorded group is R30
-alone**, with R04 complete. The three two-phase groups below are already complete.
+statuses in this file and use these groups. **The next recorded group is R32
+alone**, with R01–R31 complete. The three two-phase groups below are already complete.
 R10/R11 are complete; their separate handoffs record support/history consistency,
 weighted permutation scoring and the user-chosen absolute-total normalization.
 R12 is complete: GrootCV uses maximum shadow medians across folds/repeats;
@@ -303,7 +304,9 @@ parallel chunks preserve original labels, use native negative worker counts capp
 to useful work, return typed empty results and sort with stable ties. Serial Pearson
 now shares the pairwise row layout. R29 is complete: plots retain feature
 coordinates, color fitted membership, honor display limits and terminal cutoffs,
-and bypass singleton clustering. Next is **R30 alone**, with R04 complete.
+and bypass singleton clustering. R30 is complete: dataset augmentation and
+generators use local seeded draws, odd sizes retain every row and Titanic
+marks only zero-relative passengers alone. Next is **R32 alone**, with R01–R31 complete.
 A request for the next batch authorizes that one group, its affected callers,
 tests, local phase commits and handoff update; stop after
 it. It does not authorize the following group or Git publication/release unless
@@ -316,8 +319,8 @@ the user also requests those actions.
 | **R25 → R26 (complete)** | R05 and R24 complete | Sampling output repairs and bounded isolation retries share one module | Settled: reject Gower row weights, forward isolation fit weights, omit zero-weight fit rows, tiny identity, 20 attempts per distinct size and full-data fallback |
 
 R10 → R11, R18 → R31 and R25 → R26 are complete in separate sequential
-local phase commits, with decisions recorded in their handoffs. R27–R29 are also
-complete. Next is R30 alone. These are sequential groups, not parallel agent assignments.
+local phase commits, with decisions recorded in their handoffs. R27–R30 are also
+complete. Next is R32 alone. These are sequential groups, not parallel agent assignments.
 
 For an unnamed next-batch request, continue from the lowest-numbered Pending
 phase in the ordered table. If it is R10, R18, or R25, use its recorded pair once
@@ -1206,10 +1209,40 @@ remain pending. Hosted CI, full notebooks/docs, optional interactive backends,
 other platforms and large-feature performance were not checked. No push, PR,
 version bump or release is included.
 
+## R30 — Local dataset fixtures complete — 2026-10-15
+
+R30 is complete, based on R29 handoff commit `56f4f6c`, on local branch
+`fix/r30-dataset-fixtures`, implementation commit `db2f7f7`. The
+[handoff](R30-dataset-fixtures.md) records local
+seeded draws across both generators and Titanic/cancer augmentation, reproducible
+weights, exact odd/even row counts and Titanic's zero-relative alone flag. Existing
+even-size features/targets remain identical to the R29 wheel at four checked sizes.
+Historical reports and evidence are unchanged.
+
+All **25** maintained R30 regressions pass in every installed-wheel cell; the
+unchanged R29 wheel produces **13 failures and 12 passing controls**. Affected
+source checks pass **68 tests**. Full installed-wheel suites pass **1450 / 1450 /
+1434** on Python 3.9 locked / Python 3.12 locked / Python 3.12 newer. All three
+selected unchanged historical RNG/odd-size checks pass unmasked in both 3.12
+cells. Titanic feature construction uses a network-free fixture covering zero,
+one and two relatives; no live OpenML download was needed.
+
+All 19 source/sdist/wheel payloads and 13 installed module hashes agree; copied
+tests match current source. Dependency/lock checks, Ruff (330 total, zero new),
+two gate tests, new-test formatting and whitespace pass. The two inherited
+utils.py formatting differences are unchanged. No new dependency or seed option
+is added. These fixture checks do not establish selection calibration.
+
+**Next recorded group: R32 alone**, with R01–R31 complete. Repair and execute the
+documentation workflows and record optional dependency/claim boundaries. R32 and
+R33 remain pending. Hosted CI, full docs/notebooks, optional backends, other
+platforms and large-data performance were not checked. No push, PR, version bump
+or release is included.
+
 ## Ordered phases
 
-R01–R29 and R31 are **Complete**; R30 and R32–R33 are **Pending**.
-The next group is **R30 alone**, with R04 complete. The
+R01–R31 are **Complete**; R32–R33 are **Pending**.
+The next group is **R32 alone**, with R01–R31 complete. The
 [R01 handoff](R01-installed-package.md) records changes, decisions, exact checks,
 environment identities, inherited failures, and the resume point. Changes are
 committed as `6b675fd` on `fix/r01-installed-package` at checkpoint base `0270aca`;
@@ -1259,7 +1292,9 @@ on `fcb811e`, on branch `fix/r27-nearest-neighbors`.
 [R28](R28-parallel-contracts.md) is complete in local commit `2181790`, based
 on `81dc6c9`, on branch `fix/r28-parallel-contracts`.
 [R29](R29-plot-contracts.md) is complete on `fix/r29-plot-contracts`, based on
-`605cbff`, implementation commit `24db954`. Next is R30 alone.
+`605cbff`, implementation commit `24db954`.
+[R30](R30-dataset-fixtures.md) is complete on `fix/r30-dataset-fixtures`, based
+on R29 handoff `56f4f6c`, implementation commit `db2f7f7`. Next is R32 alone.
 Hosted CI for R13–R24/R31 and remaining release evidence
 are still pending. An ID such
 as `1A F3` means finding 3 in the linked original report. The complete ID-to-phase
@@ -1296,14 +1331,14 @@ mapping follows the table.
 | **R27 — Query-aware nearest neighbors (Complete)** | Use the actual one-row query, exclude its key, deduplicate eligible keys once, validate n/query and define insufficient-candidate/nonfinite behavior. [05 F11/F12](05-sampling-and-parallel.md) | R24 | Query changes result; duplicate IDs; enough/too few unique candidates; n=0/negative/too large; optional-query policy; only a query-by-candidate distance vector allocated |
 | **R28 — Parallel labels and bounded useful work (Complete)** | Chunk original label objects without NumPy coercion; settle result order/empty schema and worker-count semantics, avoiding empty tasks. [05 F13 and resource boundaries](05-sampling-and-parallel.md) | R06/R08 | Integer/string and tuple/MultiIndex labels with one/two workers; propagated callback error; no-pair and empty work; supported negative counts; worker cap observed without a new execution framework |
 | **R29 — Plots match the data and selection (Complete)** | Keep feature/subplot coordinates separate, color actual Leshy membership, include terminal importance thresholds, respect plot limits and linear feature positions, bypass singleton clustering. [06 F2–F7](06-utilities-and-workflows.md) | R03/R10/R17 | Render and inspect string/integer/single-panel target plots; masks disagreeing with importance order; threshold 1/one/no feature, plot_n limit, first cumulative point, input/figure ownership |
-| **R30 — Honest local dataset fixtures** | Use local RNG consistently, generate exactly the requested odd/even row count, correct Titanic's alone flag. [06 F8/F9/F15](06-utilities-and-workflows.md) | R04 | Caller RNG stream unchanged; reproducible features/targets/weights; strong/noise construction checks; odd size; network-free 0/1/2-relative fixture. Do not introduce a new data service |
+| **R30 — Honest local dataset fixtures (Complete)** | Use local RNG consistently, generate exactly the requested odd/even row count, correct Titanic's alone flag. [06 F8/F9/F15](06-utilities-and-workflows.md) | R04 | Caller RNG stream unchanged; reproducible features/targets/weights; strong/noise construction checks; odd size; network-free 0/1/2-relative fixture. Do not introduce a new data service |
 | **R31 — Retain or remove legacy helpers deliberately (Complete)** | User chose removal of public `cat_var` and `validate_pandas_input`, without shims. Remove the dead benchmark comment and cat_var-only import; document encoder/array migration. [02 F15](02-preprocessing.md), [06 F10](06-utilities-and-workflows.md) | R06/R18 | Absent public helpers/exports; supported encoder keeps missing distinct, handles newer strings and owns inputs; active callers and retained function/class ASTs rechecked |
 | **R32 — Reproducible documentation workflows** | Repair classification/regression setup, sampling overwrite, time-series reduced-feature calls, README filename and local Sphinx source. Reconcile docs-extra/RTD/fastshap policy; qualify method/weight/backend claims after preceding choices. [05 F14](05-sampling-and-parallel.md), [06 F12–F14](06-utilities-and-workflows.md), [07 F1](07-final-assessment.md) | Relevant R01–R31 fixes for each example | Actual Sphinx build and local links; bounded clean-kernel basic/classification/regression/preprocessing examples; exact reduced-feature model input; size limit maintained. Record data substitutions, excluded optional cells, and remaining notebooks separately |
 | **R33 — Release evidence and remaining claims** | Run the repaired package gates and a justified support matrix. Reassess selection claims with meaningful held-out baselines and document remaining optional/performance limits; narrow unsupported claims instead of promising unbounded validation. | All release-blocking phases above | Fresh source/wheel/lock metadata agree; no workaround; established suite and promoted regressions pass; repeated-seed signal/null, weak/correlated/mixed/weighted cases appropriate to claims; fold-local preprocessing/selection; clean-process artifacts; docs build. Optional backends/platforms require their own tests before claiming support |
 
 R21's group/schema safeguards are complete, with R05/R06 prerequisites retained.
-R24–R29 are complete. The next recorded group is **R30 alone**, with R04
-complete; R30, R32 and R33 remain pending. Do not parallelize edits to
+R24–R30 are complete. The next recorded group is **R32 alone**, with R01–R31
+complete; R32 and R33 remain pending. Do not parallelize edits to
 shared dtype/weight helpers without agreeing their contract first.
 
 ## Complete finding-to-phase map
