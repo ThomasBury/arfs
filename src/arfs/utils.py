@@ -486,6 +486,9 @@ def _get_titanic_data():
     """Load Titanic data and add dummies (random predictors, numeric and categorical) and
     a genuine one, for benchmarking purpose. Classification (binary)
 
+    Random additions and weights use one local RNG seeded with 42. family_size
+    counts relatives, so is_alone is true only when that count is zero.
+
     Returns
     -------
     object
@@ -499,11 +502,11 @@ def _get_titanic_data():
     )
     rng = np.random.RandomState(seed=42)
     nice_guys = ["Rick", "Bender", "Cartman", "Morty", "Fry", "Vador", "Thanos"]
-    X["random_cat"] = np.random.choice(nice_guys, X.shape[0])
+    X["random_cat"] = rng.choice(nice_guys, X.shape[0])
     X["random_num"] = rng.randn(X.shape[0])
     X["family_size"] = X["parch"] + X["sibsp"]
     X.drop(["parch", "sibsp"], axis=1, inplace=True)
-    X["is_alone"] = np.where(X["family_size"] > 1, 0, 1)
+    X["is_alone"] = np.where(X["family_size"] == 0, 1, 0)
     X["title"] = (
         X["name"].str.split(", ", expand=True)[1].str.split(".", expand=True)[0]
     )
@@ -539,7 +542,7 @@ def _get_titanic_data():
     X[numerical_columns] = X[numerical_columns].astype(float)
 
     # Create sample weights
-    sample_weight = np.random.uniform(0, 1, len(y))
+    sample_weight = rng.uniform(0, 1, len(y))
 
     return Bunch(
         data=X,
@@ -553,6 +556,8 @@ def _get_cancer_data():
     """Load breast cancer data and add dummies (random predictors) and a genuine one, for benchmarking purpose
     Classification (binary)
 
+    Random additions use one local RNG seeded with 42.
+
     Returns
     -------
     object
@@ -565,11 +570,11 @@ def _get_cancer_data():
     X = pd.DataFrame(X)
     X.columns = data.feature_names
     X["random_num1"] = rng.randn(X.shape[0])
-    X["random_num2"] = np.random.poisson(1, X.shape[0])
+    X["random_num2"] = rng.poisson(1, X.shape[0])
     z = y.astype(int)
-    X["genuine_num"] = z * np.abs(
-        np.random.normal(0, 0.1, X.shape[0])
-    ) + np.random.normal(0, 0.1, X.shape[0])
+    X["genuine_num"] = z * np.abs(rng.normal(0, 0.1, X.shape[0])) + rng.normal(
+        0, 0.1, X.shape[0]
+    )
     y = pd.Series(y)
     return Bunch(data=X, target=y, sample_weight=None, categorical=None)
 
@@ -733,6 +738,9 @@ def _make_corr_dataset_regression(size=1000):
     """Generate an artificial dataset for regression tasks with columns that
     are correlated, have no variance, large cardinality, numerical and categorical.
 
+    Features, target and weights use one local RNG seeded with 42, without
+    changing NumPy's global random stream.
+
     Parameters
     ----------
     size : int, optional
@@ -740,53 +748,49 @@ def _make_corr_dataset_regression(size=1000):
 
     Returns
     -------
-    pd.DataFrame, pd.Series, pd.Series
+    pd.DataFrame, np.ndarray, np.ndarray
         the predictors matrix, the target and the weights
     """
-    # generate weights
-    w = np.random.beta(a=1, b=0.5, size=size)
-
-    # set seed for reproducibility
-    np.random.seed(42)
+    rng = np.random.RandomState(seed=42)
 
     # generate target variable
     sigma = 0.2
-    y = np.random.normal(1, sigma, size)
+    y = rng.normal(1, sigma, size)
 
     # generate correlated features
-    z = y - np.random.normal(1, sigma / 5, size) + np.random.normal(1, sigma / 5, size)
+    z = y - rng.normal(1, sigma / 5, size) + rng.normal(1, sigma / 5, size)
     X = pd.DataFrame(
         {
             "var0": z,
-            "var1": y * np.abs(np.random.normal(0, sigma * 2, size))
-            + np.random.normal(0, sigma / 10, size),
-            "var2": -y + np.random.normal(0, sigma, size),
-            "var3": y**2 + np.random.normal(0, sigma, size),
-            "var4": np.sqrt(y) + np.random.gamma(1, 0.2, size),
-            "var5": np.random.normal(0, 1, size),
-            "var6": np.random.poisson(1, size),
-            "var7": np.random.binomial(1, 0.3, size),
-            "var8": np.random.normal(0, 1, size),
-            "var9": np.random.poisson(1, size),
+            "var1": y * np.abs(rng.normal(0, sigma * 2, size))
+            + rng.normal(0, sigma / 10, size),
+            "var2": -y + rng.normal(0, sigma, size),
+            "var3": y**2 + rng.normal(0, sigma, size),
+            "var4": np.sqrt(y) + rng.gamma(1, 0.2, size),
+            "var5": rng.normal(0, 1, size),
+            "var6": rng.poisson(1, size),
+            "var7": rng.binomial(1, 0.3, size),
+            "var8": rng.normal(0, 1, size),
+            "var9": rng.poisson(1, size),
             "var10": np.ones(size),
             "var11": np.concatenate(
                 [
-                    np.arange(start=0, stop=int(size / 2), step=1),
-                    np.arange(start=0, stop=int(size / 2), step=1),
+                    np.arange((size + 1) // 2),
+                    np.arange(size // 2),
                 ]
             ),
-            "var12": y**3 + np.abs(np.random.normal(0, 1, size)),
+            "var12": y**3 + np.abs(rng.normal(0, 1, size)),
         }
     )
 
     # introduce missing values
-    idx_nan = np.random.choice(size, int(round(size / 2)), replace=False)
+    idx_nan = rng.choice(size, int(round(size / 2)), replace=False)
     X.loc[idx_nan, "var12"] = np.nan
 
     # set column names and types
     X.columns = ["var" + str(i) for i in range(13)]
     X["var11"] = X["var11"].astype("category")
-    X["nice_guys"] = np.random.choice(
+    X["nice_guys"] = rng.choice(
         [
             "Rick",
             "Bender",
@@ -828,6 +832,7 @@ def _make_corr_dataset_regression(size=1000):
         size,
     )
 
+    w = rng.beta(a=1, b=0.5, size=size)
     return X, y, w
 
 
@@ -836,35 +841,34 @@ def _make_corr_dataset_classification(size=1000):
     Generate an artificial dataset for classification tasks. Some columns are correlated,
     have no variance, large cardinality, numerical and categorical.
 
+    Features, target and weights use one local RNG seeded with 42, without
+    changing NumPy's global random stream.
+
     Parameters:
         size (int): The number of rows to generate. Default is 1000.
 
     Returns:
         tuple: A tuple containing the predictors matrix, the target, and the weights.
     """
-    # Generate weights
-    w = np.random.beta(a=1, b=0.5, size=size)
-
-    # Fix the seed and generate the target
-    np.random.seed(42)
-    y = np.random.binomial(1, 0.5, size)
+    rng = np.random.RandomState(seed=42)
+    y = rng.binomial(1, 0.5, size)
 
     # Generate the predictors matrix
     X = np.zeros((size, 13))
 
-    z = y - np.random.binomial(1, 0.1, size) + np.random.binomial(1, 0.1, size)
+    z = y - rng.binomial(1, 0.1, size) + rng.binomial(1, 0.1, size)
     z[z == -1] = 0
     z[z == 2] = 1
 
     # Generate 5 relevant features, with positive and negative correlation to the target
     X[:, 0] = z
-    X[:, 1] = y * np.abs(np.random.normal(0, 1, size)) + np.random.normal(0, 0.1, size)
-    X[:, 2] = -y + np.random.normal(0, 1, size)
-    X[:, 3] = y**2 + np.random.normal(0, 1, size)
-    X[:, 4] = np.sqrt(y) + np.random.binomial(2, 0.1, size)
+    X[:, 1] = y * np.abs(rng.normal(0, 1, size)) + rng.normal(0, 0.1, size)
+    X[:, 2] = -y + rng.normal(0, 1, size)
+    X[:, 3] = y**2 + rng.normal(0, 1, size)
+    X[:, 4] = np.sqrt(y) + rng.binomial(2, 0.1, size)
 
     # Generate 5 irrelevant features
-    X[:, 5:10] = np.random.normal(0, 1, size=(size, 5))
+    X[:, 5:10] = rng.normal(0, 1, size=(size, 5))
 
     # Generate a column with zero variance
     X[:, 10] = np.ones(size)
@@ -873,8 +877,8 @@ def _make_corr_dataset_classification(size=1000):
     X[:, 11] = np.arange(start=0, stop=size, step=1)
 
     # Generate a column with a lot of missing values
-    idx_nan = np.random.choice(size, int(round(size / 2)), replace=False)
-    X[:, 12] = y**3 + np.abs(np.random.normal(0, 1, size))
+    idx_nan = rng.choice(size, int(round(size / 2)), replace=False)
+    X[:, 12] = y**3 + np.abs(rng.normal(0, 1, size))
     X[idx_nan, 12] = np.nan
 
     # Make the predictors matrix a pandas DataFrame
@@ -922,6 +926,7 @@ def _make_corr_dataset_classification(size=1000):
         "Bane",
         "MarkZ",
     ]
-    X["nice_guys"] = np.random.choice(nice_guys, size)
+    X["nice_guys"] = rng.choice(nice_guys, size)
 
+    w = rng.beta(a=1, b=0.5, size=size)
     return X, y, w
