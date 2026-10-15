@@ -1,0 +1,1 @@
+include tests/__init__.py tests/selection_screen.py

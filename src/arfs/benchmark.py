@@ -9,19 +9,17 @@ Module Structure:
 - ``highlight_tick``: function for highlighting specific (genuine or noise for instance) predictors in the importance chart
 """
 
-from __future__ import print_function, division
-
 import itertools
+
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
-from sklearn.model_selection import train_test_split
-from sklearn.inspection import permutation_importance
-
 from sklearn.base import clone
+from sklearn.inspection import permutation_importance
+from sklearn.model_selection import train_test_split
 
+from .feature_selection.allrelevant import BoostAGroota, Leshy
 from .preprocessing import OrdinalEncoderPandas
-from .feature_selection.allrelevant import Leshy, BoostAGroota
 from .utils import validate_sample_weight, validate_target
 
 
@@ -152,9 +150,7 @@ def compare_varimp(feat_selector, models, X, y, sample_weight=None):
             "=" * 20
             + " "
             + str(feat_selector.__class__.__name__)
-            + " - testing: {mod:>25} for var.imp: {vimp:<15} ".format(
-                mod=str(model.__class__.__name__), vimp=varimp
-            )
+            + f" - testing: {model.__class__.__name__!s:>25} for var.imp: {varimp:<15} "
             + "=" * 20
         )
         params = clone(feat_selector.get_params(deep=False), safe=False)

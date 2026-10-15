@@ -67,3 +67,7 @@ version = { attr = "arfs.__version__" }
 [tool.setuptools.package-data]
 "arfs.dataset.data" = ["*.joblib", "*.zip"]
 "arfs.dataset.descr" = ["*.rst"]
+
+[tool.ruff.lint.pyupgrade]
+# Keep runtime-evaluable Union/Optional annotations on supported Python 3.9.
+keep-runtime-typing = true

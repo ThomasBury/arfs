@@ -43,8 +43,8 @@ For chronological development, see https://github.com/scikit-learn-contrib/borut
 
 Leshy vs. BorutaPy:
     To summarize, this PR solves/enhances:
-    * The categorical features (they are detected, encoded. The tree-based models are working better with integer encoding rather than with OHE, which leads to deep and unstable trees). If Catboost is used, then the cat.pred (if any) are set up.
-    * Work with Catboost sklearn API.
+    * Detect and encode categorical features. Codes need the estimator's categorical handling; encoding alone does not establish superiority over one-hot encoding.
+    * Accept compatible sklearn-style tree estimators. CatBoost/XGBoost execution is outside the tested runtime matrix.
     * Forward observation weights to compatible estimators and validation scoring; their meaning depends on the estimator and loss.
     * 3 different feature importances: native, SHAP, and permutation. Native being the least consistent (because of the imp. biased towards numerical and large cardinality categorical) but the fastest of the 3.
     * Support LightGBM; runtime depends on the data, estimator and parameters.

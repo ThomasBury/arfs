@@ -8,8 +8,8 @@ Module Structure:
 - ``highlight_discarded`` function for creating style for the pd.DataFrame
 """
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 
 def highlight_discarded(s):
@@ -71,7 +71,7 @@ def make_fs_summary(selector_pipe):
 
     style = (
         tag_df.style.apply(highlight_discarded, subset=tag_df.columns[1:])
-        .map(lambda x: "" if x == x else "background-color: #f57505")
+        .map(lambda x: "background-color: #f57505" if pd.isna(x) else "")
         .format(precision=0)
     )
 

@@ -30,32 +30,29 @@ descending with stable ties in callback order. Matrix results have a fresh
 RangeIndex; no-pair matrices have row/col/val columns with float values.
 """
 
+import gc
 import math
 import warnings
+from functools import partial
+from itertools import combinations, permutations, product
+
 import matplotlib
-import numpy as np
-import gc
-import pandas as pd
-import scipy.stats as ss
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 import scipy.cluster.hierarchy as sch
 import scipy.stats as ss
-
-
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+from scipy.spatial.distance import pdist
+from scipy.stats import rankdata
 from sklearn.utils import safe_mask
 
-from itertools import combinations, permutations, product
-from scipy.stats import rankdata
-from scipy.spatial.distance import pdist
-from functools import partial
-
 from .parallel import (
-    _effective_n_jobs,
-    parallel_matrix_entries,
-    parallel_df,
-    _compute_series,
     _compute_matrix_entries,
+    _compute_series,
+    _effective_n_jobs,
+    parallel_df,
+    parallel_matrix_entries,
 )
 from .utils import (
     _is_categorical_dtype,
@@ -175,13 +172,13 @@ def weighted_conditional_entropy(x, y, sample_weight=None):
 
     # Conditional entropy calculation
     h_xy = 0.0
-    for level in xy_weights:
-        for y_index, xy_weight in enumerate(xy_weights[level]):
+    for level_weights in xy_weights.values():
+        for y_index, xy_weight in enumerate(level_weights):
             p_xy = xy_weight / tot_weight
             p_y = y_weights[y_index] / tot_weight
 
             if p_xy != 0:
-                h_xy += p_xy * math.log(p_y / p_xy, math.e)
+                h_xy += p_xy * math.log(p_y / p_xy)
 
     return h_xy
 
@@ -291,7 +288,6 @@ def theils_u_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop"):
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
 
     # Cramer's V only for categorical columns
-    col_dtypes_dic = create_dtype_dict(X)
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
     cat_cols = dtypes_dic["cat"]
 
@@ -797,7 +793,7 @@ def wrank(x, w):
     w = validate_sample_weight(w, len(x))
     if w is None:
         w = np.ones(len(x))
-    (unique, arr_inv, counts) = np.unique(
+    (_unique, arr_inv, counts) = np.unique(
         rankdata(x), return_counts=True, return_inverse=True
     )
     a = np.bincount(arr_inv, w)
@@ -950,7 +946,6 @@ def wcorr_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop", method="spea
     """
     # sanity checks
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
-    col_dtypes_dic = create_dtype_dict(X)
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
 
     num_cols = dtypes_dic["num"]
@@ -1007,7 +1002,6 @@ def weighted_correlation_1cpu(X, sample_weight=None, handle_na="drop"):
     """
     # sanity checks
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
-    col_dtypes_dic = create_dtype_dict(X)
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
 
     numeric_cols = dtypes_dic["num"]
@@ -1039,13 +1033,16 @@ def weighted_correlation_1cpu(X, sample_weight=None, handle_na="drop"):
 #################################
 
 
+_DEFAULT_NUM_NUM_ASSOC = partial(weighted_corr, method="spearman")
+
+
 def association_series(
     X,
     target,
     features=None,
     sample_weight=None,
     nom_nom_assoc=weighted_theils_u,
-    num_num_assoc=partial(weighted_corr, method="spearman"),
+    num_num_assoc=_DEFAULT_NUM_NUM_ASSOC,
     nom_num_assoc=correlation_ratio,
     normalize=False,
     n_jobs=1,
@@ -1963,12 +1960,7 @@ def is_list_of_str(str_list):
         if ``str_list`` is not a ``list[str]``
     """
     if str_list is not None:
-        if not (
-            isinstance(str_list, list) and all(isinstance(s, str) for s in str_list)
-        ):
-            return False
-        else:
-            return True
+        return isinstance(str_list, list) and all(isinstance(s, str) for s in str_list)
 
 
 def matrix_to_xy(df, columns=None, reset_index=False):
@@ -2050,7 +2042,7 @@ def cluster_sq_matrix(sq_matrix, method="ward"):
     d = pdist(sq_matrix.values)
     L = sch.linkage(d, method=method)
     ind = sch.fcluster(L, 0.5 * d.max(), "distance")
-    columns = [sq_matrix.columns.tolist()[i] for i in list((np.argsort(ind)))]
+    columns = [sq_matrix.columns.tolist()[i] for i in list(np.argsort(ind))]
     sq_matrix = sq_matrix.reindex(columns, axis=1)
     sq_matrix = sq_matrix.reindex(columns, axis=0)
     return sq_matrix
@@ -2171,7 +2163,7 @@ def annotate_heatmap(
 
     # Set default alignment to center, but allow it to be
     # overwritten by textkw.
-    kw = dict(horizontalalignment="center", verticalalignment="center")
+    kw = {"horizontalalignment": "center", "verticalalignment": "center"}
     kw.update(textkw)
 
     # Get the formatter in case a string is supplied
@@ -2266,7 +2258,7 @@ def plot_association_matrix(
         assoc_mat = assoc_mat.rename(columns=rename_dic)
         assoc_mat = assoc_mat.rename(index=rename_dic)
 
-    im, cbar = heatmap(
+    im, _cbar = heatmap(
         assoc_mat.values,
         assoc_mat.columns,
         assoc_mat.columns,
@@ -2278,7 +2270,7 @@ def plot_association_matrix(
     )
 
     if annotate:
-        texts = annotate_heatmap(im, valfmt="{x:.1f}", textcolors=("white", "black"))
+        annotate_heatmap(im, valfmt="{x:.1f}", textcolors=("white", "black"))
 
     fig.tight_layout()
     if show:

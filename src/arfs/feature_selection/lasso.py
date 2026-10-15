@@ -18,15 +18,22 @@ With this submodule, users can easily leverage Lasso Regularized GLMs and conduc
 improving model performance and interpretability in various datasets.
 """
 
-import pandas as pd
+from typing import Optional, Union
+
 import numpy as np
+import pandas as pd
 import statsmodels.api as sm
-from sklearn.base import BaseEstimator, TransformerMixin, RegressorMixin
-from sklearn.base import clone, is_classifier
+from joblib import Parallel, delayed
+from sklearn.base import (
+    BaseEstimator,
+    RegressorMixin,
+    TransformerMixin,
+    clone,
+    is_classifier,
+)
 from sklearn.model_selection import check_cv
 from sklearn.utils.validation import check_is_fitted
-from joblib import Parallel, delayed
-from typing import Union, Optional
+
 from ..utils import validate_sample_weight, validate_target
 
 
@@ -390,7 +397,7 @@ def weighted_cross_val_score(estimator, X, y, sample_weight=None, cv=5, n_jobs=-
         or getattr(estimator, "family", None) == "binomial",
     )
 
-    if not hasattr(estimator, "score") or not callable(getattr(estimator, "score")):
+    if not hasattr(estimator, "score") or not callable(estimator.score):
         raise ValueError(
             "The estimator does not have a score method that takes a sample_weight argument."
         )
@@ -535,12 +542,7 @@ def grid_search_cv(
     for param in grid:
         estimator = clone(estimator)
         estimator.set_params(
-            **{
-                "alpha": param,
-                "L1_wt": 1.0,
-                "fit_intercept": fit_intercept,
-                "family": family,
-            }
+            alpha=param, L1_wt=1.0, fit_intercept=fit_intercept, family=family
         )
 
         if score == "bic":
@@ -559,12 +561,7 @@ def grid_search_cv(
     best_alpha_value = grid[best_index]
     best_estimator = clone(estimator)
     best_estimator.set_params(
-        **{
-            "alpha": best_alpha_value,
-            "L1_wt": 1.0,
-            "fit_intercept": fit_intercept,
-            "family": family,
-        }
+        alpha=best_alpha_value, L1_wt=1.0, fit_intercept=fit_intercept, family=family
     )
     best_estimator.fit(X, y, sample_weight=sample_weight)
 
