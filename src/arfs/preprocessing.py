@@ -428,15 +428,6 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
     cat_features_ : list
         Names of the found categorical columns.
 
-    Methods
-    -------
-    fit(X, y, sample_weight=None)
-        Fit the transformer object on data.
-    transform(X)
-        Apply the fitted transformer object on new data.
-    fit_transform(X)
-        Fit and apply the transformer object on data.
-
     Example
     -------
     >>> lgb_params = {'min_split_gain': 5}
@@ -722,14 +713,6 @@ class IntervalToMidpoint(BaseEstimator, TransformerMixin):
     columns_to_transform_ : list of str
         The columns to be transformed based on the specified `cols` attribute.
 
-    Methods
-    -------
-    fit(X, y=None)
-        Fit the transformer on the input data.
-    transform(X)
-        Transform the input data by converting numerical intervals to midpoints.
-    inverse_transform(X)
-        Inverse transform is not implemented for this transformer.
     """
 
     def __init__(self, cols: Union[List[str], str] = "all"):

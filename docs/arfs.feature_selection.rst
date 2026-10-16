@@ -64,6 +64,3 @@ Module contents
 ---------------
 
 .. automodule:: arfs.feature_selection
-   :members:
-   :undoc-members:
-   :show-inheritance:

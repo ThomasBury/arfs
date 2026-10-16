@@ -9,11 +9,11 @@
 
 # All relevant feature selection
 
-All relevant feature selection means trying to find all features carrying information usable for prediction, rather than finding a possibly compact subset of features on which some particular model has a minimal error. This might include redundant predictors. All relevant feature selection is model agnostic in the sense that it doesn't optimize a scoring function for a *specific* model but rather tries to select all the predictors which are related to the response. 
+All relevant feature selection aims to find predictors carrying information about a response, including redundant predictors. These implementations compare fitted model importances with shuffled features. Results depend on the estimator, importance method and shadow threshold; the comparisons do not establish calibrated false-discovery control.
 
-This package implements 3 different methods (Leshy is an evolution of Boruta, BoostAGroota is an evolution of BoostARoota and GrootCV is a new one). They are sklearn compatible. See hereunder for details about those methods. You can use any sklearn compatible estimator with Leshy and BoostAGroota but I recommend lightGBM. It's fast, accurate and has SHAP values builtin. It also provides a module for performing preprocessing and perform basic feature selection (autobinning, remove columns with too many missing values, zero variance, high-cardinality, highly correlated, etc.). Examples and detailled methods hereunder.
+This package implements Leshy (based on Boruta), BoostAGroota (based on BoostARoota) and GrootCV. They expose sklearn-style fit/transform interfaces. Leshy and BoostAGroota accept compatible tree estimators that supply the requested importance method and, when used, sample weights. GrootCV uses LightGBM. ARFS also provides preprocessing and basic feature selection for missingness, cardinality, collinearity and model importance.
 
-Moreover, as an alternative to the all relevant problem, the ARFS package provides a MRmr feature selection which, theoretically, returns a subset of the predictors selected by an arfs method. ARFS also provides a `LASSO` feature selection which works especially well for (G)LMs and GAMs. You can combine Lasso with the `TreeDiscretizer` for introducing non-linearities into linear models and perform feature selection.
+MRmr offers a separate relevance/redundancy ranking heuristic; its selected set need not be a subset of an all-relevant selector's output. Lasso selects a penalized GLM design and then refits its surviving columns without regularization. Combining it with `TreeDiscretizer` adds univariate nonlinear features. See the [method contracts](./docs/Methods%20overview.rst) for weight, scoring and inference limits.
 
 Please note that one limitation of the lasso is that it treats the levels of a categorical predictor individually. However, this issue can be addressed by utilizing the `TreeDiscretizer`, which automatically bins numerical variables and groups the levels of categorical variables.
 
@@ -21,13 +21,15 @@ Please note that one limitation of the lasso is that it treats the levels of a c
 
 `$ pip install arfs`
 
-REM: If you're interested in using the `fastshap` option, you'll need to install [fasttreeshap](https://github.com/linkedin/FastTreeSHAP) first. For a smooth installation process, I suggest using `conda install -c conda-forge fasttreeshap` since the c++ source code requires compilation. Using pip may involve additional dependencies, such as requiring VS for compiling the c++ code.
+FastTreeSHAP is an optional compiled backend, separate from the runtime and `arfs[docs]` dependencies. Its compatibility with the current dependency matrix is not validated. Use the default SHAP paths for the core examples. Leshy and BoostAGroota warn and fall back to SHAP when it is missing; `VariableImportance(fastshap=True)` raises an import error before training.
+
+See [documentation workflows](./docs/workflows.rst) for the local HTML build, Pandoc prerequisite and notebook execution scope.
 
 ## Example
 
-Working examples for:
+Examples (validation scope and optional prerequisites are recorded in the documentation workflows):
 
- - [Preprocessing](./docs/notebooks/preprocessingipynb)
+ - [Preprocessing](./docs/notebooks/preprocessing.ipynb)
  - [Basic FS (best before ARFS)](./docs/notebooks/basic_feature_selection.ipynb)
  - [Regression](./docs/notebooks/arfs_regression.ipynb)
  - [Classification](./docs/notebooks/arfs_classification.ipynb)
@@ -44,7 +46,7 @@ Working examples for:
  - [MRmr vs ARFS](./docs/notebooks/mrmr_fs_VS_arfs.ipynb)
 
 For imbalanced classification:
- - GrootCV will automatically detect imbalanced data and set the lightGBM `'is_unbalance' = True`
+ - GrootCV's classification heuristic sets LightGBM `is_unbalance=True` when the largest class exceeds 80% of the unweighted rows. It does not estimate weighted prevalence.
  - For Leshy and BoostAGroota, you can pass the estimator with the relevant parameter (e.g. `class_weight = 'balanced'`)
 
 
@@ -82,7 +84,7 @@ BoostARoota follows closely the Boruta method but modifies a few things:
  * Go back to (2) until the number of features removed is less than ten per cent of the total.
  * Method returns the features remaining once completed.
 
-In the spirit, the same heuristic than Boruta but using Boosting (originally Boruta was supporting only random forest). The validation of the importance is done by comparing to the maximum of the median var. imp of the shadow predictors (in Boruta, a statistical test is performed using the Z-score). Since the whole process is done on the same train-test split, the variance of the variable importance comes only from the different re-fit of the model over the different iterations.
+The original algorithm above is historical context. BoostAGroota's current threshold is the maximum shadow **mean across iterations**, divided by `cutoff`. Per-iteration importances are normalized; signed permutation scores use their absolute total and require positive mean evidence. This empirical comparison does not establish false-discovery control.
 
 <img src="./docs/boostaroota.png" alt="drawing" width="600"/>
 
@@ -93,9 +95,9 @@ In the spirit, the same heuristic than Boruta but using Boosting (originally Bor
 **Boruta --> Leshy**:
 
   - The categorical features (they are detected, encoded. The tree-based models are working better with integer encoding rather than with OHE, which leads to deep and unstable trees). If Catboost is used, then the cat.pred (if any) are set up
-  - Using lightGBM as the default speeds up by an order of magnitude the running time
+  - LightGBM is supported; runtime depends on the data, estimator and parameters
   - Work with Catboost, sklearn API
-  - Allow using sample_weight, for applications like Poisson regression or any requiring weights
+  - Observation weights affect fitting and validation scoring where supplied; their statistical meaning depends on the estimator and loss
   - Supports 3 different feature importances: native, SHAP and permutation. Native being the least consistent(because of the imp. biased towards numerical and large cardinality categorical) but the fastest of the 3. Indeed, the impurity var.imp. are biased en sensitive to large cardinality (see [scikit demo](https://scikit-learn.org/stable/auto_examples/inspection/plot_permutation_importance.html#sphx-glr-auto-examples-inspection-plot-permutation-importance-py))
 
 **BoostARoota --> BoostAGroota**:
@@ -103,15 +105,15 @@ In the spirit, the same heuristic than Boruta but using Boosting (originally Bor
   - Replace XGBoost with LightGBM, you can still use tree-based scikitlearn models
   - Replace native var.imp by SHAP var.imp. Indeed, the impurity var.imp. are biased en sensitive to large cardinality (see [scikit demo](https://scikit-learn.org/stable/auto_examples/inspection/plot_permutation_importance.html#sphx-glr-auto-examples-inspection-plot-permutation-importance-py)). Moreover, the native var. imp are computed on the train set, here the data are split (internally) in train and test, var. imp computed on the test set.
   - Handling categorical predictors. Cat. predictors should NOT be one-hot encoded, it leads to deep unstable trees. Instead, it's better to use the native method of lightGBM or CatBoost. A preprocessing step is needed to encode (ligthGBM and CatBoost use integer encoding and reference to categorical columns. The splitting strategies are different then, see official doc).
-  - Work with sample_weight, for Poisson or any application requiring a weighting.
+  - Observation weights do not automatically make SHAP row averages weight-adjusted population explanations. VariableImportance averages validation rows equally; GrootCV averages each fold's training rows.
 
 ## GrootCV, a new method
 
 **New: GrootCV**:
 
-  - Cross-validated feature importance to smooth out the noise, based on lightGBM only (which is, most of the time, the fastest and more accurate Boosting).
+  - Repeated-fold feature importance, based on LightGBM only. Validation rows drive early stopping; SHAP summaries use fold training rows.
   - the feature importance is derived using SHAP importance
-  - Taking the max of the median of the shadow var. imp over folds otherwise not enough conservative and it improves the convergence (needs less evaluation to find a threshold)
+  - Take the maximum shadow median across folds/repeats, divided by `cutoff`, and retain real medians at or above it. This is an empirical threshold, not calibrated false-discovery control.
   - Not based on a given percentage of cols needed to be deleted
   - Plot method for var. imp
 

@@ -260,7 +260,7 @@ class Leshy(SelectorMixin, BaseEstimator):
 
     References
     ----------
-    See the original paper [1]_ for more details.
+    See the original Boruta paper in the documentation references for more details.
 
     ..[1] Kursa M., Rudnicki W., "Feature Selection with the Boruta Package"
         Journal of Statistical Software, Vol. 36, Issue 11, Sep 2010
@@ -978,16 +978,10 @@ class Leshy(SelectorMixin, BaseEstimator):
         n_feat : int
             Total number of features.
 
-        Returns
-        -------
-        None
-            The function populates the following class attributes:
-            - n_features_ : int
-                Number of selected features.
-            - support_ : ndarray of shape (n_feat,)
-                Boolean array indicating the selected features.
-            - support_weak_ : ndarray of shape (n_feat,)
-                Boolean array indicating the tentatively selected features.
+        Notes
+        -----
+        Populates ``n_features_``, the selected-feature count, and the selected
+        and tentative masks ``support_`` and ``support_weak_``.
         """
         # basic result variables
         self.support_ = np.zeros(n_feat, dtype=bool)
@@ -1970,12 +1964,6 @@ class GrootCV(SelectorMixin, BaseEstimator):
     medians at or above the maximum shadow median divided by cutoff.
     Explanations use training rows; validation rows drive early stopping.
     This empirical threshold does not establish false-discovery control.
-        - Cross-validated feature importance to smooth out the noise, based on lightGBM only
-          (which is, most of the time, the fastest and more accurate Boosting).
-        - the feature importance is derived using SHAP importance
-        - Compare feature medians with the maximum shadow median across folds
-        - Not based on a given percentage of cols needed to be deleted
-        - Plot method for var. imp
 
     Parameters
     ----------
@@ -2019,15 +2007,6 @@ class GrootCV(SelectorMixin, BaseEstimator):
         The absolute feature ranking as ordered by the selection process.
     ranking_ : ndarray
         The feature ranking, where 2 corresponds to selected features and 1 to tentative features.
-
-    Methods
-    -------
-    fit(X, y, sample_weight=None)
-        Fit the GrootCV on the input data.
-    transform(X)
-        Apply the fitted GrootCV on new data.
-    plot_importance(n_feat_per_inch=5)
-        Plot the feature importance of the fitted GrootCV.
 
     Warnings
     --------
@@ -2443,7 +2422,7 @@ def _set_lgb_parameters(
             params["num_class"] = len(np.unique(y))
             if not silent:
                 print("Multi-class task, setting objective to softmax")
-        main_class = y_freq_table[0]
+        main_class = y_freq_table.iloc[0]
         if not silent:
             print("GrootCV: classification with unbalance classes")
         if main_class > 0.8:

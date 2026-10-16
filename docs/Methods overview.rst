@@ -45,9 +45,9 @@ Leshy vs. BorutaPy:
     To summarize, this PR solves/enhances:
     * The categorical features (they are detected, encoded. The tree-based models are working better with integer encoding rather than with OHE, which leads to deep and unstable trees). If Catboost is used, then the cat.pred (if any) are set up.
     * Work with Catboost sklearn API.
-    * Allow using sample_weight, for applications like Poisson regression or any requiring weights.
+    * Forward observation weights to compatible estimators and validation scoring; their meaning depends on the estimator and loss.
     * 3 different feature importances: native, SHAP, and permutation. Native being the least consistent (because of the imp. biased towards numerical and large cardinality categorical) but the fastest of the 3.
-    * Using LightGBM as default speed up by an order of magnitude the running time.
+    * Support LightGBM; runtime depends on the data, estimator and parameters.
     * Visualization like in the R package.
 
 BorutaPy vs. Boruta R:
@@ -83,7 +83,8 @@ GrootCV, a new method
 ---------------------
 
 New: GrootCV:
-- Cross-validated feature importance to smooth out the noise, based on lightGBM only (which is, most of the time, the fastest and more accurate Boosting).
+
+- Repeated-fold feature importance based on LightGBM only; runtime and predictive accuracy depend on the data and parameters.
 - SHAP importance is the mean absolute contribution over each fold's training
   rows, summed over outputs for multi-output models, then normalized across
   real and shadow features. Validation rows drive early stopping.
@@ -104,6 +105,8 @@ MRmr
 ----
 
 Re-implementing the Uber MRmr scheme using associations for handling continuous and categorical predictors.
+Mixed-type relevance scores are ranking heuristics, not calibrated significance
+tests. MRmr's selected set need not be a subset of an all-relevant selector's set.
 - Theil's U statistics for the categorical-categorical association (correlation).
 - Variance ratio for continuous-categorical association.
 - Pearson or Spearman correlation for continuous-continuous association.

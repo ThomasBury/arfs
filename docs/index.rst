@@ -11,6 +11,7 @@ Documentation last change: |today|
 
    Introduction
    Methods overview
+   workflows
    modules
 
 

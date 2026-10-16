@@ -62,6 +62,41 @@ def test_real_classification_objectives(objective, n_classes, monkeypatch):
     assert_frame_equal(X, before)
 
 
+@pytest.mark.parametrize("labels", [(0, 1), (1, 0), (3, 7)])
+@pytest.mark.parametrize("count,expected", [(8, False), (9, True)])
+def test_groot_imbalance_uses_largest_class_and_strict_threshold(
+    labels, count, expected
+):
+    X = pd.DataFrame({"a": np.arange(10)})
+    y = pd.Series([labels[0]] * count + [labels[1]] * (10 - count))
+    params = a._set_lgb_parameters(X, y, "binary", False, True, 1)
+    assert params.get("is_unbalance", False) == expected
+
+
+@pytest.mark.parametrize("majority", [0, 1])
+def test_groot_binary_majority_reaches_native_training(majority, monkeypatch):
+    X, y = data(2)
+    y[:] = majority
+    y.iloc[::10] = 1 - majority
+    seen = []
+    train = a._train_lgb_model
+
+    def checked_train(*args, **kwargs):
+        result = train(*args, **kwargs)
+        seen.append(result[0].params.get("is_unbalance", False))
+        return result
+
+    monkeypatch.setattr(a, "_train_lgb_model", checked_train)
+    a.GrootCV(
+        objective="binary",
+        n_folds=2,
+        n_iter=1,
+        n_jobs=1,
+        lgbm_params={"min_data_in_leaf": 5, "seed": 42},
+    ).fit(X, y)
+    assert seen == [True, True]
+
+
 def test_objective_from_params_and_explicit_override():
     X, y = data()
     params = {"objective": "multiclass", "seed": 42}
