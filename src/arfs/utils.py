@@ -656,16 +656,24 @@ def plot_y_vs_X(X, y, ncols=2, figsize=(10, 10)):
         The univariate plots y vs pred_i.
     """
     n_cols_to_plot = X.shape[1]
+    if (
+        isinstance(ncols, (bool, np.bool_))
+        or not isinstance(ncols, (int, np.integer))
+        or ncols < 1
+    ):
+        raise ValueError("ncols must be a positive integer.")
+    if n_cols_to_plot == 0:
+        raise ValueError("X must contain at least one feature.")
     n_rows = int(np.ceil(n_cols_to_plot / ncols))
 
     # Create figure and axes
-    f, axs = plt.subplots(nrows=n_rows, ncols=ncols, figsize=figsize)
+    f, axs = plt.subplots(nrows=n_rows, ncols=ncols, figsize=figsize, squeeze=False)
 
-    for i, col in enumerate(X.columns):
+    for i, feature in enumerate(X.columns):
         row = i // ncols
         col = i % ncols
-        axs[row, col].scatter(X[col], y, alpha=0.1)
-        axs[row, col].set_title(col)
+        axs[row, col].scatter(X[feature], y, alpha=0.1)
+        axs[row, col].set_title(feature)
 
     # Hide unused subplots
     for i in range(n_cols_to_plot, n_rows * ncols):
@@ -674,7 +682,7 @@ def plot_y_vs_X(X, y, ncols=2, figsize=(10, 10)):
         axs[row, col].set_axis_off()
 
     # Adjust spacing between subplots
-    plt.tight_layout()
+    f.tight_layout()
 
     return f
 

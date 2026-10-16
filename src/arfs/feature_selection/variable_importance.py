@@ -7,7 +7,7 @@ Module Structure:
 - ``VariableImportance`` main class for identifying non-important features
 """
 
-from numbers import Real
+from numbers import Integral, Real
 
 # pandas
 import pandas as pd
@@ -235,91 +235,84 @@ class VariableImportance(SelectorMixin, BaseEstimator):
     def plot_importance(
         self, figsize=None, plot_n=50, n_feat_per_inch=3, log=True, style=None
     ):
-        """Plots `plot_n` most important features and the cumulative importance of features.
-        If `threshold` is provided, prints the number of features needed to reach `threshold`
-        cumulative importance.
+        """Plot the highest-ranked features and their full-data cumulative shares.
 
         Parameters
         ----------
-        plot_n : int, default = 50
-            Number of most important features to plot. Defaults to 15 or the maximum
-            number of features whichever is smaller
-        n_feat_per_inch : int
-            number of features per inch, the larger the less space between labels
+        plot_n : int, default=50
+            Positive maximum number of features displayed in each panel.
+        n_feat_per_inch : float, default=3
+            Positive number of features per inch; height is at least two inches.
         figsize : tuple of float, optional
-            The rendered size as a percentage size
+            Figure width and height in inches. Overrides automatic sizing.
         log : bool, default=True
-            Whether or not render variable importance on a log scale
-        style : bool, default=False
-            set arfs style or not
+            Use a log scale for positive importance values. Feature positions
+            and cumulative shares remain linear; all-zero importance stays linear.
+        style : str or None, default=None
+            Matplotlib style name; None resets the default plotting style.
 
         Returns
         -------
-        hv.plot
-            the feature importances holoviews object
-
+        matplotlib.figure.Figure
+            Caller-owned figure. The title reports the full fitted selection
+            count. Cutoff markers use its last selected feature and are omitted
+            if none is selected or the cutoff lies beyond the displayed prefix.
         """
+        check_is_fitted(self, "support_")
+        if (
+            isinstance(plot_n, (bool, np.bool_))
+            or not isinstance(plot_n, Integral)
+            or plot_n < 1
+        ):
+            raise ValueError("plot_n must be a positive integer.")
+        if (
+            isinstance(n_feat_per_inch, (bool, np.bool_))
+            or not isinstance(n_feat_per_inch, Real)
+            or not np.isfinite(n_feat_per_inch)
+            or n_feat_per_inch <= 0
+        ):
+            raise ValueError("n_feat_per_inch must be a finite positive number.")
+
+        df = self.feature_importances_summary_.iloc[:plot_n]
+        n_selected = len(self.selected_features_)
+        importance_index = n_selected - 1
+        positions = np.arange(len(df))
+
         if style:
             plt.style.use(style)
         else:
             reset_plot()
 
-        if plot_n > self.feature_importances_summary_.shape[0]:
-            plot_n = self.feature_importances_summary_.shape[0] - 1
-
-        df = self.feature_importances_summary_
-        importance_index = np.min(
-            np.where(df["cumulative_importance"] > self.threshold)
-        )
-        non_cum_threshold = df.iloc[importance_index, 2]
-        max_norm_importance = 0.99 * df.normalized_importance.max()
-
-        if plot_n > df.shape[0]:
-            plot_n = df.shape[0] - 1
-
         if figsize is None:
-            figsize = (8, plot_n / n_feat_per_inch)
+            figsize = (8, max(2, len(df) / n_feat_per_inch))
         fig = plt.figure(tight_layout=True, figsize=figsize)
         gs = gridspec.GridSpec(3, 3)
         ax1 = fig.add_subplot(gs[:, 0])
-        ax1.scatter(df.normalized_importance, df.feature)
-        # ax.set_ylabel('YLabel0')
+        ax1.scatter(df.normalized_importance, positions)
+        ax1.set_yticks(positions, labels=df.feature)
         ax1.set_xlabel("normalized importance")
         ax1.xaxis.set_label_position("top")
         ax1.invert_yaxis()
-        ax1.axvline(x=non_cum_threshold, linestyle="dashed", color="r")
-        if log:
+        if log and (df.normalized_importance > 0).any():
             ax1.set_xscale("log")
         ax1.grid()
         ax1.set(frame_on=False)
 
         ax2 = fig.add_subplot(gs[:, 1:])
-        ax2.scatter(df.feature, df.cumulative_importance)
-        # ax.set_ylabel('YLabel0')
+        ax2.scatter(positions, df.cumulative_importance)
+        ax2.set_xticks(positions, labels=df.feature)
         ax2.set_ylabel("cumulative importance")
         ax2.tick_params(axis="x", labelrotation=90)
-
-        importance_min_value_on_axis = max_norm_importance if log else 0
-        x_vert, y_vert = (
-            [importance_index, importance_index],
-            [
-                importance_min_value_on_axis,
-                self.threshold,
-            ],
-        )
-        x_horiz, y_horiz = (
-            [importance_min_value_on_axis, importance_index],
-            [
-                self.threshold,
-                self.threshold,
-            ],
-        )
-
-        ax2.plot(x_vert, y_vert, linestyle="dashed", color="r")
-        ax2.plot(x_horiz, y_horiz, linestyle="dashed", color="r")
-        ax2.set_ylim(max_norm_importance, 1.0)
-        if log:
-            ax2.set_xscale("log")
+        ax2.set_title(f"{n_selected} features selected")
+        ax2.axhline(y=self.threshold, linestyle="dashed", color="r")
+        if 0 <= importance_index < len(df):
+            ax1.axvline(
+                x=df.normalized_importance.iloc[importance_index],
+                linestyle="dashed",
+                color="r",
+            )
+            ax2.axvline(x=importance_index, linestyle="dashed", color="r")
+        ax2.set_ylim(0, 1.05)
         ax2.grid()
         ax2.set(frame_on=False)
 
