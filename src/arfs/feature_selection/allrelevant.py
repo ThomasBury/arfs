@@ -1198,7 +1198,7 @@ def _split_fit_estimator(estimator, X, y, sample_weight=None, cat_feature=None):
 
 
 def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
-    """Get the SHAP feature importance (compatible with all SHAP versions)
+    """Get SHAP feature importance from list or array contributions.
 
     Parameters
     ----------
@@ -1227,24 +1227,16 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
     shap_values = explainer.shap_values(X_tt)
 
     if isinstance(shap_values, list):
-        # Pre-v0.45.0 format
+        # TreeExplainer keeps expected values separate from feature columns.
         if is_classifier(estimator):
             if len(np.unique(y)) > 2:  # Multiclass
-                # Reconstruct the concatenated per-class matrix
-                shap_concat = np.concatenate(shap_values, axis=1)
-                n_feat = X_tt.shape[1]
-                shap_values = np.delete(
-                    shap_concat,
-                    list(range(n_feat, (n_feat + 1) * len(shap_values), n_feat + 1)),
-                    axis=1,
-                )
-                shap_imp = np.abs(shap_values[:, :-1]).mean(axis=0)
+                shap_imp = np.abs(np.stack(shap_values, axis=2)).sum(axis=2).mean(axis=0)
             else:
                 # Binary - use positive class only
-                shap_imp = np.abs(shap_values[1][:, :-1]).mean(axis=0)
+                shap_imp = np.abs(shap_values[1]).mean(axis=0)
         else:
             # Regression
-            shap_imp = np.abs(shap_values[0][:, :-1]).mean(axis=0)
+            shap_imp = np.abs(shap_values[0]).mean(axis=0)
 
     elif isinstance(shap_values, np.ndarray):
         # v0.45.0+ format
