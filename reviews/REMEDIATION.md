@@ -1,6 +1,6 @@
 # ARFS remediation handoff
 
-**Status: R01–R33 complete. No pending RXX implementation group. Final validation and delivery of version 4.0.0 are in progress.**
+**Status: R01–R33 complete. No pending RXX implementation group. Version 4.0.0 is prepared; all local release gates pass. PR review, merge, tag and GitHub publication complete delivery.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
 a separate repair backlog. By default, a request to implement the next phase
@@ -31,14 +31,33 @@ After current-head validation, hosted CI and Codex review pass, merge this PR,
 tag its merged commit `4.0.0` and publish a GitHub release with the validated wheel,
 source archive and checksums. No PyPI publication workflow is configured.
 
-Direct Ruff passes with zero diagnostics; the count baseline and its scripts are
-removed. The new wheel and sdist match all 19 package code/data payloads. Fresh
-full suites are running in the six declared snapshots, including R32's eleven
-new review regressions. Strict HTML builds already pass in both fresh docs
-snapshots against the 4.0.0 wheel. Bounded notebook execution, runtime typing,
-minimum-version and shipped-sdist checks complete the release gates. Exact final
-results will be recorded on the PR and GitHub release. CodeRabbit is not a gate.
-New raw evidence stays local and ignored under `evidence/r33-delivery/`.
+[PR #66](https://github.com/ThomasBury/arfs/pull/66) delivers this phase. On
+`541d7ab`, hosted push/PR checks and Codex review pass with no findings. The final
+handoff-only commit still needs its own hosted checks and Codex re-review before
+merge. CodeRabbit is not a gate. No new raw evidence is tracked; it stays local
+and ignored under `evidence/r33-delivery/`.
+
+The fresh 4.0.0 wheel passes **1473 tests in five cells / 1457 in newer 3.12**:
+Python 3.9 locked, 3.9 exact direct minima, 3.10 locked, 3.11 locked, 3.12 locked
+and 3.12 newer. Local and hosted totals agree, with no skips or expected failures:
+**8822 local full-suite executions**. All eleven direct dependency floors match
+in the minimum cell. Source/sdist/wheel code/data payloads, every installed
+payload and all copied test/documentation fixtures match current source.
+
+Both fresh strict HTML builds pass with zero Sphinx warnings against the 4.0.0
+wheel, without a setuptools workaround. Each snapshot freshly executes the same
+five bounded workflows plus R32's three commented regression examples:
+**93 code cells and 13 figures** per snapshot, including added setup/assertions
+and the three no-op cells. All 26 figures are byte-identical to the previously
+inspected R33 outputs. All 17 notebook schemas validate. The data substitutions,
+omitted cells and remaining full-notebook gaps stay explicit in the ledgers.
+
+All 112 runtime function/method annotations evaluate on Python 3.9 and newer 3.12.
+The shipped-sdist helper/resource smoke suite passes 25 tests in another clean
+installation. Four unchanged optional-backend boundary checks pass unmasked in
+each 3.12 snapshot, as does the historical reduced-feature time-series check.
+Direct Ruff reports zero diagnostics; its former count baseline and scripts
+are gone. Lock metadata/pins, whitespace and all recorded command exits pass.
 
 The existing fixed experiment retains its 1,120 measured fits; it is not rerun or
 counted as additional seeds. Every runtime payload matches its measured wheel
