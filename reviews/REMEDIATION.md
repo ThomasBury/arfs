@@ -13,6 +13,37 @@ evidence. Prefer existing helpers and supported native APIs; no compatibility
 layer, new backend, packaging split, or broad rewrite is required by this plan.
 Names below are phase IDs, not commit promises or a release schedule.
 
+## R32 delivery — 2026-10-16
+
+The user authorized staging, topical Conventional Commits, a dedicated branch,
+a pull request, Codex bot review, fixes for its comments, merge and branch removal.
+Branch: `fix/r32-documentation-workflows`, based on merged R30 (`8856009`). Only
+the original R32 commits were rebased: `3f61981` becomes `48126e0` (documentation
+workflows), and `f49bf9d` becomes `5a6e585` (validation handoff). The single status
+line conflict was resolved without removing earlier delivery records. Original
+hashes in the [R32 handoff](R32-documentation-workflows.md) describe the completed
+local phase. This delivery includes R32 only; raw evidence remains local and
+ignored, with no historical evidence added or removed.
+
+All 16 source module files, 35 maintained test files and the documentation
+fixtures match the recorded installed-wheel runs: **1458 / 1458 / 1442 passed**
+on Python 3.9 locked / Python 3.12 locked / Python 3.12 newer. The eight
+documentation regressions pass again for delivery. Notebook sources match the
+recorded five-workflow fresh-kernel ledgers in both dependency snapshots:
+90 code cells and 13 figures per snapshot. All 17 notebook schemas validate.
+Runtime code ASTs match R30 after docstrings are removed; runtime pins/hashes
+are unchanged. Fresh strict HTML builds pass with zero Sphinx warnings in both
+dependency snapshots. The lint gate reports zero new diagnostics and its two
+tests pass. Hosted CI and Codex review must finish on the PR before merge.
+CodeRabbit is not a gate.
+
+**Release decision: defer the version bump, tag and GitHub release.** GitHub's
+latest release and this checkout remain `3.0.0`. R33 is implemented on a separate
+local branch but is not part of this delivery or remote `main`. Deliver R33 and
+check its final hosted results before choosing the next version; the intentional
+API removals warrant a major release. Keep changes under Unreleased. R33 is the
+next separate delivery.
+
 ## R30 delivery — 2026-10-16
 
 The user authorized staging, topical Conventional Commits, a dedicated branch,

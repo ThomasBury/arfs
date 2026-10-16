@@ -23,10 +23,10 @@ backlog: [R01](R01-installed-package.md), [R02/R03](R02-R03-compatibility.md),
 [R14](R14-glm-design.md) and [R15](R15-glm-likelihood.md) are complete.
 R16–R28 and R31 are also complete; their handoffs are linked in
 [Remediation](REMEDIATION.md), including [R28](R28-parallel-contracts.md).
-[R29](R29-plot-contracts.md) and [R30](R30-dataset-fixtures.md) are complete.
-**R32 is the next delivery**, with R01–R31 complete. R32 and R33 are implemented
-on separate local branches and await their own PRs; this branch delivers R30
-only. Follow the
+[R29](R29-plot-contracts.md), [R30](R30-dataset-fixtures.md) and
+[R32](R32-documentation-workflows.md) are complete. **R33 is the next delivery**,
+with R01–R32 complete. R33 is implemented on a separate local branch and awaits
+its own PR; this branch delivers R32 only. Follow the
 [session batching and handoff guidance](REMEDIATION.md#session-batching-and-handoffs).
 Future "implement the next batch" requests follow the
 [recorded groups](REMEDIATION.md#recorded-groups-for-next-batch-requests).
