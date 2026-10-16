@@ -13,6 +13,28 @@ evidence. Prefer existing helpers and supported native APIs; no compatibility
 layer, new backend, packaging split, or broad rewrite is required by this plan.
 Names below are phase IDs, not commit promises or a release schedule.
 
+## R29 delivery — 2026-10-16
+
+The user authorized staging, topical Conventional Commits, a dedicated branch,
+a pull request, Codex bot review, fixes for its comments, merge and branch removal.
+Branch: `fix/r29-plot-contracts`, based on `605cbff` on remote `main`.
+The existing commits are `24db954` (plot contracts) and `56f4f6c` (validation
+handoff). This delivery includes R29 and its affected callers/tests only.
+New evidence remains local and ignored; no historical evidence is added or removed.
+
+All 16 source module files and 33 maintained test files match the recorded R29
+installed-wheel runs: **1425 / 1425 / 1409 passed** on Python 3.9 locked /
+Python 3.12 locked / Python 3.12 newer. The [R29 handoff](R29-plot-contracts.md)
+records the 53 regressions, visual checks, commands and limits. Hosted CI and
+Codex review must finish on the PR before merge. CodeRabbit is not a gate.
+
+**Release decision: defer the version bump, tag and GitHub release.** GitHub's
+latest release and this checkout remain `3.0.0`. R30, R32 and R33 are already
+implemented on separate local branches, but are not part of this delivery or
+remote `main`. Deliver those PRs and check their final hosted results before
+choosing the next version; the intentional API removals warrant a major release.
+Keep changes under Unreleased. R30 is the next separate delivery.
+
 ## R28 delivery — 2026-10-14
 
 The user authorized staging, topical Conventional Commits, the dedicated branch,
