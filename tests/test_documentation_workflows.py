@@ -31,6 +31,11 @@ def test_core_imports_need_no_optional_comparison_backends(notebook):
         exec(compile(cell(notebook, 1), notebook, "exec"), {})
 
 
+@pytest.mark.parametrize("index", [15, 21, 26])
+def test_regression_fastshap_examples_do_not_run_by_default(index):
+    exec(compile(cell("arfs_regression", index), "optional-fastshap", "exec"), {})
+
+
 def test_classification_defines_encoding_before_first_fit():
     frame = pd.DataFrame(
         {

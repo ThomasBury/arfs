@@ -36,8 +36,10 @@ substitute for the remote Titanic download, and regression on bundled Boston
 data. The classification encoder is also checked with categorical input.
 
 CatBoost/XGBoost model comparisons require separate compatible installations.
-FastTreeSHAP examples are opt-in; the basic notebook's two FastTreeSHAP cells
-are commented out. GPU, optional-backend speed comparisons and the remaining
+FastTreeSHAP examples are opt-in; the basic notebook's two cells and the
+classification/regression FastTreeSHAP model cells are commented out. Install a
+compatible FastTreeSHAP build separately and uncomment an example to run it.
+GPU, optional-backend speed comparisons and the remaining
 notebooks require their own execution before their saved results can be treated
 as current. No supported optional-backend version matrix is claimed here.
 

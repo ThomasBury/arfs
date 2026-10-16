@@ -25,17 +25,30 @@ hashes in the [R32 handoff](R32-documentation-workflows.md) describe the complet
 local phase. This delivery includes R32 only; raw evidence remains local and
 ignored, with no historical evidence added or removed.
 
-All 16 source module files, 35 maintained test files and the documentation
-fixtures match the recorded installed-wheel runs: **1458 / 1458 / 1442 passed**
-on Python 3.9 locked / Python 3.12 locked / Python 3.12 newer. The eight
-documentation regressions pass again for delivery. Notebook sources match the
-recorded five-workflow fresh-kernel ledgers in both dependency snapshots:
-90 code cells and 13 figures per snapshot. All 17 notebook schemas validate.
+The initial PR head `c7691ca` matches the recorded installed-wheel source,
+test and documentation bytes. Both hosted push/PR matrices pass at that head:
+**1458 / 1458 / 1442 tests** on Python 3.9 locked / Python 3.12 locked /
+Python 3.12 newer. Its notebook sources match the recorded five-workflow
+fresh-kernel ledgers in both snapshots: 90 code cells and 13 figures each.
 Runtime code ASTs match R30 after docstrings are removed; runtime pins/hashes
-are unchanged. Fresh strict HTML builds pass with zero Sphinx warnings in both
-dependency snapshots. The lint gate reports zero new diagnostics and its two
-tests pass. Hosted CI and Codex review must finish on the PR before merge.
-CodeRabbit is not a gate.
+are unchanged. Strict HTML builds, the lint gate and its two tests pass.
+
+[PR #65](https://github.com/ThomasBury/arfs/pull/65) delivers R32. Codex reported
+one valid P2 on `c7691ca`: regression's optional FastTreeSHAP examples still ran
+without the backend. All three model cells are now commented out, their saved
+outputs (including the traceback) are cleared, and the notebook/guide explain
+how to opt in. Three new cases fail before the repair; all **11 documentation
+checks** pass afterward in each installed-wheel snapshot. No runtime code changes.
+
+Fresh locked/newer regression kernels include all three repaired cells alongside
+the original bounded scope: **15 code cells and two figures per snapshot**,
+without FastTreeSHAP installed. The optional cells produce no output; all four
+figures are byte-identical to the earlier runs. The previously executed source
+cells remain unchanged. Both post-review strict HTML builds pass with zero
+Sphinx warnings, all 17 notebook schemas validate, and lint has zero new
+diagnostics. New evidence is ignored under `evidence/r32-pr-review/`. The full
+notebook/backend execution gaps in the R32 handoff remain. Current-head hosted
+CI and Codex re-review must finish before merge. CodeRabbit is not a gate.
 
 **Release decision: defer the version bump, tag and GitHub release.** GitHub's
 latest release and this checkout remain `3.0.0`. R33 is implemented on a separate
