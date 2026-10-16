@@ -42,16 +42,25 @@ Build HTML locally
 
 Use Python 3.12 and install the system ``pandoc`` executable on PATH. The Python
 package named ``pandoc`` is not a substitute for that executable. Read the Docs
-installs the system package and the project's ``docs`` extra; FastTreeSHAP is
-not part of either the core examples or the documentation build.
+installs the system package and the project's ``docs`` dependency group using
+``uv sync`` and ``uv.lock``; FastTreeSHAP is not part of either the core examples
+or the documentation build.
 
 From the checkout root:
 
 .. code-block:: sh
 
-   uv sync --locked --extra docs --extra test
+   uv sync --locked --group docs --group test
    uv run --no-sync python -m pytest tests/test_documentation_workflows.py -q
    uv run --no-sync make -C docs html
+
+The ``docs`` and ``test`` groups contain contributor tools and are not published
+as package extras. Add documentation dependencies with
+``uv add --group docs <package>``. After manually editing ``pyproject.toml``, run
+``uv lock`` and commit both files together; ``uv lock --check`` verifies they
+agree without changing the lockfile. Reserve ``[project.optional-dependencies]``
+and ``uv add --optional <extra>`` for optional features installed by package
+users with ``pip install 'arfs[<extra>]'``.
 
 HTML is written to ``docs/_build/html``. On Windows, run ``make.bat html`` from
 ``docs`` after activating the same environment. The Windows launcher has the

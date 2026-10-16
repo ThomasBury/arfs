@@ -44,7 +44,7 @@ jobs:
       - name: Choose reproducible runtime dependencies
         run: |
           if [ "${{ matrix.dependencies }}" = locked ]; then
-            uv export --locked --extra test --no-emit-project --output-file "$RUNNER_TEMP/requirements.txt"
+            uv export --locked --group test --no-emit-project --output-file "$RUNNER_TEMP/requirements.txt"
           elif [ "${{ matrix.dependencies }}" = minimum ]; then
             cp .github/requirements/runtime-minimum-py39.txt "$RUNNER_TEMP/requirements.txt"
           else

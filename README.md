@@ -21,7 +21,7 @@ Please note that one limitation of the lasso is that it treats the levels of a c
 
 `$ pip install arfs`
 
-FastTreeSHAP is an optional compiled backend, separate from the runtime and `arfs[docs]` dependencies. Its compatibility with the current dependency matrix is not validated. Use the default SHAP paths for the core examples. Leshy and BoostAGroota warn and fall back to SHAP when it is missing; `VariableImportance(fastshap=True)` raises an import error before training.
+FastTreeSHAP is an optional compiled backend, separate from the runtime and the `docs` dependency group. Its compatibility with the current dependency matrix is not validated. Use the default SHAP paths for the core examples. Leshy and BoostAGroota warn and fall back to SHAP when it is missing; `VariableImportance(fastshap=True)` raises an import error before training.
 
 See [documentation workflows](./docs/workflows.rst) for the local HTML build, Pandoc prerequisite and notebook execution scope.
 The same guide records the tested Python/dependency snapshots and the limits of the selection experiments. An allowed dependency range is not evidence that every combination has been tested.

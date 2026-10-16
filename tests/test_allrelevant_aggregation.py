@@ -134,6 +134,45 @@ def test_shap_mismatched_axes_raise(shape):
         a._compute_importance(X, np.ones(shape), {}, "l2", False)
 
 
+@pytest.mark.parametrize("n_features", [1, 4])
+@pytest.mark.parametrize("layout", ["list", "array"])
+@pytest.mark.parametrize("task", ["regression", "binary", "multiclass"])
+def test_leshy_shap_keeps_every_feature(monkeypatch, task, layout, n_features):
+    X = pd.DataFrame(np.zeros((3, n_features)))
+    values = np.arange(1, X.size + 1, dtype=float).reshape(X.shape)
+    values[1] *= -2
+    if task == "regression":
+        estimator = lgb.LGBMRegressor()
+        y = pd.Series([0.1, 0.2, 0.3])
+        outputs = [values]
+        expected = np.abs(values).mean(axis=0)
+        array = values
+    elif task == "binary":
+        estimator = lgb.LGBMClassifier()
+        y = pd.Series([0, 1, 0])
+        outputs = [-2 * values, 3 * values]
+        expected = 3 * np.abs(values).mean(axis=0)
+        array = outputs[1]
+    else:
+        estimator = lgb.LGBMClassifier()
+        y = pd.Series([0, 1, 2])
+        outputs = [values, -3 * values, 5 * values]
+        expected = 9 * np.abs(values).mean(axis=0)
+        array = np.stack(outputs, axis=-1)
+
+    monkeypatch.setattr(
+        a, "_split_fit_estimator", lambda *args, **kwargs: (estimator, X, y, None)
+    )
+    explainer = SimpleNamespace(
+        shap_values=lambda frame: outputs if layout == "list" else array
+    )
+    monkeypatch.setattr(a.shap, "TreeExplainer", lambda model: explainer)
+
+    actual = a._get_shap_imp(estimator, X, y)
+    assert actual.shape == (n_features,)
+    assert_allclose(actual, expected)
+
+
 @pytest.mark.parametrize("cutoff", [1, 2])
 @pytest.mark.parametrize("repeats", [1, 2])
 def test_groot_medians_use_only_fold_columns(monkeypatch, cutoff, repeats):
