@@ -7,46 +7,41 @@ name = "arfs"
 description = "All Relevant Feature Selection and Maximal Relevant minimal redundancy FS"
 readme = "README.md"
 license = { text = "MIT" }
-authors = [
-  { name = "Thomas Bury", email = "bury.thomas@gmail.com" },
-]
+authors = [{ name = "Thomas Bury", email = "bury.thomas@gmail.com" }]
 requires-python = ">=3.9, <3.13"
 dynamic = ["version"]
 keywords = ["feature-selection", "all-relevant", "selection", "MRmr"]
 
-classifiers = [
-  "Programming Language :: Python :: 3",
-]
+classifiers = ["Programming Language :: Python :: 3"]
 
 dependencies = [
-    "Jinja2>=3.1.6",
-    "lightgbm>=4.6.0",
-    "matplotlib>=3.9.4",
-    "numpy>=2.0.2",
-    "pandas>=2.2.3",
-    "scikit-learn>=1.6.1",
-    "scipy>=1.13.1",
-    "seaborn>=0.13.2",
-    "shap>=0.47.0",
-    "statsmodels>=0.14.4",
-    "tqdm>=4.67.1",
+  "Jinja2>=3.1.6",
+  "lightgbm>=4.6.0",
+  "matplotlib>=3.9.4",
+  "numpy>=2.0.2",
+  "pandas>=2.2.3",
+  "scikit-learn>=1.6.1",
+  "scipy>=1.13.1",
+  "seaborn>=0.13.2",
+  "shap>=0.47.0",
+  "statsmodels>=0.14.4",
+  "tqdm>=4.67.1",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 docs = [
-  "ipykernel",
   "ipython_genutils",
   "sphinx",
+  "catboost>=1.2.10",
+  "ipykernel>=6.29.5",
+  "jupyter>=1.1.1",
   "sphinxawesome-theme==5.0.0b5",
   "nbsphinx==0.9.2",
   "sphinx-autodoc-typehints<1.24.0",
   "sphinx-copybutton==0.5.2",
 ]
 
-test = [
-  "pytest",
-  "pytest-cov"
-]
+test = ["pytest", "pytest-cov"]
 
 [project.urls]
 Documentation = "https://github.com/ThomasBury/arfs"
@@ -71,10 +66,3 @@ version = { attr = "arfs.__version__" }
 [tool.ruff.lint.pyupgrade]
 # Keep runtime-evaluable Union/Optional annotations on supported Python 3.9.
 keep-runtime-typing = true
-
-[dependency-groups]
-docs = [
-    "catboost>=1.2.10",
-    "ipykernel>=6.29.5",
-    "jupyter>=1.1.1",
-]
