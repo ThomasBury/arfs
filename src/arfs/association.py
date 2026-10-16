@@ -23,6 +23,11 @@ supported by association coefficients, not given scale-invariant relevance.
 The categorical classification U-to-F transform is a ranking heuristic, not an
 ANOVA test. Mixed score normalization and ranking policy remain separate.
 
+Built-in Pearson/Spearman use native NumPy products; NumPy/BLAS controls their
+threading, independently of n_jobs. Built-in Theil's U and correlation ratio
+prepare columns once and optionally dispatch joblib batches. Custom callables
+keep the existing joblib path and active backend.
+
 Parallel association helpers preserve original column labels. n_jobs must be a
 nonzero integer: joblib resolves negative counts using the active backend and
 available CPUs; workers are capped to nonempty pair/column chunks. Results sort
@@ -31,7 +36,6 @@ RangeIndex; no-pair matrices have row/col/val columns with float values.
 """
 
 import gc
-import math
 import warnings
 from functools import partial
 from itertools import combinations, permutations, product
@@ -44,7 +48,6 @@ import scipy.cluster.hierarchy as sch
 import scipy.stats as ss
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.spatial.distance import pdist
-from scipy.stats import rankdata
 from sklearn.utils import safe_mask
 
 from .parallel import (
@@ -148,39 +151,180 @@ def weighted_conditional_entropy(x, y, sample_weight=None):
 
     x, y, sample_weight = _check_association_pair(x, y, sample_weight)
 
-    # Integer encoding for categorical data
-    y_encoded, _ = pd.factorize(y)
-    x_encoded, _ = pd.factorize(x)
+    px = _category_data(x, sample_weight)
+    py = _category_data(y, sample_weight)
+    return _conditional_entropies(px, py, sample_weight)[0]
 
-    # Total weight
-    tot_weight = np.sum(sample_weight)
-    if tot_weight == 0:
-        return 0
 
-    # Grouped weights for y and (x, y)
-    y_weights = np.bincount(
-        y_encoded, weights=sample_weight, minlength=len(np.unique(y_encoded))
+def _category_data(values, weights):
+    codes, levels = pd.factorize(values)
+    mass = np.bincount(codes, weights=weights, minlength=len(levels))
+    probability = mass[mass > 0] / weights.sum()
+    entropy = -np.dot(probability, np.log(probability))
+    return codes, mass, entropy
+
+
+def _conditional_entropies(x, y, weights):
+    """Accumulate only observed combinations, sharing work for both directions."""
+    xc, xm, _ = x
+    yc, ym, _ = y
+    keys, inverse = np.unique(xc * len(ym) + yc, return_inverse=True)
+    joint = np.bincount(inverse, weights=weights)
+    positive = joint > 0
+    joint, keys = joint[positive], keys[positive]
+    probability = joint / weights.sum()
+    return (
+        np.dot(probability, np.log(ym[keys % len(ym)] / joint)),
+        np.dot(probability, np.log(xm[keys // len(ym)] / joint)),
     )
-    xy_weights = {
-        level: np.bincount(
-            y_encoded[x_encoded == level],
-            weights=sample_weight[x_encoded == level],
-            minlength=len(np.unique(y_encoded)),
+
+
+def _theil_value(entropy, conditional):
+    u = 1.0 if entropy == 0 else (entropy - conditional) / entropy
+    if entropy != 0 and (abs(u) < _PRECISION or abs(u - 1.0) < _PRECISION):
+        rounded_u = round(u)
+        warnings.warn(
+            f"Rounded U = {u} to {rounded_u}. This is probably due to floating point precision issues.",
+            RuntimeWarning,
         )
-        for level in np.unique(x_encoded)
-    }
+        u = rounded_u
+    return u
 
-    # Conditional entropy calculation
-    h_xy = 0.0
-    for level_weights in xy_weights.values():
-        for y_index, xy_weight in enumerate(level_weights):
-            p_xy = xy_weight / tot_weight
-            p_y = y_weights[y_index] / tot_weight
 
-            if p_xy != 0:
-                h_xy += p_xy * math.log(p_y / p_xy)
+def _prepare_categories(X, columns, weights):
+    prepared = {}
+    for label in columns:
+        values = validate_target(X[label], len(X))
+        prepared[label] = _category_data(values, weights)
+    return prepared
 
-    return h_xy
+
+def _prepare_continuous(X, columns, weights):
+    if not columns:
+        return {}
+    values = X[columns].to_numpy(dtype=float)
+    if not np.isfinite(values).all():
+        raise ValueError("y must contain finite, nonmissing responses.")
+    values = values - values[np.flatnonzero(weights > 0)[0]]
+    return dict(zip(columns, values.T))
+
+
+def _ratio_value(category, values, weights):
+    codes, mass, _ = category
+    positive = weights > 0
+    codes, values, weights = codes[positive], values[positive], weights[positive]
+    means = np.divide(
+        np.bincount(codes, weights=weights * values, minlength=len(mass)),
+        mass,
+        out=np.zeros_like(mass),
+        where=mass > 0,
+    )
+    mean = np.dot(weights, values) / weights.sum()
+    between = np.dot(mass, (means - mean) ** 2)
+    within = np.dot(weights, (values - means[codes]) ** 2)
+    total = between + within
+    return np.sqrt(between / total) if total != 0 else 0.0
+
+
+def _categorical_matrix_batch(
+    X, comb_list, sample_weight, categories, continuous, kind
+):
+    rows = []
+    for left, right in comb_list:
+        if kind == "nom-nom":
+            hx_y, hy_x = _conditional_entropies(
+                categories[left], categories[right], sample_weight
+            )
+            rows.extend(
+                [
+                    (left, right, _theil_value(categories[left][2], hx_y)),
+                    (right, left, _theil_value(categories[right][2], hy_x)),
+                ]
+            )
+        else:
+            value = _ratio_value(categories[left], continuous[right], sample_weight)
+            # Preserve the direct ratio API's fallback for falsey names.
+            xname, yname = left if left else "var1", right if right else "var2"
+            rows.extend([(xname, yname, value), (yname, xname, value)])
+    return [pd.DataFrame(rows, columns=["row", "col", "val"])]
+
+
+def _categorical_matrix(X, pairs, weights, n_jobs, kind):
+    if kind == "nom-nom":
+        columns = list(dict.fromkeys(label for pair in pairs for label in pair))
+        categories = _prepare_categories(X, columns, weights)
+        continuous = {}
+        # Each joint is evaluated once; restore historical permutation order below.
+        work, seen = [], set()
+        for pair in pairs:
+            key = frozenset(pair)
+            if key not in seen:
+                work.append(pair)
+                seen.add(key)
+    else:
+        categories = _prepare_categories(
+            X, list(dict.fromkeys(p[0] for p in pairs)), weights
+        )
+        continuous = _prepare_continuous(
+            X, list(dict.fromkeys(p[1] for p in pairs)), weights
+        )
+        work = pairs
+    batch = partial(
+        _categorical_matrix_batch,
+        categories=categories,
+        continuous=continuous,
+        kind=kind,
+    )
+    result = parallel_matrix_entries(batch, None, work, weights, n_jobs)
+    if kind == "nom-nom" and pairs:
+        values = {
+            (row, col): val
+            for row, col, val in result.itertuples(index=False, name=None)
+        }
+        result = pd.DataFrame(
+            [(left, right, values[left, right]) for left, right in pairs],
+            columns=["row", "col", "val"],
+        )
+        result = result.sort_values("val", ascending=False, kind="stable").reset_index(
+            drop=True
+        )
+    return result
+
+
+def _categorical_series_batch(X, y, sample_weight, categories, continuous, kind):
+    values = []
+    for label in X.columns:
+        if kind == "nom-nom":
+            conditional = _conditional_entropies(
+                categories[label], categories[y.name], sample_weight
+            )[0]
+            value = _theil_value(categories[label][2], conditional)
+        elif label in categories:
+            value = _ratio_value(categories[label], continuous[y.name], sample_weight)
+        else:
+            value = _ratio_value(categories[y.name], continuous[label], sample_weight)
+        values.append(value)
+    return pd.Series(values, index=X.columns, dtype=float).fillna(0.0)
+
+
+def _categorical_series(X, target, columns, weights, n_jobs, kind):
+    selected = list(dict.fromkeys([*columns, target]))
+    dtypes = create_dtype_dict(X[selected], dic_keys="dtypes")
+    categories = _prepare_categories(
+        X, selected if kind == "nom-nom" else dtypes["cat"], weights
+    )
+    continuous = (
+        {} if kind == "nom-nom" else _prepare_continuous(X, dtypes["num"], weights)
+    )
+    batch = partial(
+        _categorical_series_batch,
+        categories=categories,
+        continuous=continuous,
+        kind=kind,
+    )
+    # Only labels and prepared arrays need to cross the worker boundary.
+    labels = pd.DataFrame(columns=X[columns].columns)
+    return parallel_df(batch, labels, pd.Series(name=target, dtype=float), weights, n_jobs)
 
 
 @asymmetric_function
@@ -212,43 +356,9 @@ def weighted_theils_u(x, y, sample_weight=None, as_frame=False):
 
     x, y, sample_weight = _check_association_pair(x, y, sample_weight)
 
-    tot_weight = np.sum(sample_weight)
-
-    # Integer encoding
-    y_encoded, y_unique = pd.factorize(y)
-    x_encoded, x_unique = pd.factorize(x)
-
-    # Extend bincount to cover all categories
-    y_weights = np.bincount(y_encoded, weights=sample_weight, minlength=len(y_unique))
-    x_weights = np.bincount(x_encoded, weights=sample_weight, minlength=len(x_unique))
-
-    # Entropy calculations
-    p_x = x_weights / tot_weight
-    h_x = ss.entropy(p_x)
-
-    h_xy = 0.0
-    for unique_x in np.unique(x_encoded):
-        x_mask = x_encoded == unique_x
-        y_sub_weights = np.bincount(
-            y_encoded[x_mask], weights=sample_weight[x_mask], minlength=len(y_unique)
-        )
-        p_xy = y_sub_weights / tot_weight
-        p_y = y_weights / tot_weight
-        # Avoid division by zero in log calculation
-        valid_mask = (p_xy != 0) & (p_y != 0)
-        h_xy += np.sum(p_xy[valid_mask] * np.log(p_y[valid_mask] / p_xy[valid_mask]))
-
-    # A constant first argument has no uncertainty left to explain.
-    u = 1.0 if h_x == 0 else (h_x - h_xy) / h_x
-
-    # Check for floating point precision issues
-    if h_x != 0 and (abs(u) < _PRECISION or abs(u - 1.0) < _PRECISION):
-        rounded_u = round(u)
-        warnings.warn(
-            f"Rounded U = {u} to {rounded_u}. This is probably due to floating point precision issues.",
-            RuntimeWarning,
-        )
-        u = rounded_u
+    px, py = _category_data(x, sample_weight), _category_data(y, sample_weight)
+    conditional = _conditional_entropies(px, py, sample_weight)[0]
+    u = _theil_value(px[2], conditional)
 
     # Return as DataFrame or float
     if as_frame:
@@ -263,9 +373,9 @@ def theils_u_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop"):
     U(x, y) means the uncertainty of x given y: value is on the range of [0,1] -
     where 0 means y provides no information about x, and 1 means y provides full information about x
 
-    The computation is embarrassingly parallel and is distributed on available cores.
-    Moreover, the statistic is computed for the unique combinations only and returned in a
-    tidy (long) format.
+    Category codes and marginal weights are prepared once, then evaluated in
+    optional joblib batches. Theil's U shares observed joint weights between
+    directions; no full category Cartesian product is allocated.
 
     Parameters
     ----------
@@ -291,24 +401,12 @@ def theils_u_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop"):
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
     cat_cols = dtypes_dic["cat"]
 
-    if cat_cols and (len(cat_cols) >= 2):
-        # explicitly store the unique 2-permutation of column names
-        # permutations and not combinations because U is asymmetric
-        comb_list = [comb for comb in permutations(cat_cols, 2)]
-        # parallelize jobs
-        theil_u_matrix_entries = partial(
-            _compute_matrix_entries, func_xyw=weighted_theils_u
+    _effective_n_jobs(n_jobs, len(cat_cols))
+    if len(cat_cols) >= 2:
+        return _categorical_matrix(
+            X, list(permutations(cat_cols, 2)), sample_weight, n_jobs, "nom-nom"
         )
-        lst = parallel_matrix_entries(
-            func=theil_u_matrix_entries,
-            df=X,
-            comb_list=comb_list,
-            sample_weight=sample_weight,
-            n_jobs=n_jobs,
-        )
-        return lst
-    else:
-        return None
+    return None
 
 
 def theils_u_series(X, target, sample_weight=None, n_jobs=1, handle_na="drop"):
@@ -317,9 +415,9 @@ def theils_u_series(X, target, sample_weight=None, n_jobs=1, handle_na="drop"):
     U(x, y) means the uncertainty of x given y: value is on the range of [0,1] -
     where 0 means y provides no information about x, and 1 means y provides full information about x
 
-    The computation is embarrassingly parallel and is distributed on available cores.
-    Moreover, the statistic is computed for the unique combinations only and returned in a
-    tidy (long) format.
+    Category codes and marginal weights are prepared once, then evaluated in
+    optional joblib batches. Theil's U shares observed joint weights between
+    directions; no full category Cartesian product is allocated.
 
     Parameters
     ----------
@@ -350,19 +448,12 @@ def theils_u_series(X, target, sample_weight=None, n_jobs=1, handle_na="drop"):
     # Cramer's V only for categorical columns
     cat_cols = dtypes_dic["cat"]
 
+    _effective_n_jobs(n_jobs, len(cat_cols))
     if cat_cols:
-        # parallelize jobs
-        _theil_u = partial(_compute_series, func_xyw=weighted_theils_u)
-        lst = parallel_df(
-            func=_theil_u,
-            df=X[cat_cols],
-            series=X[target],
-            sample_weight=sample_weight,
-            n_jobs=n_jobs,
+        return _categorical_series(
+            X, target, cat_cols, sample_weight, n_jobs, "nom-nom"
         )
-        return lst
-    else:
-        return None
+    return None
 
 
 @symmetric_function
@@ -584,15 +675,10 @@ def correlation_ratio(x, y, sample_weight=None, as_frame=False):
             "One of the series must be categorical and the other numerical."
         )
 
-    # Prepare arguments for the weighted correlation ratio calculation
-    unique_categories = pd.unique(categorical)
-    args = [
-        (continuous.to_numpy()[categorical == category], sample_weight[categorical == category])
-        for category in unique_categories
-    ]
-
-    # Compute the weighted correlation ratio
-    v = _weighted_correlation_ratio(*args)[0]
+    categories = _category_data(categorical, sample_weight)
+    values = continuous.to_numpy(dtype=float)
+    values = values - values[np.flatnonzero(sample_weight > 0)[0]]
+    v = _ratio_value(categories, values, sample_weight)
 
     # Format the result
     if as_frame:
@@ -609,9 +695,8 @@ def correlation_ratio_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop"):
     """correlation_ratio_matrix computes the weighted Correlation Ratio for
     categorical-numerical association. This is a symmetric coefficient: CR(x,y) = CR(y,x)
 
-    The computation is embarrassingly parallel and is distributed on available cores.
-    Moreover, the statistic is computed for the unique combinations only and returned in a
-    tidy (long) format.
+    Category codes and marginal weights are prepared once, then evaluated in
+    optional joblib batches using group means and directly accumulated residuals.
 
     Parameters
     ----------
@@ -637,33 +722,20 @@ def correlation_ratio_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop"):
     cat_cols = dtypes_dic["cat"]
     num_cols = dtypes_dic["num"]
 
+    _effective_n_jobs(n_jobs, len(cat_cols) * len(num_cols))
     if cat_cols and num_cols:
-        # explicitly store the unique 2-combinations of column names
-        # the first one should be the categorical predictor
-        comb_list = list(product(cat_cols, num_cols))
-        # parallelize jobs
-        corr_ratio_matrix_entries = partial(
-            _compute_matrix_entries, func_xyw=correlation_ratio
+        return _categorical_matrix(
+            X, list(product(cat_cols, num_cols)), sample_weight, n_jobs, "nom-num"
         )
-        lst = parallel_matrix_entries(
-            func=corr_ratio_matrix_entries,
-            df=X,
-            comb_list=comb_list,
-            sample_weight=sample_weight,
-            n_jobs=n_jobs,
-        )
-        return lst
-    else:
-        return None
+    return None
 
 
 def correlation_ratio_series(X, target, sample_weight=None, n_jobs=1, handle_na="drop"):
     """correlation_ratio_series computes the weighted correlation ration for
     categorical-numerical association. This is a symmetric coefficient: CR(x,y) = CR(y,x)
 
-    The computation is embarrassingly parallel and is distributed on available cores.
-    Moreover, the statistic is computed for the unique combinations only and returned in a
-    tidy (long) format, a series.
+    Category codes and marginal weights are prepared once, then evaluated in
+    optional joblib batches using group means and directly accumulated residuals.
 
     Parameters
     ----------
@@ -695,19 +767,12 @@ def correlation_ratio_series(X, target, sample_weight=None, n_jobs=1, handle_na=
         # if the target is numerical, the 2nd pred should be categorical
         pred_list = dtypes_dic["cat"]
 
+    _effective_n_jobs(n_jobs, len(pred_list))
     if pred_list:
-        # parallelize jobs
-        _corr_ratio = partial(_compute_series, func_xyw=correlation_ratio)
-        lst = parallel_df(
-            func=_corr_ratio,
-            df=X[pred_list],
-            series=X[target],
-            sample_weight=sample_weight,
-            n_jobs=n_jobs,
+        return _categorical_series(
+            X, target, pred_list, sample_weight, n_jobs, "nom-num"
         )
-        return lst
-    else:
-        return None
+    return None
 
 
 def wm(x, w):
@@ -725,7 +790,7 @@ def wm(x, w):
     float
         weighted mean
     """
-    x = validate_target(x, np.size(x)).to_numpy()
+    x = validate_target(x, np.size(x)).to_numpy(dtype=float)
     w = validate_sample_weight(w, len(x))
     if w is None:
         w = np.ones(len(x))
@@ -750,8 +815,12 @@ def wcov(x, y, w):
         weighted covariance
     """
     x, y, w = _check_association_pair(x, y, w)
-    x, y = x.to_numpy(), y.to_numpy()
-    return np.sum(w * (x - wm(x, w)) * (y - wm(y, w))) / np.sum(w)
+    data = _center_numeric(
+        pd.concat([x.reset_index(drop=True), y.reset_index(drop=True)], axis=1),
+        w,
+        "pearson",
+    )
+    return np.dot(w * data[:, 0], data[:, 1]) / w.sum()
 
 
 def wcorr(x, y, w):
@@ -771,7 +840,7 @@ def wcorr(x, y, w):
     float
         weighted correlation coefficient
     """
-    return wcov(x, y, w) / np.sqrt(wcov(x, x, w) * wcov(y, y, w))
+    return weighted_corr(x, y, w, method="pearson")
 
 
 def wrank(x, w):
@@ -786,18 +855,98 @@ def wrank(x, w):
 
     Returns
     -------
-    float
-        weighted rank
+    np.ndarray
+        Weighted ranks with the original length. Zero-weight rows do not affect
+        positive-weight ties; zero-only groups receive preceding cumulative mass.
     """
     x = validate_target(x, np.size(x)).to_numpy()
     w = validate_sample_weight(w, len(x))
     if w is None:
         w = np.ones(len(x))
-    (_unique, arr_inv, counts) = np.unique(
-        rankdata(x), return_counts=True, return_inverse=True
+    return _weighted_rank(x, w)
+
+
+def _weighted_rank(x, w):
+    """Keep zero-weight rows without letting them change positive-weight ties."""
+    _, inverse = np.unique(x, return_inverse=True)
+    mass = np.bincount(inverse, weights=w)
+    counts = np.bincount(inverse, weights=w > 0)
+    average = np.divide(mass, counts, out=np.zeros_like(mass), where=counts > 0)
+    ranks = np.cumsum(mass) - mass + (counts + 1) / 2 * average
+    return ranks[inverse]
+
+
+def _center_numeric(X, weights, method):
+    """Convert once, rank once per column, and center before products."""
+    if method == "pearson":
+        data = X.to_numpy(dtype=float)
+        if not np.isfinite(data).all():
+            raise ValueError("y must contain finite, nonmissing responses.")
+    else:
+        if X.isna().to_numpy().any() or X.isin([np.inf, -np.inf]).to_numpy().any():
+            raise ValueError("y must contain finite, nonmissing responses.")
+        # Rank original values to preserve large integers and comparable labels.
+        data = np.column_stack(
+            [_weighted_rank(X.iloc[:, i].to_numpy(), weights) for i in range(X.shape[1])]
+        )
+    # Subtract an observed origin before the mean to protect large offsets.
+    data = data - data[np.flatnonzero(weights > 0)[0]]
+    # Use the same reduction for every column, including exact opposites.
+    return data - np.sum(weights[:, None] * data, axis=0) / weights.sum()
+
+
+def _numeric_correlation(centered, weights, target=None):
+    """A matrix product for matrices; a matrix-vector product for series."""
+    with np.errstate(divide="ignore", invalid="ignore"):
+        if target is None:
+            products = (centered.T * weights) @ centered
+            squares = np.diag(products)
+            values = products / np.sqrt(squares[:, None] * squares)
+        else:
+            squares = weights @ (centered * centered)
+            target_square = np.dot(weights, target * target)
+            values = centered.T @ (weights * target) / np.sqrt(squares * target_square)
+            # MRMR gives exact duplicates a full penalty; reduction order must not weaken it.
+            defined = (squares > 0) & (target_square > 0)
+            values[defined & np.all(centered == target[:, None], axis=0)] = 1.0
+            values[defined & np.all(centered == -target[:, None], axis=0)] = -1.0
+
+    return np.clip(values, -1.0, 1.0)
+
+
+def _numeric_series(X, target, columns, weights, n_jobs, method):
+    _effective_n_jobs(n_jobs, len(columns))
+    selected = list(columns)
+    if target not in selected:
+        selected.append(target)
+    centered = _center_numeric(X[selected], weights, method)
+    values = _numeric_correlation(
+        centered[:, : len(columns)], weights, centered[:, selected.index(target)]
     )
-    a = np.bincount(arr_inv, w)
-    return (np.cumsum(a) - a)[arr_inv] + ((counts + 1) / 2 * (a / counts))[arr_inv]
+    return (
+        pd.Series(values, index=X[columns].columns)
+        .fillna(0.0)
+        .sort_values(ascending=False, kind="stable")
+    )
+
+
+def _numeric_matrix(X, pairs, weights, n_jobs, method):
+    _effective_n_jobs(n_jobs, len(pairs))
+    if not pairs:
+        return pd.DataFrame(columns=["row", "col", "val"]).astype({"val": float})
+    columns = list(dict.fromkeys(label for pair in pairs for label in pair))
+    centered = _center_numeric(X[columns], weights, method)
+    values = _numeric_correlation(centered, weights)
+    positions = {label: i for i, label in enumerate(columns)}
+    rows = []
+    for left, right in pairs:
+        value = values[positions[left], positions[right]]
+        rows.extend([(left, right, value), (right, left, value)])
+    return (
+        pd.DataFrame(rows, columns=["row", "col", "val"])
+        .sort_values("val", ascending=False, kind="stable")
+        .reset_index(drop=True)
+    )
 
 
 def wspearman(x, y, w):
@@ -817,7 +966,7 @@ def wspearman(x, y, w):
     float
         Spearman weighted correlation coefficient
     """
-    return wcorr(wrank(x, w), wrank(y, w), w)
+    return weighted_corr(x, y, w, method="spearman")
 
 
 @symmetric_function
@@ -844,10 +993,9 @@ def weighted_corr(x, y, sample_weight=None, as_frame=False, method="spearman"):
     """
     x, y, sample_weight = _check_association_pair(x, y, sample_weight)
 
-    if method == "pearson":
-        c = wcorr(x, y, sample_weight)
-    else:
-        c = wspearman(x, y, sample_weight)
+    data = pd.concat([x.reset_index(drop=True), y.reset_index(drop=True)], axis=1)
+    centered = _center_numeric(data, sample_weight, method)
+    c = _numeric_correlation(centered[:, :1], sample_weight, centered[:, 1])[0]
 
     if as_frame:
         x_name = x.name if isinstance(x, pd.Series) else "var"
@@ -865,9 +1013,9 @@ def wcorr_series(
     """wcorr_series computes the weighted correlation coefficient (Pearson or Spearman) for
     continuous-continuous association. This is an symmetric coefficient: corr(x,y) = corr(y,x)
 
-    The computation is embarrassingly parallel and is distributed on available cores.
-    Moreover, the statistic is computed for the unique combinations only and returned in a
-    tidy (long) format.
+    Numeric products use NumPy/BLAS, which controls native threading. n_jobs is
+    validated but does not launch joblib workers. Spearman ranks each column once;
+    series calculations use only matrix-vector products.
 
     Parameters
     ----------
@@ -878,7 +1026,7 @@ def wcorr_series(
     sample_weight : array-like of shape (n_samples,), optional
         The weight vector, by default None
     n_jobs : int, optional
-        the number of cores to use for the computation, by default 1
+        Validated worker count; numeric threading is controlled by NumPy/BLAS.
     handle_na : str, optional
         either drop rows with na, fill na with 0 or do nothing, by default "drop"
     method : str
@@ -898,21 +1046,10 @@ def wcorr_series(
         raise TypeError("the target column is categorical")
 
     num_cols = dtypes_dic["num"]
-    y = X[target]
-
+    _effective_n_jobs(n_jobs, len(num_cols))
     if num_cols:
-        _wcorr_method = partial(weighted_corr, method=method)
-        # parallelize jobs
-        _wcorr_method_series = partial(_compute_series, func_xyw=_wcorr_method)
-        return parallel_df(
-            func=_wcorr_method_series,
-            df=X[num_cols],
-            series=y,
-            sample_weight=sample_weight,
-            n_jobs=n_jobs,
-        )
-    else:
-        return None
+        return _numeric_series(X, target, num_cols, sample_weight, n_jobs, method)
+    return None
 
 
 def wcorr_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop", method="spearman"):
@@ -920,9 +1057,9 @@ def wcorr_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop", method="spea
     (Pearson or Spearman) for continuous-continuous association.
     This is an symmetric coefficient: corr(x,y) = corr(y,x)
 
-    The computation is embarrassingly parallel and is distributed on available cores.
-    Moreover, the statistic is computed for the unique combinations only and returned in a
-    tidy (long) format.
+    Numeric products use NumPy/BLAS, which controls native threading. n_jobs is
+    validated but does not launch joblib workers. Spearman ranks each column once;
+    series calculations use only matrix-vector products.
 
     Parameters
     ----------
@@ -931,7 +1068,7 @@ def wcorr_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop", method="spea
     sample_weight : array-like of shape (n_samples,), optional
         The weight vector, by default None
     n_jobs : int, optional
-        the number of cores to use for the computation, by default -1
+        Validated worker count; numeric threading is controlled by NumPy/BLAS.
     handle_na : str, optional
         either drop rows with na, fill na with 0 or do nothing, by default "drop"
     method : str
@@ -949,42 +1086,18 @@ def wcorr_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop", method="spea
     dtypes_dic = create_dtype_dict(X, dic_keys="dtypes")
 
     num_cols = dtypes_dic["num"]
+    _effective_n_jobs(n_jobs, len(num_cols))
     if num_cols:
-        # explicitely store the unique 2-combinations of column names
-        comb_list = [comb for comb in combinations(num_cols, 2)]
-        n_jobs = _effective_n_jobs(n_jobs, len(comb_list))
-
-        if (n_jobs > 1) or (method != "pearson") or not comb_list:
-            _wcorr_method = partial(weighted_corr, method=method)
-            _wcorr_method_entries = partial(
-                _compute_matrix_entries, func_xyw=_wcorr_method
-            )
-            lst = parallel_matrix_entries(
-                func=_wcorr_method_entries,
-                df=X,
-                comb_list=comb_list,
-                sample_weight=sample_weight,
-                n_jobs=n_jobs,
-            )
-            return lst
-        else:
-            corr = weighted_correlation_1cpu(X, sample_weight, handle_na)
-            rows = []
-            for left, right in comb_list:
-                value = corr.at[left, right]
-                rows.extend([(left, right, value), (right, left, value)])
-            return (
-                pd.DataFrame(rows, columns=["row", "col", "val"])
-                .sort_values("val", ascending=False, kind="stable")
-                .reset_index(drop=True)
-            )
-    else:
-        return None
+        return _numeric_matrix(
+            X, list(combinations(num_cols, 2)), sample_weight, n_jobs, method
+        )
+    return None
 
 
 def weighted_correlation_1cpu(X, sample_weight=None, handle_na="drop"):
-    """weighted_correlation computes the lower triangular weighted correlation matrix
-    using a single CPU, therefore using common numpy linear algebra
+    """Compute the square weighted Pearson matrix using NumPy linear algebra.
+
+    NumPy/BLAS controls native threading.
 
     Parameters
     ----------
@@ -998,7 +1111,7 @@ def weighted_correlation_1cpu(X, sample_weight=None, handle_na="drop"):
     Returns
     -------
     pd.DataFrame
-        the lower triangular weighted correlation matrix in long format
+        The square weighted Pearson correlation matrix, including its diagonal.
     """
     # sanity checks
     X, sample_weight = _check_association_input(X, sample_weight, handle_na)
@@ -1008,23 +1121,13 @@ def weighted_correlation_1cpu(X, sample_weight=None, handle_na="drop"):
 
     if numeric_cols:
         data = X[numeric_cols]
-        col_idx = data.columns
-        data = data.values
-        sum_weights = sample_weight.sum()
-        weighted_sum = np.dot(data.T, sample_weight)
-        weighted_mean = weighted_sum / sum_weights
-        demeaned = data - weighted_mean
-        sum_of_squares = np.dot((demeaned**2).T, sample_weight)
-        weighted_std = np.sqrt(sum_of_squares)
-        weighted_cov = np.dot(sample_weight * demeaned.T, demeaned)
-        weighted_corcoef = pd.DataFrame(
-            weighted_cov / weighted_std / weighted_std[:, None],
-            index=col_idx,
-            columns=col_idx,
+        centered = _center_numeric(data, sample_weight, "pearson")
+        return pd.DataFrame(
+            _numeric_correlation(centered, sample_weight),
+            index=data.columns,
+            columns=data.columns,
         )
-        return weighted_corcoef
-    else:
-        return None
+    return None
 
 
 #################################
@@ -1233,6 +1336,20 @@ def association_matrix(
     return pd.concat(df_to_concat, ignore_index=True)
 
 
+def _builtin_numeric_method(func):
+    if func is weighted_corr:
+        return "spearman"
+    if (
+        isinstance(func, partial)
+        and func.func is weighted_corr
+        and not func.args
+        and set(func.keywords) == {"method"}
+        and func.keywords["method"] in ("pearson", "spearman")
+    ):
+        return func.keywords["method"]
+    return None
+
+
 def _callable_association_series_fn(
     assoc_fn, X, target, sample_weight=None, n_jobs=1, kind="nom-nom"
 ):
@@ -1294,6 +1411,15 @@ def _callable_association_series_fn(
     if not pred_list:
         return None
 
+    method = _builtin_numeric_method(assoc_fn)
+    if method is not None and kind == "num-num":
+        return _numeric_series(X, target, pred_list, sample_weight, n_jobs, method)
+
+    if (assoc_fn is weighted_theils_u and kind == "nom-nom") or (
+        assoc_fn is correlation_ratio and kind == "nom-num"
+    ):
+        return _categorical_series(X, target, pred_list, sample_weight, n_jobs, kind)
+
     # Setup parallel computation
     _assoc_fn = partial(_compute_series, func_xyw=assoc_fn)
     return parallel_df(
@@ -1354,6 +1480,15 @@ def _callable_association_matrix_fn(
     # Return None if no column combinations are available
     if not cols_comb:
         return None
+
+    method = _builtin_numeric_method(assoc_fn)
+    if method is not None and kind == "num-num":
+        return _numeric_matrix(X, cols_comb, sample_weight, n_jobs, method)
+
+    if (assoc_fn is weighted_theils_u and kind == "nom-nom") or (
+        assoc_fn is correlation_ratio and kind == "nom-num"
+    ):
+        return _categorical_matrix(X, cols_comb, sample_weight, n_jobs, kind)
 
     # Setup parallel computation
     _assoc_fn = partial(_compute_matrix_entries, func_xyw=assoc_fn)
