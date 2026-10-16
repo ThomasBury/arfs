@@ -1,6 +1,6 @@
 # ARFS remediation handoff
 
-**Status: R01–R33 complete. No pending RXX implementation group. Versioning and publication remain separate delivery work.**
+**Status: R01–R33 complete. No pending RXX implementation group. Final validation and delivery of version 4.0.0 are in progress.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
 a separate repair backlog. By default, a request to implement the next phase
@@ -12,6 +12,45 @@ Keep one distribution. Preserve unrelated changes and historical review
 evidence. Prefer existing helpers and supported native APIs; no compatibility
 layer, new backend, packaging split, or broad rewrite is required by this plan.
 Names below are phase IDs, not commit promises or a release schedule.
+
+## R33 delivery and 4.0.0 release — 2026-10-16
+
+The user authorized staging, topical Conventional Commits, a dedicated branch,
+a pull request, Codex review, fixes for its findings, merge, branch removal and
+a GitHub release with a version bump/tag when appropriate. Branch:
+`fix/r33-release-evidence`, based on merged R32 (`dbbd3c5`). The original R33
+commits `aabb238` and `fa08538` become `c047a03` and `fb277ea`. The changelog and
+handoff conflicts preserve both R32 review fixes and all earlier delivery notes.
+
+**Release decision: prepare 4.0.0.** No RXX phase remains. The intentional public
+API/helper removals and incompatible legacy GBM artifacts warrant a major release.
+`664a055` updates the package/citation version and release date, moves the repairs
+out of Unreleased and adds migration notes. The entire lock remains unchanged:
+local version metadata is dynamic, and dependency pins/hashes are preserved.
+After current-head validation, hosted CI and Codex review pass, merge this PR,
+tag its merged commit `4.0.0` and publish a GitHub release with the validated wheel,
+source archive and checksums. No PyPI publication workflow is configured.
+
+Direct Ruff passes with zero diagnostics; the count baseline and its scripts are
+removed. The new wheel and sdist match all 19 package code/data payloads. Fresh
+full suites are running in the six declared snapshots, including R32's eleven
+new review regressions. Strict HTML builds already pass in both fresh docs
+snapshots against the 4.0.0 wheel. Bounded notebook execution, runtime typing,
+minimum-version and shipped-sdist checks complete the release gates. Exact final
+results will be recorded on the PR and GitHub release. CodeRabbit is not a gate.
+New raw evidence stays local and ignored under `evidence/r33-delivery/`.
+
+The existing fixed experiment retains its 1,120 measured fits; it is not rerun or
+counted as additional seeds. Every runtime payload matches its measured wheel
+apart from the package version and R32's class-frequency lookup. The screen
+script and dependency versions are identical. In both snapshots, all 70 binary
+training sets contain labels 0/1 and leave the old and new imbalance tests off,
+so that lookup changes none of the experiment's parameter dictionaries. The
+shared helper is called once before GrootCV's folds; the other selectors do not
+use it. This checked boundary supports retaining the recorded measurements;
+it does not establish calibration or support outside their original protocol.
+The final candidate's six fresh suites separately exercise the repaired imbalance
+branch and native fits. The notebook/platform/backend gaps remain explicit.
 
 ## R33 completion — 2026-10-15
 
