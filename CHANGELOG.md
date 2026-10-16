@@ -2,6 +2,8 @@
 
 # Unreleased
 
+# 4.0.1 — 2026-10-16
+
  - Correct weighted Spearman ranks so zero-weight rows cannot change positive-weight ties; nullable numeric inputs now use explicit float arrays. Recheck feature selections after this rank correction.
  - Reuse centered NumPy products and per-column ranks for Pearson/Spearman; series calls use matrix–vector products. NumPy/BLAS controls numeric threading independently of validated `n_jobs`. Prepare category codes/marginals once for Theil’s U and correlation ratio, with optional joblib batches and unchanged custom callback dispatch.
 

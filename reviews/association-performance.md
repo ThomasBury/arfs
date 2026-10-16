@@ -179,3 +179,25 @@ that used zero-weight tied rows. Full association matrices still require
 quadratic output/work in the number of columns; categorical joblib overhead can
 outweigh its benefit on small sets. No new dependencies, Cramér's V optimization,
 MRMR storage redesign, automatic sampling or statistical-default changes.
+
+## PR delivery and release policy
+
+The user authorized a dedicated branch, topical Conventional Commits, push,
+PR creation with labels, Codex bot review and fixes, merge, branch removal,
+and a GitHub release. CodeRabbit is not a gate. New raw evidence remains ignored;
+only the source, maintained tests, benchmark and this concise handoff are tracked.
+
+GitHub 4.0.0 was already published on 2026-10-16. R01–R33 are complete; no RXX
+implementation remains. Prepare **4.0.1**, a patch release for association
+correctness and performance. Cramér's V optimization, MRMR storage redesign and
+automatic sampling remain deferred to demonstrated need and do not block this
+release. Update package and citation metadata and move these changelog entries
+out of Unreleased; dependency pins remain unchanged.
+
+The benchmark and full local six-cell results above identify the original
+4.0.0 candidate. Release preparation changes version metadata only; the
+association module matches that measured wheel byte for byte. Build and verify
+4.0.1 artifacts separately, check fresh installed-wheel regressions and strict
+docs in both Python 3.12 snapshots, and require all hosted dependency cells plus
+completed Codex review on the final PR head before merge. Tag the merged commit
+`4.0.1` and publish its wheel, source archive and SHA256SUMS on GitHub.
