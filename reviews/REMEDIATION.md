@@ -50,6 +50,24 @@ diagnostics. New evidence is ignored under `evidence/r32-pr-review/`. The full
 notebook/backend execution gaps in the R32 handoff remain. Current-head hosted
 CI and Codex re-review must finish before merge. CodeRabbit is not a gate.
 
+Codex's second review on `da0c716` found a valid P2 in the imbalance claim:
+`_set_lgb_parameters` looked up label 0's frequency rather than the largest
+frequency. The shared helper now uses `y_freq_table.iloc[0]`; the strict >80%
+unweighted threshold is unchanged. Caller tracing covered GrootCV.fit,
+_reduce_vars_lgb_cv, native training and all helper references. Six parameter
+cases check both binary majority labels, integer labels without 0 at the private
+helper boundary, and exact-80% controls; two real GrootCV fits verify the flag
+reaches native LightGBM with either binary majority. Before the fix, four fail
+and four pass as controls; all eight pass afterward. This fixes the frequency
+lookup, without promising native training on arbitrary integer label sets.
+
+A new sdist/wheel has matching source code/data payloads. Fresh full-suite
+installed-wheel runs are in progress in all three snapshots; raw logs and
+identities are ignored under `evidence/r32-imbalance-review/`. Both strict HTML
+builds pass against this repaired wheel with zero Sphinx warnings. The original
+execution scopes remain bounded; the earlier optional-cell sources are unchanged.
+The final full-suite and Codex re-review results will be recorded on PR #65.
+
 **Release decision: defer the version bump, tag and GitHub release.** GitHub's
 latest release and this checkout remain `3.0.0`. R33 is implemented on a separate
 local branch but is not part of this delivery or remote `main`. Deliver R33 and

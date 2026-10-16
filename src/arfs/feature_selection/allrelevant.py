@@ -2422,7 +2422,7 @@ def _set_lgb_parameters(
             params["num_class"] = len(np.unique(y))
             if not silent:
                 print("Multi-class task, setting objective to softmax")
-        main_class = y_freq_table[0]
+        main_class = y_freq_table.iloc[0]
         if not silent:
             print("GrootCV: classification with unbalance classes")
         if main_class > 0.8:
