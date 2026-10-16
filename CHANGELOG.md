@@ -2,6 +2,22 @@
 
 # Unreleased
 
+# 4.0.0 — 2026-10-16
+
+This major release includes the R01–R33 repairs. Refit models and recheck feature
+selections and downstream metrics, since corrected behavior can change results.
+
+Migration notes:
+
+ - Remove `VariableImportance(n_iterations=...)`; importance now uses one fit.
+ - Replace `cat_var` with fitted `OrdinalEncoderPandas` encoding. It returns a DataFrame, not the old four-item tuple.
+ - Replace `validate_pandas_input` with pandas `.to_numpy()` when an array is needed.
+ - Refit and save GBM models again; old Booster-only files are rejected. New artifacts require trusted input and a compatible environment.
+ - Replace `TreeDiscretizer.tree_imputer` with `leaf_interval_dic_`; categorical maps now use native leaf IDs.
+ - Preserve fitted column order for named encoders and prediction schemas; array inputs must have the fitted width.
+
+Changes:
+
  - Retire the temporary Ruff baseline and require a clean direct check. Remove inherited lint debt while preserving Python 3.9 runtime typing, backend import checks and error wrappers; use immutable encoder defaults and raise the missing FastTreeSHAP error before training. R33 records the completed local release-evidence gates and their support limits.
 
  - Correct GrootCV's imbalance heuristic to use the largest class frequency, regardless of its integer label; retain the strict 80% unweighted-row cutoff.
@@ -40,7 +56,6 @@
  - Reject duplicate threshold-selector names, align labelled statistics, validate current parameters and expose fitted feature counts. Preserve named projection and strict threshold equality; handle empty collinearity stages and break ties in input order.
  - Make VariableImportance use one fit and remove n_iterations. Keep the cumulative crossing feature, exclude zero importance, reject nonfinite contributions and fix array multiclass/optional-backend errors. Training remains weighted; global importance averages validation rows equally.
  - Test installed wheels on Python 3.9–3.12 with locked dependencies, exact direct runtime minima on Python 3.9, and a newer Python 3.12 snapshot. Add a fixed held-out selection screen and document support and calibration limits.
- - Keep the next version and publication separate from the completed local R33 validation; the intentional API removals warrant a major release when delivery is requested.
 
 # 3.0.0
 

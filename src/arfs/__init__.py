@@ -1,3 +1,3 @@
 """init module, providing information about the arfs package"""
 
-__version__ = "3.0.0"
+__version__ = "4.0.0"
