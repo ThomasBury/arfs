@@ -47,36 +47,32 @@ License: BSD 3 clause
 
 """
 
-from __future__ import print_function, division
 import operator
-import warnings
 import time
-import shap
-import numpy as np
-import pandas as pd
+import warnings
+from typing import Optional
+
 import lightgbm as lgb
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 import scipy as sp
-
-from typing import Tuple, Optional, Union, Iterable
-from tqdm.auto import tqdm
-from sklearn.utils import check_random_state, check_X_y
-from sklearn.base import BaseEstimator, is_regressor, is_classifier, clone
-
-from sklearn.utils.validation import check_is_fitted
-from sklearn.feature_selection._base import SelectorMixin
-from sklearn.model_selection import RepeatedKFold, train_test_split
-from sklearn.inspection import permutation_importance
+import shap
 from matplotlib.lines import Line2D
-from lightgbm import early_stopping
-
+from sklearn.base import BaseEstimator, clone, is_classifier, is_regressor
+from sklearn.feature_selection._base import SelectorMixin
+from sklearn.inspection import permutation_importance
+from sklearn.model_selection import RepeatedKFold, train_test_split
+from sklearn.utils import check_random_state, check_X_y
+from sklearn.utils.validation import check_is_fitted
+from tqdm.auto import tqdm
 
 from ..utils import (
     check_if_tree_based,
-    is_lightgbm,
-    is_catboost,
     get_pandas_cat_codes,
+    is_catboost,
+    is_lightgbm,
     validate_sample_weight,
     validate_target,
 )
@@ -119,20 +115,22 @@ PLT_PARAMS = {
     "grid.color": "#d2d2d2",
     "lines.linewidth": 1.5,
 }
-PLOT_KWARGS = dict(
-    kind="box",
-    boxprops=dict(linestyle="-", linewidth=1.5, color="gray", facecolor="gray"),
-    flierprops=dict(linestyle="-", linewidth=1.5, color="gray"),
-    medianprops=dict(linestyle="-", linewidth=1.5, color="#000000"),
-    whiskerprops=dict(linestyle="-", linewidth=1.5, color="gray"),
-    capprops=dict(linestyle="-", linewidth=1.5, color="gray"),
-    showfliers=False,
-    grid=True,
-    rot=0,
-    vert=False,
-    patch_artist=True,
-    fontsize=9,
-)
+PLOT_KWARGS = {
+    "kind": "box",
+    "boxprops": {
+        "linestyle": "-", "linewidth": 1.5, "color": "gray", "facecolor": "gray"
+    },
+    "flierprops": {"linestyle": "-", "linewidth": 1.5, "color": "gray"},
+    "medianprops": {"linestyle": "-", "linewidth": 1.5, "color": "#000000"},
+    "whiskerprops": {"linestyle": "-", "linewidth": 1.5, "color": "gray"},
+    "capprops": {"linestyle": "-", "linewidth": 1.5, "color": "gray"},
+    "showfliers": False,
+    "grid": True,
+    "rot": 0,
+    "vert": False,
+    "patch_artist": True,
+    "fontsize": 9,
+}
 
 
 class Leshy(SelectorMixin, BaseEstimator):
@@ -328,7 +326,8 @@ class Leshy(SelectorMixin, BaseEstimator):
         self.is_lgb = is_lightgbm(self.estimator)
         if self.importance == "fastshap":
             try:
-                from fasttreeshap import TreeExplainer as FastTreeExplainer
+                # Import the symbol to check that the compiled backend loads.
+                from fasttreeshap import TreeExplainer as FastTreeExplainer  # noqa: F401
             except ImportError:
                 warnings.warn("fasttreeshap is not installed. Fallback to shap.")
                 self.importance = "shap"
@@ -458,16 +457,13 @@ class Leshy(SelectorMixin, BaseEstimator):
         self.random_state = check_random_state(self.random_state)
 
         # setup variables for Boruta
-        n_sample, n_feat = X.shape
+        _n_sample, n_feat = X.shape
         _iter = 1
         # holds the decision about each feature:
         # 0  - default state = tentative in original code
         # 1  - accepted in original code
         # -1 - rejected in original code
         dec_reg = np.zeros(n_feat, dtype=int)
-        # counts how many times a given feature was more important than
-        # the best of the shadow features
-        hit_reg = np.zeros(n_feat, dtype=int)
         # these record the history of the iterations
         imp_history = np.zeros(n_feat, dtype=float)
         sha_max_history = []
@@ -1086,9 +1082,7 @@ class Leshy(SelectorMixin, BaseEstimator):
         hours, rem = divmod(self.running_time, 3600)
         minutes, seconds = divmod(rem, 60)
         print(
-            "All relevant predictors selected in {:0>2}:{:0>2}:{:05.2f}".format(
-                int(hours), int(minutes), seconds
-            )
+            f"All relevant predictors selected in {int(hours):0>2}:{int(minutes):0>2}:{seconds:05.2f}"
         )
 
 
@@ -1192,7 +1186,7 @@ def _split_fit_estimator(estimator, X, y, sample_weight=None, cat_feature=None):
             else:
                 model = estimator.fit(X_tr, y_tr, sample_weight=w_tr)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - normalize third-party fit failures.
             raise ValueError(
                 "Please check your X and y variable. The provided "
                 "estimator cannot be fitted to your data.\n" + str(e)
@@ -1225,7 +1219,7 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
         The SHAP importance array.
     """
     estimator = clone(estimator)
-    model, X_tt, y_tt, w_tt = _split_fit_estimator(
+    model, X_tt, _y_tt, _w_tt = _split_fit_estimator(
         estimator, X, y, sample_weight=sample_weight, cat_feature=cat_feature
     )
 
@@ -1265,7 +1259,7 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
             # Regression
             shap_imp = np.abs(shap_values).mean(axis=0)
     else:
-        raise ValueError(f"Unsupported SHAP values format: {type(shap_values)}")
+        raise ValueError(f"Unsupported SHAP values format: {type(shap_values)}")  # noqa: TRY004 - preserve the backend-output error contract.
 
     return shap_imp
 
@@ -1294,14 +1288,14 @@ def _get_shap_imp_fast(estimator, X, y, sample_weight=None, cat_feature=None):
     """
     try:
         from fasttreeshap import TreeExplainer as FastTreeExplainer
-    except ImportError:
-        ImportError("fasttreeshap is not installed")
+    except ImportError as error:
+        raise ImportError("fasttreeshap is not installed") from error
 
     # Clone the estimator to avoid modifying the original one
     estimator = clone(estimator)
 
     # Split the data into train and test sets and fit the model
-    model, X_tt, y_tt, w_tt = _split_fit_estimator(
+    model, X_tt, _y_tt, _w_tt = _split_fit_estimator(
         estimator, X, y, sample_weight=sample_weight, cat_feature=cat_feature
     )
     explainer = FastTreeExplainer(
@@ -1408,8 +1402,8 @@ def _get_imp(estimator, X, y, sample_weight=None, cat_feature=None):
             estimator.fit(X, y, sample_weight=sample_weight, cat_features=cat_idx)
         else:
             estimator.fit(X, y, sample_weight=sample_weight)
-    except Exception as e:
-        raise ValueError(f"Estimator fitting failed: {str(e)}")
+    except Exception as e:  # noqa: BLE001 - normalize third-party fit failures.
+        raise ValueError(f"Estimator fitting failed: {e!s}")
 
     if is_lightgbm(estimator):
         return estimator.booster_.feature_importance(
@@ -1540,21 +1534,13 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
 
     def __repr__(self):
         s = (
-            "BoostARoota(est={est}, \n"
-            "                cutoff={cutoff},\n"
-            "                iters={iters},\n"
-            "                max_rounds={mr},\n"
-            "                delta={delta},\n"
-            "                silent={silent}, \n"
-            '                importance="{importance}")'.format(
-                est=self.estimator,
-                cutoff=self.cutoff,
-                iters=self.iters,
-                mr=self.max_rounds,
-                delta=self.delta,
-                silent=self.silent,
-                importance=self.importance,
-            )
+            f"BoostARoota(est={self.estimator}, \n"
+            f"                cutoff={self.cutoff},\n"
+            f"                iters={self.iters},\n"
+            f"                max_rounds={self.max_rounds},\n"
+            f"                delta={self.delta},\n"
+            f"                silent={self.silent}, \n"
+            f'                importance="{self.importance}")'
         )
         return s
 
@@ -1571,7 +1557,8 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         """
         if self.importance == "fastshap":
             try:
-                from fasttreeshap import TreeExplainer as FastTreeExplainer
+                # Import the symbol to check that the compiled backend loads.
+                from fasttreeshap import TreeExplainer as FastTreeExplainer  # noqa: F401
             except ImportError:
                 warnings.warn("fasttreeshap is not installed. Fallback to shap.")
                 self.importance = "shap"
@@ -2290,10 +2277,9 @@ def _reduce_vars_lgb_cv(
     if folds is None:
         folds = RepeatedKFold(n_splits=n_folds, n_repeats=n_iter, random_state=2652124)
 
-    iter = 0
     df = pd.DataFrame({"feature": X.columns})
-    for tridx, validx in tqdm(
-        folds.split(X, y), total=folds.get_n_splits(), desc="Cross Validation"
+    for iter, (tridx, validx) in enumerate(
+        tqdm(folds.split(X, y), total=folds.get_n_splits(), desc="Cross Validation")
     ):
         X_train, X_val, y_train, y_val, weight_tr, weight_val = _split_data(
             X, y, tridx, validx, weight
@@ -2328,7 +2314,6 @@ def _reduce_vars_lgb_cv(
             column_names=new_x_tr.columns,
             silent=silent,
         )
-        iter += 1
 
     df["Med"] = df.filter(regex=r"^fscore\d+$").median(axis=1)
     # Split them back out
@@ -2348,7 +2333,7 @@ def _set_lgb_parameters(
     rf: bool,
     silent: bool,
     n_jobs: int = 0,
-    lgbm_params: dict = None,
+    lgbm_params: Optional[dict] = None,
 ) -> dict:
     """Set parameters for a LightGBM model based on the input features and the objective.
 
@@ -2572,8 +2557,8 @@ def _train_lgb_model(
 
         shap_matrix = explainer.shap_values(X_train)
 
-    except Exception as e:
-        raise RuntimeError(f"SHAP computation failed: {str(e)}")
+    except Exception as e:  # noqa: BLE001 - normalize optional SHAP backend failures.
+        raise RuntimeError(f"SHAP computation failed: {e!s}")
 
     return bst, shap_matrix, bst.best_iteration
 
@@ -2651,7 +2636,6 @@ def _merge_importance_df(df, importance, iter, n_folds, column_names, silent=Tru
     df = pd.merge(df, df2, on="feature", how="outer")
     nit = divmod(iter, n_folds)[0]
     nf = divmod(iter, n_folds)[1]
-    if not silent:
-        if nf == 0:
-            print("Groot iteration: ", nit, " with " + str(n_folds) + " folds")
+    if not silent and nf == 0:
+        print("Groot iteration: ", nit, " with " + str(n_folds) + " folds")
     return df

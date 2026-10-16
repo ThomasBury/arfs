@@ -1,5 +1,6 @@
 """R07 regressions for owned encoding and faithful categorical shadows."""
 
+import sys
 from contextlib import nullcontext
 
 import lightgbm as lgb
@@ -11,6 +12,18 @@ from numpy.testing import assert_allclose, assert_array_equal
 from pandas.testing import assert_frame_equal, assert_series_equal
 
 from arfs.feature_selection import allrelevant as ar
+
+
+def test_fastshap_missing_backend_fails_before_cloning(monkeypatch):
+    monkeypatch.setitem(sys.modules, "fasttreeshap", None)
+
+    def forbidden(*args, **kwargs):
+        pytest.fail("missing backend must fail before cloning or training")
+
+    monkeypatch.setattr(ar, "clone", forbidden)
+    X, y = data()
+    with pytest.raises(ImportError, match="fasttreeshap is not installed"):
+        ar._get_shap_imp_fast(model(), X, y)
 
 
 @pytest.fixture(

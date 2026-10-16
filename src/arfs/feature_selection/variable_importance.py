@@ -9,27 +9,19 @@ Module Structure:
 
 from numbers import Integral, Real
 
-# pandas
-import pandas as pd
-
-# numpy
-import numpy as np
-
-# matplotlib
 import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
-
-# sklearn
-from sklearn.utils.validation import check_is_fitted
+import numpy as np
+import pandas as pd
+from matplotlib import gridspec
 from sklearn.base import BaseEstimator
 from sklearn.feature_selection._base import SelectorMixin
+from sklearn.utils.validation import check_is_fitted
 
-# ARFS
-from .allrelevant import _compute_importance
-from .base import _validate_dataframe
-from ..utils import reset_plot
 from ..gbm import GradientBoosting
 from ..preprocessing import OrdinalEncoderPandas
+from ..utils import reset_plot
+from .allrelevant import _compute_importance
+from .base import _validate_dataframe
 
 
 class VariableImportance(SelectorMixin, BaseEstimator):

@@ -11,18 +11,19 @@ Module Structure:
 """
 
 import functools
+
 import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator
+from sklearn.feature_selection._base import SelectorMixin
 from sklearn.utils.validation import check_is_fitted
 from tqdm.auto import tqdm
-from sklearn.feature_selection._base import SelectorMixin
+
 from ..association import (
+    association_series,
     f_stat_classification_parallel,
     f_stat_regression_parallel,
-    association_series,
 )
-
 from ..utils import validate_sample_weight, validate_target
 
 FLOOR = 0.001

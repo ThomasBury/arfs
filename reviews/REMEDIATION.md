@@ -1,6 +1,6 @@
 # ARFS remediation handoff
 
-**Status: R01–R32 complete in this branch. R33 is implemented on a separate local branch and awaits delivery. Next delivery: R33 alone.**
+**Status: R01–R33 complete. No pending RXX implementation group. Version 4.0.0 is prepared; all local release gates pass. PR review, merge, tag and GitHub publication complete delivery.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
 a separate repair backlog. By default, a request to implement the next phase
@@ -12,6 +12,82 @@ Keep one distribution. Preserve unrelated changes and historical review
 evidence. Prefer existing helpers and supported native APIs; no compatibility
 layer, new backend, packaging split, or broad rewrite is required by this plan.
 Names below are phase IDs, not commit promises or a release schedule.
+
+## R33 delivery and 4.0.0 release — 2026-10-16
+
+The user authorized staging, topical Conventional Commits, a dedicated branch,
+a pull request, Codex review, fixes for its findings, merge, branch removal and
+a GitHub release with a version bump/tag when appropriate. Branch:
+`fix/r33-release-evidence`, based on merged R32 (`dbbd3c5`). The original R33
+commits `aabb238` and `fa08538` become `c047a03` and `fb277ea`. The changelog and
+handoff conflicts preserve both R32 review fixes and all earlier delivery notes.
+
+**Release decision: prepare 4.0.0.** No RXX phase remains. The intentional public
+API/helper removals and incompatible legacy GBM artifacts warrant a major release.
+`664a055` updates the package/citation version and release date, moves the repairs
+out of Unreleased and adds migration notes. The entire lock remains unchanged:
+local version metadata is dynamic, and dependency pins/hashes are preserved.
+After current-head validation, hosted CI and Codex review pass, merge this PR,
+tag its merged commit `4.0.0` and publish a GitHub release with the validated wheel,
+source archive and checksums. No PyPI publication workflow is configured.
+
+[PR #66](https://github.com/ThomasBury/arfs/pull/66) delivers this phase. On
+`541d7ab`, hosted push/PR checks and Codex review pass with no findings. The final
+handoff-only commit still needs its own hosted checks and Codex re-review before
+merge. CodeRabbit is not a gate. No new raw evidence is tracked; it stays local
+and ignored under `evidence/r33-delivery/`.
+
+The fresh 4.0.0 wheel passes **1473 tests in five cells / 1457 in newer 3.12**:
+Python 3.9 locked, 3.9 exact direct minima, 3.10 locked, 3.11 locked, 3.12 locked
+and 3.12 newer. Local and hosted totals agree, with no skips or expected failures:
+**8822 local full-suite executions**. All eleven direct dependency floors match
+in the minimum cell. Source/sdist/wheel code/data payloads, every installed
+payload and all copied test/documentation fixtures match current source.
+
+Both fresh strict HTML builds pass with zero Sphinx warnings against the 4.0.0
+wheel, without a setuptools workaround. Each snapshot freshly executes the same
+five bounded workflows plus R32's three commented regression examples:
+**93 code cells and 13 figures** per snapshot, including added setup/assertions
+and the three no-op cells. All 26 figures are byte-identical to the previously
+inspected R33 outputs. All 17 notebook schemas validate. The data substitutions,
+omitted cells and remaining full-notebook gaps stay explicit in the ledgers.
+
+All 112 runtime function/method annotations evaluate on Python 3.9 and newer 3.12.
+The shipped-sdist helper/resource smoke suite passes 25 tests in another clean
+installation. Four unchanged optional-backend boundary checks pass unmasked in
+each 3.12 snapshot, as does the historical reduced-feature time-series check.
+Direct Ruff reports zero diagnostics; its former count baseline and scripts
+are gone. Lock metadata/pins, whitespace and all recorded command exits pass.
+
+The existing fixed experiment retains its 1,120 measured fits; it is not rerun or
+counted as additional seeds. Every runtime payload matches its measured wheel
+apart from the package version and R32's class-frequency lookup. The screen
+script and dependency versions are identical. In both snapshots, all 70 binary
+training sets contain labels 0/1 and leave the old and new imbalance tests off,
+so that lookup changes none of the experiment's parameter dictionaries. The
+shared helper is called once before GrootCV's folds; the other selectors do not
+use it. This checked boundary supports retaining the recorded measurements;
+it does not establish calibration or support outside their original protocol.
+The final candidate's six fresh suites separately exercise the repaired imbalance
+branch and native fits. The notebook/platform/backend gaps remain explicit.
+
+## R33 completion — 2026-10-15
+
+The [R33 handoff](R33-release-evidence.md) records the expanded six-cell
+installed-wheel matrix, exact-minimum snapshot, strict documentation builds,
+1,120 fixed-protocol selector fits and narrowed support/statistical claims.
+The user explicitly approved broader lint cleanup. Direct Ruff reports zero
+diagnostics, and the temporary baseline and scripts are removed. Final rebuilt
+wheel suites pass **1462 in five cells / 1446 in newer 3.12**; 25 shipped-sdist
+tests pass in another clean installation. All 1,120 refreshed selector records
+exactly match pre-cleanup selections, losses and baselines. Both strict HTML
+builds and five bounded fresh-kernel workflows per snapshot pass; all 26 figures
+are byte-identical to the inspected R32 outputs. The missing FastTreeSHAP raise
+has an old-wheel failure/new-wheel success regression. Final evidence is under
+`evidence/r33-release-evidence/lint-cleanup/`. There is no next repair batch.
+Keep version 3.0.0/Unreleased; do not publish or bump it without a delivery request.
+R01–R32 historical records are unchanged.
+Implementation commit: `aabb238` on `fix/r33-release-evidence`, based on `f49bf9d`.
 
 ## R32 delivery — 2026-10-16
 
@@ -302,10 +378,10 @@ record each outcome separately. Stop at a phase boundary if a new API or
 statistical decision, unresolved failure, or wider scope makes the batch too
 large. Session boundaries and repair phases are not published releases.
 
-R01–R32 are complete. The explicitly requested R02/R03, R10/R11,
+R01–R33 are complete. The explicitly requested R02/R03, R10/R11,
 R18/R31 and R25/R26 batches were implemented and validated sequentially.
-The next recorded group is **R33 alone**, with R01–R32 complete. R33 remains
-a separate final release-evidence phase.
+R33's separate final release-evidence phase is complete. There is no remaining
+implementation group; the recorded scope limits remain in its handoff.
 
 | Phases | Session recommendation | Reason |
 | --- | --- | --- |
@@ -337,13 +413,13 @@ a separate final release-evidence phase.
 | R29 | Complete; do not repeat | [R29](R29-plot-contracts.md) records feature coordinates, membership colors, fitted cutoffs, display limits and singleton clustering |
 | R30 | Complete; do not repeat | [R30](R30-dataset-fixtures.md) records isolated reproducible draws, exact row counts and the correct Titanic alone flag |
 | R32 | Complete; do not repeat | [R32](R32-documentation-workflows.md) records clean strict HTML builds, bounded fresh-kernel execution, optional dependency policy and remaining notebook gaps |
-| R33 | Next; run alone | R01–R32 complete; collect justified release/support/calibration evidence and narrow remaining claims |
+| R33 | Complete; do not repeat | [Final release evidence](R33-release-evidence.md), zero-diagnostic Ruff, six-cell wheel matrix and bounded calibration/support limits |
 
 ### Recorded groups for next-batch requests
 
 When the user asks to "implement the next batch of RXX", read the current phase
-statuses in this file and use these groups. **The next recorded group is R33
-alone**, with R01–R32 complete. The three two-phase groups below are already complete.
+statuses in this file and use these groups. **R01–R33 are complete; no recorded
+group remains.** The three two-phase groups below are already complete.
 R10/R11 are complete; their separate handoffs record support/history consistency,
 weighted permutation scoring and the user-chosen absolute-total normalization.
 R12 is complete: GrootCV uses maximum shadow medians across folds/repeats;
@@ -399,7 +475,9 @@ generators use local seeded draws, odd sizes retain every row and Titanic
 marks only zero-relative passengers alone. R32 is complete: strict HTML builds
 use the docs extra without obsolete/mandatory optional backends, repaired examples
 pass bounded clean-kernel checks and remaining notebook gaps are recorded.
-Next is **R33 alone**, with R01–R32 complete.
+R33 is complete: the final handoff records the six-cell support matrix,
+zero-diagnostic Ruff gate, repeated-seed held-out screens and remaining limits.
+There is no next implementation group.
 A request for the next batch authorizes that one group, its affected callers,
 tests, local phase commits and handoff update; stop after
 it. It does not authorize the following group or Git publication/release unless
@@ -413,7 +491,7 @@ the user also requests those actions.
 
 R10 → R11, R18 → R31 and R25 → R26 are complete in separate sequential
 local phase commits, with decisions recorded in their handoffs. R27–R32 are also
-complete. Next is R33 alone. These are sequential groups, not parallel agent assignments.
+complete, as is R33. No group remains. These are sequential groups, not parallel agent assignments.
 
 For an unnamed next-batch request, continue from the lowest-numbered Pending
 phase in the ordered table. If it is R10, R18, or R25, use its recorded pair once
@@ -438,8 +516,8 @@ stop at the phase boundary and record exactly what remains.
 At the end, update the phase statuses and name the exact next group, its
 prerequisites, validation commands/results, and unresolved decisions. Preserve
 earlier evidence and do not carry implementation into another group in the same
-session. A completed group is not a release: versioning/publication still waits
-for the remaining release blockers and R33 evidence.
+session. A completed group is not a release: versioning/publication still needs
+a separate delivery request even after the local R33 gates pass.
 
 When concurrent work is explicitly requested, these tracks are candidates for
 separate branches/worktrees and sessions after their prerequisites pass. Complete
@@ -1375,8 +1453,7 @@ No R33 implementation, push, PR, version bump, tag or release is included.
 
 ## Ordered phases
 
-R01–R32 are **Complete**; R33 is **Pending**.
-The next group is **R33 alone**, with R01–R32 complete. The
+R01–R33 are **Complete**. No next implementation group remains. The
 [R01 handoff](R01-installed-package.md) records changes, decisions, exact checks,
 environment identities, inherited failures, and the resume point. Changes are
 committed as `6b675fd` on `fix/r01-installed-package` at checkpoint base `0270aca`;
@@ -1384,7 +1461,7 @@ at that handoff no next phase had started. The user subsequently authorized PR d
 The [R02/R03 handoff](R02-R03-compatibility.md) records the completed compatibility
 batch, based on `a4b7ff6` on `fix/r02-r03-dependency-compatibility`. Its source
 repairs are committed as `36f1ee6` (R02) and `65f894a` (R03). A version bump and
-GitHub release are deferred until the remaining release blockers satisfy R33.
+GitHub release remain separate delivery work; R33's local gates are now complete.
 The [R04 handoff](R04-runtime-baseline.md) records the green installed-wheel
 baseline on Linux Python 3.9.25 (locked) and 3.12.7 (locked/newer), dependency
 policy, checks, and limits. R04 changes are uncommitted on `main`, based on
@@ -1430,9 +1507,11 @@ on `81dc6c9`, on branch `fix/r28-parallel-contracts`.
 [R30](R30-dataset-fixtures.md) is complete on `fix/r30-dataset-fixtures`, based
 on R29 handoff `56f4f6c`, implementation commit `db2f7f7`.
 [R32](R32-documentation-workflows.md) is complete on `fix/r32-documentation-workflows`,
-based on R30 handoff `0164300`, implementation commit `3f61981`. Next is R33 alone.
-Hosted CI for R13–R24/R31 and remaining release evidence
-are still pending. An ID such
+based on R30 handoff `0164300`, implementation commit `3f61981`.
+[R33](R33-release-evidence.md) completes local release evidence on
+`fix/r33-release-evidence`, based on `f49bf9d`, implementation commit `aabb238`.
+Hosted CI/review and publication
+remain separate delivery work. An ID such
 as `1A F3` means finding 3 in the linked original report. The complete ID-to-phase
 mapping follows the table.
 
@@ -1470,11 +1549,10 @@ mapping follows the table.
 | **R30 — Honest local dataset fixtures (Complete)** | Use local RNG consistently, generate exactly the requested odd/even row count, correct Titanic's alone flag. [06 F8/F9/F15](06-utilities-and-workflows.md) | R04 | Caller RNG stream unchanged; reproducible features/targets/weights; strong/noise construction checks; odd size; network-free 0/1/2-relative fixture. Do not introduce a new data service |
 | **R31 — Retain or remove legacy helpers deliberately (Complete)** | User chose removal of public `cat_var` and `validate_pandas_input`, without shims. Remove the dead benchmark comment and cat_var-only import; document encoder/array migration. [02 F15](02-preprocessing.md), [06 F10](06-utilities-and-workflows.md) | R06/R18 | Absent public helpers/exports; supported encoder keeps missing distinct, handles newer strings and owns inputs; active callers and retained function/class ASTs rechecked |
 | **R32 — Reproducible documentation workflows (Complete)** | Repair classification/regression setup, sampling overwrite, time-series reduced-feature calls, README filename and local Sphinx source. Reconcile docs-extra/RTD/fastshap policy; qualify method/weight/backend claims after preceding choices. [05 F14](05-sampling-and-parallel.md), [06 F12–F14](06-utilities-and-workflows.md), [07 F1](07-final-assessment.md) | Relevant R01–R31 fixes for each example | Actual Sphinx build and local links; bounded clean-kernel basic/classification/regression/preprocessing examples; exact reduced-feature model input; size limit maintained. Record data substitutions, excluded optional cells, and remaining notebooks separately |
-| **R33 — Release evidence and remaining claims** | Run the repaired package gates and a justified support matrix. Reassess selection claims with meaningful held-out baselines and document remaining optional/performance limits; narrow unsupported claims instead of promising unbounded validation. | All release-blocking phases above | Fresh source/wheel/lock metadata agree; no workaround; established suite and promoted regressions pass; repeated-seed signal/null, weak/correlated/mixed/weighted cases appropriate to claims; fold-local preprocessing/selection; clean-process artifacts; docs build. Optional backends/platforms require their own tests before claiming support |
+| **R33 — Release evidence and remaining claims (Complete)** | Run the repaired package gates and a justified support matrix. Reassess selection claims with meaningful held-out baselines and document remaining optional/performance limits; narrow unsupported claims instead of promising unbounded validation. | All release-blocking phases above | Fresh source/wheel/lock metadata agree; no workaround; established suite and promoted regressions pass; repeated-seed signal/null, weak/correlated/mixed/weighted cases appropriate to claims; fold-local preprocessing/selection; clean-process artifacts; docs build; clean Ruff without the temporary baseline. Optional backends/platforms require their own tests before claiming support |
 
 R21's group/schema safeguards are complete, with R05/R06 prerequisites retained.
-R24–R32 are complete. The next recorded group is **R33 alone**, with R01–R32
-complete; R33 remains pending. Do not parallelize edits to
+R24–R33 are complete. No recorded implementation group remains. Do not parallelize edits to
 shared dtype/weight helpers without agreeing their contract first.
 
 ## Complete finding-to-phase map
@@ -1499,7 +1577,7 @@ Cross-cutting side effects are tested in the affected phase as described above.
 
 | Decision | Phase/owner and safe boundary |
 | --- | --- |
-| Supported Python/dependency range | R04/R33; four successful resolutions are not runtime certification. Do not copy the Python-3.12-only newer pins onto earlier interpreters |
+| Supported Python/dependency range | R04/R33; six installed-wheel cells cover Linux x86_64 snapshots, not every allowed combination/platform. Do not copy the Python-3.12-only newer pins onto earlier interpreters |
 | Frequency counts vs relative/exposure weights | R05/R08/R15/R25; validation can be shared, statistical meaning cannot be silently normalized away. Gower feature weights are a different dimension |
 | Mixed relevance scale and significance | R08/R09; Theil-U-to-F arithmetic is not evidence of an F null distribution. Keep a ranking heuristic labelled as such unless justified |
 | Shadow threshold rule and error control | R10–R12/R33; decide axes/mean/median/max explicitly. Correct binomial arithmetic or signal recovery is not whole-procedure calibration |
@@ -1529,9 +1607,10 @@ to support every possible configuration. Specifically:
   parallel performance, interrupted writes, and remote dataset outages remain
   unmeasured. Test them only to the scale/security guarantees being claimed;
   keep quadratic-storage and trusted-pickle limits explicit.
-- Complete notebook execution and a real docs build remain outstanding even
-  after selected cells pass. Optional benchmarks are not required dependencies
-  for ordinary examples without an explicit reason.
+- Strict local HTML builds and the recorded five bounded workflows pass in both
+  snapshots. Full notebook execution and hosted builds remain outside that scope.
+  Optional benchmarks are not required dependencies for ordinary examples without
+  an explicit reason.
 
 No implementation, split, dependency migration, commit, push, or release is
 authorized merely by this handoff. Findings assigned to pending phases remain open;

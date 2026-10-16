@@ -8,22 +8,13 @@ Module Structure:
 
 """
 
-# Settings and libraries
-from __future__ import print_function
 from numbers import Real
 
-# pandas
-import pandas as pd
-
-# numpy
 import numpy as np
-
-# sklearn
-
-from sklearn.utils.validation import check_is_fitted
+import pandas as pd
 from sklearn.base import BaseEstimator
 from sklearn.feature_selection._base import SelectorMixin
-
+from sklearn.utils.validation import check_is_fitted
 
 # fix random seed for reproducibility
 np.random.seed(7)

@@ -23,7 +23,7 @@ import warnings
 from datetime import date
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import List, Optional, Union, Dict, Tuple, Any
+from typing import Any, Optional, Union
 
 # Third-party imports
 import joblib
@@ -40,7 +40,6 @@ from sklearn.model_selection import (
 
 # Local imports
 from arfs.utils import validate_sample_weight, validate_target
-
 
 # --- Matplotlib Configuration ---
 QUAL_COLORS = [
@@ -148,8 +147,8 @@ class GradientBoosting:
 
     def __init__(
         self,
-        cat_feat: Union[List[str], str, None] = "auto",
-        params: Optional[Dict[str, Any]] = None,
+        cat_feat: Union[list[str], str, None] = "auto",
+        params: Optional[dict[str, Any]] = None,
         stratified: bool = False,
         show_learning_curve: bool = True,
         verbose_eval: int = 50,
@@ -157,9 +156,9 @@ class GradientBoosting:
     ):
         self.model: Optional[lgb.Booster] = None
         self.cat_feat_input = cat_feat  # Store original input
-        self.cat_feat: Optional[List[str]] = None  # Processed list
-        self.model_params: Optional[Dict[str, Any]] = None
-        self.params: Optional[Dict[str, Any]] = params
+        self.cat_feat: Optional[list[str]] = None  # Processed list
+        self.model_params: Optional[dict[str, Any]] = None
+        self.params: Optional[dict[str, Any]] = params
         self.learning_curve: Optional[plt.Figure] = None
         self.is_init_score: bool = False
         self.stratified: bool = stratified
@@ -638,17 +637,17 @@ def _fit_early_stopped_lgb(
     sample_weight: Optional[pd.Series],
     groups: Optional[pd.Series],
     init_score: Optional[pd.Series],
-    params: Optional[Dict[str, Any]],
-    cat_feat: Optional[List[str]],
+    params: Optional[dict[str, Any]],
+    cat_feat: Optional[list[str]],
     stratified: bool,
     show_learning_curve: bool,
     verbose_eval: Union[int, bool],
     return_valid_features: bool,
 ) -> Union[
     lgb.Booster,
-    Tuple[lgb.Booster, pd.DataFrame],
-    Tuple[lgb.Booster, plt.Figure],
-    Tuple[lgb.Booster, pd.DataFrame, plt.Figure],
+    tuple[lgb.Booster, pd.DataFrame],
+    tuple[lgb.Booster, plt.Figure],
+    tuple[lgb.Booster, pd.DataFrame, plt.Figure],
 ]:
     """Internal function to train LightGBM with early stopping."""
 
@@ -807,7 +806,7 @@ def _fit_early_stopped_lgb(
                     ax.set_xlim([0, up_lim])
                 ax.set_title("LightGBM Learning Curve")
                 fig.tight_layout()
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - plotting failures must not discard a fitted model.
             warnings.warn(f"Could not generate learning curve plot: {e}")
             if fig:
                 plt.close(fig)  # Close figure if created but failed during plotting
@@ -838,7 +837,7 @@ def _make_split(
     stratified: bool,
     test_size: float = 0.2,
     random_state: int = 42,
-) -> Tuple[
+) -> tuple[
     pd.DataFrame,
     pd.Series,
     pd.DataFrame,

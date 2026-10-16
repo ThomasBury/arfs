@@ -1,6 +1,42 @@
 Documentation workflows
 =======================
 
+Runtime validation
+------------------
+
+The installed-wheel checks use Linux x86_64, with locked dependencies on CPython
+3.9, 3.10, 3.11 and 3.12, exact direct runtime minima on 3.9, and a separately
+pinned newer snapshot on 3.12. The requirement files under
+``.github/requirements/`` identify the minimum and newer snapshots; ``uv.lock``
+identifies the locked dependencies. The newer pins require Python 3.12 and
+must not be copied to earlier interpreters. The metadata range
+``>=3.9,<3.13`` does not certify every dependency combination or platform.
+
+GPU/CUDA, Windows/macOS, other architectures, CatBoost/XGBoost, FastTreeSHAP
+and live HoloViews/Panel plots need separate execution before claiming support.
+Missing optional-backend errors and fallbacks are tested; that does not test
+the backends themselves. Persistence checks use fresh processes in the same
+environment, trusted artifacts and new prediction rows; they do not promise
+cross-version compatibility or safe loading of untrusted pickle files.
+
+Selection experiments
+---------------------
+
+The R33 release-evidence handoff records a fixed ten-seed screen of strong,
+null, weak, correlated, mixed-type, weighted and interacting signals for
+regression and binary classification. Selectors and category encoders learn
+only from each outer training split. The independent evaluation rows compare
+dummy, all-feature, univariate and known-signal baselines using mean squared
+error or binary log loss. Weighted cases use the same covariate-based weights
+for training and evaluation. No setting is chosen from evaluation outcomes.
+
+These small synthetic experiments measure behavior for the recorded settings.
+They do not calibrate false-discovery control, certify weak-signal recovery,
+or establish superiority over other selectors, encodings or unweighted fits.
+An empty selection uses the dummy predictor for evaluation. In cross-validation
+or tuning, repeat preprocessing and selection inside every outer training fold.
+GrootCV's internal folds do not replace an untouched outer evaluation set.
+
 Build HTML locally
 ------------------
 

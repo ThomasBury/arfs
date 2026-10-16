@@ -1,22 +1,18 @@
 """Utility and validation functions"""
 
-from __future__ import print_function, division
-
 from importlib.resources import files
 
+import joblib
 import lightgbm as lgb
 import matplotlib as mpl
 import numpy as np
 import pandas as pd
-
 from matplotlib import pyplot as plt
-from sklearn.impute import SimpleImputer
 from sklearn.compose import make_column_transformer
+from sklearn.datasets import fetch_openml, load_breast_cancer
+from sklearn.impute import SimpleImputer
 from sklearn.pipeline import make_pipeline
-from sklearn.datasets import fetch_openml
-from sklearn.datasets import load_breast_cancer
 from sklearn.utils import Bunch
-import joblib
 
 qualitative_colors = [
     "#7F3C8D",
@@ -426,14 +422,10 @@ def is_list_of_str(str_list):
     bool
         True if the list is a list of strings, False otherwise.
     """
-    if (
-        str_list is not None
-        and isinstance(str_list, list)
+    return (
+        isinstance(str_list, list)
         and all(isinstance(s, str) for s in str_list)
-    ):
-        return True
-    else:
-        return False
+    )
 
 
 def is_list_of_bool(bool_list):
@@ -449,14 +441,10 @@ def is_list_of_bool(bool_list):
     bool
         True if list of Booleans, else False
     """
-    if (
-        bool_list is not None
-        and isinstance(bool_list, list)
+    return (
+        isinstance(bool_list, list)
         and all(isinstance(s, bool) for s in bool_list)
-    ):
-        return True
-    else:
-        return False
+    )
 
 
 def is_list_of_int(int_list):
@@ -472,14 +460,10 @@ def is_list_of_int(int_list):
     bool
         True if list of integers, else False
     """
-    if (
-        int_list is not None
-        and isinstance(int_list, list)
+    return (
+        isinstance(int_list, list)
         and all(isinstance(s, int) for s in int_list)
-    ):
-        return True
-    else:
-        return False
+    )
 
 
 def _get_titanic_data():
@@ -784,7 +768,7 @@ def _make_corr_dataset_regression(size=1000):
     )
 
     # introduce missing values
-    idx_nan = rng.choice(size, int(round(size / 2)), replace=False)
+    idx_nan = rng.choice(size, round(size / 2), replace=False)
     X.loc[idx_nan, "var12"] = np.nan
 
     # set column names and types
@@ -877,7 +861,7 @@ def _make_corr_dataset_classification(size=1000):
     X[:, 11] = np.arange(start=0, stop=size, step=1)
 
     # Generate a column with a lot of missing values
-    idx_nan = rng.choice(size, int(round(size / 2)), replace=False)
+    idx_nan = rng.choice(size, round(size / 2), replace=False)
     X[:, 12] = y**3 + np.abs(rng.normal(0, 1, size))
     X[idx_nan, 12] = np.nan
 

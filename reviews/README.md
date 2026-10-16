@@ -12,9 +12,8 @@ historical handoffs.
 
 **Next item: None — queued reviews complete.**
 
-[Final assessment](07-final-assessment.md): review complete, release blockers
-remain; keep one distribution. [Remediation](REMEDIATION.md) is a separate repair
-backlog: [R01](R01-installed-package.md), [R02/R03](R02-R03-compatibility.md),
+[Final assessment](07-final-assessment.md) records the original release blockers;
+keep one distribution. [Remediation](REMEDIATION.md) records their completed repairs: [R01](R01-installed-package.md), [R02/R03](R02-R03-compatibility.md),
 [R04](R04-runtime-baseline.md), [R05](R05-observation-boundaries.md),
 [R06](R06-category-identity.md), [R07](R07-shadow-contracts.md),
 [R08](R08-statistical-arithmetic.md), [R09](R09-mrmr-ranking.md),
@@ -23,10 +22,11 @@ backlog: [R01](R01-installed-package.md), [R02/R03](R02-R03-compatibility.md),
 [R14](R14-glm-design.md) and [R15](R15-glm-likelihood.md) are complete.
 R16–R28 and R31 are also complete; their handoffs are linked in
 [Remediation](REMEDIATION.md), including [R28](R28-parallel-contracts.md).
-[R29](R29-plot-contracts.md), [R30](R30-dataset-fixtures.md) and
-[R32](R32-documentation-workflows.md) are complete. **R33 is the next delivery**,
-with R01–R32 complete. R33 is implemented on a separate local branch and awaits
-its own PR; this branch delivers R32 only. Follow the
+[R29](R29-plot-contracts.md), [R30](R30-dataset-fixtures.md),
+[R32](R32-documentation-workflows.md) and [R33](R33-release-evidence.md) are complete.
+**No RXX implementation remains.** This delivery prepares version 4.0.0; final
+validation, hosted CI and Codex review precede its merge, tag and GitHub release.
+Follow the
 [session batching and handoff guidance](REMEDIATION.md#session-batching-and-handoffs).
 Future "implement the next batch" requests follow the
 [recorded groups](REMEDIATION.md#recorded-groups-for-next-batch-requests).

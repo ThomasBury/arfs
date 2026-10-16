@@ -10,35 +10,19 @@ Module Structure:
 - ``PatsyTransformer``: class for encoding data for (generalized) linear models, leveraging Patsy
 """
 
-# Settings and libraries
-from __future__ import print_function
-from numbers import Integral
 from collections.abc import Mapping
+from numbers import Integral
+from typing import Union
 
-# pandas
-import pandas as pd
-
-# numpy
 import numpy as np
-
-# regular expression
-import re
-
-# sklearn
-from sklearn.preprocessing import OrdinalEncoder
+import pandas as pd
+from patsy import INTERCEPT, EvalEnvironment, ModelDesc, dmatrix
 from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.preprocessing import OrdinalEncoder
 from sklearn.utils.validation import check_is_fitted
 
-# patsy
-from patsy import dmatrix, EvalEnvironment, ModelDesc, INTERCEPT
-
-# typing
-from typing import Any, Callable, Union, List, Tuple, Optional, Dict
-
-# ARFS
 from .gbm import GradientBoosting
-from .utils import create_dtype_dict, concat_or_group
-
+from .utils import concat_or_group, create_dtype_dict
 
 # fix random seed for reproducibility
 np.random.seed(7)
@@ -55,10 +39,10 @@ class OrdinalEncoderPandas(OrdinalEncoder):
     pattern : str, default=None
         Name of columns containing this regex pattern will be included. If
         None, column selection will not be selected based on pattern.
-    dtype_include : column dtype or list of column dtypes, default=None
+    dtype_include : column dtype or sequence of column dtypes, default=("category", "object", "string", "bool")
         A selection of dtypes to include. For more details, see
         `pandas.DataFrame.select_dtypes`.
-    dtype_exclude : column dtype or list of column dtypes, default=None
+    dtype_exclude : column dtype or sequence of column dtypes, default=(np.number,)
         A selection of dtypes to exclude. For more details, see
         `pandas.DataFrame.select_dtypes`.
     exclude_cols : list of str, optional
@@ -107,8 +91,8 @@ class OrdinalEncoderPandas(OrdinalEncoder):
 
     def __init__(
         self,
-        dtype_include=["category", "object", "string", "bool"],
-        dtype_exclude=[np.number],
+        dtype_include=("category", "object", "string", "bool"),
+        dtype_exclude=(np.number,),
         pattern=None,
         exclude_cols=None,
         output_dtype=np.float64,
@@ -715,7 +699,7 @@ class IntervalToMidpoint(BaseEstimator, TransformerMixin):
 
     """
 
-    def __init__(self, cols: Union[List[str], str] = "all"):
+    def __init__(self, cols: Union[list[str], str] = "all"):
         self.cols = cols
 
     def fit(self, X: pd.DataFrame = None, y: pd.Series = None):
@@ -787,7 +771,7 @@ class IntervalToMidpoint(BaseEstimator, TransformerMixin):
 
 
 def transform_interval_to_midpoint(
-    X: pd.DataFrame, cols: Union[List[str], str] = "all"
+    X: pd.DataFrame, cols: Union[list[str], str] = "all"
 ) -> pd.DataFrame:
     """
     Transforms interval columns in a pandas DataFrame to their midpoint values.

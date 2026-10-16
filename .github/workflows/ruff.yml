@@ -8,6 +8,4 @@ jobs:
       - uses: astral-sh/ruff-action@v3
         with:
           version: "0.17.0"
-          args: --version
-      - run: python .github/scripts/check_ruff_baseline.py
-      - run: python -m unittest discover -s .github/scripts -p 'test_*.py'
+          args: check .

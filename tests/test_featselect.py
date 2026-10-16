@@ -1,14 +1,11 @@
-import pytest
 import numpy as np
-import pandas as pd
+
 from arfs.feature_selection import (
+    CardinalityThreshold,
     MissingValueThreshold,
     UniqueValuesThreshold,
-    CardinalityThreshold,
-    CollinearityThreshold,
 )
 from arfs.utils import (
-    _make_corr_dataset_regression,
     _make_corr_dataset_classification,
 )
 
@@ -20,10 +17,10 @@ class TestFeatSelectMissing:
 
     def test_identify_missing_for_classification(self):
         # not task dependent (same for clf and regr)
-        X, y, w = _make_corr_dataset_classification(size=10)
+        X, _y, _w = _make_corr_dataset_classification(size=10)
         fs = MissingValueThreshold(threshold=0.01)
         fs.fit(X)
-        message = "Expected: {0}, Actual: {1}".format(
+        message = "Expected: {}, Actual: {}".format(
             "var12", fs.not_selected_features_
         )
         assert fs.not_selected_features_ == ["var12"], message
@@ -36,10 +33,10 @@ class TestFeatSelectZeroVariance:
 
     def test_identify_single_unique_classification(self):
         # not task dependent (same for clf and regr)
-        X, y, w = _make_corr_dataset_classification(size=10)
+        X, _y, _w = _make_corr_dataset_classification(size=10)
         fs = UniqueValuesThreshold(threshold=1)
         fs.fit(X)
-        message = "Expected: {0}, Actual: {1}".format(
+        message = "Expected: {}, Actual: {}".format(
             "var10", fs.not_selected_features_
         )
         np.testing.assert_array_equal(fs.not_selected_features_, ["var10"], err_msg=message)
@@ -52,12 +49,12 @@ class TestFeatSelectHighCardinality:
 
     def test_identify_high_cardinality_classification(self):
         # not task dependent (same for clf and regr)
-        X, y, w = _make_corr_dataset_classification(size=100)
+        X, _y, _w = _make_corr_dataset_classification(size=100)
         fs = CardinalityThreshold(threshold=5)
         fs.fit(X)
         expected = sorted(["dummy", "nice_guys"])
-        actual = sorted(list(fs.not_selected_features_))
-        message = "Expected: {0}, Actual: {1}".format(expected, actual)
+        actual = sorted(fs.not_selected_features_)
+        message = f"Expected: {expected}, Actual: {actual}"
         assert actual == expected, message
 
 

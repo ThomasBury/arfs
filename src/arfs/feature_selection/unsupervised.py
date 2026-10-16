@@ -10,33 +10,25 @@ Module Structure:
 - ``CollinearityThreshold`` child of the ``BaseThresholdSelector``, filter out collinear columns
 """
 
-from __future__ import print_function
 from numbers import Integral, Real
 
-# pandas
-import pandas as pd
-
-# numpy
 import numpy as np
-
-# sklearn
-from sklearn.utils.validation import check_is_fitted
+import pandas as pd
 from sklearn.base import BaseEstimator
 from sklearn.feature_selection._base import SelectorMixin
+from sklearn.utils.validation import check_is_fitted
 
-# ARFS
-from .base import BaseThresholdSelector, _validate_dataframe
-from ..utils import create_dtype_dict
 from ..association import (
     association_matrix,
-    xy_to_matrix,
-    plot_association_matrix,
-    weighted_theils_u,
-    weighted_corr,
     correlation_ratio,
+    plot_association_matrix,
+    weighted_corr,
+    weighted_theils_u,
+    xy_to_matrix,
 )
 from ..preprocessing import OrdinalEncoderPandas
-
+from ..utils import create_dtype_dict
+from .base import BaseThresholdSelector, _validate_dataframe
 
 # fix random seed for reproducibility
 np.random.seed(7)

@@ -24,6 +24,7 @@ Please note that one limitation of the lasso is that it treats the levels of a c
 FastTreeSHAP is an optional compiled backend, separate from the runtime and `arfs[docs]` dependencies. Its compatibility with the current dependency matrix is not validated. Use the default SHAP paths for the core examples. Leshy and BoostAGroota warn and fall back to SHAP when it is missing; `VariableImportance(fastshap=True)` raises an import error before training.
 
 See [documentation workflows](./docs/workflows.rst) for the local HTML build, Pandoc prerequisite and notebook execution scope.
+The same guide records the tested Python/dependency snapshots and the limits of the selection experiments. An allowed dependency range is not evidence that every combination has been tested.
 
 ## Example
 
@@ -94,9 +95,9 @@ The original algorithm above is historical context. BoostAGroota's current thres
 
 **Boruta --> Leshy**:
 
-  - The categorical features (they are detected, encoded. The tree-based models are working better with integer encoding rather than with OHE, which leads to deep and unstable trees). If Catboost is used, then the cat.pred (if any) are set up
+  - Categorical features are detected and encoded. Category codes need the estimator's categorical handling; encoding alone does not establish better selection or prediction than one-hot encoding.
   - LightGBM is supported; runtime depends on the data, estimator and parameters
-  - Work with Catboost, sklearn API
+  - Accept compatible sklearn-style tree estimators; CatBoost/XGBoost execution is outside the tested runtime matrix
   - Observation weights affect fitting and validation scoring where supplied; their statistical meaning depends on the estimator and loss
   - Supports 3 different feature importances: native, SHAP and permutation. Native being the least consistent(because of the imp. biased towards numerical and large cardinality categorical) but the fastest of the 3. Indeed, the impurity var.imp. are biased en sensitive to large cardinality (see [scikit demo](https://scikit-learn.org/stable/auto_examples/inspection/plot_permutation_importance.html#sphx-glr-auto-examples-inspection-plot-permutation-importance-py))
 
@@ -104,7 +105,7 @@ The original algorithm above is historical context. BoostAGroota's current thres
 
   - Replace XGBoost with LightGBM, you can still use tree-based scikitlearn models
   - Replace native var.imp by SHAP var.imp. Indeed, the impurity var.imp. are biased en sensitive to large cardinality (see [scikit demo](https://scikit-learn.org/stable/auto_examples/inspection/plot_permutation_importance.html#sphx-glr-auto-examples-inspection-plot-permutation-importance-py)). Moreover, the native var. imp are computed on the train set, here the data are split (internally) in train and test, var. imp computed on the test set.
-  - Handling categorical predictors. Cat. predictors should NOT be one-hot encoded, it leads to deep unstable trees. Instead, it's better to use the native method of lightGBM or CatBoost. A preprocessing step is needed to encode (ligthGBM and CatBoost use integer encoding and reference to categorical columns. The splitting strategies are different then, see official doc).
+  - Categorical handling depends on the estimator. Fit any encoder on training rows only and identify categorical columns for estimators that require it. The validation does not compare encoding strategies or establish categorical superiority.
   - Observation weights do not automatically make SHAP row averages weight-adjusted population explanations. VariableImportance averages validation rows equally; GrootCV averages each fold's training rows.
 
 ## GrootCV, a new method

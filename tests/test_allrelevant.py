@@ -1,12 +1,12 @@
-import pytest
-import numpy as np
 import lightgbm as lgb
-from arfs.feature_selection.allrelevant import Leshy, BoostAGroota, GrootCV
+
+from arfs.feature_selection.allrelevant import BoostAGroota, GrootCV, Leshy
 from arfs.utils import (
-    _make_corr_dataset_regression,
+    LightForestClassifier,
+    LightForestRegressor,
     _make_corr_dataset_classification,
+    _make_corr_dataset_regression,
 )
-from arfs.utils import LightForestClassifier, LightForestRegressor
 
 
 class TestLeshy:
@@ -26,7 +26,7 @@ class TestLeshy:
 
         # lightGBM random forest implementation
         baseline_list = ["var0", "var1", "var2", "var3", "var4"]
-        X, y, w = _make_corr_dataset_classification(size=100)
+        X, y, _w = _make_corr_dataset_classification(size=100)
         n_feat = X.shape[1]
         rfc = LightForestClassifier(n_feat)
         # RandomForestClassifier(max_features='sqrt', max_samples=0.632, n_estimators=100) # --> too slow
@@ -51,7 +51,7 @@ class TestLeshy:
 
         # lightGBM random forest implementation
         baseline_list = ["var0", "var1", "var2", "var3", "var4"]
-        X, y, w = _make_corr_dataset_regression(size=100)
+        X, y, _w = _make_corr_dataset_regression(size=100)
         n_feat = X.shape[1]
         rfr = LightForestRegressor(n_feat)
         # rfr = RandomForestRegressor(max_features=0.3, max_samples=0.632, n_estimators=10)
@@ -76,7 +76,7 @@ class TestLeshy:
 
         # lightGBM random forest implementation
         baseline_list = ["var0", "var1", "var2", "var3", "var4"]
-        X, y, w = _make_corr_dataset_classification(size=100)
+        X, y, _w = _make_corr_dataset_classification(size=100)
         n_feat = X.shape[1]
         model = LightForestClassifier(n_feat)
         arfs = Leshy(model, verbose=0, max_iter=10, random_state=42, importance="shap")
@@ -100,7 +100,7 @@ class TestLeshy:
 
         # lightGBM random forest implementation
         baseline_list = ["var0", "var1", "var2", "var3", "var4"]
-        X, y, w = _make_corr_dataset_regression(size=500)
+        X, y, _w = _make_corr_dataset_regression(size=500)
         n_feat = X.shape[1]
         model = LightForestRegressor(n_feat)
         arfs = Leshy(model, verbose=0, max_iter=10, random_state=42, importance="shap")

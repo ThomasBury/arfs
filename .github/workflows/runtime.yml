@@ -13,6 +13,12 @@ jobs:
         include:
           - python: "3.9"
             dependencies: locked
+          - python: "3.9"
+            dependencies: minimum
+          - python: "3.10"
+            dependencies: locked
+          - python: "3.11"
+            dependencies: locked
           - python: "3.12"
             dependencies: locked
           - python: "3.12"
@@ -39,6 +45,8 @@ jobs:
         run: |
           if [ "${{ matrix.dependencies }}" = locked ]; then
             uv export --locked --extra test --no-emit-project --output-file "$RUNNER_TEMP/requirements.txt"
+          elif [ "${{ matrix.dependencies }}" = minimum ]; then
+            cp .github/requirements/runtime-minimum-py39.txt "$RUNNER_TEMP/requirements.txt"
           else
             cp .github/requirements/runtime-newer-py312.txt "$RUNNER_TEMP/requirements.txt"
           fi
