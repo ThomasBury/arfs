@@ -1,6 +1,6 @@
 # ARFS remediation handoff
 
-**Status: R01–R31 complete; R32–R33 pending. Next implementation group: R32 alone, with R01–R31 complete.**
+**Status: R01–R31 complete in this branch. R32–R33 are implemented on separate local branches and await delivery. Next delivery: R32 alone.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
 a separate repair backlog. By default, a request to implement the next phase
@@ -12,6 +12,33 @@ Keep one distribution. Preserve unrelated changes and historical review
 evidence. Prefer existing helpers and supported native APIs; no compatibility
 layer, new backend, packaging split, or broad rewrite is required by this plan.
 Names below are phase IDs, not commit promises or a release schedule.
+
+## R30 delivery — 2026-10-16
+
+The user authorized staging, topical Conventional Commits, a dedicated branch,
+a pull request, Codex bot review, fixes for its comments, merge and branch removal.
+Branch: `fix/r30-dataset-fixtures`, based on merged R29 (`9d35340`). Only the
+original R30 commits were rebased: `db2f7f7` becomes `1bcfb87` (dataset fixtures),
+and `0164300` becomes `7fe3ce5` (validation handoff). The original hashes in the
+[R30 handoff](R30-dataset-fixtures.md) describe the completed local phase.
+This delivery includes R30 and its affected callers/tests only. New evidence
+remains local and ignored; no historical evidence is added or removed.
+
+All 16 source module files and 34 maintained test files match the recorded R30
+installed-wheel runs: **1450 / 1450 / 1434 passed** on Python 3.9 locked /
+Python 3.12 locked / Python 3.12 newer. The handoff records 25 regression cases,
+including exact row counts, repeatability, caller RNG preservation and a
+network-free Titanic family fixture. The 68 affected source tests pass again
+for delivery; the lint gate reports zero new diagnostics and its two tests pass.
+Hosted CI and Codex review must finish on the PR before merge. CodeRabbit is
+not a gate.
+
+**Release decision: defer the version bump, tag and GitHub release.** GitHub's
+latest release and this checkout remain `3.0.0`. R32 and R33 are implemented
+on separate local branches, but are not part of this delivery or remote `main`.
+Deliver those PRs and check their final hosted results before choosing the next
+version; the intentional API removals warrant a major release. Keep changes
+under Unreleased. R32 is the next separate delivery.
 
 ## R29 delivery — 2026-10-16
 
