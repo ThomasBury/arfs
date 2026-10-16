@@ -71,3 +71,10 @@ version = { attr = "arfs.__version__" }
 [tool.ruff.lint.pyupgrade]
 # Keep runtime-evaluable Union/Optional annotations on supported Python 3.9.
 keep-runtime-typing = true
+
+[dependency-groups]
+docs = [
+    "catboost>=1.2.10",
+    "ipykernel>=6.29.5",
+    "jupyter>=1.1.1",
+]
