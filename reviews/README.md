@@ -12,6 +12,9 @@ historical handoffs.
 
 **Next item: None — queued reviews complete.**
 
+Follow-up implementation: [tree binning, grouping and tutorials](tree-preprocessing.md)
+tracks two phases separately from the completed review queue.
+
 [Final assessment](07-final-assessment.md) records the original release blockers;
 keep one distribution. [Remediation](REMEDIATION.md) records their completed repairs: [R01](R01-installed-package.md), [R02/R03](R02-R03-compatibility.md),
 [R04](R04-runtime-baseline.md), [R05](R05-observation-boundaries.md),

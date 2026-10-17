@@ -13,9 +13,9 @@ All relevant feature selection aims to find predictors carrying information abou
 
 This package implements Leshy (based on Boruta), BoostAGroota (based on BoostARoota) and GrootCV. They expose sklearn-style fit/transform interfaces. Leshy and BoostAGroota accept compatible tree estimators that supply the requested importance method and, when used, sample weights. GrootCV uses LightGBM. ARFS also provides preprocessing and basic feature selection for missingness, cardinality, collinearity and model importance.
 
-MRmr offers a separate relevance/redundancy ranking heuristic; its selected set need not be a subset of an all-relevant selector's output. Lasso selects a penalized GLM design and then refits its surviving columns without regularization. Combining it with `TreeDiscretizer` adds univariate nonlinear features. See the [method contracts](./docs/Methods%20overview.rst) for weight, scoring and inference limits.
+MRmr offers a separate relevance/redundancy ranking heuristic; its selected set need not be a subset of an all-relevant selector's output. Lasso selects a penalized GLM design and then refits its surviving columns without regularization. Combining `TreeGrouper` for categorical predictors with `TreeDiscretizer` for numeric predictors adds supervised univariate partitions. Fit both only on training folds and forward observation weights to each step. See the [method contracts](./docs/Methods%20overview.rst) for weight, scoring and inference limits.
 
-Please note that one limitation of the lasso is that it treats the levels of a categorical predictor individually. However, this issue can be addressed by utilizing the `TreeDiscretizer`, which automatically bins numerical variables and groups the levels of categorical variables.
+Lasso selects individual encoded design columns. Tree grouping and binning do not implement group or fused Lasso or jointly select an original categorical variable. Use `num_bins_as_category=True` and factor encoding when numeric bins represent separate effects. The API split is breaking: refit existing discretizers; see the [migration notes](./CHANGELOG.md). The [preprocessing tutorial](./docs/notebooks/preprocessing.ipynb) checks known numeric, nominal and ordinal partitions on a designed factorial dataset before comparing held-out predictions.
 
 ## Installation
 

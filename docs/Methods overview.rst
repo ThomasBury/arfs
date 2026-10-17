@@ -149,8 +149,22 @@ selection or post-selection significance.
 The loss function can belong to the exponential family, as seen in the statsmodels GLM documentation.
 Using the bic metric is faster since it is evaluated on the training data, making it unsuitable for the test data, whereas the deviance is cross-validated.
 
-This approach can be combined with the TreeDiscretizer transformer to introduce univariate non-linearities (tree-GAM) before feature selection.
-This serves as a workaround to compensate for the absence of fused and grouped lasso regularization.
+Combine ``TreeGrouper`` (categorical predictors) followed by ``TreeDiscretizer``
+(numeric predictors) to introduce supervised univariate partitions. Both fit one
+native LightGBM tree per selected feature using all positive-weight training rows;
+the general GBM wrapper's validation split is not used. Validate outcomes and
+weights before omitting zero-weight rows. Nominal levels use native categorical
+splits; ordered categoricals use their declared order with contiguous groups.
+Missing and unknown levels follow the fitted missing route, without an Other
+level. Output category vocabularies are frozen at fit.
+
+Fit these steps inside every training fold, forwarding observation weights to
+each. Encode groups and numeric bins as factors (``num_bins_as_category=True``)
+when they should have separate model effects. This does not implement group or
+fused Lasso: selecting encoded columns does not jointly select the original
+categorical variable. Supervised partitioning and selection invalidate ordinary
+post-selection interpretations of reported p-values. Neither the partitions nor
+a passing example establish predictive improvement.
 
 References
 ----------

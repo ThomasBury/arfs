@@ -59,7 +59,7 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/run"
           cp -r tests "$RUNNER_TEMP/run/tests"
-          cp -r docs README.md logo.png "$RUNNER_TEMP/run/"
+          cp -r docs README.md CHANGELOG.md logo.png "$RUNNER_TEMP/run/"
           cd "$RUNNER_TEMP/run"
           "$RUNNER_TEMP/runtime/bin/python" -I -c 'import arfs, importlib.metadata as m, importlib.util as u, pathlib, sys; assert pathlib.Path(arfs.__file__).is_relative_to(pathlib.Path(sys.prefix)); assert arfs.__version__ == m.version("arfs"); assert u.find_spec("setuptools") is None; print(arfs.__version__, arfs.__file__)'
           "$RUNNER_TEMP/runtime/bin/python" -I -m pytest tests -q --tb=short -p no:cacheprovider

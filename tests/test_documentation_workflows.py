@@ -132,3 +132,153 @@ def test_readme_and_documentation_local_links_exist():
                 ):
                     if "://" not in target:
                         assert (path.parent / unquote(target)).is_file(), (path, target)
+
+
+def run_tagged(notebook, tags, namespace=None):
+    """Run the named computational cells without executing figures or a kernel."""
+    namespace = {} if namespace is None else namespace
+    data = json.loads((DOCS / "notebooks" / (notebook + ".ipynb")).read_text())
+    for tag in tags:
+        matches = [
+            entry for entry in data["cells"] if tag in entry["metadata"].get("tags", [])
+        ]
+        assert len(matches) == 1, (notebook, tag)
+        source = "".join(matches[0]["source"])
+        exec(compile(source, notebook + ":" + tag, "exec"), namespace)
+    return namespace
+
+
+def test_crafted_partition_tutorial_recovers_stated_truth_and_deployment_contracts():
+    with plt.rc_context():
+        result = run_tagged(
+            "preprocessing",
+            [
+                "setup",
+                "crafted-data",
+                "split",
+                "partition-checks",
+                "renaming-check",
+                "composition-checks",
+            ],
+        )
+    assert len(result["X"]) == 4320
+    assert result["native_unchanged"] and result["naive_changed"]
+    assert result["X_train"].stage.cat.ordered
+    assert result["training_factors"].constant.nunique() == 1
+    assert result["training_factors"].all_missing.nunique() == 1
+    assert set(result["X_train"].index).isdisjoint(result["X_test"].index)
+
+
+@pytest.mark.parametrize(
+    "notebook,setup_tags",
+    [
+        ("preprocessing", ["setup", "crafted-data", "split"]),
+        ("lasso_feature_selection", ["comparison-setup", "comparison-data"]),
+        ("mrmr_feature_selection", ["setup", "classification-data"]),
+    ],
+)
+def test_tutorial_comparisons_fit_only_training_rows_and_reuse_factor_design(
+    notebook, setup_tags, monkeypatch
+):
+    from sklearn.compose import ColumnTransformer
+
+    from arfs.feature_selection import MinRedundancyMaxRelevance
+    from arfs.feature_selection.lasso import LassoFeatureSelection
+    from arfs.preprocessing import TreeDiscretizer, TreeGrouper
+
+    with plt.rc_context():
+        namespace = run_tagged(notebook, setup_tags + ["design"])
+    X_train, w_train = namespace["X_train"], namespace["w_train"]
+    fitted = []
+
+    def watch(cls, method, weighted):
+        original = getattr(cls, method)
+
+        def checked(self, X, y=None, *args, **kwargs):
+            assert len(X) == len(X_train)
+            if isinstance(X, pd.DataFrame):
+                assert X.index.equals(X_train.index)
+            if weighted:
+                weights = kwargs.get("sample_weight", args[0] if args else None)
+                np.testing.assert_array_equal(weights, w_train)
+            fitted.append(cls.__name__)
+            return original(self, X, y, *args, **kwargs)
+
+        monkeypatch.setattr(cls, method, checked)
+
+    for cls in [
+        TreeGrouper,
+        TreeDiscretizer,
+        LassoFeatureSelection,
+        MinRedundancyMaxRelevance,
+    ]:
+        watch(cls, "fit", True)
+    watch(ColumnTransformer, "fit_transform", False)
+    result = run_tagged(notebook, ["comparison"], namespace)
+    assert {"TreeGrouper", "TreeDiscretizer", "ColumnTransformer"}.issubset(fitted)
+    for name, pipeline in result["models"].items():
+        if hasattr(pipeline, "named_steps") and "bin" in pipeline.named_steps:
+            grouped = pipeline.named_steps["group"].transform(X_train)
+            factors = pipeline.named_steps["bin"].transform(grouped)
+            assert all(
+                isinstance(dtype, pd.CategoricalDtype) for dtype in factors.dtypes
+            )
+        if hasattr(pipeline, "named_steps"):
+            design_pipe = pipeline[:-1]
+            design = design_pipe.transform(result["X_test"])
+            assert np.isfinite(design.to_numpy()).all()
+            assert len(design) == len(result["X_test"])
+        pred = result["predictions"][name]
+        assert pred.index.equals(result["X_test"].index)
+        assert np.isfinite(pred).all()
+        if notebook == "mrmr_feature_selection":
+            from sklearn.metrics import log_loss
+
+            expected = log_loss(
+                result["y_test"], pred, sample_weight=result["w_test"], labels=[0, 1]
+            )
+            assert "dummy" not in result["X_train"]
+        else:
+            from sklearn.metrics import mean_squared_error
+
+            expected = mean_squared_error(
+                result["y_test"], pred, sample_weight=result["w_test"]
+            )
+        assert result["scores"][name] == pytest.approx(expected)
+
+
+def test_poisson_illustration_generates_counts_from_exposure_times_rate():
+    namespace = {
+        "np": np,
+        "pd": pd,
+        "train_test_split": __import__(
+            "sklearn.model_selection", fromlist=["train_test_split"]
+        ).train_test_split,
+        "plot_y_vs_X": lambda *args, **kwargs: None,
+    }
+    result = run_tagged("lasso_feature_selection", ["poisson-data"], namespace)
+    rng = np.random.default_rng(2026)
+    features = rng.normal(size=(1000, 6))
+    rate = np.exp(0.5 + features @ np.array([0.6, -0.4, 0.25, 0.0, 0.0, 0.0]))
+    exposure = rng.uniform(30 / 365, 1, 1000)
+    counts = rng.poisson(exposure * rate)
+    np.testing.assert_array_equal(result["counts"], counts)
+    np.testing.assert_allclose(result["y"] * result["w"], counts)
+    assert len(result["X_train"]) == 750 and len(result["X_test"]) == 250
+
+
+@pytest.mark.parametrize(
+    "notebook", ["preprocessing", "lasso_feature_selection", "mrmr_feature_selection"]
+)
+def test_refreshed_tutorial_sources_compile_and_use_local_inputs(notebook):
+    data = json.loads((DOCS / "notebooks" / (notebook + ".ipynb")).read_text())
+    for entry in data["cells"]:
+        if entry["cell_type"] == "code":
+            compile("".join(entry["source"]).removeprefix("%%time\n"), notebook, "exec")
+    if notebook == "mrmr_feature_selection":
+        source = "".join(
+            "".join(entry["source"])
+            for entry in data["cells"]
+            if entry["cell_type"] == "code"
+        )
+        assert "Titanic" not in source and "load_data(" not in source

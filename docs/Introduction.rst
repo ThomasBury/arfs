@@ -16,9 +16,15 @@ It also provides a module for performing preprocessing and perform basic feature
 
 MRmr provides a separate relevance/redundancy ranking heuristic. Its selected set need not be a subset
 of an all-relevant selector's output. Lasso selects a penalized GLM design and then refits the surviving
-columns without regularization. You can combine Lasso with the `TreeDiscretizer` for introducing
-non-linearities into linear models and perform feature selection.
-Please note that one limitation of the lasso is that it treats the levels of a categorical predictor individually. 
-However, this issue can be addressed by utilizing the `TreeDiscretizer`, which automatically bins numerical variables and 
-groups the levels of categorical variables.
+columns without regularization. Use ``TreeGrouper`` to group categorical predictors,
+then ``TreeDiscretizer`` to bin numeric predictors. Each fits one LightGBM tree per
+selected feature on all positive-weight training rows. Forward observation weights
+to both steps and learn both only inside training folds. Nominal groups use native
+categorical splits; ordered categoricals retain their declared order and form
+contiguous groups. Missing and unseen levels follow fitted native missing routes.
 
+Use ``num_bins_as_category=True`` and factor encoding for separate bin effects.
+Lasso still selects individual encoded design columns; these transformations do
+not implement group or fused Lasso or establish predictive gains. This API split
+is breaking: refit old discretizers and replace mixed-data calls with sequential
+grouping and numeric binning. See :doc:`arfs` for the interfaces.

@@ -270,7 +270,8 @@ def validate_target(y, n_samples):
             "y must be one-dimensional, nonempty and match the number of observations."
         )
     target = y if isinstance(y, pd.Series) else pd.Series(y)
-    if target.isna().any() or target.isin([np.inf, -np.inf]).any():
+    # Categorical intervals use containment in isin; compare their actual values.
+    if target.isna().any() or target.astype(object).isin([np.inf, -np.inf]).any():
         raise ValueError("y must contain finite, nonmissing responses.")
     return target
 

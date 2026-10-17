@@ -5,6 +5,14 @@
 - Add opt-in MRMR row sampling through `sample_size` and `random_state`.
   Relevance and redundancy share one draw; full-data fitting remains the default.
 
+Breaking migration (requires refitting before release):
+
+ - `TreeDiscretizer` now bins numeric columns only. `all`, `numerical` and `None` select eligible numeric columns; explicitly selected categories raise an error. Replace mixed calls with `TreeGrouper` for categorical columns, followed by `TreeDiscretizer` for numeric columns. Forward `sample_weight` explicitly to each pipeline step.
+ - Add `TreeGrouper(group_features="all", n_groups=10, boost_params=None, raw=False, task="regression")`. Nominal levels use native categorical splits; ordered categories retain their declared relative order with contiguous groups. Cast numeric category codes to categorical dtype explicitly.
+ - Both fit one native LightGBM tree on all positive-weight training rows instead of the GBM wrapper's 80% training subset. Task, one round, leaf limit and all-row fitting override conflicting aliases and row-sampling settings without mutating supplied parameters. Validate finite numeric regression targets and numeric/Boolean binary `{0,1}` targets before dropping zero-weight rows. Constant targets remain valid.
+ - Refit existing discretizers. `tree_dic` now contains native Boosters; remove `.model` access. Numeric `bin_upper_bound_dic` and `leaf_interval_dic_` remain; categorical `cat_bin_dict` moves to `TreeGrouper`, and the discretizer's `ordinal_encoder_dic` and `cat_features_` are removed. Grouper `category_dtypes_` and `group_dtypes_` record frozen input/output vocabularies. Missing and unseen levels follow native missing routes.
+ - Numeric output options and response-scale `raw=True` remain, including binary probabilities. Use categorical bins and factor encoding for separate effects. Grouping/binning does not implement group/fused Lasso, guarantee better predictions or justify ordinary post-selection p-values. The tutorials now use training-only comparisons, explicit factor encoding and local data; preprocessing includes a known-truth factorial experiment and category-renaming counterexample. Saved outputs are cleared for the requested manual rerun, and the workflow guide records that execution/figure-inspection gap.
+
 # 4.0.1 — 2026-10-16
 
  - Correct weighted Spearman ranks so zero-weight rows cannot change positive-weight ties; nullable numeric inputs now use explicit float arrays. Recheck feature selections after this rank correction.
