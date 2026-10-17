@@ -16,6 +16,7 @@ import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator
 from sklearn.feature_selection._base import SelectorMixin
+from sklearn.utils import resample
 from sklearn.utils.validation import check_is_fitted
 from tqdm.auto import tqdm
 
@@ -71,6 +72,14 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
     show_progress: bool (optional, default=True)
         If False, no progress bar is displayed.
         If True, a TQDM progress bar shows the number of features processed.
+    sample_size : int or None, default=None
+        Optional maximum number of rows used to estimate both relevance and
+        redundancy. Draw without replacement only when the input exceeds this
+        positive integer. Classification draws are stratified by target;
+        regression draws are uniform. None uses all rows. Weights are subset
+        positionally, not used as sampling probabilities or rescaled.
+    random_state : int, RandomState instance or None, default=None
+        Controls row sampling. Use an integer for reproducible fits.
 
     Returns
     -------
@@ -85,6 +94,12 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         name and scores for the selected features
     support_ : list of bool
         the list of the selected X-columns
+    sample_indices_ : ndarray or None
+        Original row positions used for estimation, in input order. None means
+        all rows; empty selections do not draw a sample.
+    n_samples_fit_ : int
+        Number of rows supplied to the relevance and redundancy callbacks,
+        before their missing-value handling.
     Notes
     -----
     Ties follow the input column order. Zero-relevance predictors remain eligible:
@@ -95,6 +110,13 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
     zero quotient score, so exact duplicates are postponed, but remain eligible.
     The first selected feature keeps the historical ranking convention of an
     infinite MRMR score and zero recorded redundancy.
+
+    Sampling changes scores and can change selected features. It does not reduce
+    the square redundancy table's storage. Rare predictor levels can disappear;
+    a draw losing any positive-weight target class is rejected. Default row
+    handling and weight-mass requirements still apply after sampling. In
+    particular, frequency-weight relevance uses the smaller retained mass.
+    Check selection stability and held-out utility before choosing a row cap.
 
     Example
     -------
@@ -129,6 +151,8 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         return_scores=False,
         n_jobs=1,
         show_progress=True,
+        sample_size=None,
+        random_state=None,
     ):
         self.n_features_to_select = n_features_to_select
         self.relevance_func = relevance_func
@@ -139,6 +163,8 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         self.show_progress = show_progress
         self.n_jobs = n_jobs
         self.task = task
+        self.sample_size = sample_size
+        self.random_state = random_state
 
         if self.relevance_func is None:
             if self.task == "regression":
@@ -186,6 +212,13 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         ):
             raise ValueError("n_features_to_select must be a nonnegative integer.")
 
+        if self.sample_size is not None and (
+            isinstance(self.sample_size, (bool, np.bool_))
+            or not isinstance(self.sample_size, (int, np.integer))
+            or self.sample_size <= 0
+        ):
+            raise ValueError("sample_size must be a positive integer or None.")
+
         if isinstance(X, pd.DataFrame):
             self.feature_names_in_ = X.columns.to_numpy()
         else:
@@ -196,6 +229,47 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         if self.task == "classification":
             target = target.astype("category")
 
+        self.sample_indices_ = None
+        if (
+            self.sample_size is not None
+            and len(X) > self.sample_size
+            and self.n_features_to_select > 0
+            and X.shape[1] > 0
+        ):
+            self.sample_indices_ = np.sort(
+                resample(
+                    np.arange(len(X)),
+                    replace=False,
+                    n_samples=self.sample_size,
+                    random_state=self.random_state,
+                    stratify=target.cat.codes
+                    if self.task == "classification"
+                    else None,
+                )
+            )
+            sampled_target = target.iloc[self.sample_indices_]
+            sampled_weight = (
+                None if sample_weight is None else sample_weight[self.sample_indices_]
+            )
+            sampled_weight = validate_sample_weight(sampled_weight, self.sample_size)
+            if self.task == "classification":
+                full_classes = (
+                    target[sample_weight > 0] if sample_weight is not None else target
+                )
+                sampled_classes = (
+                    sampled_target[sampled_weight > 0]
+                    if sampled_weight is not None
+                    else sampled_target
+                )
+                if sampled_classes.nunique() != full_classes.nunique():
+                    raise ValueError(
+                        "Sampling lost a positive-weight target class; increase "
+                        "sample_size or use sample_size=None."
+                    )
+            X = X.iloc[self.sample_indices_]
+            target, sample_weight = sampled_target, sampled_weight
+        self.n_samples_fit_ = len(X)
+
         self.relevance_args = {"X": X, "y": target, "sample_weight": sample_weight}
         self.redundancy_args = {"X": X, "sample_weight": sample_weight}
 
@@ -203,13 +277,18 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
             self.relevance = pd.Series(dtype=float)
         else:
             self.relevance = self.relevance_func(**self.relevance_args)
-        if not isinstance(self.relevance, pd.Series) or not self.relevance.index.is_unique:
+        if (
+            not isinstance(self.relevance, pd.Series)
+            or not self.relevance.index.is_unique
+        ):
             raise ValueError("Relevance must be a Series with unique predictor labels.")
         if not self.relevance.index.isin(X.columns).all():
             raise ValueError("Relevance contains unknown predictor labels.")
         available = self.relevance.dropna()
         if not np.isfinite(available).all() or (available < 0).any():
-            raise ValueError("Available relevance scores must be finite and nonnegative.")
+            raise ValueError(
+                "Available relevance scores must be finite and nonnegative."
+            )
         self.relevance = self.relevance.reindex(X.columns)
         self.features = self.relevance[~self.relevance.isna()].index.to_list()
         self.relevance = self.relevance.loc[self.features]
@@ -371,7 +450,9 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         self.not_selected_features.remove(best_feature)
 
     def run_feature_selection(self):
-        for i in tqdm(range(self.n_features_to_select_), disable=not self.show_progress):
+        for i in tqdm(
+            range(self.n_features_to_select_), disable=not self.show_progress
+        ):
             best_feature, score, score_denominator = self.select_next_feature(
                 self.not_selected_features,
                 self.selected_features,

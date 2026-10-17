@@ -37,6 +37,36 @@ An empty selection uses the dummy predictor for evaluation. In cross-validation
 or tuning, repeat preprocessing and selection inside every outer training fold.
 GrootCV's internal folds do not replace an untouched outer evaluation set.
 
+Opt-in MRMR row sampling
+------------------------
+
+MRMR uses all rows by default. To cap the rows used for both relevance and
+redundancy estimation, set a positive ``sample_size`` and an integer seed:
+
+.. code-block:: python
+
+   from arfs.feature_selection import MinRedundancyMaxRelevance
+
+   selector = MinRedundancyMaxRelevance(
+       10, task="classification", sample_size=10_000, random_state=42
+   )
+   X_selected = selector.fit_transform(X_train, y_train)
+
+Inputs at or below the cap use all rows. Larger inputs are sampled without
+replacement, stratifying classification draws by target. Both callbacks see
+the same subset; ``fit_transform`` still returns every input row. Inspect
+``sample_indices_`` for the original row positions (``None`` means all rows)
+and ``n_samples_fit_`` for the count before callback missing-value handling.
+
+Weights are subset positionally without rescaling or changing draw
+probabilities. Default frequency-weight relevance therefore uses the smaller
+sample mass. A sample losing a positive-weight target class is rejected;
+increase the cap or disable sampling. Rare predictor levels can still
+disappear. Compare category coverage, association estimates, selected features
+across seeds, and held-out utility before choosing a cap. Fit selection only
+inside the training fold. Row sampling does not reduce the square redundancy
+table's feature-count cost.
+
 Build HTML locally
 ------------------
 

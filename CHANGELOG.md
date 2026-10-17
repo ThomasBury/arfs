@@ -2,6 +2,9 @@
 
 # Unreleased
 
+- Add opt-in MRMR row sampling through `sample_size` and `random_state`.
+  Relevance and redundancy share one draw; full-data fitting remains the default.
+
 # 4.0.1 — 2026-10-16
 
  - Correct weighted Spearman ranks so zero-weight rows cannot change positive-weight ties; nullable numeric inputs now use explicit float arrays. Recheck feature selections after this rank correction.
