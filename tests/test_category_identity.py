@@ -215,3 +215,14 @@ def test_shared_encoder_callers_receive_distinct_codes(caller, monkeypatch):
         result = fn[caller](model, X, y, sample_weight=None)
         assert result.shape == (3,) and np.isfinite(result).all()
     assert calls == [["mixed", "text"]]
+
+
+@pytest.mark.parametrize("dtype", ["category", object])
+def test_interval_categories_with_infinite_endpoints_are_values_not_infinities(dtype):
+    intervals = pd.Series([pd.Interval(-np.inf, 0), pd.Interval(0, np.inf)] * 3, dtype=dtype)
+    assert_series_equal(utils.validate_target(intervals, len(intervals)), intervals)
+    frame = pd.DataFrame({"bins": intervals, "target": pd.Categorical([0, 1] * 3)})
+    assert_allclose(a.theils_u_series(frame, "target", n_jobs=1)["bins"], 1.0)
+    for invalid in [[0, np.inf], [0, -np.inf], [0, np.nan]]:
+        with pytest.raises(ValueError, match="finite"):
+            utils.validate_target(pd.Series(invalid, dtype=dtype), 2)

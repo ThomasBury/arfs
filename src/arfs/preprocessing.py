@@ -5,7 +5,8 @@ Module Structure:
 -----------------
 - ``OrdinalEncoderPandas``: main class for ordinal encoding, takes in a DF and returns a DF of the same shape
 - ``dtype_column_selector``: for standardizing selection of columns based on their dtypes
-- ``TreeDiscretizer``: class for discretizing continuous columns and auto-group levels of categorical columns
+- ``TreeDiscretizer``: supervised numeric binning
+- ``TreeGrouper``: supervised categorical grouping
 - ``IntervalToMidpoint``: class for converting pandas numerical intervals into their float midpoint
 - ``PatsyTransformer``: class for encoding data for (generalized) linear models, leveraging Patsy
 """
@@ -14,6 +15,7 @@ from collections.abc import Mapping
 from numbers import Integral
 from typing import Union
 
+import lightgbm as lgb
 import numpy as np
 import pandas as pd
 from patsy import INTERCEPT, EvalEnvironment, ModelDesc, dmatrix
@@ -21,8 +23,7 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.utils.validation import check_is_fitted
 
-from .gbm import GradientBoosting
-from .utils import concat_or_group, create_dtype_dict
+from .utils import create_dtype_dict, validate_sample_weight, validate_target
 
 # fix random seed for reproducibility
 np.random.seed(7)
@@ -156,9 +157,9 @@ class OrdinalEncoderPandas(OrdinalEncoder):
             encoded_missing_value=self.encoded_missing_value,
         )
         self.encoder_.fit(
-            X[self.categorical_features_].astype(object).where(
-                X[self.categorical_features_].notna(), np.nan
-            )
+            X[self.categorical_features_]
+            .astype(object)
+            .where(X[self.categorical_features_].notna(), np.nan)
         )
         self.categories_ = self.encoder_.categories_
         self.feature_names_in_ = X.columns.to_numpy(copy=True)
@@ -190,9 +191,9 @@ class OrdinalEncoderPandas(OrdinalEncoder):
         self._check_schema(X)
         X_trans = X.copy()
         X_trans[self.categorical_features_] = self.encoder_.transform(
-            X[self.categorical_features_].astype(object).where(
-                X[self.categorical_features_].notna(), np.nan
-            )
+            X[self.categorical_features_]
+            .astype(object)
+            .where(X[self.categorical_features_].notna(), np.nan)
         )
 
         if self.return_pandas_categorical:
@@ -339,84 +340,225 @@ class dtype_column_selector:
         return cols.tolist()
 
 
+def _tree_frame(X, names=None):
+    """Own the output frame and enforce one fitted positional schema."""
+    if not isinstance(X, pd.DataFrame):
+        array = np.asarray(X)
+        if array.ndim != 2:
+            raise ValueError("X must be two-dimensional.")
+        if names is not None and array.shape[1] != len(names):
+            raise ValueError("Array width must match the fitted input.")
+        X = pd.DataFrame(
+            array,
+            columns=names
+            if names is not None
+            else [f"pred_{i}" for i in range(array.shape[1])],
+        )
+    if names is not None and not X.columns.equals(pd.Index(names)):
+        raise ValueError("Feature names and order must match the fitted input.")
+    if not X.columns.is_unique:
+        raise ValueError("Feature names must be unique.")
+    return X.copy()
+
+
+def _tree_features(X, selection, categorical):
+    eligible = list(
+        X.select_dtypes(
+            include=["category", "object", "string", "bool"]
+            if categorical
+            else ["number"],
+            exclude=None if categorical else ["complex", "timedelta"],
+        ).columns
+    )
+    automatic = ("all", "categorical") if categorical else ("all", "numerical")
+    if selection is None or (isinstance(selection, str) and selection in automatic):
+        return eligible
+    if not categorical and isinstance(selection, str) and selection == "categorical":
+        raise ValueError("Use TreeGrouper for categorical features.")
+    selected = [selection] if isinstance(selection, str) else list(selection)
+    if not pd.Index(selected).is_unique:
+        raise ValueError("Selected feature names must be unique.")
+    for col in selected:
+        if col not in X.columns:
+            raise ValueError(f"Unknown selected feature: {col!r}.")
+        if col not in eligible:
+            message = (
+                "TreeGrouper requires categorical features; cast numeric codes to category dtype."
+                if categorical
+                else "TreeDiscretizer requires numeric features; use TreeGrouper for categories."
+            )
+            raise ValueError(message)
+    return selected
+
+
+def _tree_fit_inputs(X, y, sample_weight, task):
+    if task not in ("regression", "classification"):
+        raise ValueError("task must be 'regression' or binary 'classification'.")
+    target = validate_target(y, len(X))
+    if not pd.api.types.is_numeric_dtype(target.dtype) or pd.api.types.is_complex_dtype(
+        target.dtype
+    ):
+        raise ValueError(
+            "y must contain finite numeric responses (binary {0, 1} for classification)."
+        )
+    values = target.to_numpy(dtype=float)
+    if not np.isfinite(values).all():
+        raise ValueError("y must contain finite numeric responses.")
+    if task == "classification" and not np.isin(values, [0, 1]).all():
+        raise ValueError(
+            "Classification y must contain only numeric/Boolean {0, 1} responses."
+        )
+    weights = validate_sample_weight(sample_weight, len(X))
+    keep = np.ones(len(X), dtype=bool) if weights is None else weights > 0
+    return X.iloc[keep], values[keep], None if weights is None else weights[keep]
+
+
+def _tree_params(boost_params, task, count, count_name):
+    if boost_params is not None and not isinstance(boost_params, dict):
+        raise TypeError("boost_params must be a dictionary or None.")
+    if (
+        isinstance(count, (bool, np.bool_))
+        or not isinstance(count, Integral)
+        or count < 2
+    ):
+        raise ValueError(f"{count_name} must be an integer at least 2.")
+    params = {} if boost_params is None else boost_params.copy()
+    # The supervised partition always uses one tree and all retained rows.
+    for name in (
+        "num_iterations",
+        "num_iteration",
+        "n_iter",
+        "num_tree",
+        "num_trees",
+        "num_round",
+        "num_rounds",
+        "nrounds",
+        "num_boost_round",
+        "n_estimators",
+        "max_iter",
+        "num_leaves",
+        "num_leaf",
+        "max_leaves",
+        "max_leaf",
+        "max_leaf_nodes",
+        "objective",
+        "app",
+        "application",
+        "loss",
+        "objective_type",
+        "boosting",
+        "boosting_type",
+        "boost",
+        "data_sample_strategy",
+        "bagging_fraction",
+        "sub_row",
+        "subsample",
+        "bagging",
+        "bagging_freq",
+        "subsample_freq",
+        "pos_bagging_fraction",
+        "neg_bagging_fraction",
+    ):
+        params.pop(name, None)
+    params.setdefault("verbosity", -1)
+    params.setdefault("num_threads", 1)
+    params.update(
+        objective="rmse" if task == "regression" else "binary",
+        num_iterations=1,
+        num_leaves=int(count),
+        boosting="gbdt",
+        data_sample_strategy="bagging",
+        bagging_fraction=1.0,
+        bagging_freq=0,
+        pos_bagging_fraction=1.0,
+        neg_bagging_fraction=1.0,
+    )
+    return params
+
+
+def _fit_one_tree(values, y, weights, params, categorical=False):
+    tree = lgb.train(
+        params.copy(),
+        lgb.Dataset(
+            values,
+            label=y,
+            weight=weights,
+            feature_name=["feature"],
+            categorical_feature=[0] if categorical else [],
+        ),
+        num_boost_round=1,
+    )
+    if tree.num_trees() != 1:
+        raise ValueError("Tree preprocessing requires exactly one tree per feature.")
+    return tree
+
+
+def _tree_feature_names(estimator, input_features):
+    check_is_fitted(estimator, "n_features_in_")
+    if input_features is not None and not np.array_equal(
+        input_features, estimator.feature_names_in_
+    ):
+        raise ValueError("input_features must match feature_names_in_.")
+    return estimator.feature_names_in_.copy()
+
+
 class TreeDiscretizer(BaseEstimator, TransformerMixin):
-    """
-    Discretize continuous and/or categorical data using univariate regularized trees, returning a pandas DataFrame.
-    The TreeDiscretizer is designed to support regression and binary classification tasks.
-    Discretization, also known as quantization or binning, allows for the partitioning of continuous features into discrete values.
-    In certain datasets with continuous attributes, discretization can be beneficial as it transforms the dataset into one with only nominal attributes.
-    Additionally, for categorical predictors, grouping levels can help reduce overfitting and create meaningful clusters.
+    """Bin numeric predictors with one supervised LightGBM tree per feature.
 
-    By encoding discretized features, a model can become more expressive while maintaining interpretability.
-    For example, preprocessing with a discretizer can introduce nonlinearity to linear models.
-    For more advanced possibilities, particularly smooth ones, you can refer to the section on generating polynomial features.
-    The TreeDiscretizer function utilizes univariate regularized trees, with one tree per column to be binned.
-    It returns the fitted tree's numerical intervals for continuous columns and
-    pd.Categorical leaf groups for categorical columns. Split thresholds and
-    leaf IDs determine the partition, even when separate leaves predict the same value.
-    This approach groups similar levels together, reducing dimensionality and regularizing the model.
-
-    Missing numerical values and missing/unknown categories follow the fitted
-    tree's native missing-value route. An all-missing numerical feature has one
-    bin, (-inf, inf]; no observed-value imputation is invented.
-
-    Notes
-    -----
-    Retains GradientBoosting's fixed 80/20 training/validation split. Fit this
-    supervised transformer only on training folds. Binning does not implement
-    GroupLasso or FusedLasso penalties or guarantee better held-out performance.
-    Named transforms require the full fitted column names and order. Arrays
-    receive pred_0, pred_1, etc. at fit; later arrays use the fitted names and
-    must have the fitted width. Output is always a copied DataFrame.
+    Fit on all supplied training rows with positive observation weight. Fit only
+    inside training folds. Other columns pass through unchanged; categorical
+    grouping belongs to :class:`TreeGrouper`. Existing mixed discretizers must
+    be refitted. Output is a copied DataFrame with the fitted column order.
 
     Parameters
     ----------
-    bin_features : List of string or None
-        The list of names of the variable that has to be binned, or "all", "numerical" or "categorical"
-        for splitting and grouping all, only numerical or only categorical columns.
+    bin_features : list, str or None, default="all"
+        Explicit numeric columns, or "all", "numerical" or None for all numeric
+        columns. Explicit categorical selections raise an error.
     n_bins : int, default=10
-        Maximum number of leaves/bins per feature, at least 2. A constant or
-        all-missing feature can have fewer bins, including a single bin.
-    n_bins_max : int, optional
-        The maximum number of levels that a categorical column can have to avoid being binned.
-    num_bins_as_category: bool, default=False
-        Save the numeric bins as pandas category or as pandas interval.
-    boost_params : dict, optional
-        Additional LightGBM parameters, copied at fit. Current task, one boosting
-        round and n_bins take precedence over objective, iteration and leaf-count
-        aliases. The supplied dictionary is not modified.
+        Maximum leaves per feature, at least 2. Constants may have one leaf.
+    n_bins_max : int or None, default=None
+        Only bin selected columns with more than this many distinct values.
+        Zero disables this filter.
+    num_bins_as_category : bool, default=False
+        Return ordered categorical intervals instead of interval dtype. Use
+        factors and factor encoding when bins represent separate model effects.
+    boost_params : dict or None, default=None
+        Copied LightGBM parameters. Task, one round, leaf limit and all-row
+        fitting take precedence over conflicting aliases and row sampling.
     raw : bool, default=False
-        Return native tree response values instead of intervals/group labels.
-        Binary classification returns probabilities, not class labels or logits.
-    task : str
-        Either regression or classification (binary).
+        Return native responses (binary probabilities) instead of intervals.
+    task : {"regression", "classification"}, default="regression"
+        Finite numeric response or numeric/Boolean binary {0, 1} response.
+        Constant responses are valid. Weights and targets align positionally.
 
     Attributes
     ----------
     tree_dic : dict
-        The dictionary keys are binned column names and items are the univariate trees.
+        Selected column names mapped to native LightGBM Boosters. The former
+        GradientBoosting wrapper and its ``.model`` access are removed.
     bin_upper_bound_dic : dict
-        Exact numerical split thresholds, bounded by negative/positive infinity.
-    cat_bin_dict : dict
-        Categorical leaf-ID-to-label mappings. Labels include the leaf ID so
-        equal predictions or truncated display text cannot merge groups.
-    boost_params_ : dict
-        Resolved fit-time parameters; boost_params remains the constructor input.
+        Exact split thresholds bounded by negative and positive infinity.
     leaf_interval_dic_ : dict
-        Numerical leaf-ID-to-interval mappings. Missing values use their fitted
-        leaf's interval; interval endpoints describe numerical comparisons.
-    ordinal_encoder_dic : dict
-        Dictionary with the fitted encoder, if any.
+        Native leaf IDs mapped to right-closed numeric intervals. Missing values
+        follow native routes. Constants/all-missing columns have (-inf, inf].
     bin_features_ : list
-        Resolved columns to bin; bin_features remains the constructor option.
-    cat_features_ : list
-        Names of the found categorical columns.
+        Resolved and filtered numeric columns.
+    n_unique_table_ : pandas.Series
+        Distinct counts on positive-weight rows before filtering.
+    boost_params_ : dict
+        Resolved parameters; constructor parameters remain unchanged.
+    feature_names_in_ : numpy.ndarray
+        Full fitted schema. Arrays fitted without names use pred_0, pred_1, etc.;
+        subsequent arrays use fitted names and must match fitted width.
+    n_features_in_ : int
+        Full fitted input width, including passthrough columns.
 
-    Example
-    -------
-    >>> lgb_params = {'min_split_gain': 5}
-    >>> disc = TreeDiscretizer(bin_features='all', n_bins=10)
-    >>> disc.fit(X=df[predictors], y=df['Frequency'], sample_weight=df['Exposure'])
+    Notes
+    -----
+    Binning does not implement group/fused Lasso, guarantee predictive gains or
+    justify ordinary post-selection inference. Interval endpoints describe
+    comparisons, including native missing/zero routing, rather than imputation.
     """
 
     def __init__(
@@ -438,160 +580,35 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
         self.task = task
 
     def fit(self, X, y, sample_weight=None):
-        """
-        Fit the TreeDiscretizer on the input data.
-
-        Parameters
-        ----------
-        X : array-like of shape (n_samples, n_features)
-            The predictor dataframe.
-        y : array-like of shape (n_samples,)
-            The target vector.
-        sample_weight : array-like of shape (n_samples,), optional
-            The weight vector, by default None.
-
-        Returns
-        -------
-        self : object
-            Returns self.
-        """
-        if self.boost_params is not None and not isinstance(self.boost_params, dict):
-            raise TypeError("boost_params must be a dictionary or None.")
-        if (
-            isinstance(self.n_bins, (bool, np.bool_))
-            or not isinstance(self.n_bins, Integral)
-            or self.n_bins < 2
+        """Learn numeric partitions from training data and positional weights."""
+        params = _tree_params(self.boost_params, self.task, self.n_bins, "n_bins")
+        X = _tree_frame(X)
+        features = _tree_features(X, self.bin_features, categorical=False)
+        if self.n_bins_max is not None and (
+            isinstance(self.n_bins_max, (bool, np.bool_))
+            or not isinstance(self.n_bins_max, Integral)
+            or self.n_bins_max < 0
         ):
-            raise ValueError("n_bins must be an integer at least 2.")
-        if self.task not in ("regression", "classification"):
-            raise ValueError("task must be 'regression' or binary 'classification'.")
-        self.boost_params_ = (
-            self.boost_params.copy() if self.boost_params is not None else {}
-        )
-        # Remove conflicting aliases before both the wrapper and LightGBM resolve them.
-        for name in (
-            "num_iterations",
-            "num_iteration",
-            "n_iter",
-            "num_tree",
-            "num_trees",
-            "num_round",
-            "num_rounds",
-            "nrounds",
-            "num_boost_round",
-            "n_estimators",
-            "max_iter",
-            "num_leaves",
-            "num_leaf",
-            "max_leaves",
-            "max_leaf",
-            "max_leaf_nodes",
-            "objective",
-            "app",
-            "application",
-            "loss",
-            "objective_type",
-        ):
-            self.boost_params_.pop(name, None)
-        self.boost_params_.update(
-            objective="rmse" if self.task == "regression" else "binary",
-            num_iterations=1,
-            num_boost_round=1,
-            num_leaves=int(self.n_bins),
-        )
+            raise ValueError("n_bins_max must be a nonnegative integer or None.")
+        names = X.columns.to_numpy(copy=True)
+        X, y, weights = _tree_fit_inputs(X, y, sample_weight, self.task)
+        self.n_unique_table_ = X[features].nunique()
+        self.bin_features_ = [
+            col
+            for col in features
+            if not self.n_bins_max or self.n_unique_table_[col] > self.n_bins_max
+        ]
         self.tree_dic = {}
         self.bin_upper_bound_dic = {}
-        self.cat_bin_dict = {}
-        self.ordinal_encoder_dic = {}
         self.leaf_interval_dic_ = {}
-        X, self.feature_names_in_ = self._prepare_input_dataframe(X)
-        if not X.columns.is_unique:
-            raise ValueError("Feature names must be unique.")
-        self.n_features_in_ = X.shape[1]
-        self.bin_features_, self.cat_features_ = self._determine_bin_and_cat_features(
-            X, self.bin_features
-        )
-        self.n_unique_table_ = X[self.bin_features_].nunique()
-        self.bin_features_ = self._filter_bin_features(
-            self.bin_features_, self.n_unique_table_, self.n_bins_max
-        )
-        X, self.ordinal_encoder_dic = self._encode_categorical_features(
-            X, self.bin_features_, self.cat_features_
-        )
-
+        self.boost_params_ = params
         for col in self.bin_features_:
-            is_categorical = col in self.cat_features_
-            self._fit_tree_and_create_bins(X, col, y, sample_weight, is_categorical)
-
-        return self
-
-    def _prepare_input_dataframe(self, X, fitting=True):
-        if not isinstance(X, pd.DataFrame):
-            X = pd.DataFrame(X)
-            if fitting:
-                X.columns = [f"pred_{i}" for i in range(X.shape[1])]
-            else:
-                if X.shape[1] != self.n_features_in_:
-                    raise ValueError("Array width must match the fitted input.")
-                X.columns = self.feature_names_in_
-
-        return X.copy(), X.columns.to_numpy()
-
-    def _determine_bin_and_cat_features(self, X, bin_features):
-        if bin_features is None or (
-            isinstance(bin_features, str) and (bin_features == "numerical")
-        ):
-            bin_features = list(X.select_dtypes("number").columns)
-        elif isinstance(bin_features, str) and (bin_features == "all"):
-            bin_features = list(X.columns)
-        elif isinstance(bin_features, str) and (bin_features == "categorical"):
-            bin_features = create_dtype_dict(X, dic_keys="dtypes")["cat"]
-
-        cat_features = [
-            col
-            for col in bin_features
-            if col not in X[bin_features].select_dtypes("number").columns
-        ]
-        return bin_features, cat_features
-
-    def _filter_bin_features(self, bin_features, n_unique_table_, n_bins_max):
-        return (
-            n_unique_table_[n_unique_table_ > n_bins_max].index.to_list()
-            if n_bins_max
-            else bin_features
-        )
-
-    def _encode_categorical_features(self, X, bin_features, cat_features):
-        ordinal_encoder_dic = {}
-        for col in bin_features:
-            if col in cat_features:
-                encoder = OrdinalEncoderPandas(dtype_include=None, dtype_exclude=None)
-                ordinal_encoder_dic[col] = encoder.fit(X[[col]])
-                X[col] = encoder.transform(X[[col]])[col]
-
-        return X, ordinal_encoder_dic
-
-    def _fit_tree_and_create_bins(self, X, col, y, sample_weight, is_categorical):
-        gbm_param = self.boost_params_.copy()
-        tree = GradientBoosting(
-            cat_feat=None, params=gbm_param, show_learning_curve=False, verbose_eval=0
-        )
-        tree.fit(X[[col]], y, sample_weight=sample_weight)
-        self.tree_dic[col] = tree
-
-        if tree.model.num_trees() != 1:
-            raise ValueError("TreeDiscretizer requires exactly one tree per feature.")
-        if is_categorical:
-            original = self.ordinal_encoder_dic[col].inverse_transform(X[[col]])[col]
-            leaves = tree.predict_raw(X[[col]], pred_leaf=True).ravel()
-            self.cat_bin_dict[col] = {
-                leaf: f"{leaf}: {concat_or_group(col, group.to_frame(name=col), max_length=25)}"
-                for leaf, group in original.groupby(leaves, sort=True)
-            }
-        else:
+            values = X[[col]].to_numpy(dtype=float, na_value=np.nan)
+            tree = _fit_one_tree(values, y, weights, params)
+            self.tree_dic[col] = tree
             intervals = {}
 
-            def collect(node, lower, upper):
+            def collect(node, lower, upper, intervals=intervals):
                 if "split_index" not in node:
                     intervals[node.get("leaf_index", 0)] = pd.Interval(lower, upper)
                     return
@@ -604,9 +621,7 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
                 collect(node["right_child"], threshold, upper)
 
             collect(
-                tree.model.dump_model()["tree_info"][0]["tree_structure"],
-                -np.inf,
-                np.inf,
+                tree.dump_model()["tree_info"][0]["tree_structure"], -np.inf, np.inf
             )
             self.leaf_interval_dic_[col] = intervals
             self.bin_upper_bound_dic[col] = np.unique(
@@ -616,48 +631,181 @@ class TreeDiscretizer(BaseEstimator, TransformerMixin):
                     for bound in (interval.left, interval.right)
                 ]
             )
+        self.feature_names_in_ = names
+        self.n_features_in_ = len(names)
+        return self
 
     def transform(self, X):
-        """
-        Apply the discretizer on `X`. Only the columns with more than n_bins_max unique values will be transformed.
-
-        Parameters
-        ----------
-        X : array-like of shape (n_samples, n_features)
-            Input data with shape (n_samples, n_features), where `n_samples` is the number of samples and
-            `n_features` is the number of features.
-
-        Returns
-        -------
-        X : pd.DataFrame
-            DataFrame with the binned and grouped columns.
-        """
-        check_is_fitted(self, "feature_names_in_")
-        X, names = self._prepare_input_dataframe(X, fitting=False)
-        if not np.array_equal(names, self.feature_names_in_):
-            raise ValueError("Feature names and order must match the fitted input.")
-
+        """Return fitted intervals or responses, preserving passthrough columns."""
+        check_is_fitted(self, "n_features_in_")
+        X = _tree_frame(X, self.feature_names_in_)
         for col in self.bin_features_:
-            frame = X[[col]]
-            if col in self.ordinal_encoder_dic:
-                frame = self.ordinal_encoder_dic[col].transform(frame)
+            values = X[[col]].to_numpy(dtype=float, na_value=np.nan)
             if self.raw:
-                X[col] = self.tree_dic[col].predict_raw(frame)
+                X[col] = self.tree_dic[col].predict(values)
             else:
                 leaves = pd.Series(
-                    self.tree_dic[col].predict_raw(frame, pred_leaf=True).ravel(),
+                    self.tree_dic[col].predict(values, pred_leaf=True).ravel(),
                     index=X.index,
                 )
-                if col in self.ordinal_encoder_dic:
-                    X[col] = pd.Categorical(leaves.map(self.cat_bin_dict[col]))
-                else:
-                    intervals = self.leaf_interval_dic_[col]
-                    X[col] = leaves.map(intervals)
-                    if self.num_bins_as_category:
-                        X[col] = pd.Categorical(
-                            X[col], categories=sorted(intervals.values()), ordered=True
-                        )
+                intervals = self.leaf_interval_dic_[col]
+                X[col] = leaves.map(intervals)
+                if self.num_bins_as_category:
+                    X[col] = pd.Categorical(
+                        X[col], categories=sorted(intervals.values()), ordered=True
+                    )
         return X
+
+    def get_feature_names_out(self, input_features=None):
+        """Return the full fitted output names, including passthrough columns."""
+        return _tree_feature_names(self, input_features)
+
+
+class TreeGrouper(BaseEstimator, TransformerMixin):
+    """Group categorical predictors with one supervised LightGBM tree each.
+
+    Nominal levels use native categorical splits; ordered categories use numeric
+    splits of their declared order, so their groups are contiguous. Missing and
+    unseen levels follow the native missing route. Vocabularies and trees learn
+    only from positive-weight training rows. Fit only inside training folds.
+
+    Parameters
+    ----------
+    group_features : list, str or None, default="all"
+        Explicit category/object/string/Boolean columns, or "all", "categorical"
+        or None for all eligible columns. Numeric codes require category dtype.
+        Unselected columns pass through unchanged.
+    n_groups : int, default=10
+        Maximum leaves per feature, at least 2. Constants can have one group.
+    boost_params : dict or None, default=None
+        Copied LightGBM parameters; task, one round, leaf limit and all-row
+        fitting override conflicting aliases and row sampling.
+    raw : bool, default=False
+        Return native responses, including binary probabilities, rather than
+        categorical leaf labels.
+    task : {"regression", "classification"}, default="regression"
+        Finite numeric response or numeric/Boolean binary {0, 1} response.
+        Constant responses are valid. Weights and targets align positionally.
+
+    Attributes
+    ----------
+    tree_dic : dict
+        Grouped columns mapped to native LightGBM Boosters.
+    cat_bin_dict : dict
+        Native leaf IDs mapped to display labels containing distinct leaf IDs.
+    category_dtypes_ : dict
+        Fitted input vocabularies, excluding unused and zero-weight-only levels.
+        Ordered categories retain their declared relative order.
+    group_dtypes_ : dict
+        Frozen output categories; unordered for nominal input, ordered for
+        ordered input. Batch composition cannot change the output dtype.
+    group_features_ : list
+        Resolved categorical columns.
+    boost_params_ : dict
+        Resolved parameters without mutating constructor parameters.
+    feature_names_in_ : numpy.ndarray
+        Full fitted column names/order. Unnamed arrays use pred_0, pred_1, etc.;
+        later arrays use fitted names and must match fitted width.
+    n_features_in_ : int
+        Full input width. Output is always a copied pandas DataFrame preserving
+        index, column order and passthrough values.
+
+    Notes
+    -----
+    Grouping does not implement group/fused Lasso or imply predictive improvement.
+    No Other level or outcome imputation is introduced. Group labels are for
+    display; native leaf identities determine groups, even for equal responses.
+    """
+
+    def __init__(
+        self,
+        group_features="all",
+        n_groups=10,
+        boost_params=None,
+        raw=False,
+        task="regression",
+    ):
+        self.group_features = group_features
+        self.n_groups = n_groups
+        self.boost_params = boost_params
+        self.raw = raw
+        self.task = task
+
+    def _feature_values(self, values, col):
+        dtype = self.category_dtypes_[col]
+        codes = pd.Categorical(values, dtype=dtype).codes.astype(float)
+        missing = codes < 0
+        # Start ordered codes at one so zero_as_missing cannot merge distant levels.
+        if dtype.ordered:
+            codes += 1
+        codes[missing] = np.nan
+        return codes.reshape(-1, 1)
+
+    def fit(self, X, y, sample_weight=None):
+        """Learn category vocabularies and groups from positive-weight rows."""
+        params = _tree_params(self.boost_params, self.task, self.n_groups, "n_groups")
+        X = _tree_frame(X)
+        features = _tree_features(X, self.group_features, categorical=True)
+        names = X.columns.to_numpy(copy=True)
+        X, y, weights = _tree_fit_inputs(X, y, sample_weight, self.task)
+        self.group_features_ = features
+        self.boost_params_ = params
+        self.tree_dic = {}
+        self.cat_bin_dict = {}
+        self.category_dtypes_ = {}
+        self.group_dtypes_ = {}
+        for col in features:
+            observed = pd.Categorical(X[col]).remove_unused_categories()
+            dtype = observed.dtype
+            self.category_dtypes_[col] = dtype
+            values = self._feature_values(X[col], col)
+            tree = _fit_one_tree(
+                values, y, weights, params, categorical=not dtype.ordered
+            )
+            self.tree_dic[col] = tree
+            # Include the native missing route even if no training row was missing.
+            levels = list(dtype.categories) + [np.nan]
+            leaves = tree.predict(
+                self._feature_values(levels, col), pred_leaf=True
+            ).ravel()
+            labels = {}
+            for leaf in dict.fromkeys(leaves):
+                members = [
+                    str(level) for level, group in zip(levels, leaves) if group == leaf
+                ]
+                text = " / ".join(members)
+                if len(text) > 25:
+                    text = text[:7] + "/.../" + text[-7:]
+                labels[leaf] = f"{leaf}: {text}"
+            self.cat_bin_dict[col] = labels
+            self.group_dtypes_[col] = pd.CategoricalDtype(
+                list(labels.values()), ordered=dtype.ordered
+            )
+        self.feature_names_in_ = names
+        self.n_features_in_ = len(names)
+        return self
+
+    def transform(self, X):
+        """Apply frozen vocabularies and native missing/unseen category routes."""
+        check_is_fitted(self, "n_features_in_")
+        X = _tree_frame(X, self.feature_names_in_)
+        for col in self.group_features_:
+            values = self._feature_values(X[col], col)
+            if self.raw:
+                X[col] = self.tree_dic[col].predict(values)
+            else:
+                leaves = pd.Series(
+                    self.tree_dic[col].predict(values, pred_leaf=True).ravel(),
+                    index=X.index,
+                )
+                X[col] = pd.Categorical(
+                    leaves.map(self.cat_bin_dict[col]), dtype=self.group_dtypes_[col]
+                )
+        return X
+
+    def get_feature_names_out(self, input_features=None):
+        """Return the full fitted output names, including passthrough columns."""
+        return _tree_feature_names(self, input_features)
 
 
 def highlight_discarded(s):

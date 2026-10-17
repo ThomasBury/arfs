@@ -14,12 +14,13 @@ from arfs.preprocessing import (
     IntervalToMidpoint,
     PatsyTransformer,
     TreeDiscretizer,
+    TreeGrouper,
     transform_interval_to_midpoint,
 )
 from tests.test_tree_partitions import PARAMS, numeric_data
 
 
-@pytest.mark.parametrize("rule", ["all", "numerical", "categorical", None])
+@pytest.mark.parametrize("rule", ["all", "numerical", None])
 def test_tree_refit_resolves_current_schema_without_changing_options(rule):
     X, y = numeric_data()
     X["cat"] = pd.Categorical(np.where(X.x < 100, "a", "b"))
@@ -32,7 +33,6 @@ def test_tree_refit_resolves_current_schema_without_changing_options(rule):
     assert_frame_equal(actual, expected)
     assert model.bin_features == rule
     assert set(model.tree_dic).issubset(new.columns)
-    assert set(model.ordinal_encoder_dic).issubset(new.columns)
     assert set(model.leaf_interval_dic_).issubset(new.columns)
     assert_array_equal(model.feature_names_in_, new.columns)
     assert model.n_features_in_ == 2
@@ -250,7 +250,7 @@ def test_patsy_pipeline_reuses_fitted_center_and_row_policy():
 
 
 @pytest.mark.parametrize(
-    "model", [TreeDiscretizer(), IntervalToMidpoint(), PatsyTransformer()]
+    "model", [TreeDiscretizer(), TreeGrouper(), IntervalToMidpoint(), PatsyTransformer()]
 )
 def test_transformer_unfitted_errors(model):
     with pytest.raises(NotFittedError):

@@ -1,6 +1,8 @@
 # ARFS remediation handoff
 
-**Status: R01–R33 complete. No pending RXX implementation group. Version 4.0.0 is prepared; all local release gates pass. PR review, merge, tag and GitHub publication complete delivery.**
+**Status: R01–R33 complete. C01–C06 pending. Tree preprocessing, MRMR sampling and the confirmed plan are being delivered separately; the next package release is deferred.**
+The [confirmed follow-up plan](#confirmed-follow-up-plan) below is separate from
+that historical delivery. **C01–C06 are pending; next follow-up: C01.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
 a separate repair backlog. By default, a request to implement the next phase
@@ -12,6 +14,244 @@ Keep one distribution. Preserve unrelated changes and historical review
 evidence. Prefer existing helpers and supported native APIs; no compatibility
 layer, new backend, packaging split, or broad rewrite is required by this plan.
 Names below are phase IDs, not commit promises or a release schedule.
+
+## Tree preprocessing and MRMR delivery — 2026-10-17
+
+The user authorized topical Conventional Commits, a dedicated branch, a PR,
+Codex bot review, fixes for actionable comments, merge and branch removal.
+Branch: `feat/tree-groups-mrmr-sampling`, based on `4fc3c7a` on main. The feature
+commits are `391cf54` (optional MRMR sampling and measured benchmarks) and
+`da411b6` (separate native numeric bins/category groups and revised tutorials).
+The confirmed C01–C06 plan is a separate documentation commit; none of its
+repairs is included in this delivery. CodeRabbit is not a merge gate.
+
+Raw measurements/profiles were moved to the ignored
+`evidence/mrmr-performance/` and `evidence/mrmr-sampling/` directories. Reports
+describe those files as local evidence and retain reproduction commands; the
+raw files are not added to the PR. Existing tracked historical evidence is
+unchanged. The three notebooks intentionally retain clear outputs; their full
+manual execution and rendered-output inspection remain the user's handoff.
+
+**Release decision: defer the version bump, GitHub release and PyPI upload.**
+GitHub's latest release is 4.0.1. The TreeDiscretizer API changes require a new
+major release, but confirmed correctness/diagnostic phases C01–C04 remain open.
+Merge this delivery as unreleased work, complete those phases and the manual
+notebook handoff, then validate the final release candidate before selecting
+the next major version. C05/C06 remain separate work; this delivery does not
+authorize their implementation. Keep `__version__`, CITATION and release tags
+at 4.0.1; the changelog keeps these changes under Unreleased.
+
+The configured PyPI Trusted Publisher is not a publication or a passing release
+gate. At release time, verify its exact repository/workflow/environment identity.
+Use a protected GitHub environment and the PyPA publishing action, with OIDC
+`id-token: write` limited to the publishing job and no long-lived PyPI token.
+Build once from the merged tagged commit, test the distributions, and publish
+the same distributions/checksums to the GitHub release and PyPI. Do not rebuild
+different artifacts between destinations or publish on ordinary branch pushes.
+See the [PyPI publisher guide](https://docs.pypi.org/trusted-publishers/using-a-publisher/)
+and [PyPA workflow guide](https://packaging.python.org/en/latest/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/).
+No publication workflow is added or triggered by this delivery.
+
+Fresh delivery validation is recorded below. Final hosted CI/Codex review
+results will be recorded in the PR discussion before merge. The historical
+source reports retain their original validation scope and do not substitute
+for final-head hosted checks.
+
+- Fresh locked Python 3.12 source suite: **1,656 passed** (510 warnings), 249.01 s.
+- Fresh newer Python 3.12 installed-wheel suite, outside the checkout with
+  isolated Python: **1,640 passed** (305 warnings), 288.86 s. Dependency checks
+  pass; the wheel's runtime/data payloads match both source and sdist.
+- Strict HTML builds pass in locked and newer documentation environments.
+  Notebook execution stays off. All three changed notebook schemas validate
+  and their outputs remain clear. Ruff 0.17.0, lock and whitespace checks pass.
+- Runtime files match the recorded six-cell Phase 2 wheel. The only notebook
+  change from its final validation copy is a Markdown clarification about group
+  capacity; computational cells and tests match. Fresh hosted checks still run
+  on the final PR head rather than treating those older results as current CI.
+- New delivery logs, recovery diff, distributions and checksums stay under
+  `/tmp/arfs-pr-tree-mrmr/`. No runtime payload, test or notebook was changed
+  while organizing commits; added delivery changes are documentation only.
+
+## Confirmed follow-up plan
+
+Recorded on 2026-10-17 against working-tree source at
+`4fc3c7a52340a249a823a7982e0ec222df413fef` (ARFS 4.0.1), including the existing
+uncommitted MRMR and preprocessing work. This is a plan, not implementation
+authorization or a claim that these repairs are complete. Preserve R01–R33 and
+their historical evidence. Implement one C phase per request, verify it, record
+its handoff here, and stop. Do not reorder or absorb the separate
+[tree preprocessing](tree-preprocessing.md) work.
+
+Only confirmed defects and measured costs from the report assessment are
+included. Targeted breaking changes are allowed, with migration notes and no
+compatibility shim. Dependencies, statistical defaults, and unrelated source
+remain unchanged except where a phase explicitly specifies a correction.
+
+### Evidence and limits
+
+The current-source check passed **309 tests** across shadow contracts,
+all-relevant aggregation, importance selection, MRMR ranking/sampling, and Gower
+distances. Additional in-memory probes demonstrated:
+
+- Both BoostAGroota and GrootCV report `[2, 1]` for support `[True, False]`.
+- VariableImportance classification defaults reach training as `objective='rmse'`
+  and `stratified=False`; zero-total GrootCV importance becomes NaN.
+- Leshy changes its integer seed to a RandomState and changes the supplied
+  estimator's tree count and seed. MRMR cloning succeeds, but changing task and
+  n_jobs leaves its default callbacks bound to regression and the old job count.
+- MRMR with `return_scores=True` raises AttributeError in `fit_transform`.
+- Categorical missing-value filling raises TypeError; an invalid missing-value
+  policy silently fills zeros. Importing the affected preprocessing/selector
+  submodules resets NumPy's global seed; bare `import arfs` does not.
+- BoostAGroota's plot can color a rejected feature blue and a selected feature
+  gray. GrootCV's default five-fold split of 100 rows with five minority labels
+  produces two validation folds with no minority observations.
+
+The environment was Python 3.12.7, NumPy 2.0.2, pandas 2.2.3, scikit-learn 1.6.1,
+LightGBM 4.6.0, SHAP 0.47.1, and pytest 8.3.5, importing `src` through PYTHONPATH.
+The maintained-suite command was:
+
+```sh
+env PYTHONPATH=src PYTHONDONTWRITEBYTECODE=1 MPLBACKEND=Agg \
+  MPLCONFIGDIR=/tmp/arfs-report-check-mpl OPENBLAS_NUM_THREADS=1 \
+  OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 \
+  /tmp/arfs-association/py312-locked/bin/python -m pytest \
+  tests/test_shadow_contracts.py tests/test_allrelevant_aggregation.py \
+  tests/test_importance_selection.py tests/test_mrmr_ranking.py \
+  tests/test_mrmr_sampling.py tests/test_gower_distances.py \
+  -q --tb=short -p no:cacheprovider
+```
+
+Verify or recreate that disposable environment before reuse. The ad hoc probes
+were not saved as executable evidence; each repair must add its maintained
+regression before claiming completion. The full suite, optional backends,
+installed-wheel matrix, and statistical calibration were not rerun for this
+assessment. Passing existing tests does not disprove the newly reproduced bugs.
+
+### C01 — Task, ranking, and zero-importance correctness
+
+**Status: Pending.** Original report items 3, 4, and the zero-total part of 5.
+
+- In [allrelevant.py](../src/arfs/feature_selection/allrelevant.py), assign rank 1
+  to selected BoostAGroota/GrootCV features and rank 2 to rejected features.
+- In [variable_importance.py](../src/arfs/feature_selection/variable_importance.py),
+  use regression, binary, or multiclass defaults from task when no objective is
+  supplied. Merge defaults into a copy of caller parameters, honor explicit
+  objectives, derive stratification from the resolved objective, and resolve
+  num_class for multiclass training without mutating caller dictionaries.
+- Make SHAP/native zero-total normalization finite in BoostAGroota and GrootCV.
+  Entirely uninformative fits select nothing. Reject nonfinite importance;
+  preserve signed permutation normalization and nonzero threshold equality.
+- Verify binary/multiclass default training and objective overrides, rank/support
+  agreement, all-zero and mixed-zero iterations/folds, finite histories, and
+  unchanged permutation-score behavior.
+
+### C02 — Estimator ownership, fit contracts, and randomness
+
+**Status: Pending.** Confirmed parts of original items 6, 8, and 13.
+
+- Give Leshy an owned estimator clone and separate runtime RNG/importance state.
+  Fit and optional-backend fallback must preserve constructor parameters and the
+  caller's estimator. Use integer seeds for its existing learner-seed updates.
+  Preserve BoostAGroota's already-cloned learner ownership and supplied seed;
+  resolve its optional-backend fallback without overwriting importance.
+- Resolve MRMR's default callbacks during fit, storing resolved functions in
+  fitted attributes. Recompute them after set_params; preserve custom callbacks
+  and the existing row-sampling contract.
+- Remove return_scores and always return self from MRMR.fit. Scores remain in
+  selected_features_, relevance_, redundancy_, and ranking_. Update existing
+  sampling/ranking tests and examples that unpack the tuple; add migration notes.
+- Remove module-level np.random.seed calls. Add random_state=None to
+  BoostAGroota and isolation sampling, and random_state=2652124 to GrootCV.
+  Thread selector RNGs into shadows, default GrootCV folds, and isolation
+  fitting/draws. Preserve the fixed internal holdout procedure; do not introduce
+  refreshed splits or override BoostAGroota's learner seed.
+- Verify parameter and caller ownership, clone and refit behavior, updated task
+  and n_jobs callbacks, pipelines, import-time RNG preservation in fresh
+  processes, and repeatable integer-seeded selection/sampling. None retains
+  normal sklearn RNG semantics; do not claim that fitting with None never
+  consumes global randomness.
+
+### C03 — Missing-value handling and classification folds
+
+**Status: Pending.** Confirmed parts of original items 2 and 7.
+
+- In [association.py](../src/arfs/association.py), accept only drop, fill, or
+  None. Keep numeric zero filling; fill nominal missing values with a
+  collision-free missing category, supporting category/string/Boolean inputs
+  without changing caller data. Update the missing-value policy documentation.
+- Keep documented listwise deletion and response/weight validation. Do not
+  silently replace it with featurewise deletion or change degrees of freedom.
+- Use RepeatedStratifiedKFold for recognized GrootCV classification objectives
+  and retain RepeatedKFold for regression. Respect supplied splitters and their
+  precedence. Reject infeasible default stratification with an actionable error.
+- Verify invalid policies, category dtype/missingness variants, sentinel
+  collisions, input preservation, balanced/imbalanced labels, insufficient class
+  counts, objective aliases, custom splitters, and unchanged regression folds.
+
+### C04 — Truthful diagnostics, quiet modes, and examples
+
+**Status: Pending.** Confirmed plotting/scale issues in item 5, unwanted output
+in item 15, and documentation defects in item 16.
+
+- Stop overwriting BoostAGroota histories across reduction rounds. Make
+  sha_cutoff_df contain the final round only, matching mean_shadow. Plot those
+  candidates against that round's cutoff and color by selected feature names.
+  Derive the complete-feature ranking_absolutes_ from first-round means; document
+  both diagnostic meanings and their changed table scope.
+- Disable tqdm and routine print/early-stopping messages through existing
+  verbose, silent, and verbose_eval controls, including GradientBoosting's
+  routine split/save/load output. Keep warnings visible and parameter names intact.
+- Repair Leshy's ndarray/Boruta example and make_fs_summary's invalid
+  VariableImportance arguments. Document callable association defaults and remove
+  the nonexistent collinearity_summary_ claim rather than adding a new feature.
+- Keep the collinearity diagonal zero: setting it to one made the current
+  elimination routine discard both features of a zero-association matrix.
+  Retain canonical exports from arfs.feature_selection.
+- Verify multiple elimination rounds, selected/rejected box colors, matching
+  history/cutoff scales, complete first-round ranking, quiet stdout/stderr, and
+  bounded executable examples. Check collinearity keeps unrelated features.
+
+### C05 — MRMR storage and built-in reduction costs
+
+**Status: Pending.** Confirmed parts of original item 9.
+
+- Replace the full redundancy square with columns allocated only for selected
+  features, reducing table storage from O(p²) to O(p k). Vectorize recognized
+  mean/max reducers; retain the existing path for arbitrary callable reducers.
+- Preserve frequency weights, floors, perfect-association handling, domain
+  restrictions, stable ties, custom callbacks, row sampling, and selected order.
+- Compare against existing hand-checked ranking tests and small dense references
+  for mean/max/custom reducers. Rerun the existing
+  [MRMR benchmark](mrmr-performance.md), recording runtime and peak process memory
+  separately from retained-table memory. Its recorded 10,000-feature table is
+  about 764 MiB; no 10–50× speedup is promised.
+- Do not add persistent rank/category caches or rewrite Cramér's V in this phase.
+  Those are separate optimization proposals, not necessary for the storage fix.
+
+### C06 — Document exact Gower sampling's memory cost
+
+**Status: Pending.** Confirmed scaling in original item 11; documentation only.
+
+- Document dense float64 distance storage as 8 N² bytes: approximately 20 GB at
+  50,000 rows and 80 GB at 100,000, before clustering and other temporary memory.
+  State that exact Gower sampling is unsuitable when this exceeds the caller's
+  memory budget. Do not imply that output sample size bounds distance storage.
+- Add no row cap, memory-budget parameter, or approximate algorithm, following
+  the user's explicit choice. Preserve per-pair weight scaling: normalizing all
+  weights once can underflow valid small weights when dominant features are
+  missing. The existing extreme-weight/missingness regression must remain green.
+- Verify arithmetic and documentation references without allocating huge arrays.
+
+### Changes from the proposed plan
+
+Only confirmed repairs and measured costs remain. The methodology experiment
+phase, fresh iteration splits/learner seeds, changed SHAP evaluation rows,
+featurewise deletion, universal ndarray support, replacement importance engine,
+and unsupported speed claims are excluded. Independent fold shadows, the zero
+collinearity diagonal, existing exports, and valid LightGBM n_jobs=0 behavior
+are retained. This avoids treating design choices as proven bugs or introducing
+regressions while fixing demonstrated failures.
 
 ## R33 delivery and 4.0.0 release — 2026-10-16
 

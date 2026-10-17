@@ -12,6 +12,15 @@ historical handoffs.
 
 **Next item: None — queued reviews complete.**
 
+Follow-up implementation: [tree binning, grouping and tutorials](tree-preprocessing.md)
+tracks two phases separately from the completed review queue.
+
+The [confirmed follow-up plan](REMEDIATION.md#confirmed-follow-up-plan) records
+only verified defects and measured costs from the 2026-10-17 report assessment.
+**C01–C06 are pending; next confirmed follow-up: C01.** These phases are separate
+from the completed RXX queue and the tree-preprocessing work. Implement one
+phase per explicit request and stop after its checks and handoff.
+
 [Final assessment](07-final-assessment.md) records the original release blockers;
 keep one distribution. [Remediation](REMEDIATION.md) records their completed repairs: [R01](R01-installed-package.md), [R02/R03](R02-R03-compatibility.md),
 [R04](R04-runtime-baseline.md), [R05](R05-observation-boundaries.md),
@@ -24,12 +33,14 @@ R16–R28 and R31 are also complete; their handoffs are linked in
 [Remediation](REMEDIATION.md), including [R28](R28-parallel-contracts.md).
 [R29](R29-plot-contracts.md), [R30](R30-dataset-fixtures.md),
 [R32](R32-documentation-workflows.md) and [R33](R33-release-evidence.md) are complete.
-**No RXX implementation remains.** This delivery prepares version 4.0.0; final
-validation, hosted CI and Codex review precede its merge, tag and GitHub release.
+**No RXX implementation remains.** R33's historical release delivery is recorded
+in the handoff. The current tree-preprocessing/MRMR work stays unreleased until
+the confirmed correctness follow-ups and release checks are complete.
 Follow the
 [session batching and handoff guidance](REMEDIATION.md#session-batching-and-handoffs).
-Future "implement the next batch" requests follow the
-[recorded groups](REMEDIATION.md#recorded-groups-for-next-batch-requests).
+Requests for the next confirmed follow-up use the first pending C phase above;
+the [recorded RXX groups](REMEDIATION.md#recorded-groups-for-next-batch-requests)
+remain historical handoffs.
 Later concurrent tracks require completed prerequisites and a
 check for shared files; the default remains one phase per session.
 
