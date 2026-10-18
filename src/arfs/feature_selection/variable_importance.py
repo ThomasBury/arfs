@@ -7,6 +7,7 @@ Module Structure:
 - ``VariableImportance`` main class for identifying non-important features
 """
 
+import warnings
 from numbers import Integral, Real
 
 import matplotlib.pyplot as plt
@@ -15,13 +16,29 @@ import pandas as pd
 from matplotlib import gridspec
 from sklearn.base import BaseEstimator
 from sklearn.feature_selection._base import SelectorMixin
+from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.utils.validation import check_is_fitted
 
 from ..gbm import GradientBoosting
 from ..preprocessing import OrdinalEncoderPandas
-from ..utils import reset_plot
+from ..utils import reset_plot, validate_target
 from .allrelevant import _compute_importance
 from .base import _validate_dataframe
+
+_TASK_OBJECTIVES = {
+    "regression": "rmse",
+    "classification": "binary",
+    "multiclass": "multiclass",
+}
+_MULTICLASS_OBJECTIVES = {
+    "multiclass",
+    "softmax",
+    "multiclassova",
+    "multiclass_ova",
+    "ova",
+    "ovr",
+}
+_CLASSIFICATION_OBJECTIVES = {"binary", *_MULTICLASS_OBJECTIVES}
 
 
 class VariableImportance(SelectorMixin, BaseEstimator):
@@ -43,8 +60,13 @@ class VariableImportance(SelectorMixin, BaseEstimator):
         Finite share in [0, 1]. Zero selects nothing; one selects every predictor
         with positive importance. An all-zero total selects nothing at any cutoff.
     lgb_kwargs : dict or None, default=None
-        LightGBM parameters with an objective. None uses objective='rmse' and
-        zero_as_missing=False. Caller dictionaries are preserved.
+        Optional LightGBM parameters. Defaults set ``zero_as_missing=False`` and
+        choose ``objective`` from ``task`` (``'rmse'``, ``'binary'``, or
+        ``'multiclass'``) when omitted, promoting ``'binary'`` with more than two
+        target classes to ``'multiclass'`` with a ``UserWarning``, inferring
+        missing ``num_class`` for recognized multiclass objectives, and
+        stratifying the validation split for recognized classification objectives.
+        Caller dictionaries are preserved.
     encoder_kwargs : dictionary of keyword arguments, optional
         dictionary of the :class:`OrdinalEncoderPandas` parameters
     fastshap : bool, default=False
@@ -312,6 +334,44 @@ class VariableImportance(SelectorMixin, BaseEstimator):
         return fig
 
 
+def _convert_classification_labels(y, n_samples):
+    """Convert boolean/integral classification labels to int; reject non-numeric."""
+    target = validate_target(y, n_samples)
+    if pd.api.types.is_bool_dtype(target.dtype):
+        labels = target.astype(int).to_numpy(dtype=int)
+    else:
+        if target.dtype == object and all(
+            isinstance(value, (bool, np.bool_, Real)) for value in target.to_numpy()
+        ):
+            floats = np.asarray(
+                [
+                    int(value) if isinstance(value, (bool, np.bool_)) else float(value)
+                    for value in target.to_numpy()
+                ],
+                dtype=float,
+            )
+        elif (
+            pd.api.types.is_numeric_dtype(target.dtype)
+            and not pd.api.types.is_complex_dtype(target.dtype)
+        ):
+            floats = target.to_numpy(dtype=float)
+        else:
+            raise ValueError("Classification y must contain numeric or boolean labels.")
+        if (
+            not np.isfinite(floats).all()
+            or not np.equal(floats, np.floor(floats)).all()
+        ):
+            raise ValueError(
+                "Classification y must contain finite integer or boolean labels."
+            )
+        labels = floats.astype(int)
+    return (
+        pd.Series(labels, index=y.index, name=y.name)
+        if isinstance(y, pd.Series)
+        else labels
+    ), labels
+
+
 def _compute_varimp_lgb(
     X,
     y,
@@ -337,6 +397,83 @@ def _compute_varimp_lgb(
                 "fasttreeshap is not installed; install it or use fastshap=False."
             ) from exc
 
+    if lgb_kwargs is not None and not isinstance(lgb_kwargs, dict):
+        raise TypeError("lgb_kwargs must be None or a dictionary.")
+    params = {"zero_as_missing": False}
+    if lgb_kwargs is not None:
+        params.update(lgb_kwargs)
+    if params.get("objective") is None:
+        params["objective"] = _TASK_OBJECTIVES[task]
+    if (
+        "num_class" in params
+        and "num_classes" in params
+        and params["num_class"] != params["num_classes"]
+    ):
+        raise ValueError("Conflicting num_class and num_classes in lgb_kwargs.")
+    objective = params["objective"]
+    objective_name = objective.lower() if isinstance(objective, str) else None
+    stratified = objective_name in _CLASSIFICATION_OBJECTIVES
+    if stratified:
+        y, labels = _convert_classification_labels(y, len(X))
+        unique_labels = np.unique(labels)
+        n_classes = len(unique_labels)
+        if n_classes < 2:
+            raise ValueError(
+                "Classification y must contain at least 2 distinct classes."
+            )
+        has_num_class = "num_class" in params or "num_classes" in params
+        supplied_num_class = params.get("num_class", params.get("num_classes"))
+        if objective_name == "binary":
+            if n_classes == 2:
+                if not np.isin(unique_labels, [0, 1]).all():
+                    raise ValueError(
+                        "Binary classification labels must be a subset of {0, 1}."
+                    )
+            else:
+                if has_num_class and (
+                    isinstance(supplied_num_class, (bool, np.bool_))
+                    or not isinstance(supplied_num_class, Integral)
+                    or int(supplied_num_class) != n_classes
+                ):
+                    raise ValueError(
+                        f"Promoted multiclass target has {n_classes} classes, "
+                        f"got num_class={supplied_num_class}."
+                    )
+                if not np.array_equal(unique_labels, np.arange(n_classes)):
+                    raise ValueError(
+                        "Multiclass labels must equal {0, ..., K - 1} when num_class is inferred."
+                    )
+                warnings.warn(
+                    f"Promoting binary objective to multiclass with num_class={n_classes}.",
+                    UserWarning,
+                    stacklevel=2,
+                )
+                params["objective"] = "multiclass"
+                objective_name = "multiclass"
+                if not has_num_class:
+                    params["num_class"] = n_classes
+        elif not has_num_class:
+            if not np.array_equal(unique_labels, np.arange(n_classes)):
+                raise ValueError(
+                    "Multiclass labels must equal {0, ..., K - 1} when num_class is inferred."
+                )
+            params["num_class"] = n_classes
+        else:
+            if (
+                isinstance(supplied_num_class, (bool, np.bool_))
+                or not isinstance(supplied_num_class, Integral)
+                or int(supplied_num_class) < 2
+            ):
+                raise ValueError("num_class must be an integer at least 2.")
+            if unique_labels[0] < 0 or unique_labels[-1] >= int(supplied_num_class):
+                raise ValueError(
+                    f"Multiclass labels must be a subset of {{0, ..., {int(supplied_num_class) - 1}}}."
+                )
+        next(
+            StratifiedShuffleSplit(
+                n_splits=1, test_size=0.2, random_state=42
+            ).split(X, y)
+        )
     if encode:
         encoder = (
             OrdinalEncoderPandas(**encoder_kwargs)
@@ -344,14 +481,9 @@ def _compute_varimp_lgb(
             else OrdinalEncoderPandas()
         )
         X = encoder.fit_transform(X)
-    params = (
-        {"objective": "rmse", "zero_as_missing": False}
-        if lgb_kwargs is None
-        else lgb_kwargs
-    )
     gbm_model = GradientBoosting(
         cat_feat="auto",
-        stratified=False,
+        stratified=stratified,
         params=params,
         show_learning_curve=False,
         return_valid_features=True,
