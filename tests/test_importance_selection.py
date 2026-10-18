@@ -1,6 +1,7 @@
 """R17 cumulative selection and explanation population references."""
 
 import sys
+from copy import deepcopy
 from types import SimpleNamespace
 
 import lightgbm as lgb
@@ -478,6 +479,108 @@ def test_real_binary_promotion_trains_multiclass_model(data):
         ).fit(X, y)
     assert lgb_kwargs == original
     assert "a" in selector.selected_features_
+
+
+@pytest.mark.parametrize(
+    "key,metric,expected",
+    [
+        ("metric", "binary_logloss", {"multi_logloss"}),
+        ("metric", "binary", {"multi_logloss"}),
+        ("metric", "binary_error", {"multi_error"}),
+        ("metric", "binary_logloss,binary_error", {"multi_logloss", "multi_error"}),
+        ("metric", ["binary_logloss", "multi_error"], {"multi_logloss", "multi_error"}),
+        ("metric", ["binary_logloss,binary_error"], {"multi_logloss", "multi_error"}),
+        (
+            "metric",
+            ("multi_error", "binary_logloss,softmax"),
+            {"multi_error", "multi_logloss"},
+        ),
+        ("metric", ("binary_error", "multi_logloss"), {"multi_error", "multi_logloss"}),
+        ("metric", {"binary_error"}, {"multi_error"}),
+        ("metrics", "binary_error", {"multi_error"}),
+        (
+            "metric_types",
+            ["binary_logloss", "binary_error"],
+            {"multi_logloss", "multi_error"},
+        ),
+        ("metric", "multi_logloss", {"multi_logloss"}),
+        ("metric", "auc_mu", {"auc_mu"}),
+        (
+            "metric",
+            "multiclass,softmax,multiclassova,multiclass_ova,ova,ovr",
+            {"multi_logloss"},
+        ),
+        ("metric", "multi_logloss,None,na,null,custom", {"multi_logloss"}),
+        ("metric", "", {"multi_logloss"}),
+        ("metric", None, {"multi_logloss"}),
+        ("metric", lambda preds, dataset: ("custom_error", 0.0, False), {"custom_error"}),
+    ],
+)
+def test_real_binary_promotion_translates_metrics_without_mutating_params(
+    monkeypatch, data, key, metric, expected
+):
+    X, _ = data
+    y = pd.Series(np.tile([0, 1, 2], 40), index=X.index)
+    X = X.assign(a=y.to_numpy(dtype=float) * 3 + X.a * 0.1)
+    observed = []
+    original_gbm = vi.GradientBoosting
+
+    class ObservedGBM(original_gbm):
+        def fit(self, X, y, sample_weight=None):
+            super().fit(X, y, sample_weight=sample_weight)
+            observed.append(self)
+
+    monkeypatch.setattr(vi, "GradientBoosting", ObservedGBM)
+    params = {**PARAMS, "objective": "binary"}
+    params.pop("metric")
+    if key == "metric":
+        # LightGBM's primary name takes precedence over conflicting aliases.
+        params.update(metrics="auc", metric_types="average_precision")
+    params[key] = metric
+    original = deepcopy(params)
+    with pytest.warns(UserWarning, match="multiclass"):
+        selector = fs.VariableImportance(
+            task="classification", encode=False, lgb_kwargs=params
+        ).fit(X, y)
+    assert params == original
+    assert set(observed[0].model.best_score["valid"]) == expected
+    assert "a" in selector.selected_features_
+
+
+@pytest.mark.parametrize(
+    "key,metric",
+    [
+        ("metric", "auc"),
+        ("metrics", "average_precision"),
+        ("metric_types", ["binary_logloss", "auc"]),
+        ("metric", "cross_entropy"),
+        ("metrics", "xentropy"),
+        ("metric_types", "cross_entropy_lambda"),
+        ("metric", "xentlambda"),
+        ("metrics", "kullback_leibler"),
+        ("metric_types", "kldiv"),
+        ("metric", "multi_logloss,rmse"),
+        ("metrics", ["multi_error", "ndcg"]),
+        ("metric", ["multi_logloss,cross_entropy"]),
+        ("metric_types", ["multi_error,auc"]),
+    ],
+)
+def test_promotion_rejects_metrics_without_equivalent_before_encoding(
+    monkeypatch, data, key, metric
+):
+    X, _ = data
+    y = np.tile([0, 1, 2], 40)
+
+    def forbidden(*args, **kwargs):
+        pytest.fail("incompatible metrics must fail before encoding or training")
+
+    monkeypatch.setattr(vi, "OrdinalEncoderPandas", forbidden)
+    monkeypatch.setattr(vi, "GradientBoosting", forbidden)
+    params = {"objective": "binary", key: metric}
+    original = deepcopy(params)
+    with pytest.raises(ValueError, match="multiclass.*metric"):
+        fs.VariableImportance(lgb_kwargs=params).fit(X, y)
+    assert params == original
 
 
 @pytest.mark.parametrize("task", ["regression", "classification", "multiclass"])
