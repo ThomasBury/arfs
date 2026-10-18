@@ -2,7 +2,7 @@
 
 # Unreleased
 
-- Adapt binary log loss/error metrics when `VariableImportance` promotes to multiclass, including metric lists and aliases, without mutating caller parameters; reject AUC/average precision before encoding or training because they have no direct multiclass equivalent.
+- Adapt binary log loss/error metrics when `VariableImportance` promotes to multiclass, including metric lists and aliases, without mutating caller parameters; reject other incompatible metrics before encoding or training.
 - Assign rank 1 to selected features and rank 2 to rejected features in `BoostAGroota` and `GrootCV`, matching `support_` and `feature_names_in_`.
 - Respect `VariableImportance` task defaults (`rmse`, `binary`, `multiclass`) when `lgb_kwargs` is `None` or omits `objective`, promote `binary` with more than two target classes to `multiclass` with a `UserWarning`, validate classification labels and `num_class` before encoding or training, and derive validation-split stratification from the resolved objective without mutating caller dictionaries.
 - Keep zero-total SHAP and native iterations/folds as finite zeros in `BoostAGroota` and `GrootCV`, require positive summary importance so uninformative fits select nothing, and raise `ValueError` on nonfinite importances.

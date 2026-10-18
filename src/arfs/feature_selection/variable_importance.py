@@ -67,8 +67,9 @@ class VariableImportance(SelectorMixin, BaseEstimator):
         missing ``num_class`` for recognized multiclass objectives, and
         stratifying the validation split for recognized classification objectives.
         Promotion maps binary log loss/error metrics to their multiclass
-        equivalents; AUC and average precision require an explicit multiclass
-        metric instead. Metric lists and LightGBM metric aliases are supported.
+        equivalents; other metrics must support multiclass (``multi_logloss``,
+        its aliases, ``multi_error``, or ``auc_mu``). Incompatible metrics fail
+        before encoding or training. Metric lists and aliases are supported.
         Caller dictionaries are preserved.
     encoder_kwargs : dictionary of keyword arguments, optional
         dictionary of the :class:`OrdinalEncoderPandas` parameters
@@ -388,7 +389,7 @@ def _promote_binary_metrics(params):
     if isinstance(metric, str):
         metrics = metric.split(",")
     elif isinstance(metric, (list, tuple, set)):
-        metrics = list(metric)
+        metrics = [name for entry in metric for name in entry.split(",")]
     else:
         # Custom evaluation callbacks and None keep their existing meaning.
         params["metric"] = metric
@@ -398,15 +399,27 @@ def _promote_binary_metrics(params):
         "binary_logloss": "multi_logloss",
         "binary_error": "multi_error",
     }
+    compatible = _MULTICLASS_OBJECTIVES | {
+        "multi_logloss",
+        "multi_error",
+        "auc_mu",
+        # Preserve LightGBM's default/disabled-metric settings.
+        "",
+        "none",
+        "na",
+        "null",
+        "custom",
+    }
     promoted = []
     for name in metrics:
         name = name.strip().lower()
-        if name in {"auc", "average_precision"}:
+        name = equivalents.get(name, name)
+        if name not in compatible:
             raise ValueError(
-                f"Promoting to multiclass requires an explicit multiclass metric "
+                f"Promoting to multiclass requires a compatible multiclass metric "
                 f"instead of {name!r}."
             )
-        promoted.append(equivalents.get(name, name))
+        promoted.append(name)
     params["metric"] = ",".join(promoted) if isinstance(metric, str) else promoted
 
 
