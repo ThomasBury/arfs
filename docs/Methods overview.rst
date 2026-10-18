@@ -110,7 +110,9 @@ New: GrootCV:
   least two classes and at least ``n_folds`` observations per class. Reduce
   ``n_folds`` or supply custom ``folds`` when this is infeasible. Supplied
   splitters or iterables of index pairs take precedence over default folds and
-  retain their own splitting policy.
+  retain their own splitting policy. Iterators and generators are consumed by
+  each fit; use a reusable list or splitter for refitting, or supply a new
+  iterator. Empty or exhausted folds raise ``ValueError`` with this guidance.
 - This empirical comparison does not establish calibrated false-discovery control.
 - Not based on a given percentage of cols needed to be deleted.
 - Plot method for var. imp.

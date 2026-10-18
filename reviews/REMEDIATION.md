@@ -388,6 +388,28 @@ statistical calibration were not rerun. Commit and PR delivery are tracked
 separately; no release was made.
 **C04 is next**; C04–C06 remain outside this implementation.
 
+##### C03 Codex review follow-up — 2026-10-18
+
+[PR #73](https://github.com/ThomasBury/arfs/pull/73) review found that refitting
+with a consumed iterator reached an undefined `shadow_names`. The shared CV
+reducer now rejects empty or exhausted folds with `ValueError`, explaining how
+to use a reusable list/splitter or a new iterator. No constructor parameter is
+replaced or cached. Public docs state that iterators are consumed by fitting.
+
+Extended the existing custom-fold regression to refit every supported form and
+added four empty-input cases (list, iterator, generator and splitter). Before
+the fix, these checks gave **6 failures, 2 passes**; both reusable forms still
+refit with the same splits. C03 now has **96 regression cases**.
+
+After the fix, Python 3.12 source checks passed **216 tests** across
+`test_groot_classification_folds.py`, `test_allrelevant_aggregation.py`,
+`test_estimator_randomness.py` and `test_shadow_contracts.py` on the locked
+snapshot. All **46 classification-fold tests** pass on the existing newer
+snapshot. Commands use the same environment and pytest options recorded above.
+Strict HTML documentation, Ruff 0.17.0 and whitespace checks pass. Logs stay in
+`/tmp/arfs-c03-review-{before,locked,newer,docs}.log`. The full local source suite
+above predates this guard; hosted wheel checks run again on the follow-up commit.
+
 ### C04 — Truthful diagnostics, quiet modes, and examples
 
 **Status: Pending.** Confirmed plotting/scale issues in item 5, unwanted output

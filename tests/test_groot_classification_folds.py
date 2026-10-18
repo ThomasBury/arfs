@@ -147,6 +147,21 @@ def test_resolved_objective_controls_default_fold_type(
         assert_array_equal(valid, expected_valid)
 
 
+@pytest.mark.parametrize("kind", ["list", "iterator", "generator", "splitter"])
+def test_empty_custom_folds_fail_before_training(kind, training_folds):
+    folds = {
+        "list": [],
+        "iterator": iter(()),
+        "generator": (pair for pair in ()),
+        "splitter": SimpleNamespace(split=lambda X, y: iter(())),
+    }[kind]
+    X = pd.DataFrame({"x": np.arange(10)})
+    y = pd.Series([0, 1] * 5)
+    with pytest.raises(ValueError, match="folds.*at least one.*new iterator"):
+        a.GrootCV(objective="binary", folds=folds).fit(X, y)
+    assert not training_folds
+
+
 @pytest.mark.parametrize("counts", [(20, 4), (20, 10, 1), (20,)])
 def test_infeasible_default_stratification_fails_before_training(
     counts, training_folds
@@ -179,3 +194,17 @@ def test_custom_folds_override_infeasible_defaults(kind, training_folds):
     ):
         assert_array_equal(train, expected_train)
         assert_array_equal(valid, expected_valid)
+
+    if kind in ("iterator", "generator"):
+        with pytest.raises(ValueError, match="folds.*new iterator"):
+            selector.fit(X, y)
+        assert len(training_folds) == 2
+    else:
+        selector.fit(X, y)
+        assert len(training_folds) == 4
+        for (train, valid, *_), (expected_train, expected_valid) in zip(
+            training_folds[2:], expected
+        ):
+            assert_array_equal(train, expected_train)
+            assert_array_equal(valid, expected_valid)
+    assert selector.folds is folds

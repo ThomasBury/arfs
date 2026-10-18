@@ -2024,6 +2024,8 @@ class GrootCV(SelectorMixin, BaseEstimator):
         If generator or iterator, it should yield the train and test indices for each fold. If object, it should be one of the scikit-learn
         splitter classes (https://scikit-learn.org/stable/modules/classes.html#splitter-classes) and have split method.
         This argument has highest priority over other data split arguments.
+        Iterators and generators are consumed by fit; use a list of index pairs
+        or a splitter for refitting. Empty or exhausted folds raise ValueError.
     n_iter : int, default=5
         Number of cross-validation repeats; take each feature's median over
         all folds and repeats.
@@ -2363,6 +2365,7 @@ def _reduce_vars_lgb_cv(
     splits = folds.split(X, y) if hasattr(folds, "split") else folds
     total = folds.get_n_splits(X, y) if hasattr(folds, "get_n_splits") else None
     df = pd.DataFrame({"feature": X.columns})
+    shadow_names = None
     for iter, (tridx, validx) in enumerate(
         tqdm(splits, total=total, desc="Cross Validation")
     ):
@@ -2398,6 +2401,13 @@ def _reduce_vars_lgb_cv(
             n_folds=n_folds,
             column_names=new_x_tr.columns,
             silent=silent,
+        )
+
+    if shadow_names is None:
+        raise ValueError(
+            "folds must yield at least one train/validation split. "
+            "For refitting, supply a reusable list of index pairs, a splitter, "
+            "or a new iterator."
         )
 
     df["Med"] = df.filter(regex=r"^fscore\d+$").median(axis=1)
