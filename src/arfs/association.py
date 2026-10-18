@@ -13,6 +13,11 @@ Cramer's V reject inputs with fewer than two usable groups/categories.
 Relevance functions reject missing/nonfinite responses before applying any
 predictor missing-value policy. handle_na=None passes all rows to custom
 association callbacks unchanged.
+handle_na="drop" uses listwise deletion across the whole supplied frame.
+handle_na="fill" replaces numeric missing values with zero and nominal missing
+values with a collision-free category, without changing caller data. Nominal
+columns with missing values become categorical; existing categories and their
+order are retained. Other handle_na values raise ValueError.
 
 Relevance scores use frequency weights: N is retained weight mass, not stored
 row count. Regression/information scores require N > 2; grouped ANOVA requires
@@ -386,7 +391,9 @@ def theils_u_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop"):
     n_jobs : int, optional
         the number of cores to use for the computation, by default -1
     handle_na : str, optional
-        either drop rows with na, fill na with 0 or do nothing, by default "drop"
+        "drop" deletes rows listwise; "fill" uses zero for numeric values and a
+        distinct missing category for nominal values; None leaves rows unchanged.
+        Default is "drop". Caller data is not modified.
 
     Returns
     -------
@@ -430,7 +437,9 @@ def theils_u_series(X, target, sample_weight=None, n_jobs=1, handle_na="drop"):
     n_jobs : int, optional
         the number of cores to use for the computation, by default -1
     handle_na : str, optional
-        either drop rows with na, fill na with 0 or do nothing, by default "drop"
+        "drop" deletes rows listwise; "fill" uses zero for numeric values and a
+        distinct missing category for nominal values; None leaves rows unchanged.
+        Default is "drop". Caller data is not modified.
 
     Returns
     -------
@@ -527,7 +536,9 @@ def cramer_v_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop"):
     n_jobs : int, optional
         the number of cores to use for the computation, by default 1
     handle_na : str, optional
-        either drop rows with na, fill na with 0 or do nothing, by default "drop"
+        "drop" deletes rows listwise; "fill" uses zero for numeric values and a
+        distinct missing category for nominal values; None leaves rows unchanged.
+        Default is "drop". Caller data is not modified.
 
     Returns
     -------
@@ -578,7 +589,9 @@ def cramer_v_series(X, target, sample_weight=None, n_jobs=1, handle_na="drop"):
     n_jobs : int, optional
         the number of cores to use for the computation, by default 1
     handle_na : str, optional
-        either drop rows with na, fill na with 0 or do nothing, by default "drop"
+        "drop" deletes rows listwise; "fill" uses zero for numeric values and a
+        distinct missing category for nominal values; None leaves rows unchanged.
+        Default is "drop". Caller data is not modified.
 
     Returns
     -------
@@ -707,7 +720,9 @@ def correlation_ratio_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop"):
     n_jobs : int, optional
         the number of cores to use for the computation, by default 1
     handle_na : str, optional
-        either drop rows with na, fill na with 0 or do nothing, by default "drop"
+        "drop" deletes rows listwise; "fill" uses zero for numeric values and a
+        distinct missing category for nominal values; None leaves rows unchanged.
+        Default is "drop". Caller data is not modified.
 
     Returns
     -------
@@ -748,7 +763,9 @@ def correlation_ratio_series(X, target, sample_weight=None, n_jobs=1, handle_na=
     n_jobs : int, optional
         the number of cores to use for the computation, by default -1
     handle_na : str, optional
-        either drop rows with na, fill na with 0 or do nothing, by default "drop"
+        "drop" deletes rows listwise; "fill" uses zero for numeric values and a
+        distinct missing category for nominal values; None leaves rows unchanged.
+        Default is "drop". Caller data is not modified.
 
     Returns
     -------
@@ -1028,7 +1045,9 @@ def wcorr_series(
     n_jobs : int, optional
         Validated worker count; numeric threading is controlled by NumPy/BLAS.
     handle_na : str, optional
-        either drop rows with na, fill na with 0 or do nothing, by default "drop"
+        "drop" deletes rows listwise; "fill" uses zero for numeric values and a
+        distinct missing category for nominal values; None leaves rows unchanged.
+        Default is "drop". Caller data is not modified.
     method : str
         either "spearman" or "pearson", by default "spearman"
 
@@ -1070,7 +1089,9 @@ def wcorr_matrix(X, sample_weight=None, n_jobs=1, handle_na="drop", method="spea
     n_jobs : int, optional
         Validated worker count; numeric threading is controlled by NumPy/BLAS.
     handle_na : str, optional
-        either drop rows with na, fill na with 0 or do nothing, by default "drop"
+        "drop" deletes rows listwise; "fill" uses zero for numeric values and a
+        distinct missing category for nominal values; None leaves rows unchanged.
+        Default is "drop". Caller data is not modified.
     method : str
         either "spearman" or "pearson"
 
@@ -1106,7 +1127,9 @@ def weighted_correlation_1cpu(X, sample_weight=None, handle_na="drop"):
     sample_weight : array-like of shape (n_samples,), optional
         The weight vector, by default None
     handle_na : str, optional
-        either drop rows with na, fill na with 0 or do nothing, by default "drop"
+        "drop" deletes rows listwise; "fill" uses zero for numeric values and a
+        distinct missing category for nominal values; None leaves rows unchanged.
+        Default is "drop". Caller data is not modified.
 
     Returns
     -------
@@ -1181,7 +1204,9 @@ def association_series(
     n_jobs : int, optional
         The number of cores to use for the computation. The default, -1, uses all available cores.
     handle_na : str, optional
-        How to handle NA values. Options are 'drop', 'fill', and None. The default, 'drop', drops rows with NA values.
+        "drop" deletes rows listwise; "fill" uses zero for numeric values and a
+        distinct missing category for nominal values; None leaves rows unchanged.
+        Default is "drop". Caller data is not modified.
 
     Returns
     -------
@@ -1280,7 +1305,9 @@ def association_matrix(
     n_jobs : int, optional
         The number of cores to use for the computation, by default 1.
     handle_na : str, optional
-        How to handle NA values ('drop', 'fill', or None), by default "drop".
+        "drop" deletes rows listwise; "fill" uses zero for numeric values and a
+        distinct missing category for nominal values; None leaves rows unchanged.
+        Default is "drop". Caller data is not modified.
 
     Returns
     -------
@@ -1621,7 +1648,9 @@ def f_cat_regression_parallel(X, y, sample_weight=None, n_jobs=1, handle_na="dro
     n_jobs : int, optional
         the number of cores to use for the computation, by default 1
     handle_na : str, optional
-        either drop rows with na, fill na with 0 or do nothing, by default "drop"
+        "drop" deletes rows listwise; "fill" uses zero for numeric values and a
+        distinct missing category for nominal values; None leaves rows unchanged.
+        Default is "drop". Caller data is not modified.
 
     Returns
     -------
@@ -1679,7 +1708,9 @@ def f_cont_regression_parallel(
     n_jobs : int, optional
         The number of cores to use for the computation, by default -1.
     handle_na : str, optional
-        Either drop rows with NaN, fill NaN with 0, or do nothing, by default "drop".
+        "drop" deletes rows listwise; "fill" uses zero for numeric values and a
+        distinct missing category for nominal values; None leaves rows unchanged.
+        Default is "drop". Caller data is not modified.
     force_finite : bool, optional
         Replace undefined scores with zero and infinite scores with the
         maximum finite float. No p-values are returned.
@@ -1830,7 +1861,9 @@ def f_cont_classification_parallel(
     n_jobs : int, optional
         the number of cores to use for the computation, by default -1
     handle_na : str, optional
-        either drop rows with na, fill na with 0 or do nothing, by default "drop"
+        "drop" deletes rows listwise; "fill" uses zero for numeric values and a
+        distinct missing category for nominal values; None leaves rows unchanged.
+        Default is "drop". Caller data is not modified.
 
     Returns
     -------
@@ -1881,7 +1914,9 @@ def f_cat_classification_parallel(
     n_jobs : int, optional
         The number of cores to use for the computation, by default -1.
     handle_na : str, optional
-        Either drop rows with NaN, fill NaN with 0, or do nothing, by default "drop".
+        "drop" deletes rows listwise; "fill" uses zero for numeric values and a
+        distinct missing category for nominal values; None leaves rows unchanged.
+        Default is "drop". Caller data is not modified.
     force_finite : bool, optional
         Replace undefined scores with zero and infinite scores with the
         maximum finite float. No p-values are returned.
@@ -2047,7 +2082,9 @@ def _check_association_input(X, sample_weight=None, handle_na="drop"):
     sample_weight : array-like of shape (n_samples,), optional
         The weight vector, by default None
     handle_na : str, optional
-        either drop rows with na, fill na with 0 or do nothing, by default "drop"
+        "drop" deletes rows listwise; "fill" uses zero for numeric values and a
+        distinct missing category for nominal values; None leaves rows unchanged.
+        Default is "drop". Caller data is not modified.
 
     Returns
     -------
@@ -2059,6 +2096,11 @@ def _check_association_input(X, sample_weight=None, handle_na="drop"):
     ValueError
         if sample_weight contains NA
     """
+
+    if handle_na is not None and (
+        not isinstance(handle_na, str) or handle_na not in ("drop", "fill")
+    ):
+        raise ValueError("handle_na must be 'drop', 'fill', or None.")
 
     if not isinstance(X, pd.DataFrame):
         X = pd.DataFrame(X, columns=[f"pred_{i}" for i in range(X.shape[1])])
@@ -2075,7 +2117,18 @@ def _check_association_input(X, sample_weight=None, handle_na="drop"):
         na_mask = (~X.isnull().any(axis=1)).values
         X, sample_weight = X.loc[na_mask, :], sample_weight[na_mask]
     else:
-        X = X.fillna(0)
+        X = X.copy()
+        for col, series in X.items():
+            if not series.isna().any():
+                continue
+            if _is_categorical_dtype(series.dtype):
+                series = series.astype("category")
+                missing = "__arfs_missing__"
+                while missing in series.cat.categories:
+                    missing += "_"
+                X[col] = series.cat.add_categories([missing]).fillna(missing)
+            else:
+                X[col] = series.fillna(0)
     if len(X) == 0:
         raise ValueError("No observations remain after the missing-value policy.")
     sample_weight = validate_sample_weight(sample_weight, len(X))

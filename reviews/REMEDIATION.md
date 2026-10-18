@@ -1,8 +1,8 @@
 # ARFS remediation handoff
 
-**Status: R01–R33 complete. C01–C02 complete; C03–C06 pending. Tree preprocessing, MRMR sampling and the confirmed plan are being delivered separately; the next package release is deferred.**
+**Status: R01–R33 complete. C01–C03 complete; C04–C06 pending. Tree preprocessing, MRMR sampling and the confirmed plan are being delivered separately; the next package release is deferred.**
 The [confirmed follow-up plan](#confirmed-follow-up-plan) below is separate from
-that historical delivery. **C01–C02 are complete; C03–C06 are pending; next follow-up: C03.**
+that historical delivery. **C01–C03 are complete; C04–C06 are pending; next follow-up: C04.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
 a separate repair backlog. By default, a request to implement the next phase
@@ -308,7 +308,7 @@ ranking/sampling suites. Ruff 0.17.0 and whitespace checks pass. Logs:
 
 ### C03 — Missing-value handling and classification folds
 
-**Status: Pending.** Confirmed parts of original items 2 and 7.
+**Status: Complete on `fix/c03-missing-values-classification-folds` (based on `199bc93` on updated `main`).** Confirmed parts of original items 2 and 7.
 
 - In [association.py](../src/arfs/association.py), accept only drop, fill, or
   None. Keep numeric zero filling; fill nominal missing values with a
@@ -322,6 +322,93 @@ ranking/sampling suites. Ruff 0.17.0 and whitespace checks pass. Logs:
 - Verify invalid policies, category dtype/missingness variants, sentinel
   collisions, input preservation, balanced/imbalanced labels, insufficient class
   counts, objective aliases, custom splitters, and unchanged regression folds.
+
+#### C03 handoff — 2026-10-18
+
+- The shared association input check now accepts only `"drop"`, `"fill"`, or
+  `None`, rejecting invalid policies with `ValueError`. Filling copies the
+  frame, keeps numeric zero filling, and converts nominal columns with missing
+  values to categorical columns with a collision-free missing level. Existing
+  category order and unused levels are preserved; nullable strings/Booleans,
+  mixed nominal identities and entirely missing nominal columns are supported.
+  Complete columns retain their dtypes. Listwise deletion, positional response
+  and weight alignment, validation and frequency-weight degrees of freedom are
+  unchanged. Updated public policy docstrings, method notes and changelog.
+- GrootCV chooses `RepeatedStratifiedKFold` from the resolved classification
+  objective, including existing aliases and objectives from `lgbm_params`;
+  explicit `objective` retains precedence. Default stratification requires two
+  observed classes and at least `n_folds` rows per class, otherwise an error
+  explains how to reduce `n_folds` or supply `folds`. Regression retains
+  `RepeatedKFold` and the copied fold RNG state from C02. Supplied splitters,
+  lists, iterators and generators take priority and retain their own policy;
+  splitters receive data when counting their splits.
+- Added 92 maintained regressions in
+  [test_missing_value_policy.py](../tests/test_missing_value_policy.py) and
+  [test_groot_classification_folds.py](../tests/test_groot_classification_folds.py).
+  The final tests against an untouched temporary source copy of `199bc93`
+  reproduced **80 failures, 12 passes**. The native rare-class test verifies
+  that every five-fold validation set receives one of five minority rows.
+- Validation on checkout source, Python 3.12.7:
+  - Locked snapshot (NumPy 2.0.2, pandas 2.2.3, scikit-learn 1.6.1, LightGBM
+    4.6.0, SHAP 0.47.1, pytest 8.3.5): full suite **1,958 passed**
+    (529 warnings, 308.20 s).
+  - Existing newer snapshot (NumPy 2.5.4, pandas 3.0.6, scikit-learn 1.9.1,
+    LightGBM 4.7.0, SHAP 0.53.0, pytest 9.1.1): C03 plus observation-boundary,
+    category-identity, estimator-randomness and aggregation suites
+    **443 passed** (80 warnings, 132.26 s). This was not a fresh resolution.
+  - Strict HTML documentation build with notebook execution disabled,
+    Ruff 0.17.0, `uv lock --check` and `git diff --check` pass.
+
+Reproduction from the checkout root:
+
+```sh
+export PYTHONPATH=src PYTHONDONTWRITEBYTECODE=1 MPLBACKEND=Agg
+export MPLCONFIGDIR=/tmp/arfs-c03-mpl OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+export MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 PYTHONHASHSEED=0
+/tmp/arfs-association/py312-locked/bin/python -m pytest tests -q --tb=short -p no:cacheprovider
+/tmp/arfs-association/py312-newer/bin/python -m pytest \
+  tests/test_missing_value_policy.py tests/test_groot_classification_folds.py \
+  tests/test_observation_boundaries.py tests/test_category_identity.py \
+  tests/test_estimator_randomness.py tests/test_allrelevant_aggregation.py \
+  -q --tb=short -p no:cacheprovider
+/tmp/arfs-association/docs-locked/bin/sphinx-build -W --keep-going -b html docs /tmp/arfs-c03-html
+uv tool run --from ruff==0.17.0 ruff check .
+uv lock --check
+git diff --check
+```
+
+Logs stay in `/tmp/arfs-c03-{baseline,full,newer,docs}.log`; generated HTML
+stays in `/tmp/arfs-c03-html`. Verify these disposable environments before reuse.
+No dependency, version or historical report changes were made; other
+statistical defaults are unchanged. Refit and recheck classification selections
+because the default folds change; invalid missing-value policies now fail
+instead of silently filling.
+The installed-wheel/Python matrix, optional backends, notebook execution and
+statistical calibration were not rerun. Commit and PR delivery are tracked
+separately; no release was made.
+**C04 is next**; C04–C06 remain outside this implementation.
+
+##### C03 Codex review follow-up — 2026-10-18
+
+[PR #73](https://github.com/ThomasBury/arfs/pull/73) review found that refitting
+with a consumed iterator reached an undefined `shadow_names`. The shared CV
+reducer now rejects empty or exhausted folds with `ValueError`, explaining how
+to use a reusable list/splitter or a new iterator. No constructor parameter is
+replaced or cached. Public docs state that iterators are consumed by fitting.
+
+Extended the existing custom-fold regression to refit every supported form and
+added four empty-input cases (list, iterator, generator and splitter). Before
+the fix, these checks gave **6 failures, 2 passes**; both reusable forms still
+refit with the same splits. C03 now has **96 regression cases**.
+
+After the fix, Python 3.12 source checks passed **216 tests** across
+`test_groot_classification_folds.py`, `test_allrelevant_aggregation.py`,
+`test_estimator_randomness.py` and `test_shadow_contracts.py` on the locked
+snapshot. All **46 classification-fold tests** pass on the existing newer
+snapshot. Commands use the same environment and pytest options recorded above.
+Strict HTML documentation, Ruff 0.17.0 and whitespace checks pass. Logs stay in
+`/tmp/arfs-c03-review-{before,locked,newer,docs}.log`. The full local source suite
+above predates this guard; hosted wheel checks run again on the follow-up commit.
 
 ### C04 — Truthful diagnostics, quiet modes, and examples
 
