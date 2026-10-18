@@ -25,9 +25,6 @@ from sklearn.utils.validation import check_is_fitted
 
 from .utils import create_dtype_dict, validate_sample_weight, validate_target
 
-# fix random seed for reproducibility
-np.random.seed(7)
-
 
 class OrdinalEncoderPandas(OrdinalEncoder):
     """Encode categorical features as an integer array and returns a pandas DF.

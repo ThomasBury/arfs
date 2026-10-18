@@ -8,7 +8,6 @@ import contextlib
 import hashlib
 import importlib.metadata
 import json
-import random
 import sys
 from functools import partial
 from pathlib import Path
@@ -92,6 +91,7 @@ def selectors(task, seed):
                 cutoff=cutoff,
                 iters=3,
                 max_rounds=3,
+                random_state=seed,
             ),
         )
     yield (
@@ -101,6 +101,7 @@ def selectors(task, seed):
             n_folds=3,
             n_iter=1,
             n_jobs=1,
+            random_state=seed,
             lgbm_params={
                 "num_leaves": 7,
                 "max_depth": 3,
@@ -203,9 +204,6 @@ def run(output):
                         "known_signal": score([c for c in X if c in relevant]),
                     }
                     for name, selector in selectors(task, seed):
-                        # BoostAGroota/GrootCV use NumPy's global shuffle stream.
-                        np.random.seed(seed)
-                        random.seed(seed)
                         with (
                             contextlib.redirect_stdout(log),
                             contextlib.redirect_stderr(log),

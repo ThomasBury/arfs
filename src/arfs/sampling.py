@@ -8,11 +8,12 @@ from scipy.sparse import issparse
 from scipy.stats import ks_2samp
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.ensemble import IsolationForest
+from sklearn.utils import check_random_state
 
 from .utils import _is_categorical_dtype, validate_sample_weight
 
 
-def sample(df, n=1000, sample_weight=None, method="gower"):
+def sample(df, n=1000, sample_weight=None, method="gower", random_state=None):
     """Sampling rows from a dataframe when random sampling is not
     enough for reducing the number of rows.
     The strategies are either using hierarchical clustering
@@ -48,6 +49,10 @@ def sample(df, n=1000, sample_weight=None, method="gower"):
         reject row weights; direct gower_matrix has separate feature weights.
     method : str, optional
         the strategy to use for sampling the rows. Either ``"gower"`` or ``"isoforest"``, by default 'gower'
+    random_state : int, RandomState instance or None, default=None
+        Controls isolation forest fitting and subset draws. An integer replays
+        each call; a RandomState instance advances; None uses NumPy's global
+        RNG. Ignored by deterministic Gower clustering.
 
     Returns
     -------
@@ -109,7 +114,9 @@ def sample(df, n=1000, sample_weight=None, method="gower"):
             values = X[col].astype("str")
             categories = values.iloc[fit_rows].astype("category").cat.categories
             X[col] = categories.get_indexer(values)
-        idx = isof_find_sample(X, sample_weight=sample_weight)
+        idx = isof_find_sample(
+            X, sample_weight=sample_weight, random_state=random_state
+        )
         return df.iloc[idx, :].copy()
     else:
         raise NotImplementedError(f"{method} not implemented")
@@ -436,7 +443,7 @@ def get_5_percent_splits(length):
     )
 
 
-def isolation_forest(X, sample_weight=None):
+def isolation_forest(X, sample_weight=None, random_state=None):
     """fits isolation forest to the dataset and gives an anomaly score to every sample
 
     Parameters
@@ -446,9 +453,12 @@ def isolation_forest(X, sample_weight=None):
     sample_weight : pd.Series or np.array, optional
         Positional fit weights. Zero-weight rows are omitted from fitting;
         all original rows are scored, without scoring weights.
+    random_state : int, RandomState instance or None, default=None
+        Controls forest fitting. An integer replays each call; None uses
+        NumPy's global RNG.
     """
     sample_weight = validate_sample_weight(sample_weight, len(X))
-    clf = IsolationForest()
+    clf = IsolationForest(random_state=random_state)
     if sample_weight is None:
         clf.fit(X)
     else:
@@ -457,7 +467,7 @@ def isolation_forest(X, sample_weight=None):
     return clf.score_samples(X)
 
 
-def isof_find_sample(X, sample_weight=None):
+def isof_find_sample(X, sample_weight=None, random_state=None):
     """Return row positions using a bounded anomaly-score similarity screen.
 
     Try 20 random draws without replacement per distinct size from
@@ -482,6 +492,9 @@ def isof_find_sample(X, sample_weight=None):
         Two-dimensional DataFrame or ndarray predictor matrix.
     sample_weight : pd.Series or np.array, optional
         Positional weights for the forest fit only, by default None.
+    random_state : int, RandomState instance or None, default=None
+        Controls forest fitting and subset draws. An integer replays each call;
+        a RandomState instance advances; None uses NumPy's global RNG.
 
     Returns
     -------
@@ -493,10 +506,11 @@ def isof_find_sample(X, sample_weight=None):
     sample_weight = validate_sample_weight(sample_weight, len(X))
     if len(X) < 2:
         return np.arange(len(X))
-    preds = isolation_forest(X, sample_weight)
+    rng = check_random_state(random_state)
+    preds = isolation_forest(X, sample_weight, random_state=rng)
     for size in get_5_percent_splits(len(X)):
         for _ in range(20):
-            sample_indices = np.random.choice(len(X), size=size, replace=False)
+            sample_indices = rng.choice(len(X), size=size, replace=False)
             if ks_2samp(preds, preds[sample_indices]).pvalue > 0.95:
                 return sample_indices
     return np.arange(len(X))

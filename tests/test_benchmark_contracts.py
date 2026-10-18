@@ -224,24 +224,32 @@ def test_comparison_seed_state_is_copied_even_from_fitted_selector(
         model, n_estimators=3, max_iter=2, random_state=seed, importance="native"
     ).fit(X, y)
     history = selector.imp_real_hist.copy()
-    state = selector.random_state.get_state()
+    state = selector.random_state_.get_state()
+    expected = (
+        np.random.RandomState(seed).get_state() if seed_kind == "integer" else state
+    )
     runs = []
     fit = a.Leshy.fit
 
     def observe(self, *args, **kwargs):
         runs.append(self)
-        assert self.random_state is not selector.random_state
-        current = self.random_state.get_state()
-        assert_array_equal(current[1], state[1])
-        assert current[2:] == state[2:]
+        if seed_kind == "integer":
+            assert self.random_state == seed
+            current = np.random.RandomState(self.random_state).get_state()
+        else:
+            assert self.random_state is not selector.random_state
+            current = self.random_state.get_state()
+        assert_array_equal(current[1], expected[1])
+        assert current[2:] == expected[2:]
         return fit(self, *args, **kwargs)
 
     monkeypatch.setattr(a.Leshy, "fit", observe)
     monkeypatch.setattr(a.Leshy, "plot_importance", lambda *args, **kwargs: None)
     benchmark.compare_varimp(selector, [model], X, y)
     assert len(runs) == 3
-    assert_array_equal(selector.random_state.get_state()[1], state[1])
-    assert selector.random_state.get_state()[2:] == state[2:]
+    assert selector.random_state is seed
+    assert_array_equal(selector.random_state_.get_state()[1], state[1])
+    assert selector.random_state_.get_state()[2:] == state[2:]
     assert_array_equal(selector.imp_real_hist, history)
     assert selector.importance == "native"
 
@@ -258,8 +266,5 @@ def test_leshy_set_params_refreshes_backend_on_real_fit(to_lightgbm):
     selector.set_params(estimator=new).fit(X, y)
     assert selector.is_lgb == to_lightgbm
     assert selector.is_cat is False
-    assert (
-        isinstance(new.random_state, (int, np.integer))
-        if to_lightgbm
-        else isinstance(new.random_state, np.random.RandomState)
-    )
+    assert new.random_state is None
+    assert isinstance(selector.estimator_.random_state, int)

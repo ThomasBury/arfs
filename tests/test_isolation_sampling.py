@@ -38,7 +38,7 @@ def test_rejection_retries_each_size_twenty_times_then_returns_full_data(
     sizes = []
     fits = []
 
-    def scores(X, sample_weight):
+    def scores(X, sample_weight, random_state=None):
         fits.append(sample_weight)
         return np.arange(len(X), dtype=float)
 
@@ -69,7 +69,9 @@ def test_acceptance_stops_at_first_accepted_draw_and_keeps_strict_threshold(
 ):
     sizes = []
     monkeypatch.setattr(
-        sampling, "isolation_forest", lambda X, sample_weight: np.arange(len(X))
+        sampling,
+        "isolation_forest",
+        lambda X, sample_weight, random_state=None: np.arange(len(X)),
     )
 
     def compare(full, part):
@@ -108,7 +110,9 @@ def test_public_exhaustion_returns_original_schema_and_order(monkeypatch):
     X.index = [3, 3, 8, 5, 6, 7, 8, 9, 10, 11]
     before = X.copy(deep=True)
     monkeypatch.setattr(
-        sampling, "isolation_forest", lambda X, sample_weight: np.arange(len(X))
+        sampling,
+        "isolation_forest",
+        lambda X, sample_weight, random_state=None: np.arange(len(X)),
     )
     calls = []
 

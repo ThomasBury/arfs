@@ -2,6 +2,9 @@
 
 # Unreleased
 
+- Preserve Leshy's caller estimator and constructor parameters; use `estimator_`, `random_state_` and `importance_` for runtime configuration. Resolve optional FastTreeSHAP fallback in fitted state for Leshy and BoostAGroota.
+- Resolve MRMR's default callbacks at each fit from the current `task` and `n_jobs`, storing them as `relevance_func_` and `redundancy_func_`. Preserve custom callbacks and shared row sampling.
+- Remove import-time NumPy seed resets. Add `random_state=None` to BoostAGroota and isolation sampling, and `random_state=2652124` to GrootCV, controlling shadows/default folds or isolation fitting/draws. Integer seeds replay; RandomState instances advance and None can consume global randomness. BoostAGroota preserves its learner's seed, which must be set separately for repeatable stochastic training. Existing fixed internal holdouts are unchanged.
 - Adapt binary log loss/error metrics when `VariableImportance` promotes to multiclass, including metric lists and aliases, without mutating caller parameters; reject other incompatible metrics before encoding or training.
 - Assign rank 1 to selected features and rank 2 to rejected features in `BoostAGroota` and `GrootCV`, matching `support_` and `feature_names_in_`.
 - Respect `VariableImportance` task defaults (`rmse`, `binary`, `multiclass`) when `lgb_kwargs` is `None` or omits `objective`, promote `binary` with more than two target classes to `multiclass` with a `UserWarning`, validate classification labels and `num_class` before encoding or training, and derive validation-split stratification from the resolved objective without mutating caller dictionaries.
@@ -11,6 +14,8 @@
 
 Breaking migration (requires refitting before release):
 
+ - Remove MRMR's `return_scores` argument. `fit` always returns the selector, so replace tuple unpacking with `selector.fit(X, y)` followed by `selector.selected_features_`, `selector.relevance_` and `selector.redundancy_`; `ranking_` retains the combined scores. `fit_transform` and sklearn pipelines now share the same fit contract.
+ - Recheck selections after the RNG changes. Leshy uses integer learner seeds on an owned clone, and GrootCV now seeds shadows as well as default folds. Read Leshy's runtime learner configuration from `estimator_`; `estimator` remains the caller's original object. Read the actual fallback backend from `importance_` in Leshy/BoostAGroota.
  - `TreeDiscretizer` now bins numeric columns only. `all`, `numerical` and `None` select eligible numeric columns; explicitly selected categories raise an error. Replace mixed calls with `TreeGrouper` for categorical columns, followed by `TreeDiscretizer` for numeric columns. Forward `sample_weight` explicitly to each pipeline step.
  - Add `TreeGrouper(group_features="all", n_groups=10, boost_params=None, raw=False, task="regression")`. Nominal levels use native categorical splits; ordered categories retain their declared relative order with contiguous groups. Cast numeric category codes to categorical dtype explicitly.
  - Both fit one native LightGBM tree on all positive-weight training rows instead of the GBM wrapper's 80% training subset. Task, one round, leaf limit and all-row fitting override conflicting aliases and row-sampling settings without mutating supplied parameters. Validate finite numeric regression targets and numeric/Boolean binary `{0,1}` targets before dropping zero-weight rows. Constant targets remain valid.
