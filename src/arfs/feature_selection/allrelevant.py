@@ -1253,6 +1253,8 @@ def _get_shap_imp(estimator, X, y, sample_weight=None, cat_feature=None):
     else:
         raise ValueError(f"Unsupported SHAP values format: {type(shap_values)}")  # noqa: TRY004 - preserve the backend-output error contract.
 
+    if not np.isfinite(shap_imp).all():
+        raise ValueError("Feature importance must be finite.")
     return shap_imp
 
 
@@ -1308,6 +1310,8 @@ def _get_shap_imp_fast(estimator, X, y, sample_weight=None, cat_feature=None):
             shap_imp = np.abs(shap_matrix).mean(0)
     else:
         shap_imp = np.abs(shap_matrix).mean(0)
+    if not np.isfinite(shap_imp).all():
+        raise ValueError("Feature importance must be finite.")
     return shap_imp
 
 
@@ -1341,6 +1345,8 @@ def _get_perm_imp(estimator, X, y, sample_weight, cat_feature=None):
         model, X_tt, y_tt, sample_weight=w_tt, n_repeats=5, random_state=42, n_jobs=-1
     )
     imp = perm_imp.importances_mean.ravel()
+    if not np.isfinite(imp).all():
+        raise ValueError("Feature importance must be finite.")
     return imp
 
 
@@ -1398,11 +1404,14 @@ def _get_imp(estimator, X, y, sample_weight=None, cat_feature=None):
         raise ValueError(f"Estimator fitting failed: {e!s}")
 
     if is_lightgbm(estimator):
-        return estimator.booster_.feature_importance(
+        imp = estimator.booster_.feature_importance(
             importance_type="gain"
         )  # LightGBM 4.x compatible
     else:
-        return estimator.feature_importances_
+        imp = estimator.feature_importances_
+    if not np.isfinite(imp).all():
+        raise ValueError("Feature importance must be finite.")
+    return imp
 
 
 ###################################
@@ -1445,7 +1454,8 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         'pimp' (permutation importance), and 'native' (Gini/impurity).
         Permutation scoring uses validation sample weights. Each iteration's
         signed scores are divided by their absolute total; an all-zero vector
-        stays zero. Only positive mean permutation scores can be selected.
+        stays zero. Zero-total SHAP and native iterations also contribute zeros.
+        Only positive mean scores can be selected.
 
     Attributes
     ----------
@@ -1454,7 +1464,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
     ranking_ : array of shape [n_features]
         The feature ranking, such that ``ranking_[i]`` corresponds to the
         ranking position of the i-th feature. Selected (i.e., estimated
-        best) features are assigned rank 1, and tentative features are assigned
+        best) features are assigned rank 1, and rejected features are assigned
         rank 2.
     ranking_absolutes_ : array of shape [n_features]
         The absolute feature ranking as ordered by the selection process. It does not guarantee
@@ -1589,7 +1599,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
             .sort_values(ascending=False)
             .index
         )
-        self.ranking_ = np.where(self.support_, 2, 1)
+        self.ranking_ = np.where(self.support_, 1, 2)
         return self
 
     def _get_support_mask(self):
@@ -1785,24 +1795,32 @@ def _reduce_vars_sklearn(
             "pimp": _get_perm_imp,
             "native": _get_imp,
         }
-        importance = imp_func[imp_kind](
-            estimator, new_x, y, sample_weight=weight, cat_feature=augmented_cat_feature
+        importance = np.asarray(
+            imp_func[imp_kind](
+                estimator,
+                new_x,
+                y,
+                sample_weight=weight,
+                cat_feature=augmented_cat_feature,
+            ),
+            dtype=float,
         )
+        if not np.isfinite(importance).all():
+            raise ValueError("Feature importance must be finite.")
 
         # Create a dataframe to store the feature importances
         if i == 1:
             df = pd.DataFrame({"feature": new_x.columns})
 
-        # Store the feature importances
-        try:
-            # Normalize the feature importances
-            if imp_kind == "pimp":
-                total = np.abs(importance).sum()
-                df["fscore" + str(i)] = importance / total if total else importance
-            else:
-                df["fscore" + str(i)] = importance / importance.sum()
-        except ValueError:
-            print("Only Sklearn tree based methods allowed")
+        # Normalize the feature importances
+        total = np.abs(importance).sum() if imp_kind == "pimp" else importance.sum()
+        if not np.isfinite(total):
+            raise ValueError("Total feature importance must be finite.")
+        df["fscore" + str(i)] = (
+            importance / total
+            if total > 0
+            else np.zeros_like(importance, dtype=float)
+        )
 
         # Print the iteration number if not silent
         if not silent:
@@ -1813,9 +1831,7 @@ def _reduce_vars_sklearn(
     shadow_vars = df.loc[df["feature"].isin(shadow_names)]
 
     mean_shadow = shadow_vars["Mean"].max() / cutoff
-    real_vars = real_vars[(real_vars.Mean >= mean_shadow)]
-    if imp_kind == "pimp":
-        real_vars = real_vars[real_vars.Mean > 0]
+    real_vars = real_vars[(real_vars.Mean >= mean_shadow) & (real_vars.Mean > 0)]
 
     # Check for the stopping criteria
     # Compute the fraction of features selected in this round
@@ -1938,9 +1954,10 @@ class GrootCV(SelectorMixin, BaseEstimator):
     A shuffled copy of the predictors matrix is added (shadows) to the original set of predictors.
     LightGBM is fitted using repeated cross-validation. Each fold's SHAP
     importance is the row mean of absolute contributions, summed over outputs
-    for multi-output models, then normalized across real and shadow features.
-    Each feature's median is computed across all folds and repeats. Keep real
-    medians at or above the maximum shadow median divided by cutoff.
+    for multi-output models, then normalized across real and shadow features; a
+    zero-total fold contributes zeros. Each feature's median is computed across
+    all folds and repeats. Keep positive real medians at or above the maximum
+    shadow median divided by cutoff.
     Explanations use training rows; validation rows drive early stopping.
     This empirical threshold does not establish false-discovery control.
 
@@ -1985,7 +2002,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
     ranking_absolutes_ : list
         The absolute feature ranking as ordered by the selection process.
     ranking_ : ndarray
-        The feature ranking, where 2 corresponds to selected features and 1 to tentative features.
+        The feature ranking, where 1 corresponds to selected features and 2 to rejected features.
 
     Warnings
     --------
@@ -2083,7 +2100,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
         self.support_ = np.asarray(
             [c in self.selected_features_ for c in self.feature_names_in_]
         )
-        self.ranking_ = np.where(self.support_, 2, 1)
+        self.ranking_ = np.where(self.support_, 1, 2)
 
         self.ranking_absolutes_ = list(
             self.cv_df.set_index("feature")["Med"]
@@ -2313,7 +2330,9 @@ def _reduce_vars_lgb_cv(
     shadow_vars = df[df["feature"].isin(shadow_names)]
 
     cutoff_shadow = shadow_vars["Med"].max() / cutoff
-    real_vars = real_vars[(real_vars.Med.values >= cutoff_shadow)]
+    real_vars = real_vars[
+        (real_vars.Med.values >= cutoff_shadow) & (real_vars.Med.values > 0)
+    ]
 
     return real_vars["feature"], df, cutoff_shadow
 
@@ -2587,10 +2606,14 @@ def _compute_importance(new_x_tr, shap_matrix, param, objective, fastshap):
     )
     if values.ndim not in (2, 3) or values.shape[:2] != new_x_tr.shape:
         raise ValueError("SHAP values must have shape (rows, features[, outputs]).")
+    if not np.isfinite(values).all():
+        raise ValueError("SHAP contributions must be finite.")
     values = np.abs(values)
     if values.ndim == 3:
         values = values.sum(axis=2)
     shap_imp = values.mean(axis=0)
+    if not np.isfinite(shap_imp).all():
+        raise ValueError("Feature importance must be finite.")
 
     importance = dict(zip(new_x_tr.columns, shap_imp))
     return sorted(importance.items(), key=operator.itemgetter(1))
@@ -2621,10 +2644,15 @@ def _merge_importance_df(df, importance, iter, n_folds, column_names, silent=Tru
         The updated feature importance dataframe.
     """
 
-    df2 = pd.DataFrame(importance, columns=["feature", "fscore" + str(iter)])
-    df2["fscore" + str(iter)] = (
-        df2["fscore" + str(iter)] / df2["fscore" + str(iter)].sum()
-    )
+    col = "fscore" + str(iter)
+    df2 = pd.DataFrame(importance, columns=["feature", col])
+    scores = df2[col].to_numpy(dtype=float)
+    if not np.isfinite(scores).all():
+        raise ValueError("Feature importance must be finite.")
+    total = scores.sum()
+    if not np.isfinite(total):
+        raise ValueError("Total feature importance must be finite.")
+    df2[col] = scores / total if total > 0 else np.zeros_like(scores, dtype=float)
     df = pd.merge(df, df2, on="feature", how="outer")
     nit = divmod(iter, n_folds)[0]
     nf = divmod(iter, n_folds)[1]

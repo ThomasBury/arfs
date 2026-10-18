@@ -17,7 +17,7 @@ tracks two phases separately from the completed review queue.
 
 The [confirmed follow-up plan](REMEDIATION.md#confirmed-follow-up-plan) records
 only verified defects and measured costs from the 2026-10-17 report assessment.
-**C01–C06 are pending; next confirmed follow-up: C01.** These phases are separate
+**C01 is complete; C02–C06 are pending; next confirmed follow-up: C02.** These phases are separate
 from the completed RXX queue and the tree-preprocessing work. Implement one
 phase per explicit request and stop after its checks and handoff.
 

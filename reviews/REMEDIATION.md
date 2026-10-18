@@ -1,8 +1,8 @@
 # ARFS remediation handoff
 
-**Status: R01–R33 complete. C01–C06 pending. Tree preprocessing, MRMR sampling and the confirmed plan are being delivered separately; the next package release is deferred.**
+**Status: R01–R33 complete. C01 complete; C02–C06 pending. Tree preprocessing, MRMR sampling and the confirmed plan are being delivered separately; the next package release is deferred.**
 The [confirmed follow-up plan](#confirmed-follow-up-plan) below is separate from
-that historical delivery. **C01–C06 are pending; next follow-up: C01.**
+that historical delivery. **C01 is complete; C02–C06 are pending; next follow-up: C02.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
 a separate repair backlog. By default, a request to implement the next phase
@@ -130,7 +130,7 @@ assessment. Passing existing tests does not disprove the newly reproduced bugs.
 
 ### C01 — Task, ranking, and zero-importance correctness
 
-**Status: Pending.** Original report items 3, 4, and the zero-total part of 5.
+**Status: Complete on `fix/c01-task-ranking-zero-importance` (based on `a8d8672` on `main`).** Original report items 3, 4, and the zero-total part of 5.
 
 - In [allrelevant.py](../src/arfs/feature_selection/allrelevant.py), assign rank 1
   to selected BoostAGroota/GrootCV features and rank 2 to rejected features.
@@ -145,6 +145,48 @@ assessment. Passing existing tests does not disprove the newly reproduced bugs.
 - Verify binary/multiclass default training and objective overrides, rank/support
   agreement, all-zero and mixed-zero iterations/folds, finite histories, and
   unchanged permutation-score behavior.
+
+#### C01 handoff — 2026-10-17
+
+- **Changes and behavior changes:**
+  - `BoostAGroota.fit` and `GrootCV.fit` in [allrelevant.py](../src/arfs/feature_selection/allrelevant.py) now set `ranking_ = np.where(self.support_, 1, 2)`, assigning rank 1 to selected features and rank 2 to rejected features, aligned with `feature_names_in_` and `support_`, without changing selected feature sets.
+  - `_compute_varimp_lgb` in [variable_importance.py](../src/arfs/feature_selection/variable_importance.py) resolves `objective` on a copied parameter dictionary from `task` (`regression -> rmse`, `classification -> binary`, `multiclass -> multiclass`) when `lgb_kwargs` is `None` or omits `objective`, while preserving explicit objectives and other caller keys. Validation-split `stratified` is derived from whether the resolved objective is a recognized classification objective (`binary`, `multiclass`, `softmax`, `multiclassova`, `multiclass_ova`, `ova`, `ovr`), rather than from `task`. For classification objectives, labels are validated and converted to integers (`bool -> astype(int)`, integral finite floats to `int`, rejecting non-numeric/string/non-integral/non-finite values and targets with `< 2` distinct classes), resolved `binary` with $K > 2$ classes is promoted to `multiclass` with `num_class = K` and a `UserWarning` (raising `ValueError` if an explicit `num_class`/`num_classes` conflicts with $K$), inferred multiclass requires labels `{0..K-1}`, explicit `num_class = n` requires labels in `{0..n-1}`, and stratification is pre-checked before predictor encoding or training. Caller dictionaries remain unmutated.
+  - `_reduce_vars_sklearn`, `_compute_importance`, `_merge_importance_df`, `_reduce_vars_lgb_cv`, and the shared importance helpers (`_get_shap_imp`, `_get_shap_imp_fast`, `_get_perm_imp`, `_get_imp`) in [allrelevant.py](../src/arfs/feature_selection/allrelevant.py) validate finite importance values and totals (removing `_reduce_vars_sklearn`'s `except ValueError:` handler so nonfinite errors propagate), map zero-total iterations/folds to finite zeros that remain in the mean/median aggregation, and require strictly positive summary importance (`Mean > 0` in `BoostAGroota`, `Med > 0` in `GrootCV`) in addition to `>=` threshold comparison so uninformative fits yield finite zero summaries/cutoffs and select nothing. Signed permutation normalization and nonzero threshold equality are unchanged.
+  - Updated affected docstrings in [allrelevant.py](../src/arfs/feature_selection/allrelevant.py) and [variable_importance.py](../src/arfs/feature_selection/variable_importance.py), method notes in [Methods overview.rst](../docs/Methods%20overview.rst), and [CHANGELOG.md](../CHANGELOG.md).
+- **Commands, environments, and results:**
+  - Pre-fix regression verification on `a8d8672`: **57 failed, 111 passed** across `tests/test_allrelevant_aggregation.py` and `tests/test_importance_selection.py`, reproducing inverted `[2, 1]` rankings, `FloatingPointError` / `NaN` on zero-total iterations/folds, swallowed `ValueError` on nonfinite importances, missing `objective` / `num_class`, and unstratified classification splits.
+  - Focused post-fix caller suites on source (`PYTHONPATH=src`, `/tmp/arfs-association/py312-locked/bin/python` — Python 3.12.7, NumPy 2.0.2, pandas 2.2.3, scikit-learn 1.6.1, LightGBM 4.6.0, SHAP 0.47.1, pytest 8.3.5):
+    ```sh
+    env PYTHONPATH=src PYTHONDONTWRITEBYTECODE=1 MPLBACKEND=Agg \
+      MPLCONFIGDIR=/tmp/arfs-report-check-mpl OPENBLAS_NUM_THREADS=1 \
+      OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 \
+      /tmp/arfs-association/py312-locked/bin/python -m pytest \
+      tests/test_allrelevant_aggregation.py tests/test_importance_selection.py \
+      tests/test_permutation_importance.py tests/test_shadow_contracts.py \
+      tests/test_observation_boundaries.py tests/test_category_identity.py \
+      tests/test_leshy_support.py tests/test_allrelevant.py \
+      tests/test_plot_contracts.py tests/test_benchmark_contracts.py \
+      -q --tb=short -p no:cacheprovider
+    ```
+    Result: **642 passed**.
+  - Full maintained source suite (`PYTHONPATH=src`, Python 3.12.7 locked):
+    ```sh
+    env PYTHONPATH=src PYTHONDONTWRITEBYTECODE=1 MPLBACKEND=Agg \
+      MPLCONFIGDIR=/tmp/arfs-report-check-mpl OPENBLAS_NUM_THREADS=1 \
+      OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 \
+      LOKY_MAX_CPU_COUNT=2 PYTHONHASHSEED=0 \
+      /tmp/arfs-association/py312-locked/bin/python -m pytest tests \
+      -q --tb=short -p no:cacheprovider
+    ```
+    Result: **1,807 passed** (518 warnings, 201.95 s), including 151 new C01 regression cases.
+  - Installed-wheel validation outside the checkout in `/tmp/opencode/arfs-c01/run` with `python -I`, `uv pip check`, no `setuptools` installed, all 19 source/sdist/wheel files (including 3 data payloads) and all 16 installed module SHA256 hashes verified:
+    - `py39-locked` (Python 3.9.25, NumPy 2.0.2, pandas 2.2.3, scikit-learn 1.6.1, LightGBM 4.6.0, SHAP 0.47.1, pytest 8.3.5): **1,718 passed** (519 warnings, 298.33 s).
+    - `py312-locked` (Python 3.12.7, NumPy 2.0.2, pandas 2.2.3, scikit-learn 1.6.1, LightGBM 4.6.0, SHAP 0.47.1, pytest 8.3.5): **1,718 passed** (518 warnings, 291.65 s).
+    - `py312-newer` (Python 3.12.7, NumPy 2.5.4, pandas 3.0.6, scikit-learn 1.9.1, LightGBM 4.7.0, SHAP 0.53.0, pytest 9.1.1): **1,702 passed** (313 warnings, 306.79 s; the 16-test difference is pandas 2.2 vs 3.0 `copy_on_write` parameterization).
+  - Static and lock checks: `uv tool run --from ruff==0.17.0 ruff check .` (0 diagnostics), `uv lock --check`, and `git diff --check` all pass.
+- **Remaining limits and next phase:**
+  - Estimator ownership, `MRMR.fit` return contracts, and module/selector RNG threading remain in **C02**. Missing-value policy and stratified `GrootCV` folds remain in **C03**. Multi-round `BoostAGroota` history/plotting, quiet modes, and documentation examples remain in **C04**. MRMR storage/reduction and Gower memory documentation remain in **C05–C06**.
+  - Optional `fasttreeshap` execution, full notebook reruns, and the remaining Python 3.9 minimum / 3.10 / 3.11 cells were not rerun in this session. Next confirmed follow-up: **C02**.
 
 ### C02 — Estimator ownership, fit contracts, and randomness
 

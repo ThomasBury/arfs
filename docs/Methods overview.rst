@@ -74,10 +74,10 @@ one iteration with real scores ``[.3, .1]`` and shadow scores ``[.5, .1]``
 uses a threshold of ``.5`` when ``cutoff=1``.
 
 Permutation scores retain their signs and are normalized by their absolute
-total; an all-zero vector stays zero. Only strictly positive mean permutation
-scores can be selected. SHAP and native importances retain their existing
-per-iteration total normalization. These empirical thresholds do not establish
-false-discovery control.
+total; an all-zero vector stays zero. SHAP and native importances retain their
+existing per-iteration total normalization, with zero-total iterations also
+contributing zeros. Only strictly positive mean scores can be selected. These
+empirical thresholds do not establish false-discovery control.
 
 GrootCV, a new method
 ---------------------
@@ -87,10 +87,11 @@ New: GrootCV:
 - Repeated-fold feature importance based on LightGBM only; runtime and predictive accuracy depend on the data and parameters.
 - SHAP importance is the mean absolute contribution over each fold's training
   rows, summed over outputs for multi-output models, then normalized across
-  real and shadow features. Validation rows drive early stopping.
+  real and shadow features; a zero-total fold contributes zeros. Validation
+  rows drive early stopping.
 - Take each feature's median across all folds and repeats, then the maximum
-  shadow median divided by ``cutoff``. Keep real medians at or above this
-  threshold. Summary columns do not enter either calculation.
+  shadow median divided by ``cutoff``. Keep positive real medians at or above
+  this threshold. Summary columns do not enter either calculation.
 - For real scores ``[.57, .57, .16]`` and shadows ``[.35, .05, .70]`` and
   ``[.05, .35, .05]`` across three folds, the real median is ``.57`` and the
   threshold is ``.35`` at ``cutoff=1``, so the real feature is kept.

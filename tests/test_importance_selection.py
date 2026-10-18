@@ -10,7 +10,7 @@ import pytest
 from numpy.testing import assert_allclose, assert_array_equal
 from pandas.testing import assert_frame_equal
 from sklearn.base import clone
-from sklearn.model_selection import ShuffleSplit
+from sklearn.model_selection import ShuffleSplit, StratifiedShuffleSplit
 from sklearn.pipeline import Pipeline
 
 from arfs import feature_selection as fs
@@ -336,3 +336,425 @@ def test_weighted_training_equal_validation_row_population(monkeypatch, data):
     assert_array_equal(model.valid_features.index, encoded.iloc[valid].index)
     assert_frame_equal(X, before)
     assert_frame_equal(out, encoded[out.columns])
+
+
+@pytest.mark.parametrize(
+    "task,expected_objective,expected_stratified,expected_num_class",
+    [
+        ("regression", "rmse", False, None),
+        ("classification", "binary", True, None),
+        ("multiclass", "multiclass", True, 3),
+    ],
+)
+@pytest.mark.parametrize(
+    "supplied",
+    [None, {"min_data_in_leaf": 5, "zero_as_missing": True}],
+)
+def test_task_defaults_and_omitted_objective_preserve_caller_dict(
+    monkeypatch,
+    data,
+    task,
+    expected_objective,
+    expected_stratified,
+    expected_num_class,
+    supplied,
+):
+    X, y = data
+    if task == "classification":
+        y = (X.a > 0).astype(int)
+    elif task == "multiclass":
+        y = np.tile([0, 1, 2], 40)
+    values = (
+        np.ones((2, 12))
+        if expected_num_class is not None
+        else np.array([[3.0, 1.0, 0.0, 0.0], [3.0, 1.0, 0.0, 0.0]])
+    )
+    calls = controlled_backend(monkeypatch, values)
+    original = None if supplied is None else supplied.copy()
+    fs.VariableImportance(task=task, encode=False, lgb_kwargs=supplied).fit(X, y)
+    assert supplied == original
+    assert len(calls) == 1
+    kwargs = calls[0][3]
+    assert kwargs["stratified"] is expected_stratified
+    assert kwargs["params"]["objective"] == expected_objective
+    assert kwargs["params"]["zero_as_missing"] is (
+        False if supplied is None else supplied["zero_as_missing"]
+    )
+    if supplied is not None:
+        assert kwargs["params"]["min_data_in_leaf"] == 5
+    if expected_num_class is None:
+        assert "num_class" not in kwargs["params"]
+    else:
+        assert kwargs["params"]["num_class"] == expected_num_class
+
+
+@pytest.mark.parametrize(
+    "task,override,expected_stratified,expected_num_class",
+    [
+        ("classification", "rmse", False, None),
+        ("classification", "poisson", False, None),
+        ("multiclass", "rmse", False, None),
+        ("multiclass", "binary", True, None),
+        ("regression", "binary", True, None),
+        ("regression", "softmax", True, 3),
+        ("classification", "multiclassova", True, 3),
+        ("regression", "ovr", True, 3),
+    ],
+)
+def test_explicit_objective_overrides_task_for_training_and_stratification(
+    monkeypatch, data, task, override, expected_stratified, expected_num_class
+):
+    X, y = data
+    if override == "binary":
+        y = (X.a > 0).astype(int)
+    elif expected_num_class is not None or task == "multiclass":
+        y = np.tile([0, 1, 2], 40)
+    values = (
+        np.ones((2, 12))
+        if expected_num_class is not None
+        else np.array([[2.0, 1.0, 0.0, 0.0], [2.0, 1.0, 0.0, 0.0]])
+    )
+    calls = controlled_backend(monkeypatch, values)
+    lgb_kwargs = {"objective": override, "min_data_in_leaf": 7}
+    original = lgb_kwargs.copy()
+    fs.VariableImportance(task=task, encode=False, lgb_kwargs=lgb_kwargs).fit(X, y)
+    assert lgb_kwargs == original
+    kwargs = calls[0][3]
+    assert kwargs["stratified"] is expected_stratified
+    assert kwargs["params"]["objective"] == override
+    assert kwargs["params"]["min_data_in_leaf"] == 7
+    if expected_num_class is None:
+        assert "num_class" not in kwargs["params"]
+    else:
+        assert kwargs["params"]["num_class"] == expected_num_class
+
+
+@pytest.mark.parametrize("task", ["regression", "classification", "multiclass"])
+@pytest.mark.parametrize("explicit_binary", [False, True])
+@pytest.mark.parametrize("matching_key", [None, "num_class", "num_classes"])
+def test_binary_promoted_to_multiclass_when_more_than_two_classes(
+    monkeypatch, data, task, explicit_binary, matching_key
+):
+    if not explicit_binary and task != "classification":
+        return
+    X, _ = data
+    y = np.tile([0, 1, 2, 3], 30)
+    calls = controlled_backend(monkeypatch, np.ones((2, 16)))
+    supplied = {}
+    if explicit_binary:
+        supplied["objective"] = "binary"
+    if matching_key is not None:
+        supplied[matching_key] = 4
+    lgb_kwargs = supplied if supplied else None
+    original = None if lgb_kwargs is None else lgb_kwargs.copy()
+    with pytest.warns(UserWarning, match="multiclass"):
+        fs.VariableImportance(task=task, encode=False, lgb_kwargs=lgb_kwargs).fit(X, y)
+    assert lgb_kwargs == original
+    params = calls[0][3]["params"]
+    assert calls[0][3]["stratified"] is True
+    assert params["objective"] == "multiclass"
+    if matching_key == "num_classes":
+        assert params["num_classes"] == 4
+        assert "num_class" not in params
+    else:
+        assert params["num_class"] == 4
+
+
+def test_real_binary_promotion_trains_multiclass_model(data):
+    X, _ = data
+    y = pd.Series(np.tile([0, 1, 2], 40), index=X.index)
+    X = X.assign(a=y.to_numpy(dtype=float) * 3 + X.a * 0.1)
+    lgb_kwargs = {
+        "objective": "binary",
+        "n_estimators": 6,
+        "num_leaves": 4,
+        "min_data_in_leaf": 5,
+        "num_threads": 1,
+    }
+    original = lgb_kwargs.copy()
+    with pytest.warns(UserWarning, match="multiclass"):
+        selector = fs.VariableImportance(
+            task="regression", encode=False, lgb_kwargs=lgb_kwargs
+        ).fit(X, y)
+    assert lgb_kwargs == original
+    assert "a" in selector.selected_features_
+
+
+@pytest.mark.parametrize("task", ["regression", "classification", "multiclass"])
+@pytest.mark.parametrize("key", ["num_class", "num_classes"])
+@pytest.mark.parametrize("bad_count", [2, 3, 5])
+def test_promotion_rejects_mismatched_num_class_without_overwriting(
+    monkeypatch, data, task, key, bad_count
+):
+    X, _ = data
+    y = np.tile([0, 1, 2, 3], 30)
+    calls = controlled_backend(monkeypatch, np.ones((2, 16)))
+    lgb_kwargs = {"objective": "binary", key: bad_count}
+    original = lgb_kwargs.copy()
+    with pytest.raises(ValueError, match="num_class"):
+        fs.VariableImportance(task=task, encode=False, lgb_kwargs=lgb_kwargs).fit(X, y)
+    assert lgb_kwargs == original
+    assert calls == []
+
+
+@pytest.mark.parametrize("key", ["num_class", "num_classes"])
+def test_multiclass_num_class_preserved_and_missing_classes_accepted(
+    monkeypatch, data, key
+):
+    X, _ = data
+    # Labels {0, 2} are a subset of {0, 1, 2, 3} with missing classes 1 and 3.
+    y = np.tile([0, 2], 60)
+    calls = controlled_backend(monkeypatch, np.ones((2, 16)))
+    explicit = {key: 4}
+    original = explicit.copy()
+    fs.VariableImportance(task="multiclass", encode=False, lgb_kwargs=explicit).fit(
+        X, y
+    )
+    assert explicit == original
+    assert calls[0][3]["params"][key] == 4
+    if key == "num_classes":
+        assert "num_class" not in calls[0][3]["params"]
+
+    with pytest.raises(ValueError, match="num_class"):
+        fs.VariableImportance(
+            task="multiclass",
+            encode=False,
+            lgb_kwargs={"num_class": 3, "num_classes": 2},
+        ).fit(X, np.tile([0, 1, 2], 40))
+
+
+@pytest.mark.parametrize("key", ["num_class", "num_classes"])
+def test_real_multiclass_explicit_num_class_accepts_missing_classes(data, key):
+    X, _ = data
+    y = pd.Series(np.tile([0, 2], 60), index=X.index)
+    X = X.assign(a=y.to_numpy(dtype=float) * 3 + X.a * 0.1)
+    lgb_kwargs = {
+        "n_estimators": 6,
+        "num_leaves": 4,
+        "min_data_in_leaf": 5,
+        "num_threads": 1,
+        key: 4,
+    }
+    original = lgb_kwargs.copy()
+    selector = fs.VariableImportance(
+        task="multiclass", encode=False, lgb_kwargs=lgb_kwargs
+    ).fit(X, y)
+    assert lgb_kwargs == original
+    assert "a" in selector.selected_features_
+
+
+@pytest.mark.parametrize("key", ["num_class", "num_classes"])
+def test_real_multiclass_conflicting_class_count_is_not_silently_overwritten(
+    monkeypatch, data, key
+):
+    X, _ = data
+    y = np.tile([0, 1, 2], 40)
+    bad = {
+        "n_estimators": 4,
+        "num_leaves": 4,
+        "min_data_in_leaf": 5,
+        "num_threads": 1,
+        key: 2,
+    }
+    original = bad.copy()
+    calls = controlled_backend(monkeypatch, np.ones((2, 8)))
+    with pytest.raises(ValueError, match="subset"):
+        fs.VariableImportance(task="multiclass", encode=False, lgb_kwargs=bad).fit(
+            X, y
+        )
+    assert bad == original
+    assert calls == []
+
+
+@pytest.mark.parametrize(
+    "task,raw_labels,expected_unique",
+    [
+        ("classification", np.tile([False, True], 60), [0, 1]),
+        ("classification", pd.Series(np.tile([False, True], 60), dtype="boolean"), [0, 1]),
+        ("classification", np.tile([0.0, 1.0], 60), [0, 1]),
+        ("classification", pd.Series(np.tile([0.0, 1.0], 60), dtype="Float64"), [0, 1]),
+        ("multiclass", np.tile([0.0, 1.0, 2.0], 40), [0, 1, 2]),
+        ("multiclass", pd.Series(np.tile([0, 1, 2], 40), dtype="Int64"), [0, 1, 2]),
+    ],
+)
+def test_classification_label_conversion_to_int(
+    monkeypatch, data, task, raw_labels, expected_unique
+):
+    X, _ = data
+    n_outputs = 1 if task == "classification" else 3
+    calls = controlled_backend(monkeypatch, np.ones((2, 4 * n_outputs)))
+    fs.VariableImportance(task=task, encode=False).fit(X, raw_labels)
+    passed_y = calls[0][1]
+    assert pd.api.types.is_integer_dtype(np.asarray(passed_y).dtype)
+    assert_array_equal(np.unique(passed_y), expected_unique)
+
+
+@pytest.mark.parametrize("task", ["classification", "multiclass"])
+@pytest.mark.parametrize(
+    "bad_labels",
+    [
+        np.tile([0.0, 0.5], 60),
+        np.tile([0.0, np.nan], 60),
+        np.tile([0.0, np.inf], 60),
+        np.tile([0.0, -np.inf], 60),
+        np.tile(["0", "1"], 60),
+        pd.Series(np.tile(["0", "1"], 60), dtype="string"),
+        np.tile(["neg", "pos"], 60),
+        pd.Categorical(np.tile([0, 1], 60)),
+        pd.Categorical(np.tile(["a", "b"], 60)),
+        np.tile([0j, 1j], 60),
+    ],
+)
+def test_classification_rejects_non_integral_nonfinite_and_non_numeric_labels(
+    monkeypatch, data, task, bad_labels
+):
+    X, _ = data
+    calls = controlled_backend(monkeypatch, np.ones((2, 4)))
+    with pytest.raises(ValueError):
+        fs.VariableImportance(task=task, encode=False).fit(X, bad_labels)
+    assert calls == []
+
+
+@pytest.mark.parametrize(
+    "task,lgb_kwargs,bad_labels",
+    [
+        # Binary labels not a subset of {0, 1}
+        ("classification", None, np.tile([-1, 1], 60)),
+        ("classification", None, np.tile([1, 2], 60)),
+        ("classification", None, np.tile([0, 2], 60)),
+        ("regression", {"objective": "binary"}, np.tile([1, 2], 60)),
+        # Multiclass inferred num_class: labels must equal {0..K-1}
+        ("multiclass", None, np.tile([1, 2, 3], 40)),
+        ("multiclass", None, np.tile([0, 1, 3], 40)),
+        ("multiclass", None, np.tile([-1, 0, 1], 40)),
+        ("classification", None, np.tile([0, 1, 3], 40)),  # promoted binary
+        ("regression", {"objective": "softmax"}, np.tile([0, 2], 60)),
+        # Multiclass explicit num_class=n: labels must be a subset of {0..n-1}
+        ("multiclass", {"num_class": 3}, np.tile([0, 3], 60)),
+        ("multiclass", {"num_classes": 3}, np.tile([-1, 1], 60)),
+        ("multiclass", {"num_class": 1}, np.tile([0, 1], 60)),
+        ("multiclass", {"num_class": True}, np.tile([0, 1], 60)),
+        # Classification families need at least 2 distinct classes
+        ("classification", None, np.zeros(120, dtype=int)),
+        ("classification", None, np.ones(120, dtype=int)),
+        ("classification", None, np.ones(120, dtype=bool)),
+        ("multiclass", None, np.zeros(120, dtype=int)),
+        ("multiclass", {"num_class": 3}, np.zeros(120, dtype=int)),
+        ("regression", {"objective": "binary"}, np.zeros(120, dtype=int)),
+        ("regression", {"objective": "ovr"}, np.zeros(120, dtype=int)),
+    ],
+)
+def test_classification_label_domain_and_class_count_rules(
+    monkeypatch, data, task, lgb_kwargs, bad_labels
+):
+    X, _ = data
+    calls = controlled_backend(monkeypatch, np.ones((2, 12)))
+    with pytest.raises(ValueError):
+        fs.VariableImportance(task=task, encode=False, lgb_kwargs=lgb_kwargs).fit(
+            X, bad_labels
+        )
+    assert calls == []
+
+
+@pytest.mark.parametrize(
+    "task,lgb_kwargs,bad_labels",
+    [
+        ("classification", None, np.r_[0, np.ones(119, dtype=int)]),
+        ("multiclass", None, np.r_[0, np.tile([1, 2], 59), 1]),
+        ("classification", None, np.tile(["0", "1"], 60)),
+        ("multiclass", {"num_class": 2}, np.tile([0, 1, 2], 40)),
+    ],
+)
+def test_precheck_fails_before_encoding_or_training(
+    monkeypatch, data, task, lgb_kwargs, bad_labels
+):
+    X, _ = data
+    X = X.assign(cat=np.tile(["x", "y"], 60))
+
+    def forbidden(*args, **kwargs):
+        pytest.fail("pre-check must fail before encoding or training")
+
+    monkeypatch.setattr(vi, "OrdinalEncoderPandas", forbidden)
+    monkeypatch.setattr(vi, "GradientBoosting", forbidden)
+    with pytest.raises(ValueError):
+        fs.VariableImportance(task=task, encode=True, lgb_kwargs=lgb_kwargs).fit(
+            X, bad_labels
+        )
+
+
+@pytest.mark.parametrize(
+    "task,override,expected_objective,expected_stratified",
+    [
+        ("regression", None, "rmse", False),
+        ("classification", None, "binary", True),
+        ("multiclass", None, "multiclass", True),
+        ("classification", "rmse", "rmse", False),
+        ("regression", "binary", "binary", True),
+        ("regression", "softmax", "softmax", True),
+    ],
+)
+def test_real_lightgbm_task_defaults_and_stratification(
+    monkeypatch, data, task, override, expected_objective, expected_stratified
+):
+    X, y_reg = data
+    if expected_objective == "rmse":
+        y = y_reg
+    elif expected_objective == "binary":
+        # Choose a binary target where ShuffleSplit and StratifiedShuffleSplit differ.
+        y = pd.Series(np.r_[np.ones(15, dtype=int), np.zeros(105, dtype=int)], index=X.index)
+        X = X.assign(a=y.to_numpy(dtype=float) * 4 + X.a * 0.1)
+    else:
+        y = pd.Series(
+            np.r_[np.zeros(10, dtype=int), np.ones(20, dtype=int), np.full(90, 2, dtype=int)],
+            index=X.index,
+        )
+        X = X.assign(a=y.to_numpy(dtype=float) * 3 + X.a * 0.1)
+
+    unstrat_val = X.iloc[
+        next(ShuffleSplit(n_splits=1, test_size=0.2, random_state=42).split(X, y))[1]
+    ].index
+    if expected_stratified:
+        strat_val = X.iloc[
+            next(
+                StratifiedShuffleSplit(
+                    n_splits=1, test_size=0.2, random_state=42
+                ).split(X, y)
+            )[1]
+        ].index
+        assert not strat_val.equals(unstrat_val)
+
+    observed = []
+    original_gbm = vi.GradientBoosting
+
+    class ObservedGBM(original_gbm):
+        def fit(self, X, y, sample_weight=None):
+            super().fit(X, y, sample_weight=sample_weight)
+            observed.append(self)
+
+    monkeypatch.setattr(vi, "GradientBoosting", ObservedGBM)
+    lgb_kwargs = {
+        "n_estimators": 6,
+        "num_leaves": 4,
+        "min_data_in_leaf": 5,
+        "num_threads": 1,
+    }
+    if override is not None:
+        lgb_kwargs["objective"] = override
+    original_kwargs = lgb_kwargs.copy()
+
+    selector = fs.VariableImportance(
+        task=task, encode=False, lgb_kwargs=lgb_kwargs
+    ).fit(X, y)
+    assert lgb_kwargs == original_kwargs
+    assert len(observed) == 1
+    gbm = observed[0]
+    assert gbm.stratified is expected_stratified
+    assert gbm.model_params["objective"] == expected_objective
+    if expected_objective in {"multiclass", "softmax"}:
+        assert gbm.model_params["num_class"] == 3
+    expected_val_index = strat_val if expected_stratified else unstrat_val
+    assert_array_equal(gbm.valid_features.index, expected_val_index)
+    assert np.isfinite(
+        selector.feature_importances_summary_.select_dtypes("number").to_numpy()
+    ).all()
+    assert "a" in selector.selected_features_
