@@ -66,6 +66,9 @@ class VariableImportance(SelectorMixin, BaseEstimator):
         target classes to ``'multiclass'`` with a ``UserWarning``, inferring
         missing ``num_class`` for recognized multiclass objectives, and
         stratifying the validation split for recognized classification objectives.
+        Promotion maps binary log loss/error metrics to their multiclass
+        equivalents; AUC and average precision require an explicit multiclass
+        metric instead. Metric lists and LightGBM metric aliases are supported.
         Caller dictionaries are preserved.
     encoder_kwargs : dictionary of keyword arguments, optional
         dictionary of the :class:`OrdinalEncoderPandas` parameters
@@ -372,6 +375,41 @@ def _convert_classification_labels(y, n_samples):
     ), labels
 
 
+def _promote_binary_metrics(params):
+    """Adapt metrics on the owned parameter copy when promoting the objective."""
+    for key in ("metric", "metrics", "metric_types"):
+        if key in params:
+            metric = params[key]
+            break
+    else:
+        return
+    params.pop("metrics", None)
+    params.pop("metric_types", None)
+    if isinstance(metric, str):
+        metrics = metric.split(",")
+    elif isinstance(metric, (list, tuple, set)):
+        metrics = list(metric)
+    else:
+        # Custom evaluation callbacks and None keep their existing meaning.
+        params["metric"] = metric
+        return
+    equivalents = {
+        "binary": "multi_logloss",
+        "binary_logloss": "multi_logloss",
+        "binary_error": "multi_error",
+    }
+    promoted = []
+    for name in metrics:
+        name = name.strip().lower()
+        if name in {"auc", "average_precision"}:
+            raise ValueError(
+                f"Promoting to multiclass requires an explicit multiclass metric "
+                f"instead of {name!r}."
+            )
+        promoted.append(equivalents.get(name, name))
+    params["metric"] = ",".join(promoted) if isinstance(metric, str) else promoted
+
+
 def _compute_varimp_lgb(
     X,
     y,
@@ -443,6 +481,7 @@ def _compute_varimp_lgb(
                     raise ValueError(
                         "Multiclass labels must equal {0, ..., K - 1} when num_class is inferred."
                     )
+                _promote_binary_metrics(params)
                 warnings.warn(
                     f"Promoting binary objective to multiclass with num_class={n_classes}.",
                     UserWarning,
