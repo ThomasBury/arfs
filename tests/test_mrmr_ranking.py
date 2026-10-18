@@ -139,8 +139,7 @@ def test_constant_predictors_and_response_have_zero_default_relevance(task):
 @pytest.mark.parametrize(
     "kind", ["zero_request", "no_columns", "unavailable", "empty_callback"]
 )
-@pytest.mark.parametrize("return_scores", [False, True])
-def test_empty_selection_has_consistent_outputs_and_can_refit(kind, return_scores):
+def test_empty_selection_has_consistent_outputs_and_can_refit(kind):
     X, y = mixed_data()
     count, relevance = 2, None
     if kind == "zero_request":
@@ -154,11 +153,11 @@ def test_empty_selection_has_consistent_outputs_and_can_refit(kind, return_score
     model = MRMR(
         count,
         relevance_func=relevance,
-        return_scores=return_scores,
         show_progress=False,
     )
     output = model.fit(X, y)
-    assert (output[0] if return_scores else output.selected_features_) == []
+    assert output is model
+    assert output.selected_features_ == []
     assert model.ranking_.empty
     assert list(model.ranking_.columns) == ["mrmr", "relevance", "redundancy"]
     assert_array_equal(model.get_support(), np.zeros(X.shape[1], dtype=bool))

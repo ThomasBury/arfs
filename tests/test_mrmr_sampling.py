@@ -152,7 +152,7 @@ def test_weighted_class_guard_checks_positive_mass_not_just_labels():
         model.fit(X, y, sample_weight=weights)
 
 
-def test_custom_callbacks_share_the_sample_with_return_scores():
+def test_custom_callbacks_share_the_sample_and_fit_returns_self():
     from arfs import association as a
 
     X, y = data("regression")
@@ -171,13 +171,12 @@ def test_custom_callbacks_share_the_sample_with_return_scores():
         2,
         relevance_func=relevance,
         redundancy_func=redundancy,
-        return_scores=True,
         sample_size=20,
         random_state=8,
         show_progress=False,
     )
-    selected, _, _ = model.fit(X, y)
-    assert selected == model.selected_features_
+    assert model.fit(X, y) is model
+    assert len(model.selected_features_) == 2
     assert [name for name, _ in seen] == ["relevance", "redundancy"]
     assert seen[0][1] is seen[1][1]
     assert_frame_equal(seen[0][1], X.iloc[model.sample_indices_])

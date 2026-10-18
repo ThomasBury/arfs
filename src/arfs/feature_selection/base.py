@@ -16,9 +16,6 @@ from sklearn.base import BaseEstimator
 from sklearn.feature_selection._base import SelectorMixin
 from sklearn.utils.validation import check_is_fitted
 
-# fix random seed for reproducibility
-np.random.seed(7)
-
 
 def _validate_dataframe(X):
     if not isinstance(X, pd.DataFrame):

@@ -63,9 +63,6 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         If True, only features belonging to the same domain are compared.
         Domain is defined by the string preceding the first underscore:
         for instance "cusinfo_age" and "cusinfo_income" belong to the same domain, whereas "age" and "income" don't.
-    return_scores: bool (optional, default=False)
-        If False, only the list of selected features is returned.
-        If True, a tuple containing (list of selected features, relevance, redundancy) is returned.
     n_jobs: int (optional, default=1)
         Maximum number of workers to use. Only used when relevance = "f" or redundancy = "corr".
         If -1, use as many workers as min(cpu count, number of features).
@@ -79,15 +76,19 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         regression draws are uniform. None uses all rows. Weights are subset
         positionally, not used as sampling probabilities or rescaled.
     random_state : int, RandomState instance or None, default=None
-        Controls row sampling. Use an integer for reproducible fits.
-
-    Returns
-    -------
-    selected_features: list of str
-        List of selected features.
+        Controls row sampling. An integer replays each fit; a RandomState
+        instance advances; None uses NumPy's global RNG when sampling is needed.
 
     Attributes
     ----------
+    selected_features_ : list
+        Selected feature names, in selection order. ``fit`` always returns self.
+    relevance_ : pd.Series
+        Relevance scores of available predictors.
+    redundancy_ : pd.Series
+        Aggregate redundancy at each feature's selection step.
+    relevance_func_, redundancy_func_ : callable
+        Callbacks resolved from the current parameters during fit.
     n_features_in_ : int
         number of input predictors
     ranking_ : pd.DataFrame
@@ -134,7 +135,6 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
     >>>                  task="regression", #"classification",
     >>>                  denominator_func=np.mean,
     >>>                  only_same_domain=False,
-    >>>                  return_scores=False,
     >>>                  show_progress=True)
     >>> #fs_mrmr.fit(X=X, y=y.astype(str), sample_weight=None)
     >>> fs_mrmr.fit(X=X, y=y, sample_weight=None)
@@ -148,7 +148,6 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         task="regression",
         denominator_func=np.mean,
         only_same_domain=False,
-        return_scores=False,
         n_jobs=1,
         show_progress=True,
         sample_size=None,
@@ -159,36 +158,19 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         self.redundancy_func = redundancy_func
         self.denominator_func = denominator_func
         self.only_same_domain = only_same_domain
-        self.return_scores = return_scores
         self.show_progress = show_progress
         self.n_jobs = n_jobs
         self.task = task
         self.sample_size = sample_size
         self.random_state = random_state
 
-        if self.relevance_func is None:
-            if self.task == "regression":
-                self.relevance_func = functools.partial(
-                    f_stat_regression_parallel, n_jobs=self.n_jobs
-                )
-            else:
-                self.relevance_func = functools.partial(
-                    f_stat_classification_parallel, n_jobs=self.n_jobs
-                )
-
-        if self.redundancy_func is None:
-            self.redundancy_func = functools.partial(
-                association_series, n_jobs=self.n_jobs, normalize=False
-            )
-
     def fit(self, X, y, sample_weight=None):
-        """fit the MRmr selector by learning the associations
+        """Fit the selector and return self; scores are stored in fitted attributes.
 
         Parameters
         ----------
         X : pd.DataFrame, shape (n_samples, n_features)
-            Data from which to compute variances, where `n_samples` is
-            the number of samples and `n_features` is the number of features.
+            Predictor data.
         y : array-like or pd.Series of shape (n_samples,)
             Target vector. Must be numeric for regression or categorical for classification.
         sample_weight : pd.Series, optional, shape (n_samples,)
@@ -201,9 +183,24 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         Returns
         -------
         self : object
-            If `return_scores=False`, returns self.
-            If `return_scores=True`, returns (selected_features, relevance_scores).
+            Fitted selector.
         """
+        self.relevance_func_ = self.relevance_func
+        self.redundancy_func_ = self.redundancy_func
+        if self.relevance_func_ is None:
+            if self.task == "regression":
+                self.relevance_func_ = functools.partial(
+                    f_stat_regression_parallel, n_jobs=self.n_jobs
+                )
+            else:
+                self.relevance_func_ = functools.partial(
+                    f_stat_classification_parallel, n_jobs=self.n_jobs
+                )
+
+        if self.redundancy_func_ is None:
+            self.redundancy_func_ = functools.partial(
+                association_series, n_jobs=self.n_jobs, normalize=False
+            )
 
         if (
             isinstance(self.n_features_to_select, (bool, np.bool_))
@@ -276,7 +273,7 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         if self.n_features_to_select == 0 or X.shape[1] == 0:
             self.relevance = pd.Series(dtype=float)
         else:
-            self.relevance = self.relevance_func(**self.relevance_args)
+            self.relevance = self.relevance_func_(**self.relevance_args)
         if (
             not isinstance(self.relevance, pd.Series)
             or not self.relevance.index.is_unique
@@ -324,8 +321,6 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         )
         self.not_selected_features_ = self.not_selected_features
 
-        if self.return_scores:
-            return self.selected_features_, self.relevance_, self.redundancy_
         return self
 
     def transform(self, X):
@@ -400,7 +395,7 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
 
             if not_selected_features_sub:
                 redundancy.loc[not_selected_features_sub, last_selected_feature] = (
-                    self.redundancy_func(
+                    self.redundancy_func_(
                         target=last_selected_feature,
                         features=not_selected_features_sub,
                         **self.redundancy_args,

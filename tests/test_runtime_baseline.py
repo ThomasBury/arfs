@@ -65,18 +65,19 @@ def test_selector_recovers_signal_and_rejects_noise(method):
         )
     elif method == "boostagroota":
         selector = BoostAGroota(
-            model, cutoff=1, iters=3, max_rounds=3, importance="native"
+            model, cutoff=1, iters=3, max_rounds=3, importance="native", random_state=42
         )
     else:
         selector = GrootCV(
-            objective="l2", cutoff=1, n_folds=3, n_iter=1, n_jobs=1, silent=True
+            objective="l2",
+            cutoff=1,
+            n_folds=3,
+            n_iter=1,
+            n_jobs=1,
+            silent=True,
+            random_state=42,
         )
-    state = np.random.get_state()
-    try:
-        np.random.seed(42)
-        selector.fit(frame, target)
-    finally:
-        np.random.set_state(state)
+    selector.fit(frame, target)
     selected = set(selector.selected_features_)
     assert "signal" in selected
     assert len(selected - {"signal"}) <= 2

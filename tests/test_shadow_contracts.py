@@ -154,6 +154,9 @@ def test_leshy_repeated_shadows_keep_dtype_values_and_unique_names(
     selector = ar.Leshy(
         model(), importance="native", random_state=np.random.RandomState(0)
     )
+    selector.estimator_ = selector.estimator
+    selector.importance_ = selector.importance
+    selector.random_state_ = selector.random_state
     real, shadows = selector._add_shadows_get_imps(
         X, pd.Series(np.arange(len(X))), None, np.zeros(n_columns)
     )

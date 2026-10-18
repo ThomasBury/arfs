@@ -30,9 +30,6 @@ from ..preprocessing import OrdinalEncoderPandas
 from ..utils import create_dtype_dict
 from .base import BaseThresholdSelector, _validate_dataframe
 
-# fix random seed for reproducibility
-np.random.seed(7)
-
 
 def _missing_ratio(df):
     if not isinstance(df, pd.DataFrame):

@@ -1,8 +1,8 @@
 # ARFS remediation handoff
 
-**Status: R01–R33 complete. C01 complete; C02–C06 pending. Tree preprocessing, MRMR sampling and the confirmed plan are being delivered separately; the next package release is deferred.**
+**Status: R01–R33 complete. C01–C02 complete; C03–C06 pending. Tree preprocessing, MRMR sampling and the confirmed plan are being delivered separately; the next package release is deferred.**
 The [confirmed follow-up plan](#confirmed-follow-up-plan) below is separate from
-that historical delivery. **C01 is complete; C02–C06 are pending; next follow-up: C02.**
+that historical delivery. **C01–C02 are complete; C03–C06 are pending; next follow-up: C03.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
 a separate repair backlog. By default, a request to implement the next phase
@@ -190,7 +190,7 @@ assessment. Passing existing tests does not disprove the newly reproduced bugs.
 
 ### C02 — Estimator ownership, fit contracts, and randomness
 
-**Status: Pending.** Confirmed parts of original items 6, 8, and 13.
+**Status: Complete locally on `fix/c02-estimator-contracts-randomness` (based on `026b7a1` on `main`).** Confirmed parts of original items 6, 8, and 13.
 
 - Give Leshy an owned estimator clone and separate runtime RNG/importance state.
   Fit and optional-backend fallback must preserve constructor parameters and the
@@ -213,6 +213,77 @@ assessment. Passing existing tests does not disprove the newly reproduced bugs.
   processes, and repeatable integer-seeded selection/sampling. None retains
   normal sklearn RNG semantics; do not claim that fitting with None never
   consumes global randomness.
+
+#### C02 handoff — 2026-10-18
+
+- **Changes and migration:**
+  - Leshy configures an owned `estimator_` clone, keeps its runtime RNG in
+    `random_state_`, and draws integer learner seeds. The caller's estimator,
+    including an already-fitted model, and constructor parameters are preserved.
+    Importance helpers continue fitting their own clones. Leshy and BoostAGroota
+    resolve optional-backend fallback in `importance_` on each fit without
+    replacing the requested `importance` parameter.
+  - MRMR resolves default callbacks into `relevance_func_` and `redundancy_func_`
+    at fit time using the current `task` and `n_jobs`. Custom callbacks and the
+    shared relevance/redundancy sample are preserved. Remove `return_scores`;
+    `fit` always returns self. Read `selected_features_`, `relevance_`,
+    `redundancy_` and `ranking_` after fitting instead of unpacking a tuple.
+  - Removed the module-level NumPy seed resets in preprocessing, base and
+    unsupervised selectors. Added `random_state=None` to BoostAGroota and the
+    isolation sampling entry points, and `random_state=2652124` to GrootCV.
+    Runtime RNGs control shadows, default repeated folds, and isolation fitting
+    and draws. Integer seeds replay; supplied RandomState instances advance;
+    None can consume NumPy's global stream. BoostAGroota retains its learner's
+    seed, which must be set separately for reproducible stochastic training.
+    Custom GrootCV splitters retain their RNG policy; fixed internal holdouts
+    and GrootCV learner parameters are unchanged.
+  - Updated affected ranking, sampling, benchmark and shadow tests, the reusable
+    selection screen, method/API notes, changelog and two notebook calls. Refit
+    and recheck selections after these RNG changes; there is no compatibility
+    shim for `return_scores`.
+- **Validation:**
+  - Final full maintained Python 3.12.7 locked source suite: **1,864 passed**
+    (520 warnings, 183.57 s). Log: `/tmp/arfs-c02-full-final.log`.
+  - The initial new regression file reproduced **14 failures, 3 passes** before
+    implementation. It now contains 30 cases covering ownership, clone/refit,
+    callbacks after `set_params`, pipelines, optional-backend resolution,
+    custom/default folds, integer replay, None/RandomState semantics, and fresh
+    process import-time RNG preservation.
+  - Focused source/caller suites initially passed **210 tests**. The expanded
+    C02/sampling suites pass **134 tests** each on Python 3.9.25 locked and
+    Python 3.12.7 newer dependencies. Updated benchmark contracts pass **20 tests**.
+    Existing benchmark assertions that expected learner/seed mutation were
+    revised to check preserved caller state and owned runtime state.
+  - Source validation uses `PYTHONPATH=src`, `PYTHONDONTWRITEBYTECODE=1`,
+    `MPLBACKEND=Agg`, `MPLCONFIGDIR=/tmp/arfs-c02-mpl`,
+    `OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1`,
+    `NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2`, with `PYTHONHASHSEED=0` for the
+    full suite. Commands:
+    ```sh
+    /tmp/arfs-association/py312-locked/bin/python -m pytest tests \
+      -q --tb=short -p no:cacheprovider
+    # Repeat the focused command with py39-locked and py312-newer:
+    /tmp/arfs-association/py39-locked/bin/python -m pytest \
+      tests/test_estimator_randomness.py tests/test_mrmr_sampling.py \
+      tests/test_isolation_sampling.py tests/test_sampling_outputs.py \
+      -q --tb=short -p no:cacheprovider
+    ```
+  - Verified source imports and versions: locked cells use NumPy 2.0.2,
+    pandas 2.2.3, scikit-learn 1.6.1, LightGBM 4.6.0, SHAP 0.47.1 and pytest
+    8.3.5. The newer Python 3.12 cell uses NumPy 2.5.4, pandas 3.0.6,
+    scikit-learn 1.9.1, LightGBM 4.7.0, SHAP 0.53.0 and pytest 9.1.1.
+  - Strict locked HTML build passes with source imports, Agg and one-thread
+    BLAS/OpenMP:
+    `/tmp/arfs-r33-delivery/docs-locked/bin/python -m sphinx -W --keep-going
+    -b html docs /tmp/arfs-c02-html`. Notebook execution stays disabled; both
+    edited notebook schemas validate. Ruff 0.17.0, `uv lock --check` and
+    `git diff --check` pass. Logs stay in `/tmp/arfs-c02-*.log`.
+- **Limits and next phase:** installed-wheel/release matrices, real optional
+  FastTreeSHAP/CatBoost/XGBoost execution, full notebook reruns and repeated-seed
+  statistical calibration were not rerun. C03 remains next: missing-value policy
+  and classification folds. C04 diagnostics/quiet modes/examples and C05–C06
+  memory work remain pending. Git delivery and Codex bot review are tracked in
+  the PR; no release is included.
 
 ### C03 — Missing-value handling and classification folds
 

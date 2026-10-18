@@ -63,6 +63,12 @@ BorutaPy vs. Boruta R:
 
     We highly recommend using pruned trees with a depth between 3-7. For more, see the docs of these functions, and the examples below. Original code and method by: Miron B Kursa, https://m2.icm.edu.pl/boruta/
     
+Leshy configures an owned estimator clone and leaves the caller's estimator
+and constructor options unchanged. Its ``estimator_`` records the runtime
+learner configuration; importance helpers train separate clones. Leshy and
+BoostAGroota expose the resolved importance backend in ``importance_``; a
+FastTreeSHAP fallback leaves the requested ``importance`` option unchanged.
+
 BoostAGroota
 ------------
 
@@ -102,12 +108,28 @@ New: GrootCV:
 - Not based on a given percentage of cols needed to be deleted.
 - Plot method for var. imp.
 
+Pass an integer ``random_state`` to replay selector shadows and GrootCV's
+default repeated folds. Leshy also draws integer learner seeds. BoostAGroota
+preserves the learner's seed: set that seed separately for reproducible
+stochastic training. GrootCV's default seed is ``2652124``; supplied splitters
+keep their own RNG policy and learner seeds stay in ``lgbm_params``. A
+``RandomState`` instance advances across fits, while ``None`` uses NumPy's
+global RNG. Imports no longer reset that global stream. The fixed internal
+Leshy/BoostAGroota holdout is unchanged.
+
 MRmr
 ----
 
 Re-implementing the Uber MRmr scheme using associations for handling continuous and categorical predictors.
 Mixed-type relevance scores are ranking heuristics, not calibrated significance
 tests. MRmr's selected set need not be a subset of an all-relevant selector's set.
+
+``fit`` always returns the selector. Remove the former ``return_scores``
+argument and read ``selected_features_``, ``relevance_``, ``redundancy_`` and
+``ranking_`` after fitting. Default callbacks resolve from the current ``task``
+and ``n_jobs`` on each fit, in ``relevance_func_`` and ``redundancy_func_``;
+custom callbacks and the shared row-sampling contract are preserved.
+
 - Theil's U statistics for the categorical-categorical association (correlation).
 - Variance ratio for continuous-categorical association.
 - Pearson or Spearman correlation for continuous-continuous association.

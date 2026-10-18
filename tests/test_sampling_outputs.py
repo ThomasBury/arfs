@@ -58,7 +58,9 @@ def test_isolation_returns_original_values_indexes_and_dtypes(monkeypatch, dtype
     X.index = [8, 8, 90]
     before = X.copy(deep=True)
     monkeypatch.setattr(
-        sampling, "isof_find_sample", lambda X, sample_weight: np.array([2, 0])
+        sampling,
+        "isof_find_sample",
+        lambda X, sample_weight, random_state=None: np.array([2, 0]),
     )
     result = sampling.sample(X, method="isoforest")
     assert_frame_equal(result, X.iloc[[2, 0]])
@@ -71,7 +73,7 @@ def test_isolation_forwards_positional_row_weights(monkeypatch, container):
     weights = container([1.0, 2.0, 3.0])
     seen = {}
 
-    def select(X, sample_weight):
+    def select(X, sample_weight, random_state=None):
         seen["weights"] = sample_weight
         return np.array([2, 0])
 
@@ -187,7 +189,7 @@ def test_isolation_category_vocabulary_excludes_zero_weight_rows(monkeypatch, dt
     before = X.copy(deep=True)
     seen = {}
 
-    def select(encoded, sample_weight):
+    def select(encoded, sample_weight, random_state=None):
         seen["codes"] = encoded.c.to_numpy()
         seen["weights"] = sample_weight
         return np.array([1, 2])
@@ -206,7 +208,7 @@ def test_real_positive_row_scores_ignore_zero_weight_category_vocabulary(monkeyp
     weights = np.array([1, 0, 1, 1])
     scores = []
 
-    def select(encoded, sample_weight):
+    def select(encoded, sample_weight, random_state=None):
         scores.append(sampling.isolation_forest(encoded, sample_weight))
         return np.arange(len(encoded))
 

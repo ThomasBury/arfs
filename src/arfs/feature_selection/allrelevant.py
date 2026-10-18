@@ -152,6 +152,7 @@ class Leshy(SelectorMixin, BaseEstimator):
         A supervised learning estimator, with a 'fit' method that returns the
         ``feature_importances_`` attribute. Important features must correspond to
         high absolute values in the ``feature_importances_``
+        The supplied estimator is preserved; fit configures an owned clone.
     n_estimators : int or string, default = 1000
         If int sets the number of estimators in the chosen ensemble method.
         If 'auto' this is determined automatically based on the size of the
@@ -195,6 +196,13 @@ class Leshy(SelectorMixin, BaseEstimator):
 
     Attributes
     ----------
+    estimator_ : estimator
+        Owned learner configuration used by the importance helpers, which fit
+        their own clones. Its tree count and integer seed may change per iteration.
+    importance_ : str
+        Resolved importance backend, including any optional-backend fallback.
+    random_state_ : RandomState
+        Runtime RNG for shadows and learner-seed updates.
     n_features_ : int
         The number of selected features.
     support_ : array of shape [n_features]
@@ -288,7 +296,6 @@ class Leshy(SelectorMixin, BaseEstimator):
         self.two_step = two_step
         self.max_iter = max_iter
         self.random_state = random_state
-        self.random_state_instance = None
         self.verbose = verbose
         self.keep_weak = keep_weak
         self.importance = importance
@@ -324,13 +331,15 @@ class Leshy(SelectorMixin, BaseEstimator):
         """
         self.is_cat = is_catboost(self.estimator)
         self.is_lgb = is_lightgbm(self.estimator)
-        if self.importance == "fastshap":
+        self.estimator_ = clone(self.estimator)
+        self.importance_ = self.importance
+        if self.importance_ == "fastshap":
             try:
                 # Import the symbol to check that the compiled backend loads.
                 from fasttreeshap import TreeExplainer as FastTreeExplainer  # noqa: F401
             except ImportError:
                 warnings.warn("fasttreeshap is not installed. Fallback to shap.")
-                self.importance = "shap"
+                self.importance_ = "shap"
 
         if isinstance(X, pd.DataFrame):
             self.feature_names_in_ = X.columns.to_numpy()
@@ -454,7 +463,7 @@ class Leshy(SelectorMixin, BaseEstimator):
         # check input params
         self._check_params(X, y)
         sample_weight = validate_sample_weight(sample_weight, len(X))
-        self.random_state = check_random_state(self.random_state)
+        self.random_state_ = check_random_state(self.random_state)
 
         # setup variables for Boruta
         _n_sample, n_feat = X.shape
@@ -470,7 +479,7 @@ class Leshy(SelectorMixin, BaseEstimator):
 
         # set n_estimators
         if self.n_estimators != "auto":
-            self.estimator.set_params(n_estimators=self.n_estimators)
+            self.estimator_.set_params(n_estimators=self.n_estimators)
 
         dec_reg, sha_max_history, imp_history, imp_sha_max = self.select_features(
             X=X, y=y, sample_weight=sample_weight
@@ -509,9 +518,9 @@ class Leshy(SelectorMixin, BaseEstimator):
             the number of trees
         """
         depth = (
-            self.estimator.get_params()["max_depth"]
+            self.estimator_.get_params()["max_depth"]
             if not self.is_cat
-            else self.estimator.get_param("max_depth")
+            else self.estimator_.get_param("max_depth")
         )
         if depth is None:
             depth = 10
@@ -556,23 +565,25 @@ class Leshy(SelectorMixin, BaseEstimator):
             X.columns, [f"Shadow_{i}" for i in range(x_sha.shape[1])]
         )
         for col in x_sha.columns:
-            x_sha[col] = x_sha[col].array.take(self.random_state.permutation(len(x_sha)))
+            x_sha[col] = x_sha[col].array.take(
+                self.random_state_.permutation(len(x_sha))
+            )
         # get importance of the merged matrix
-        if self.importance == "shap":
+        if self.importance_ == "shap":
             imp = _get_shap_imp(
-                self.estimator, pd.concat([x_cur, x_sha], axis=1), y, sample_weight
+                self.estimator_, pd.concat([x_cur, x_sha], axis=1), y, sample_weight
             )
-        elif self.importance == "fastshap":
+        elif self.importance_ == "fastshap":
             imp = _get_shap_imp_fast(
-                self.estimator, pd.concat([x_cur, x_sha], axis=1), y, sample_weight
+                self.estimator_, pd.concat([x_cur, x_sha], axis=1), y, sample_weight
             )
-        elif self.importance == "pimp":
+        elif self.importance_ == "pimp":
             imp = _get_perm_imp(
-                self.estimator, pd.concat([x_cur, x_sha], axis=1), y, sample_weight
+                self.estimator_, pd.concat([x_cur, x_sha], axis=1), y, sample_weight
             )
         else:
             imp = _get_imp(
-                self.estimator, pd.concat([x_cur, x_sha], axis=1), y, sample_weight
+                self.estimator_, pd.concat([x_cur, x_sha], axis=1), y, sample_weight
             )
 
         # separate importances of real and shadow features
@@ -787,8 +798,8 @@ class Leshy(SelectorMixin, BaseEstimator):
             n_rejected = np.sum(~(self.support_ | self.support_weak_))
             content = map(str, [n_iter, n_confirmed, n_tentative, n_rejected])
             result = "\n".join([x[0] + "\t" + x[1] for x in zip(cols, content)])
-            if self.importance in ["shap", "pimp"]:
-                vimp = str(self.importance)
+            if self.importance_ in ["shap", "pimp"]:
+                vimp = str(self.importance_)
             else:
                 vimp = "native"
             output = (
@@ -802,7 +813,7 @@ class Leshy(SelectorMixin, BaseEstimator):
 
         If the dataset is not categorical, the estimator's `random_state` parameter is updated
         with a new random state generated by the `random_state` attribute of the Leshy object.
-        If the estimator is a LightGBM model, the random state value is generated between 0 and 10000.
+        Seeds are integers between 0 and 10000 (exclusive).
 
         Parameters
         ----------
@@ -813,12 +824,9 @@ class Leshy(SelectorMixin, BaseEstimator):
         None
         """
         if self.is_cat is False:
-            if self.is_lgb:
-                self.estimator.set_params(
-                    random_state=self.random_state.randint(0, 10000)
-                )
-            else:
-                self.estimator.set_params(random_state=self.random_state)
+            self.estimator_.set_params(
+                random_state=int(self.random_state_.randint(0, 10000))
+            )
 
     def _update_tree_num(self, dec_reg):
         """Update the number of trees in the estimator based on the number of selected features.
@@ -845,7 +853,7 @@ class Leshy(SelectorMixin, BaseEstimator):
             # number of features that aren't rejected
             not_rejected = np.where(dec_reg >= 0)[0].shape[0]
             n_tree = self._get_tree_num(not_rejected)
-            self.estimator.set_params(n_estimators=n_tree)
+            self.estimator_.set_params(n_estimators=n_tree)
 
     def _run_iteration(
         self, X, y, sample_weight, dec_reg, sha_max_history, imp_history, hit_reg, _iter
@@ -1456,9 +1464,17 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         signed scores are divided by their absolute total; an all-zero vector
         stays zero. Zero-total SHAP and native iterations also contribute zeros.
         Only positive mean scores can be selected.
+    random_state : int, RandomState instance or None, default=None
+        Controls shadow permutations. An integer replays each fit; None uses
+        NumPy's global RNG. The supplied learner's seed is preserved; seed it
+        separately for reproducible stochastic training.
 
     Attributes
     ----------
+    importance_ : str
+        Resolved importance backend, including any optional-backend fallback.
+    random_state_ : RandomState
+        Runtime RNG for shadow permutations.
     selected_features_ : list of str
         The list of columns to keep.
     ranking_ : array of shape [n_features]
@@ -1496,6 +1512,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         delta=0.1,
         silent=True,
         importance="shap",
+        random_state=None,
     ):
         self.estimator = estimator
         self.cutoff = cutoff
@@ -1504,6 +1521,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         self.delta = delta
         self.silent = silent
         self.importance = importance
+        self.random_state = random_state
         self.sha_cutoff_df = None
         self.mean_shadow = None
         self.ranking_absolutes_ = None
@@ -1542,6 +1560,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
             f"                max_rounds={self.max_rounds},\n"
             f"                delta={self.delta},\n"
             f"                silent={self.silent}, \n"
+            f"                random_state={self.random_state},\n"
             f'                importance="{self.importance}")'
         )
         return s
@@ -1557,13 +1576,15 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         sample_weight : pd.series
             sample_weight, if any
         """
-        if self.importance == "fastshap":
+        self.importance_ = self.importance
+        self.random_state_ = check_random_state(self.random_state)
+        if self.importance_ == "fastshap":
             try:
                 # Import the symbol to check that the compiled backend loads.
                 from fasttreeshap import TreeExplainer as FastTreeExplainer  # noqa: F401
             except ImportError:
                 warnings.warn("fasttreeshap is not installed. Fallback to shap.")
-                self.importance = "shap"
+                self.importance_ = "shap"
 
         if isinstance(X, pd.DataFrame):
             self.feature_names_in_ = X.columns.to_numpy()
@@ -1587,7 +1608,8 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
             delta=self.delta,
             silent=self.silent,
             weight=sample_weight,
-            imp=self.importance,
+            imp=self.importance_,
+            random_state=self.random_state_,
         )
         self.selected_features_ = self.selected_features_.values
         self.support_ = np.asarray(
@@ -1687,22 +1709,25 @@ def _make_shadow_names(columns, names):
     return shadow_names
 
 
-def _create_shadow(X_train):
+def _create_shadow(X_train, random_state=None):
     """Create shadow features by making copies of all X variables and randomly shuffling them.
 
     Parameters
     ----------
     X_train : pd.DataFrame
         The dataframe to create shadow features on.
+    random_state : int, RandomState instance or None, default=None
+        Controls shadow permutations; None uses NumPy's global RNG.
 
     Returns
     -------
     pd.DataFrame
         A dataframe that is twice the width of X_train and contains the shadow features, along with a list of the shadow feature names.
     """
+    rng = check_random_state(random_state)
     X_shadow = X_train.copy()
     for c in X_shadow.columns:
-        X_shadow[c] = X_shadow[c].array.take(np.random.permutation(len(X_shadow)))
+        X_shadow[c] = X_shadow[c].array.take(rng.permutation(len(X_shadow)))
     # Rename the shadow variables
     shadow_names = _make_shadow_names(
         X_train.columns, [f"ShadowVar{i + 1}" for i in range(X_train.shape[1])]
@@ -1731,6 +1756,7 @@ def _reduce_vars_sklearn(
     weight,
     imp_kind,
     cat_feature,
+    random_state=None,
 ):
     """
     Private function, reduce the number of predictors using a sklearn estimator
@@ -1786,9 +1812,10 @@ def _reduce_vars_sklearn(
         if cat_feature is not None
         else None
     )
+    rng = check_random_state(random_state)
     for i in range(1, n_iterations + 1):
         # Create the shadow variables and run the model to obtain importances
-        new_x, shadow_names = _create_shadow(X)
+        new_x, shadow_names = _create_shadow(X, random_state=rng)
         imp_func = {
             "shap": _get_shap_imp,
             "fastshap": _get_shap_imp_fast,
@@ -1845,7 +1872,17 @@ def _reduce_vars_sklearn(
 
 
 def _boostaroota(
-    X, y, estimator, cutoff, iters, max_rounds, delta, silent, weight, imp
+    X,
+    y,
+    estimator,
+    cutoff,
+    iters,
+    max_rounds,
+    delta,
+    silent,
+    weight,
+    imp,
+    random_state=None,
 ):
     """
     Private function, reduces the number of predictors using a sklearn estimator.
@@ -1888,6 +1925,7 @@ def _boostaroota(
         The feature importance threshold to reject or not the predictors.
     """
     start_time = time.time()
+    rng = check_random_state(random_state)
     new_x = X.copy()
 
     # Keep categorical identities after their dtypes become integer codes.
@@ -1912,6 +1950,7 @@ def _boostaroota(
                 weight=weight,
                 imp_kind=imp,
                 cat_feature=cat_idx,
+                random_state=rng,
             )
 
             b_df = df_vimp.T.iloc[1:-1].astype(float)
@@ -1989,9 +2028,16 @@ class GrootCV(SelectorMixin, BaseEstimator):
         The number of jobs to run in parallel. If 0, no parallelism is used.
     lgbm_params : dict, default=None
         The parameters for the lightGBM model.
+    random_state : int, RandomState instance or None, default=2652124
+        Controls shadows and default repeated folds. An integer replays each
+        fit; a RandomState instance advances across fits; None uses NumPy's
+        global RNG. Supplied splitters retain their own random-state policy.
+        LightGBM learner seeds remain controlled by lgbm_params.
 
     Attributes
     ----------
+    random_state_ : RandomState
+        Runtime RNG for shadow permutations and default folds.
     selected_features_ : ndarray
         The list of columns to keep as selected features.
     cv_df : pd.DataFrame
@@ -2029,6 +2075,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
         fastshap=False,
         n_jobs=0,
         lgbm_params=None,
+        random_state=2652124,
     ):
         self.objective = objective
         self.cutoff = cutoff
@@ -2044,6 +2091,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
         self.ranking_ = None
         self.lgbm_params = lgbm_params
         self.n_jobs = n_jobs
+        self.random_state = random_state
 
         # Throw errors if the inputted parameters don't meet the necessary criteria
         # Ensure parameters meet necessary criteria
@@ -2080,6 +2128,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
         if sample_weight is not None:
             sample_weight = pd.Series(sample_weight)
 
+        self.random_state_ = check_random_state(self.random_state)
         self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
             X,
             y,
@@ -2094,6 +2143,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
             fastshap=self.fastshap,
             lgbm_params=self.lgbm_params,
             n_jobs=self.n_jobs,
+            random_state=self.random_state_,
         )
 
         self.selected_features_ = self.selected_features_.values
@@ -2223,6 +2273,7 @@ def _reduce_vars_lgb_cv(
     fastshap,
     lgbm_params=None,
     n_jobs=0,
+    random_state=2652124,
 ):
     """
     Reduce the number of predictors using a lightgbm (python API)
@@ -2283,8 +2334,9 @@ def _reduce_vars_lgb_cv(
         lgbm_params=lgbm_params,
     )
 
+    rng = check_random_state(random_state)
     if folds is None:
-        folds = RepeatedKFold(n_splits=n_folds, n_repeats=n_iter, random_state=2652124)
+        folds = RepeatedKFold(n_splits=n_folds, n_repeats=n_iter, random_state=rng)
 
     df = pd.DataFrame({"feature": X.columns})
     for iter, (tridx, validx) in enumerate(
@@ -2295,8 +2347,8 @@ def _reduce_vars_lgb_cv(
         )
 
         # Create the shadow variables and run the model to obtain importances
-        new_x_tr, shadow_names = _create_shadow(X_train)
-        new_x_val, _ = _create_shadow(X_val)
+        new_x_tr, shadow_names = _create_shadow(X_train, random_state=rng)
+        new_x_val, _ = _create_shadow(X_val, random_state=rng)
 
         bst, shap_matrix, bst.best_iteration = _train_lgb_model(
             new_x_tr,
