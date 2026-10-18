@@ -104,6 +104,13 @@ New: GrootCV:
 - Recognized multiclass classification objectives resolve to softmax, including
   binary classification with more than two target classes. SHAP aggregation
   follows the returned output axes rather than the objective's spelling.
+- Default classification folds use ``RepeatedStratifiedKFold``; regression uses
+  ``RepeatedKFold``. The resolved objective, including one supplied through
+  ``lgbm_params``, determines the fold type. Default stratification requires at
+  least two classes and at least ``n_folds`` observations per class. Reduce
+  ``n_folds`` or supply custom ``folds`` when this is infeasible. Supplied
+  splitters or iterables of index pairs take precedence over default folds and
+  retain their own splitting policy.
 - This empirical comparison does not establish calibrated false-discovery control.
 - Not based on a given percentage of cols needed to be deleted.
 - Plot method for var. imp.
@@ -129,6 +136,19 @@ argument and read ``selected_features_``, ``relevance_``, ``redundancy_`` and
 ``ranking_`` after fitting. Default callbacks resolve from the current ``task``
 and ``n_jobs`` on each fit, in ``relevance_func_`` and ``redundancy_func_``;
 custom callbacks and the shared row-sampling contract are preserved.
+
+Association and relevance functions accept only ``handle_na="drop"``,
+``"fill"`` or ``None``. The default ``"drop"`` deletes rows listwise across
+the supplied frame and aligns responses and observation weights with those
+rows. It does not use a separate row subset per feature. ``"fill"`` uses zero
+for numeric missing values and a collision-free category for nominal missing
+values, including strings and Booleans. Nominal columns with missing values
+become categorical; existing categories (including unused levels) and their
+order are retained. Caller data is not modified. ``None`` passes rows unchanged
+to custom callbacks; built-in statistics still require complete inputs.
+Relevance functions reject missing or nonfinite responses before applying the
+predictor policy, and weights must remain finite, nonnegative and have positive
+retained mass. Frequency-weight degrees of freedom are unchanged.
 
 - Theil's U statistics for the categorical-categorical association (correlation).
 - Variance ratio for continuous-categorical association.

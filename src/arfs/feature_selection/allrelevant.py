@@ -64,7 +64,11 @@ from matplotlib.lines import Line2D
 from sklearn.base import BaseEstimator, clone, is_classifier, is_regressor
 from sklearn.feature_selection._base import SelectorMixin
 from sklearn.inspection import permutation_importance
-from sklearn.model_selection import RepeatedKFold, train_test_split
+from sklearn.model_selection import (
+    RepeatedKFold,
+    RepeatedStratifiedKFold,
+    train_test_split,
+)
 from sklearn.utils import check_random_state, check_X_y
 from sklearn.utils.validation import check_is_fitted
 from tqdm.auto import tqdm
@@ -2010,7 +2014,11 @@ class GrootCV(SelectorMixin, BaseEstimator):
     cutoff : float, default=1
         Divide the maximum of per-shadow fold/repeat medians by this value.
     n_folds : int, default=5
-        The number of folds for cross-validation.
+        The number of folds for cross-validation. Default folds are repeated
+        stratified folds for recognized classification objectives and repeated
+        ordinary folds otherwise. Default stratification requires at least two
+        classes and at least n_folds observations per class; reduce n_folds or
+        supply folds when this is infeasible.
     folds : Optional[Union[Iterable[Tuple[np.ndarray, np.ndarray]]
         (generator or iterator of (train_idx, test_idx) tuples, scikit-learn splitter object or None, optional (default=None))
         If generator or iterator, it should yield the train and test indices for each fold. If object, it should be one of the scikit-learn
@@ -2337,14 +2345,26 @@ def _reduce_vars_lgb_cv(
 
     rng = check_random_state(random_state)
     if folds is None:
+        splitter = RepeatedKFold
+        if params["objective"] in ("binary", "binary_logloss", "softmax"):
+            counts = np.unique(y, return_counts=True)[1]
+            if len(counts) < 2 or counts.min() < n_folds:
+                raise ValueError(
+                    "Default GrootCV stratification requires at least two classes "
+                    "and at least n_folds observations per class. Reduce n_folds "
+                    "or supply custom folds."
+                )
+            splitter = RepeatedStratifiedKFold
         # Keep lazy later repeats independent of shadow permutation counts.
-        folds = RepeatedKFold(
+        folds = splitter(
             n_splits=n_folds, n_repeats=n_iter, random_state=deepcopy(rng)
         )
 
+    splits = folds.split(X, y) if hasattr(folds, "split") else folds
+    total = folds.get_n_splits(X, y) if hasattr(folds, "get_n_splits") else None
     df = pd.DataFrame({"feature": X.columns})
     for iter, (tridx, validx) in enumerate(
-        tqdm(folds.split(X, y), total=folds.get_n_splits(), desc="Cross Validation")
+        tqdm(splits, total=total, desc="Cross Validation")
     ):
         X_train, X_val, y_train, y_val, weight_tr, weight_val = _split_data(
             X, y, tridx, validx, weight
