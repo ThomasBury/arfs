@@ -245,7 +245,7 @@ assessment. Passing existing tests does not disprove the newly reproduced bugs.
   - Final full maintained Python 3.12.7 locked source suite: **1,864 passed**
     (520 warnings, 183.57 s). Log: `/tmp/arfs-c02-full-final.log`.
   - The initial new regression file reproduced **14 failures, 3 passes** before
-    implementation. It now contains 30 cases covering ownership, clone/refit,
+    implementation. It now contains 32 cases covering ownership, clone/refit,
     callbacks after `set_params`, pipelines, optional-backend resolution,
     custom/default folds, integer replay, None/RandomState semantics, and fresh
     process import-time RNG preservation.
@@ -284,6 +284,27 @@ assessment. Passing existing tests does not disprove the newly reproduced bugs.
   and classification folds. C04 diagnostics/quiet modes/examples and C05–C06
   memory work remain pending. Git delivery and Codex bot review are tracked in
   the PR; no release is included.
+
+##### C02 Codex review follow-up — 2026-10-18
+
+Codex identified that GrootCV's lazy repeated-fold generator shared its RNG
+with shadow permutations. Later repeats could therefore change when the feature
+count changed despite the same fold seed. Default folds now receive a copy of
+the initial RNG state, keeping their full sequence independent of shadows.
+Custom splitters retain their own policy. The expanded three-repeat regression
+also refits with fewer features; before the fix it failed for default folds
+and passed for custom folds (**1 failed, 1 passed**).
+
+Also addressed CodeRabbit's related fit-state finding with an explicit
+`support_` check in MRMR's support accessor. Early callback resolution no
+longer makes `get_support()` mistake a rejected fit for a completed fit.
+Both invalid-count and invalid-sample-size cases reproduced `AttributeError`
+before the fix and now require `NotFittedError`.
+
+After the fixes, locked Python 3.12 source checks passed **168 tests** across
+the RNG/aggregation/shadow suites and **99 tests** across the RNG/MRMR
+ranking/sampling suites. Ruff 0.17.0 and whitespace checks pass. Logs:
+`/tmp/arfs-c02-codex-fold-green.log` and `/tmp/arfs-c02-review-fit-green.log`.
 
 ### C03 — Missing-value handling and classification folds
 

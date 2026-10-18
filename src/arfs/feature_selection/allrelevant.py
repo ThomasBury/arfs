@@ -50,6 +50,7 @@ License: BSD 3 clause
 import operator
 import time
 import warnings
+from copy import deepcopy
 from typing import Optional
 
 import lightgbm as lgb
@@ -2336,7 +2337,10 @@ def _reduce_vars_lgb_cv(
 
     rng = check_random_state(random_state)
     if folds is None:
-        folds = RepeatedKFold(n_splits=n_folds, n_repeats=n_iter, random_state=rng)
+        # Keep lazy later repeats independent of shadow permutation counts.
+        folds = RepeatedKFold(
+            n_splits=n_folds, n_repeats=n_iter, random_state=deepcopy(rng)
+        )
 
     df = pd.DataFrame({"feature": X.columns})
     for iter, (tridx, validx) in enumerate(

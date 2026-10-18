@@ -369,7 +369,7 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         return self.fit(X=X, y=y, sample_weight=sample_weight).transform(X)
 
     def _get_support_mask(self):
-        check_is_fitted(self)
+        check_is_fitted(self, "support_")
 
         return self.support_
 

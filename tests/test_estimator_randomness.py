@@ -12,6 +12,7 @@ from numpy.testing import assert_array_equal
 from pandas.testing import assert_frame_equal
 from sklearn.base import clone
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.exceptions import NotFittedError
 from sklearn.linear_model import Ridge
 from sklearn.model_selection import KFold, RepeatedKFold
 from sklearn.pipeline import Pipeline
@@ -154,6 +155,16 @@ def test_mrmr_resolves_current_default_callbacks_at_each_fit(monkeypatch):
     assert selector.relevance_func is selector.redundancy_func is None
 
 
+@pytest.mark.parametrize("params", [{"n_features_to_select": -1}, {"sample_size": 0}])
+def test_mrmr_rejected_fit_still_reports_not_fitted(params):
+    X, y = data()
+    selector = m.MinRedundancyMaxRelevance(2, show_progress=False).set_params(**params)
+    with pytest.raises(ValueError):
+        selector.fit(X, y)
+    with pytest.raises(NotFittedError):
+        selector.get_support()
+
+
 def test_mrmr_custom_callbacks_and_pipeline_fit_contract():
     X, y = data()
 
@@ -248,7 +259,7 @@ def test_groot_default_and_custom_folds_keep_seed_contract(monkeypatch, custom):
     reference = (
         folds
         if custom
-        else RepeatedKFold(n_splits=2, n_repeats=1, random_state=2652124)
+        else RepeatedKFold(n_splits=2, n_repeats=3, random_state=2652124)
     )
     expected = [(X.index[tr], X.index[va]) for tr, va in reference.split(X, y)]
     seen = []
@@ -263,21 +274,23 @@ def test_groot_default_and_custom_folds_keep_seed_contract(monkeypatch, custom):
         "_compute_importance",
         lambda frame, *args: list(zip(frame.columns, np.ones(frame.shape[1]))),
     )
-    selector = a.GrootCV(objective="l2", n_folds=2, n_iter=1, folds=folds)
+    selector = a.GrootCV(objective="l2", n_folds=2, n_iter=3, folds=folds)
     selector.fit(X, y)
     assert len(seen) == len(expected)
     for actual, wanted in zip(seen, expected):
         for left, right in zip(actual, wanted):
             assert_array_equal(left, right)
+    seen.clear()
     if custom:
-        seen.clear()
         selector.set_params(random_state=42, n_folds=5, n_iter=4).fit(X, y)
         assert selector.folds is folds
         assert folds.random_state == 81
-        assert len(seen) == 3
-        for actual, wanted in zip(seen, expected):
-            for left, right in zip(actual, wanted):
-                assert_array_equal(left, right)
+    else:
+        selector.fit(X.iloc[:, :1], y)
+    assert len(seen) == len(expected)
+    for actual, wanted in zip(seen, expected):
+        for left, right in zip(actual, wanted):
+            assert_array_equal(left, right)
 
 
 def test_leshy_pipeline_refreshes_owned_estimator_after_set_params(monkeypatch):
