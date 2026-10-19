@@ -2,6 +2,9 @@
 
 # Unreleased
 
+- Keep BoostAGroota's `sha_cutoff_df` and importance plot on the final reduction round's scale, matching `mean_shadow`; earlier rejected features are absent from this table. Rank all input features in `ranking_absolutes_` using first-round means, and color boxes by selected names.
+- Honor quiet controls for Leshy, BoostAGroota, GrootCV, VariableImportance and GradientBoosting, including progress bars, early-stopping and routine split/save/load output. Warnings remain visible; supplied estimators retain their own logging controls.
+- Replace Leshy's ndarray/Boruta example and invalid VariableImportance summary arguments with bounded runnable examples. Document callable collinearity measures and its zero-diagonal matrix; remove the nonexistent summary attribute claim.
 - Reject invalid association/relevance `handle_na` policies. With `"fill"`, keep numeric zero filling and use a collision-free missing category for nominal columns, including nullable strings and Booleans, without modifying inputs. Nominal columns with missing values become categorical; existing category order is retained. Default listwise deletion is unchanged.
 - Use repeated stratified default GrootCV folds for recognized classification objectives, requiring at least two classes and `n_folds` observations per class. Reduce `n_folds` or supply custom folds for rarer classes. Regression keeps ordinary repeated folds; supplied splitters and iterables of index pairs take precedence. Refit and recheck selection after the classification fold change.
 - Raise an actionable error for empty or exhausted GrootCV fold iterables. Iterators and generators are consumed by fitting; use a reusable list or splitter for refitting, or provide a new iterator.

@@ -44,19 +44,25 @@ def make_fs_summary(selector_pipe):
 
     Examples
     --------
-    >>> groot_pipeline = Pipeline([
-    ... ('missing', MissingValueThreshold()),
-    ... ('unique', UniqueValuesThreshold()),
-    ... ('cardinality', CardinalityThreshold()),
-    ... ('collinearity', CollinearityThreshold(threshold=0.5)),
-    ... ('lowimp', VariableImportance(eval_metric='poisson', objective='poisson', verbose=2)),
-    ... ('grootcv', GrootCV(objective='poisson', cutoff=1, n_folds=3, n_iter=5))])
-    >>> groot_pipeline.fit_transform(
-        X=df[predictors],
-        y=df[target],
-        lowimp__sample_weight=df[weight],
-        grootcv__sample_weight=df[weight])
-    >>> fs_summary_df = make_fs_summary(groot_pipeline)
+    >>> import pandas as pd
+    >>> from sklearn.datasets import make_regression
+    >>> from sklearn.pipeline import Pipeline
+    >>> from arfs.feature_selection import (
+    ...     MissingValueThreshold, VariableImportance, make_fs_summary)
+    >>> X, y = make_regression(n_samples=80, n_features=4,
+    ...                        n_informative=2, random_state=1)
+    >>> X = pd.DataFrame(X, columns=['a', 'b', 'c', 'd'])
+    >>> pipeline = Pipeline([
+    ...     ('missing', MissingValueThreshold()),
+    ...     ('lowimp', VariableImportance(fastshap=False, verbose=-1,
+    ...         lgb_kwargs={'objective': 'rmse', 'metric': 'rmse',
+    ...                     'n_estimators': 10, 'num_threads': 1}))])
+    >>> _ = pipeline.fit(X, y)
+    >>> fs_summary_df = make_fs_summary(pipeline)
+
+    Pass LightGBM objective and metric options through ``lgb_kwargs``; they
+    are not top-level VariableImportance arguments. For count responses, for
+    example, use ``lgb_kwargs={'objective': 'poisson', 'metric': 'poisson'}``.
     """
     tag_df = pd.DataFrame({"predictor": selector_pipe[0].feature_names_in_})
     for selector_name, selector in selector_pipe.named_steps.items():

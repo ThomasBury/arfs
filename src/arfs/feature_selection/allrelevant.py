@@ -241,32 +241,15 @@ class Leshy(SelectorMixin, BaseEstimator):
     Examples
     --------
     >>> import pandas as pd
+    >>> from sklearn.datasets import make_classification
     >>> from sklearn.ensemble import RandomForestClassifier
-    >>> from boruta import BorutaPy
-    >>>
-    >>> # load X and y
-    >>> # NOTE BorutaPy accepts numpy arrays only, hence the .values attribute
-    >>> X = pd.read_csv('examples/test_X.csv', index_col=0).values
-    >>> y = pd.read_csv('examples/test_y.csv', header=None, index_col=0).values
-    >>> y = y.ravel()
-    >>>
-    >>> # define random forest classifier, with utilising all cores and
-    >>> # sampling in proportion to y labels
-    >>> rf = RandomForestClassifier(n_jobs=-1, class_weight='balanced', max_depth=5)
-    >>>
-    >>> # define Boruta feature selection method
-    >>> feat_selector = Leshy(rf, n_estimators='auto', verbose=2, random_state=1)
-    >>>
-    >>> # find all relevant features - 5 features should be selected
-    >>> feat_selector.fit(X, y)
-    >>>
-    >>> # check selected features - first 5 features are selected
-    >>> feat_selector.selected_features_
-    >>>
-    >>> # check ranking of features
-    >>> feat_selector.ranking_
-    >>>
-    >>> # call transform() on X to filter it down to selected features
+    >>> from arfs.feature_selection import Leshy
+    >>> X, y = make_classification(n_samples=120, n_features=4,
+    ...                            n_informative=2, n_redundant=0, random_state=1)
+    >>> X = pd.DataFrame(X, columns=['a', 'b', 'c', 'd'])
+    >>> rf = RandomForestClassifier(max_depth=3, random_state=1)
+    >>> feat_selector = Leshy(rf, n_estimators=16, max_iter=5, random_state=1)
+    >>> _ = feat_selector.fit(X, y)
     >>> X_filtered = feat_selector.transform(X)
 
     References
@@ -941,7 +924,9 @@ class Leshy(SelectorMixin, BaseEstimator):
         imp_sha_max : float
             Maximum shadow importance value.
         """
-        pbar = tqdm(total=self.max_iter, desc="Leshy iteration")
+        pbar = tqdm(
+            total=self.max_iter, desc="Leshy iteration", disable=self.verbose <= 0
+        )
         dec_reg = np.zeros(X.shape[1])
         hit_reg = np.zeros(X.shape[1])
         sha_max_history = []
@@ -1094,9 +1079,10 @@ class Leshy(SelectorMixin, BaseEstimator):
         self.running_time = time.time() - start_time
         hours, rem = divmod(self.running_time, 3600)
         minutes, seconds = divmod(rem, 60)
-        print(
-            f"All relevant predictors selected in {int(hours):0>2}:{int(minutes):0>2}:{seconds:05.2f}"
-        )
+        if self.verbose > 0:
+            print(
+                f"All relevant predictors selected in {int(hours):0>2}:{int(minutes):0>2}:{seconds:05.2f}"
+            )
 
 
 def _get_confirmed_and_tentative(dec_reg):
@@ -1487,12 +1473,14 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         ranking position of the i-th feature. Selected (i.e., estimated
         best) features are assigned rank 1, and rejected features are assigned
         rank 2.
-    ranking_absolutes_ : array of shape [n_features]
-        The absolute feature ranking as ordered by the selection process. It does not guarantee
-        that this order is correct for all models. For a model-agnostic ranking, see the
-        attribute ``ranking``.
+    ranking_absolutes_ : list of length n_features
+        All input feature names ordered by descending first-round mean importance.
+        Ties retain input order. This model-dependent ordering does not combine
+        importances normalized over different candidate sets in later rounds.
     sha_cutoff_df : dataframe
-        Feature importance of the real+shadow predictors over iterations.
+        Final-round normalized iteration importances only: real candidates first,
+        then their shadows. Features eliminated in earlier rounds are absent.
+        This table and the plot share the scale of mean_shadow.
     mean_shadow : float
         Maximum shadow mean divided by cutoff in the final round.
 
@@ -1601,8 +1589,13 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         if sample_weight is not None:
             sample_weight = pd.Series(sample_weight)
 
-        # crit, keep_vars, df_vimp, mean_shadow
-        _, self.selected_features_, self.sha_cutoff_df, self.mean_shadow = _boostaroota(
+        (
+            _,
+            self.selected_features_,
+            self.sha_cutoff_df,
+            self.mean_shadow,
+            self.ranking_absolutes_,
+        ) = _boostaroota(
             X,
             y,
             # metric=self.metric,
@@ -1619,12 +1612,6 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         self.selected_features_ = self.selected_features_.values
         self.support_ = np.asarray(
             [c in self.selected_features_ for c in self.feature_names_in_]
-        )
-        self.ranking_absolutes_ = list(
-            self.sha_cutoff_df.iloc[:, : int(self.sha_cutoff_df.shape[1] / 2)]
-            .mean()
-            .sort_values(ascending=False)
-            .index
         )
         self.ranking_ = np.where(self.support_, 1, 2)
         return self
@@ -1645,8 +1632,9 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
     @mpl.rc_context(PLT_PARAMS)
     def plot_importance(self, n_feat_per_inch=5):
         """
-        Boxplot of the variable importance, ordered by magnitude.
-        The max shadow variable importance illustrated by the dashed line.
+        Boxplot of final-round candidates, ordered by mean importance.
+        The dashed line is that round's maximum shadow mean divided by cutoff.
+        Colors identify selected and rejected features by name.
         Requires to apply the fit method first.
 
         Parameters
@@ -1657,7 +1645,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         Returns
         -------
         fig : plt.figure or None
-            The matplotlib figure object containing the boxplot, or None if there are no selected features.
+            The matplotlib figure object, or None if there is no candidate history.
         """
         if self.mean_shadow is None:
             raise ValueError("Apply fit method first")
@@ -1677,10 +1665,10 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         bp = real_df.plot(**PLOT_KWARGS, ax=ax)
         bp.set_xlim(left=real_df.min(skipna=True).min(skipna=True) - 0.025)
 
-        for c in range(len(self.selected_features_)):
-            patch = bp.findobj(mpl.patches.Patch)[real_df.shape[1] - c - 1]
-            patch.set_facecolor(BLUE)
-            patch.set_color(BLUE)
+        for patch, name in zip(bp.patches, real_df.columns):
+            color = BLUE if name in self.selected_features_ else "gray"
+            patch.set_facecolor(color)
+            patch.set_color(color)
 
         custom_lines = [
             Line2D([0], [0], color=BLUE, lw=5),
@@ -1692,7 +1680,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):  # (object):
         )
 
         ax.axvline(x=self.mean_shadow, linestyle="--", color=RED)
-        ax.set_title("BoostAGroota importance of selected predictors")
+        ax.set_title("BoostAGroota final-round candidate importance")
 
         return fig
 
@@ -1925,9 +1913,11 @@ def _boostaroota(
     keep_vars : pd.DataFrame
         Feature importance of the real predictors over iterations.
     df_vimp : pd.DataFrame
-        Feature importance of the real+shadow predictors over iterations.
+        Final-round iteration importance of the real and shadow candidates.
     mean_shadow : float
-        The feature importance threshold to reject or not the predictors.
+        Final-round feature importance threshold.
+    ranking : list
+        All input feature names ordered by descending first-round mean importance.
     """
     start_time = time.time()
     rng = check_random_state(random_state)
@@ -1938,8 +1928,7 @@ def _boostaroota(
 
     # Run through loop until "crit" changes
     i = 0
-    imp_dic = {}
-    with tqdm(total=max_rounds, desc="BoostaGRoota round") as pbar:
+    with tqdm(total=max_rounds, desc="BoostaGRoota round", disable=silent) as pbar:
         while True:
             # Inside this loop we reduce the dataset on each iteration exiting with keep_vars
             i += 1
@@ -1958,9 +1947,11 @@ def _boostaroota(
                 random_state=rng,
             )
 
-            b_df = df_vimp.T.iloc[1:-1].astype(float)
-            b_df.columns = df_vimp.T.iloc[0].values
-            imp_dic.update(b_df.to_dict())
+            if i == 1:
+                ranking = list(
+                    df_vimp.iloc[: X.shape[1]]
+                    .sort_values("Mean", ascending=False, kind="stable")["feature"]
+                )
 
             if crit or i >= max_rounds or len(keep_vars) == 0:
                 break
@@ -1979,9 +1970,9 @@ def _boostaroota(
         print(f"BoostARoota ran successfully! Algorithm went through {i} rounds.")
         print(f"The feature selection BoostARoota running time is {elapsed:8.2f} min")
 
-    df_vimp = pd.DataFrame.from_dict(imp_dic)
-
-    return crit, keep_vars, df_vimp, mean_shadow
+    b_df = df_vimp.T.iloc[1:-1].astype(float)
+    b_df.columns = df_vimp.T.iloc[0].values
+    return crit, keep_vars, b_df, mean_shadow, ranking
 
 
 ###################################
@@ -2367,7 +2358,7 @@ def _reduce_vars_lgb_cv(
     df = pd.DataFrame({"feature": X.columns})
     shadow_names = None
     for iter, (tridx, validx) in enumerate(
-        tqdm(splits, total=total, desc="Cross Validation")
+        tqdm(splits, total=total, desc="Cross Validation", disable=silent)
     ):
         X_train, X_val, y_train, y_val, weight_tr, weight_val = _split_data(
             X, y, tridx, validx, weight
@@ -2388,6 +2379,7 @@ def _reduce_vars_lgb_cv(
             + [shadow_names[X.columns.get_loc(col)] for col in category_cols],
             early_stopping_rounds=20,
             fastshap=fastshap,
+            silent=silent,
             **params,
         )
 
@@ -2592,6 +2584,7 @@ def _train_lgb_model(
     category_cols=None,
     early_stopping_rounds=20,
     fastshap=False,
+    silent=True,
     **params,
 ):
     """
@@ -2618,6 +2611,8 @@ def _train_lgb_model(
         round(s) to continue training._train_lgb_model
     fastshap : bool
         enable or not fasttreeshap implementation
+    silent : bool, default=True
+        Disable routine early-stopping messages; warnings remain visible.
     **params : dict
         Other parameters passed to the LightGBM model.
 
@@ -2638,7 +2633,7 @@ def _train_lgb_model(
         train_set=d_train,
         num_boost_round=10000,
         valid_sets=[d_train, d_valid],
-        callbacks=[lgb.early_stopping(early_stopping_rounds)],
+        callbacks=[lgb.early_stopping(early_stopping_rounds, verbose=not silent)],
     )
 
     # Compute SHAP values with proper version handling

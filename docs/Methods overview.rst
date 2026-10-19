@@ -85,6 +85,16 @@ existing per-iteration total normalization, with zero-total iterations also
 contributing zeros. Only strictly positive mean scores can be selected. These
 empirical thresholds do not establish false-discovery control.
 
+``sha_cutoff_df`` now contains only the final reduction round: one row per
+iteration, with real candidate columns followed by their shadows. Features
+eliminated in earlier rounds are absent. The boxplot shows those final-round
+candidates against ``mean_shadow``, the threshold from the same normalized
+scale, and colors boxes by selected feature names. Earlier versions mixed
+rounds in this table; update consumers that expected all input columns.
+``ranking_absolutes_`` orders every input feature by descending first-round
+mean importance, preserving input order on ties. It is a model-dependent
+ordering, separate from the selected/rejected ranks in ``ranking_``.
+
 GrootCV, a new method
 ---------------------
 
@@ -126,6 +136,12 @@ keep their own RNG policy and learner seeds stay in ``lgbm_params``. A
 global RNG. Imports no longer reset that global stream. The fixed internal
 Leshy/BoostAGroota holdout is unchanged.
 
+Use Leshy's ``verbose=0``, BoostAGroota/GrootCV's ``silent=True``, or
+VariableImportance's ``verbose<=0`` to disable routine output and progress
+bars. GradientBoosting's ``verbose_eval<=0`` also suppresses its split,
+training, save and load messages. Warnings remain visible. Configure the
+supplied Leshy/BoostAGroota learner's own logging separately.
+
 MRmr
 ----
 
@@ -155,6 +171,12 @@ retained mass. Frequency-weight degrees of freedom are unchanged.
 - Theil's U statistics for the categorical-categorical association (correlation).
 - Variance ratio for continuous-categorical association.
 - Pearson or Spearman correlation for continuous-continuous association.
+
+``CollinearityThreshold`` takes callable association measures, with defaults
+``weighted_theils_u``, ``weighted_corr`` (Spearman), and ``correlation_ratio``.
+Use callables or ``functools.partial`` to change these measures; string names
+are not supported. Its ``assoc_matrix_`` has a zero diagonal so self-association
+does not remove unrelated features.
 
 Lasso
 -----
