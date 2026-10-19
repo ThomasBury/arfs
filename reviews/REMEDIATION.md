@@ -1,8 +1,8 @@
 # ARFS remediation handoff
 
-**Status: R01–R33 complete. C01–C04 complete; C05–C06 pending. Tree preprocessing, MRMR sampling and the confirmed plan are being delivered separately; the next package release is deferred.**
+**Status: R01–R33 complete. C01–C05 complete; C06 pending. Tree preprocessing, MRMR sampling and the confirmed plan are being delivered separately; the next package release is deferred.**
 The [confirmed follow-up plan](#confirmed-follow-up-plan) below is separate from
-that historical delivery. **C01–C04 are complete; C05–C06 are pending; next follow-up: C05.**
+that historical delivery. **C01–C05 are complete; C06 is pending; next follow-up: C06.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
 a separate repair backlog. By default, a request to implement the next phase
@@ -496,7 +496,7 @@ C05–C06 remain outside this implementation.
 
 ### C05 — MRMR storage and built-in reduction costs
 
-**Status: Pending.** Confirmed parts of original item 9.
+**Status: Complete locally on `perf/c05-mrmr-storage-reducers` (based on `9383bdd` on updated `main`).** Confirmed parts of original item 9.
 
 - Replace the full redundancy square with columns allocated only for selected
   features, reducing table storage from O(p²) to O(p k). Vectorize recognized
@@ -510,6 +510,40 @@ C05–C06 remain outside this implementation.
   about 764 MiB; no 10–50× speedup is promised.
 - Do not add persistent rank/category caches or rewrite Cramér's V in this phase.
   Those are separate optimization proposals, not necessary for the storage fix.
+
+#### C05 handoff — 2026-10-19
+
+- **Changes:** MRMR starts its redundancy table without columns and allocates one
+  for each selected feature used in a later step. For p available predictors and
+  k selections, retained values are p × max(k − 1, 0), rather than p². The final
+  selected feature needs no comparisons. Code reading `redundancy` must accept
+  the smaller table; `redundancy_`, `ranking_` and selected order retain their
+  meanings. String/NumPy mean and max reducers use vectorized row reductions;
+  arbitrary callables retain labeled-Series row reduction. Weights, floors,
+  perfect-association penalties, domain fallback, ties and sampling are preserved.
+- **Evidence:** [C05 storage report](C05-mrmr-storage.md) records the 56 new
+  dense-reference/storage checks, migration notes and complete benchmark rerun.
+  All ten completed workers reproduce historical input/target hashes and selected
+  order. At 10,000 features with 20 selections, retained table memory falls from
+  **763.73 MiB to 2.24 MiB**. Numeric/mixed peak process memory is **1.331/1.237
+  GiB**, versus historical **2.098/2.004 GiB**. Runtime results are mixed: the
+  10,000-feature fits take **297.80/282.34 s**, versus **242.86/223.10 s**
+  historically. These are cross-session observations against an earlier source
+  tree, not an isolated speed comparison. The unchanged conservative preflight
+  still skips both 20,000-feature cases; it does not establish their new memory
+  requirement. No persistent caches or Cramér's V rewrite were added.
+- **Validation:** The full locked Python 3.12 source suite passes **2,042 tests**
+  (564 warnings, 259.22 s). The **123 MRMR storage/ranking/sampling checks** also
+  pass on both the newer Python 3.12 snapshot (46 warnings, 32.96 s) and locked
+  Python 3.9 snapshot (66 warnings, 29.89 s). Strict HTML documentation builds
+  with notebook execution off. Benchmark self-check, Ruff 0.17.0, lock,
+  whitespace and local-reference checks pass. Reproduction, dependency versions,
+  measured memory definitions and limits are in the C05 report; logs, profiles
+  and raw results stay under `/tmp/arfs-c05/`.
+- **Limits and next phase:** The installed-wheel/full Python matrix, real optional
+  backends, full notebook execution and predictive-quality evaluation were not
+  rerun. No dependency, version, historical report or release changes are included.
+  **C06 is next** and remains outside this implementation. Git delivery is separate.
 
 ### C06 — Document exact Gower sampling's memory cost
 

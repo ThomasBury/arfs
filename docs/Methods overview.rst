@@ -155,6 +155,17 @@ argument and read ``selected_features_``, ``relevance_``, ``redundancy_`` and
 and ``n_jobs`` on each fit, in ``relevance_func_`` and ``redundancy_func_``;
 custom callbacks and the shared row-sampling contract are preserved.
 
+MRMR's pair-score table, ``redundancy`` (without the trailing underscore), now
+retains columns only for selected features used in later comparisons, in
+selection order. The last selected feature has no column because no later step
+uses it. With p available predictors and k selections, storage is O(p k), rather
+than O(p²); input frames and temporary calculations still add to process memory.
+Code inspecting the former full square must adapt. ``redundancy_`` and
+``ranking_`` retain their meanings. The string reducers ``"mean"``/``"max"``
+and NumPy ``mean``/``max`` use vectorized row reductions; other callables retain
+the labeled-Series row path. Floors, perfect-association penalties, domain
+restrictions and stable input-order ties are unchanged.
+
 Association and relevance functions accept only ``handle_na="drop"``,
 ``"fill"`` or ``None``. The default ``"drop"`` deletes rows listwise across
 the supplied frame and aligns responses and observation weights with those

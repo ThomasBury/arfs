@@ -64,8 +64,10 @@ sample mass. A sample losing a positive-weight target class is rejected;
 increase the cap or disable sampling. Rare predictor levels can still
 disappear. Compare category coverage, association estimates, selected features
 across seeds, and held-out utility before choosing a cap. Fit selection only
-inside the training fold. Row sampling does not reduce the square redundancy
-table's feature-count cost.
+inside the training fold. Row sampling does not reduce the redundancy table's
+feature-count cost. For p available predictors and k selected features, the table
+retains k - 1 selected-feature columns (none for k = 0), requiring O(p k) values. Input
+frames and temporary association calculations add to total process memory.
 
 Build HTML locally
 ------------------
