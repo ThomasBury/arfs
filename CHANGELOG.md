@@ -2,6 +2,8 @@
 
 # Unreleased
 
+- Store MRMR redundancy scores only against selected features needed for later comparisons, reducing table storage from O(p²) to O(p k). The `redundancy` table now omits unselected columns and the final selected column; `redundancy_` and `ranking_` retain their meanings. Vectorize string/NumPy mean and max reducers while preserving arbitrary callable reducers, weights, row sampling and selection rules.
+
 - Keep BoostAGroota's `sha_cutoff_df` and importance plot on the final reduction round's scale, matching `mean_shadow`; earlier rejected features are absent from this table. Rank all input features in `ranking_absolutes_` using first-round means, and color boxes by selected names.
 - Honor quiet controls for Leshy, BoostAGroota, GrootCV, VariableImportance and GradientBoosting, including progress bars, early-stopping and routine split/save/load output. Warnings remain visible; supplied estimators retain their own logging controls.
 - Replace Leshy's ndarray/Boruta example and invalid VariableImportance summary arguments with bounded runnable examples. Document callable collinearity measures and its zero-diagonal matrix; remove the nonexistent summary attribute claim.

@@ -87,6 +87,10 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         Relevance scores of available predictors.
     redundancy_ : pd.Series
         Aggregate redundancy at each feature's selection step.
+    redundancy : pd.DataFrame
+        Pair scores for available predictors against selected features used in
+        later selection steps. Columns follow selection order and omit the last
+        selected feature, which needs no further comparisons.
     relevance_func_, redundancy_func_ : callable
         Callbacks resolved from the current parameters during fit.
     n_features_in_ : int
@@ -112,8 +116,14 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
     The first selected feature keeps the historical ranking convention of an
     infinite MRMR score and zero recorded redundancy.
 
+    For p available predictors and k > 0 selected features, the redundancy table
+    stores at most k - 1 columns: O(p k) float64 values, rather than a full square.
+    Empty selections store no columns.
+    Recognized mean/max reducers operate across rows together; arbitrary callable
+    reducers still receive each row as a labeled Series in selection order.
+
     Sampling changes scores and can change selected features. It does not reduce
-    the square redundancy table's storage. Rare predictor levels can disappear;
+    the redundancy table's feature-count cost. Rare predictor levels can disappear;
     a draw losing any positive-weight target class is rejected. Default row
     handling and weight-mass requirements still apply after sampling. In
     particular, frequency-weight relevance uses the smaller retained mass.
@@ -289,9 +299,7 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         self.relevance = self.relevance.reindex(X.columns)
         self.features = self.relevance[~self.relevance.isna()].index.to_list()
         self.relevance = self.relevance.loc[self.features]
-        self.redundancy = pd.DataFrame(
-            FLOOR, index=self.features, columns=self.features
-        )
+        self.redundancy = pd.DataFrame(index=self.features, dtype=float)
         self.n_features_to_select_ = min(self.n_features_to_select, len(self.features))
         self.n_features_in_ = X.shape[1]
 
@@ -383,6 +391,7 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
 
         if len(selected_features) > 0:
             last_selected_feature = selected_features[-1]
+            redundancy[last_selected_feature] = FLOOR
 
             if self.only_same_domain:
                 not_selected_features_sub = [
@@ -404,11 +413,15 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
                     .abs()
                     .clip(FLOOR)
                 )
-                score_denominator = (
-                    redundancy.loc[not_selected_features, selected_features]
-                    .apply(self.denominator_func, axis=1)
-                    .replace(1.0, float("Inf"))
-                )
+                candidates = redundancy.loc[not_selected_features, selected_features]
+                reducer = self.denominator_func
+                if reducer is np.mean or (isinstance(reducer, str) and reducer == "mean"):
+                    score_denominator = candidates.mean(axis=1)
+                elif reducer is np.max or (isinstance(reducer, str) and reducer == "max"):
+                    score_denominator = candidates.max(axis=1)
+                else:
+                    score_denominator = candidates.apply(reducer, axis=1)
+                score_denominator = score_denominator.replace(1.0, float("Inf"))
 
             else:
                 score_denominator = pd.Series(1, index=self.features)
@@ -448,6 +461,9 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         for i in tqdm(
             range(self.n_features_to_select_), disable=not self.show_progress
         ):
+            # Consolidate in batches to avoid fragmentation on large selections.
+            if i and i % 64 == 0:
+                self.redundancy = self.redundancy.copy()
             best_feature, score, score_denominator = self.select_next_feature(
                 self.not_selected_features,
                 self.selected_features,
