@@ -1,8 +1,8 @@
 # ARFS remediation handoff
 
-**Status: R01–R33 complete. C01–C03 complete; C04–C06 pending. Tree preprocessing, MRMR sampling and the confirmed plan are being delivered separately; the next package release is deferred.**
+**Status: R01–R33 complete. C01–C04 complete; C05–C06 pending. Tree preprocessing, MRMR sampling and the confirmed plan are being delivered separately; the next package release is deferred.**
 The [confirmed follow-up plan](#confirmed-follow-up-plan) below is separate from
-that historical delivery. **C01–C03 are complete; C04–C06 are pending; next follow-up: C04.**
+that historical delivery. **C01–C04 are complete; C05–C06 are pending; next follow-up: C05.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
 a separate repair backlog. By default, a request to implement the next phase
@@ -412,7 +412,7 @@ above predates this guard; hosted wheel checks run again on the follow-up commit
 
 ### C04 — Truthful diagnostics, quiet modes, and examples
 
-**Status: Pending.** Confirmed plotting/scale issues in item 5, unwanted output
+**Status: Complete locally on `fix/c04-diagnostics-quiet-examples` (based on `4c8b4c2` on `main`).** Confirmed plotting/scale issues in item 5, unwanted output
 in item 15, and documentation defects in item 16.
 
 - Stop overwriting BoostAGroota histories across reduction rounds. Make
@@ -432,6 +432,67 @@ in item 15, and documentation defects in item 16.
 - Verify multiple elimination rounds, selected/rejected box colors, matching
   history/cutoff scales, complete first-round ranking, quiet stdout/stderr, and
   bounded executable examples. Check collinearity keeps unrelated features.
+
+#### C04 handoff — 2026-10-18
+
+- **Changes and migration:** BoostAGroota no longer merges and overwrites
+  histories from different reduction rounds. `sha_cutoff_df` contains only
+  final-round normalized iteration scores, with real candidates first and
+  their shadows second, matching `mean_shadow`. Its plot shows those candidates
+  and colors boxes by selected names, including integer feature names.
+  Consumers expecting every input feature in this table must adapt.
+  `ranking_absolutes_` orders all input features by first-round means, with
+  input-order ties; it is separate from selected/rejected `ranking_`.
+- **Quiet controls:** Leshy's `verbose<=0`, BoostAGroota/GrootCV's `silent=True`,
+  and GradientBoosting's `verbose_eval<=0` now suppress routine prints and
+  progress bars. GrootCV threads `silent` to its early-stopping callback.
+  VariableImportance inherits the GBM fix through its existing `verbose`
+  argument. Split/save/load and custom-metric messages follow the same GBM
+  control. Warnings remain visible; supplied learners retain their own logging
+  controls. Public parameter names, training and selection rules are unchanged.
+- **Examples and contracts:** Leshy's example now creates a small local
+  DataFrame instead of importing Boruta or reading absent CSV files. The
+  summary example uses supported `VariableImportance(lgb_kwargs=...)` options
+  in a bounded local pipeline. Corrected callable association defaults and
+  removed the nonexistent `collinearity_summary_` claim. The existing zero
+  diagonal and canonical `arfs.feature_selection` exports are preserved.
+- **Regression evidence:** The initial 20 C04 checks reproduced **12 failures,
+  8 passes** before implementation. The final `tests/test_diagnostics.py` has
+  **24 cases**, covering one to three rounds, two cutoff scales, complete
+  first-round ranking, stable ties/refit state, selected/rejected plot colors,
+  quiet/noisy stdout and stderr, visible warnings, executable docstrings and
+  unrelated-feature retention under both collinearity methods.
+- **Validation:** The full maintained source suite passed **1,986 tests**
+  (534 warnings, 225.13 s), including all 24 C04 cases, on the locked Python
+  3.12.7 snapshot (NumPy 2.0.2, pandas 2.2.3, scikit-learn 1.6.1,
+  LightGBM 4.6.0, SHAP 0.47.1, pytest 8.3.5). All **24 C04 cases**
+  also pass on the existing newer Python 3.12 snapshot (NumPy 2.5.4, pandas 3.0.6,
+  scikit-learn 1.9.1, LightGBM 4.7.0, SHAP 0.53.0, pytest 9.1.1).
+  The strict HTML documentation build, Ruff 0.17.0, `uv lock --check` and
+  whitespace checks pass. Documentation builds keep notebook execution off.
+
+Reproduction from the checkout root:
+
+```sh
+export PYTHONPATH=src PYTHONDONTWRITEBYTECODE=1 MPLBACKEND=Agg
+export MPLCONFIGDIR=/tmp/arfs-c04-mpl OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+export MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 PYTHONHASHSEED=0
+/tmp/arfs-association/py312-locked/bin/python -m pytest tests -q --tb=short -p no:cacheprovider
+/tmp/arfs-association/py312-newer/bin/python -m pytest tests/test_diagnostics.py -q --tb=short -p no:cacheprovider
+/tmp/arfs-association/docs-locked/bin/python -m sphinx -b html -W --keep-going docs /tmp/arfs-c04-html
+uv tool run --from ruff==0.17.0 ruff check .
+uv lock --check
+git diff --check
+```
+
+Source and newer-snapshot test logs stay in `/tmp/arfs-c04-source-tests.log`
+and `/tmp/arfs-c04-newer-tests.log`; generated HTML stays in
+`/tmp/arfs-c04-html`. Verify these disposable environments before reuse.
+The installed-wheel/Python matrix, optional backends, full notebook execution
+and statistical calibration were not rerun. No dependency, version, historical
+report or release changes are included. PR delivery and bot review are tracked
+in the pull request. **C05 is next**;
+C05–C06 remain outside this implementation.
 
 ### C05 — MRMR storage and built-in reduction costs
 

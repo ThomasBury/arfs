@@ -246,14 +246,14 @@ class CollinearityThreshold(SelectorMixin, BaseEstimator):
     This feature selection algorithm looks only at the features (X),
     not the desired outputs (y), and can thus be used for unsupervised learning.
     It computes the association between features (continuous or categorical),
-    store the pairs of collinear features and remove one of them for all pairs having
+    and removes one feature from pairs having
     an association value above the threshold.
 
     The association measures are the Spearman correlation coefficient, correlation ratio
     and Theil's U. The association matrix is not necessarily symmetrical.
 
     By changing the method to "correlation", data will be encoded as integer
-    and the Spearman correlation coefficient will be used instead. Faster but not
+    and num_num_assoc will be used for all pairs. Faster but not
     a best practice because the categorical variables are considered as numeric.
 
     Parameters
@@ -265,13 +265,15 @@ class CollinearityThreshold(SelectorMixin, BaseEstimator):
     method : str, default = "association"
         method for computing the association matrix. Either "association" or "correlation".
         Correlation leads to encoding of categorical variables as numeric
-    n_jobs : int, default = -1
+    n_jobs : int, default = 1
         the number of threads, -1 uses all the threads for computating the association matrix
-    nom_nom_assoc : str or callable, default = "theil"
+    nom_nom_assoc : callable, default = weighted_theils_u
         the categorical-categorical association measure, by default Theil's U, not symmetrical!
-    num_num_assoc : str or callable, default = "spearman"
-        the numeric-numeric association measure
-    nom_num_assoc : str or callable, default = "correlation_ratio"
+    num_num_assoc : callable, default = weighted_corr
+        The numeric-numeric association measure; weighted_corr uses Spearman
+        correlation by default. Pass a callable, such as a functools.partial,
+        to change its options; string measure names are not supported.
+    nom_num_assoc : callable, default = correlation_ratio
         the numeric-categorical association measure
 
     Notes
@@ -290,9 +292,8 @@ class CollinearityThreshold(SelectorMixin, BaseEstimator):
     n_features_in_ : int
         number of input predictors
     assoc_matrix_ : pd.DataFrame
-        the square association matrix
-    collinearity_summary_ : pd.DataFrame
-        the pairs of collinear features and the association values
+        The square association matrix with a zero diagonal; self-associations
+        are excluded from feature elimination.
     support_ : list of bool
         the list of the selected X-columns
     selected_features_ : list of str

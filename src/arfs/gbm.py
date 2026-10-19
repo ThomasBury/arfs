@@ -94,7 +94,8 @@ class GradientBoosting:
         If True, generates and stores the learning curve plot.
     verbose_eval : int, default=50
         Period (in boosting rounds) for printing training/validation metrics.
-        Set to 0 or False to disable logging during training.
+        Set to 0 or False to disable metrics and routine split, save and load
+        messages. Warnings remain visible.
     return_valid_features : bool, default=False
         If True, stores the validation features (X_val) used for early stopping.
 
@@ -528,7 +529,8 @@ class GradientBoosting:
             "cat_feat": self.cat_feat,
             "feature_names_in_": self.feature_names_in_,
         }
-        print(f"Saving model to: {model_file_path}")
+        if self.verbose_eval > 0:
+            print(f"Saving model to: {model_file_path}")
         with TemporaryDirectory(dir=model_file_path.parent, prefix=".arfs-") as staged:
             staged_model = Path(staged) / "model.joblib"
             with staged_model.open("wb") as stream:
@@ -583,7 +585,8 @@ class GradientBoosting:
         if not model_file.is_file():
             raise FileNotFoundError(f"Model file not found at: {model_path}")
 
-        print(f"Loading model from: {model_path}")
+        if self.verbose_eval > 0:
+            print(f"Loading model from: {model_path}")
         artifact = joblib.load(model_file)
         if isinstance(artifact, lgb.Booster):
             raise TypeError(
@@ -670,6 +673,10 @@ def _fit_early_stopped_lgb(
         stratified=stratified,
         test_size=0.2,
     )
+    if verbose_eval > 0:
+        print(
+            f"Data split: Train={len(X_train)} samples, Validation={len(X_val)} samples."
+        )
 
     # --- Prepare LightGBM Datasets ---
     categorical_feature_param = [str(col) for col in cat_feat] if cat_feat else []
@@ -716,9 +723,10 @@ def _fit_early_stopped_lgb(
         # Avoid setting metric if objective is not suitable (e.g., 'custom')
         if train_params["objective"] not in ["custom", "None", None]:
             train_params["metric"] = train_params["objective"]
-            print(
-                f"No 'metric' provided, using objective '{train_params['objective']}' as metric."
-            )
+            if verbose_eval > 0:
+                print(
+                    f"No 'metric' provided, using objective '{train_params['objective']}' as metric."
+                )
         else:
             raise KeyError(
                 f"Objective '{train_params['objective']}' requires an explicit 'metric' for early stopping."
@@ -739,7 +747,8 @@ def _fit_early_stopped_lgb(
             f"n_estimators/num_boost_round ({n_trees}) is <= 0. Setting to default 10000."
         )
         n_trees = 10000
-    print(f"Training up to {n_trees} boosting rounds.")
+    if verbose_eval > 0:
+        print(f"Training up to {n_trees} boosting rounds.")
 
     # Handle custom evaluation metric (feval)
     feval_callback = None
@@ -748,7 +757,8 @@ def _fit_early_stopped_lgb(
         # LightGBM needs a metric name even for custom feval
         # Use 'custom' or the name of the function if available
         train_params["metric"] = "custom"
-        print("Using custom evaluation metric.")
+        if verbose_eval > 0:
+            print("Using custom evaluation metric.")
 
     # Set verbosity for LightGBM internal messages (-1 = Fatal, 0 = Error/Warning, 1 = Info)
     # Keep user-controlled printouts via log_evaluation callback
@@ -902,8 +912,6 @@ def _make_split(
     is_train, is_val = (None, None)
     if init_score is not None:
         is_train, is_val = init_score.iloc[train_index], init_score.iloc[val_index]
-
-    print(f"Data split: Train={len(X_train)} samples, Validation={len(X_val)} samples.")
 
     return X_train, y_train, X_val, y_val, sw_val, sw_train, is_val, is_train
 
