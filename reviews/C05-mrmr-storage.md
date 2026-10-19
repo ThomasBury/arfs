@@ -86,8 +86,11 @@ final run uses the extracted training file with SHA-256
 
 The initial provenance hash for `mrmr.py` precedes a docstring-only clarification
 that empty selections retain no columns. `/tmp/arfs-c05/mrmr-measured.py` and
-`docstring-clarification.diff` reconcile that exact text change; benchmarked
-runtime code and the runner are unchanged.
+`docstring-clarification.diff` reconcile that exact text change against the
+initial C05 commit, `d5df337`; its runtime code and the runner matched the
+measurements. The Codex review follow-up below adds periodic consolidation.
+The measured 10/20-feature selections do not reach that new branch; the wide
+benchmark was not repeated after this follow-up.
 
 ## Measured results — 2026-10-19
 
@@ -146,3 +149,26 @@ No new installed-wheel/full Python matrix, real optional-backend runs, full
 notebook execution, predictive-quality study or isolated runtime comparison was
 performed. No dependencies, package version, release or historical reports were
 changed. C06 remains pending; this implementation stops after C05.
+
+## Codex review follow-up — 2026-10-19
+
+[Codex found](https://github.com/ThomasBury/arfs/pull/75#discussion_r4312289793)
+that inserting more than about 100 selected columns fragmented the pandas table,
+causing repeated `PerformanceWarning`s and extra reduction/slicing overhead.
+MRMR now consolidates the existing selected columns with a native deep copy every
+64 selection steps. This bounds fragmentation without private pandas APIs,
+preallocating a square, or copying the growing table after every selection.
+Copies temporarily add to process memory; table storage remains O(p k).
+
+Three new tests select 130 of 140 features with mean, max and a custom reducer,
+crossing two consolidation points. They treat pandas performance warnings as
+errors and compare every retained value and ranking with the dense reference.
+All three failed with `PerformanceWarning` before the fix. C05 now has 59 cases.
+The existing wide benchmark selects only 20 features and does not exercise the
+consolidation branch, so its measurements remain historical evidence for the
+initial implementation. Validation of this follow-up is recorded in PR #75.
+
+All 126 MRMR storage/ranking/sampling checks pass after the fix on locked
+Python 3.12 (69 warnings, 42.45 s), newer Python 3.12 (46 warnings, 45.12 s)
+and locked Python 3.9 (66 warnings, 43.22 s). Ruff and whitespace checks pass.
+The fresh full-source and hosted-wheel results are tracked in PR #75.

@@ -1,5 +1,7 @@
 """C05: selected-column storage agrees with the former dense MRMR calculation."""
 
+import warnings
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -161,3 +163,23 @@ def test_builtin_reducers_do_not_use_row_apply(monkeypatch, reducer):
     ).fit(X, pd.Series([0, 1, 2]))
     assert model.selected_features_ == X.columns[:3].tolist()
     assert model.redundancy.shape == (8, 2)
+
+
+@pytest.mark.parametrize("reducer", [np.mean, np.max, spread])
+def test_large_selection_avoids_fragmentation_warnings(reducer):
+    X = pd.DataFrame(np.zeros((3, 140)), columns=[f"x_{i}" for i in range(140)])
+    model = MRMR(
+        130,
+        relevance_func=lambda **kw: pd.Series(1.0, index=X.columns),
+        redundancy_func=lambda features, **kw: pd.Series(0.0, index=features),
+        denominator_func=reducer,
+        show_progress=False,
+    )
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", pd.errors.PerformanceWarning)
+        model.fit(X, pd.Series([0, 1, 2]))
+    selected, ranking, table = dense_reference(model)
+    assert selected == model.selected_features_ == X.columns[:130].tolist()
+    assert_frame_equal(model.ranking_, ranking)
+    assert_frame_equal(model.redundancy, table.loc[:, selected[:-1]])
+    assert model.redundancy.shape == (140, 129)

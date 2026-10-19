@@ -461,6 +461,9 @@ class MinRedundancyMaxRelevance(SelectorMixin, BaseEstimator):
         for i in tqdm(
             range(self.n_features_to_select_), disable=not self.show_progress
         ):
+            # Consolidate in batches to avoid fragmentation on large selections.
+            if i and i % 64 == 0:
+                self.redundancy = self.redundancy.copy()
             best_feature, score, score_denominator = self.select_next_feature(
                 self.not_selected_features,
                 self.selected_features,

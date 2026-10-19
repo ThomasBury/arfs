@@ -545,6 +545,21 @@ C05–C06 remain outside this implementation.
   rerun. No dependency, version, historical report or release changes are included.
   **C06 is next** and remains outside this implementation. Git delivery is separate.
 
+##### C05 Codex review follow-up — 2026-10-19
+
+[PR #75](https://github.com/ThomasBury/arfs/pull/75) review identified pandas
+fragmentation and repeated performance warnings above about 100 selected columns.
+The selection loop now consolidates its existing table with a deep copy every
+64 steps. The O(p k) layout and selected order are retained; no private pandas
+API or square allocation is used. Copies add temporary process memory.
+Three new 130-of-140-feature checks reproduce the warning before the fix and
+verify mean/max/custom rankings and retained values against the dense reference.
+C05 now has 59 regression cases; the original full-suite and benchmark results
+above predate this follow-up. The 20-feature benchmark does not enter the new
+consolidation branch. All 126 MRMR storage/ranking/sampling checks pass on
+locked/newer Python 3.12 and locked Python 3.9; Ruff and whitespace checks pass.
+Fresh full-source/hosted-wheel results and bot review are tracked in the PR.
+
 ### C06 — Document exact Gower sampling's memory cost
 
 **Status: Pending.** Confirmed scaling in original item 11; documentation only.
