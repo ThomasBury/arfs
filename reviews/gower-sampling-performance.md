@@ -108,7 +108,8 @@ regression now checks the new condensed path against its scalar reference.
   Rendered API, workflow and notebook pages contain the revised memory numbers.
 - Ruff 0.17.0 lint and formatting, whitespace and local report links pass.
   AST comparison confirms existing functions other than `sample` have unchanged
-  executable bodies. Notebook comparison confirms only one Markdown cell changed.
+  executable bodies. Notebook comparison confirms one Markdown cell and one code
+  comment changed; executable tokens, metadata and saved outputs are unchanged.
 
 Rerun the full suite in the recreated locked environment:
 
