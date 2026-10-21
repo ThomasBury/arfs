@@ -63,17 +63,26 @@ clustering and other temporary memory. Those large sizes were calculated, not
 allocated. Direct `gower_matrix` calls still return `8 * n_x * n_y` bytes.
 
 Environment: Linux x86-64, Intel i5-7300U, Python 3.12.7, NumPy 2.0.2,
-pandas 2.2.3, SciPy 1.13.1 and scikit-learn 1.6.1. Reproduce a benchmark pair in
-two fresh processes with the same environment:
+pandas 2.2.3, SciPy 1.13.1 and scikit-learn 1.6.1. From the repository root,
+with uv 0.12.15 and a system Pandoc executable installed, create a disposable
+environment from the committed lockfile. The docs group supplies Sphinx for
+the documentation check below:
+
+```sh
+env UV_PROJECT_ENVIRONMENT=/tmp/arfs-gower-repro \
+  uv sync --locked --python 3.12.7 --group test --group docs
+```
+
+Then reproduce a benchmark pair in two fresh processes:
 
 ```sh
 env PYTHONPATH=src PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 \
   OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
-  /tmp/arfs-association/py312-locked/bin/python \
+  /tmp/arfs-gower-repro/bin/python \
   tests/gower_sampling_performance.py --rows 4000 --kind mixed --dense
 env PYTHONPATH=src PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 \
   OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
-  /tmp/arfs-association/py312-locked/bin/python \
+  /tmp/arfs-gower-repro/bin/python \
   tests/gower_sampling_performance.py --rows 4000 --kind mixed
 ```
 
@@ -101,22 +110,33 @@ regression now checks the new condensed path against its scalar reference.
   AST comparison confirms existing functions other than `sample` have unchanged
   executable bodies. Notebook comparison confirms only one Markdown cell changed.
 
-The full-suite command was:
+Rerun the full suite in the recreated locked environment:
 
 ```sh
 env PYTHONPATH=src PYTHONDONTWRITEBYTECODE=1 MPLBACKEND=Agg \
   MPLCONFIGDIR=/tmp/arfs-gower-native/mpl OPENBLAS_NUM_THREADS=1 \
   OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 \
   LOKY_MAX_CPU_COUNT=2 PYTHONHASHSEED=0 \
-  /tmp/arfs-association/py312-locked/bin/python -m pytest tests \
+  /tmp/arfs-gower-repro/bin/python -m pytest tests \
   -q --tb=short -p no:cacheprovider
 ```
 
-The compatibility runs use the same thread/source settings with
-`/tmp/arfs-association/{py39-locked,py312-newer}/bin/python` and the four files
+Recreate the compatibility environments separately:
+
+```sh
+env UV_PROJECT_ENVIRONMENT=/tmp/arfs-gower-repro-py39 \
+  uv sync --locked --python 3.9.25 --group test
+uv venv --python 3.12.7 /tmp/arfs-gower-repro-newer
+uv pip install --python /tmp/arfs-gower-repro-newer/bin/python \
+  -r .github/requirements/runtime-newer-py312.txt
+```
+
+Run pytest with the same thread/source settings using
+`/tmp/arfs-gower-repro-py39/bin/python` or
+`/tmp/arfs-gower-repro-newer/bin/python` and the four files
 `tests/test_gower_sampling.py`, `tests/test_gower_distances.py`,
 `tests/test_sampling_outputs.py` and `tests/test_nearest_neighbors.py`.
-The HTML command uses `/tmp/arfs-association/docs-locked/bin/python -m sphinx
+The HTML command uses `/tmp/arfs-gower-repro/bin/python -m sphinx
 -W --keep-going -b html docs /tmp/arfs-gower-native/html`, with `PYTHONPATH=src`
 and the same headless plotting/thread settings. Logs and rendered HTML stay
 under `/tmp/arfs-gower-native/`.
