@@ -59,6 +59,14 @@ def sample(df, n=1000, sample_weight=None, method="gower", random_state=None):
     pd.DataFrame
         the sampled dataframe
 
+    Notes
+    -----
+    Exact Gower sampling stores a dense float64 distance matrix for all N input
+    rows: ``8 * N**2`` bytes, about 20 GB at 50,000 rows and 80 GB at 100,000 rows
+    (decimal GB), before clustering and other temporary memory. The requested
+    output size n does not bound this storage. This method is unsuitable when
+    that allocation exceeds your memory budget; reduce the input rows first.
+
     """
     if not isinstance(df, pd.DataFrame):
         raise TypeError("df should be a DataFrame")
@@ -163,7 +171,11 @@ def gower_matrix(data_x, data_y=None, weight=None, cat_features="auto"):
     Numeric values are converted to float64 and must be finite or missing, with
     a representable max-minus-min range. Nominal values use equality, without
     string conversion. Ordinal and asymmetric-binary scoring are not implemented.
-    The dense output requires quadratic storage for a self-comparison.
+    The dense float64 output requires ``8 * n_x * n_y`` bytes. Self-comparison of N
+    rows uses ``8 * N**2`` bytes: about 20 GB at 50,000 rows and 80 GB at 100,000 rows
+    (decimal GB), before other temporary memory or downstream clustering.
+    Exact Gower sampling is unsuitable when this exceeds your memory budget;
+    requesting fewer output representatives does not reduce distance storage.
 
     Raises
     ------

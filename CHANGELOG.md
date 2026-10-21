@@ -2,6 +2,8 @@
 
 # Unreleased
 
+- Document exact Gower sampling's dense float64 distance storage: 8 N² bytes (about 20 GB at 50,000 rows and 80 GB at 100,000), before clustering and temporary memory. Requested output sample size does not reduce it; reduce input rows when it exceeds the memory budget.
+
 - Store MRMR redundancy scores only against selected features needed for later comparisons, reducing table storage from O(p²) to O(p k). The `redundancy` table now omits unselected columns and the final selected column; `redundancy_` and `ranking_` retain their meanings. Vectorize string/NumPy mean and max reducers while preserving arbitrary callable reducers, weights, row sampling and selection rules.
 
 - Keep BoostAGroota's `sha_cutoff_df` and importance plot on the final reduction round's scale, matching `mean_shadow`; earlier rejected features are absent from this table. Rank all input features in `ranking_absolutes_` using first-round means, and color boxes by selected names.
