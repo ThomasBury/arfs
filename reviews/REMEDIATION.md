@@ -1,8 +1,8 @@
 # ARFS remediation handoff
 
-**Status: R01–R33 complete. C01–C05 complete; C06 pending. Tree preprocessing, MRMR sampling and the confirmed plan are being delivered separately; the next package release is deferred.**
+**Status: R01–R33 complete. C01–C06 complete (C06 locally). Tree preprocessing, MRMR sampling and the confirmed plan are being delivered separately; the next package release is deferred.**
 The [confirmed follow-up plan](#confirmed-follow-up-plan) below is separate from
-that historical delivery. **C01–C05 are complete; C06 is pending; next follow-up: C06.**
+that historical delivery. **C01–C06 are complete; no confirmed C follow-up remains.**
 This handoff follows [review 07](07-final-assessment.md) of
 `03f67d0a54b69fac5ddbb83e306c8e8e72e2d3a2`. The review queue is complete; this is
 a separate repair backlog. By default, a request to implement the next phase
@@ -562,7 +562,7 @@ Fresh full-source/hosted-wheel results and bot review are tracked in the PR.
 
 ### C06 — Document exact Gower sampling's memory cost
 
-**Status: Pending.** Confirmed scaling in original item 11; documentation only.
+**Status: Complete locally on `docs/c06-gower-memory-cost` (based on `8882c45` on updated `main`).** Confirmed scaling in original item 11; documentation only.
 
 - Document dense float64 distance storage as 8 N² bytes: approximately 20 GB at
   50,000 rows and 80 GB at 100,000, before clustering and other temporary memory.
@@ -573,6 +573,43 @@ Fresh full-source/hosted-wheel results and bot review are tracked in the PR.
   weights once can underflow valid small weights when dominant features are
   missing. The existing extreme-weight/missingness regression must remain green.
 - Verify arithmetic and documentation references without allocating huge arrays.
+
+#### C06 handoff — 2026-10-21
+
+- **Changes:** Updated the `sample` and `gower_matrix` docstrings (rendered by
+  [the sampling API](../docs/arfs.rst)), the
+  [workflow sampling limits](../docs/workflows.rst), the large-data
+  [notebook's Markdown explanation](../docs/notebooks/arfs_large_data_sampling.ipynb)
+  and [changelog](../CHANGELOG.md). All explain the dense float64 allocation,
+  decimal 20/80 GB examples, additional clustering/temporary memory and why the
+  requested output size does not bound storage. Reduce input rows when the
+  allocation exceeds the memory budget. Cross-matrix storage is also documented
+  as `8 * n_x * n_y` bytes.
+- **Validation:** Python 3.12.7 with NumPy 2.0.2, pandas 2.2.3,
+  scikit-learn 1.6.1, SciPy 1.13.1 and pytest 8.3.5 imports this checkout.
+  The locked Gower/caller suites pass **188 tests** in 11.46 s, including
+  `test_zero_and_extreme_feature_weights_are_stable_per_pair`:
+  ```sh
+  env PYTHONPATH=src PYTHONDONTWRITEBYTECODE=1 MPLBACKEND=Agg \
+    MPLCONFIGDIR=/tmp/arfs-c06/mpl OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+    MKL_NUM_THREADS=1 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=2 \
+    /tmp/arfs-association/py312-locked/bin/python -m pytest \
+    tests/test_gower_distances.py tests/test_sampling_outputs.py \
+    tests/test_nearest_neighbors.py -q --tb=short -p no:cacheprovider
+  ```
+  Integer arithmetic using `np.dtype(np.float64).itemsize * N**2` confirms
+  800,000,000 / 20,000,000,000 / 80,000,000,000 bytes for 10,000 / 50,000 /
+  100,000 rows, without allocating matrices. AST comparison with the branch base
+  confirms executable sampling code is unchanged; notebook comparison confirms
+  only one Markdown cell changed. Strict HTML builds with Sphinx 6.2.1 in
+  `/tmp/arfs-association/docs-locked`, `PYTHONPATH=src` and notebook execution off.
+  Ruff 0.17.0, whitespace and changed local-reference checks pass. Logs are
+  `/tmp/arfs-c06/{tests,docs}.log`; HTML is `/tmp/arfs-c06/html/`.
+- **Limits:** No row cap, memory-budget parameter, approximate algorithm or
+  global weight normalization was added. No huge-array allocation, throughput
+  benchmark, full suite, installed-wheel matrix or notebook execution was run
+  for this documentation-only phase. C01–C06 are complete; no confirmed C phase
+  remains. Release validation and Git delivery remain separate.
 
 ### Changes from the proposed plan
 

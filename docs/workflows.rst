@@ -190,10 +190,18 @@ Sphinx build remains a separate check and keeps ``nbsphinx_execute="never"``.
 Sampling limits
 ---------------
 
-The large-data example retains a 10,000-row presample before Gower clustering.
-Its dense float64 distance output alone is about 800 MB; temporary arrays and
-clustering need additional memory. Reduce the presample for smaller machines.
-The full allocation and large-data throughput are not part of the bounded checks.
+Exact Gower sampling through :func:`arfs.sampling.sample` stores the full dense
+float64 distance matrix for N input rows, requiring ``8 * N**2`` bytes. That is
+about 20 GB at 50,000 rows and 80 GB at 100,000 rows (decimal units), before
+clustering and other temporary memory. Requesting fewer output rows with ``n``
+does not reduce distance storage. Exact Gower sampling is unsuitable when this
+allocation exceeds your memory budget; reduce the input rows first.
+
+The large-data example retains a 10,000-row presample before Gower clustering,
+so its distance output alone is about 800 MB. Reduce the presample for smaller
+machines. The full allocation and large-data throughput are not part of the
+bounded checks. :func:`arfs.sampling.gower_matrix` documents cross-matrix storage.
+
 Cluster representatives are synthetic column means/modes; Gower sampling rejects
 observation weights. Isolation sampling returns original rows, uses weights only
 for its forest fit and keeps its draws and KS screen unweighted. Neither method
