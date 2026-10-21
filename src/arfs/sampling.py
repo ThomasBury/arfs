@@ -1,12 +1,14 @@
 """This module provide methods for sampling large datasets for reducing the running time"""
 
 from collections import Counter
+from heapq import heappush, heappushpop
 
 import numpy as np
 import pandas as pd
+from scipy.cluster.hierarchy import linkage
 from scipy.sparse import issparse
+from scipy.spatial.distance import pdist
 from scipy.stats import ks_2samp
-from sklearn.cluster import AgglomerativeClustering
 from sklearn.ensemble import IsolationForest
 from sklearn.utils import check_random_state
 
@@ -61,11 +63,15 @@ def sample(df, n=1000, sample_weight=None, method="gower", random_state=None):
 
     Notes
     -----
-    Exact Gower sampling stores a dense float64 distance matrix for all N input
-    rows: ``8 * N**2`` bytes, about 20 GB at 50,000 rows and 80 GB at 100,000 rows
-    (decimal GB), before clustering and other temporary memory. The requested
-    output size n does not bound this storage. This method is unsuitable when
-    that allocation exceeds your memory budget; reduce the input rows first.
+    Exact Gower sampling stores each pair once in a condensed float64 vector:
+    ``4 * N * (N - 1)`` bytes for N input rows, about 10 GB at 50,000 rows and
+    40 GB at 100,000 rows (decimal GB), before clustering and other temporary
+    memory. The requested output size n does not bound this storage. This method
+    is unsuitable when that allocation exceeds your memory budget; reduce the
+    input rows first. Direct gower_matrix calls still return a dense matrix.
+
+    Native distance reductions can differ from gower_matrix at float64 rounding
+    precision. Nearly tied distances can therefore produce different clusters.
 
     """
     if not isinstance(df, pd.DataFrame):
@@ -97,12 +103,9 @@ def sample(df, n=1000, sample_weight=None, method="gower", random_state=None):
         if num_cols:
             X[num_cols] = X[num_cols].astype(float).fillna(X[num_cols].mean())
 
-        # no need for scaling, it is built-in the computation of the Gower distance
-        gd = gower_matrix(X, cat_features=X.columns.isin(non_num_cols))
-
-        labels = AgglomerativeClustering(
-            n_clusters=n, metric="precomputed", linkage="complete"
-        ).fit_predict(gd)
+        labels = _complete_linkage_labels(
+            _gower_condensed(X, num_cols, non_num_cols), n
+        )
         labels = np.array([f"clus_{label}" for label in labels])
         X_num = X.groupby(labels)[num_cols].agg("mean")
         if non_num_cols:
@@ -128,6 +131,57 @@ def sample(df, n=1000, sample_weight=None, method="gower", random_state=None):
         return df.iloc[idx, :].copy()
     else:
         raise NotImplementedError(f"{method} not implemented")
+
+
+def _gower_condensed(X, num_cols, non_num_cols):
+    """Gower distances for the sampler's imputed, equally weighted features."""
+    if num_cols:
+        numeric = X[num_cols].to_numpy(dtype=float, copy=True)
+        if not np.isfinite(numeric).all():
+            raise ValueError("Numeric features must be finite or missing.")
+        minimum = numeric.min(axis=0)
+        with np.errstate(over="ignore"):
+            span = numeric.max(axis=0) - minimum
+        if not np.isfinite(span).all():
+            raise ValueError("Numeric feature range exceeds float64 capacity.")
+        numeric -= minimum
+        np.divide(numeric, span, out=numeric, where=span > 0)
+        distances = pdist(numeric, metric="cityblock")
+    if non_num_cols:
+        nominal = np.column_stack([pd.factorize(X[col])[0] for col in non_num_cols])
+        mismatches = pdist(nominal, metric="hamming")
+        mismatches *= len(non_num_cols)
+        # Recover integer mismatch counts before adding numeric differences.
+        np.rint(mismatches, out=mismatches)
+        if num_cols:
+            distances += mismatches
+        else:
+            distances = mismatches
+    distances /= X.shape[1]
+    return distances
+
+
+def _complete_linkage_labels(distances, n_clusters):
+    """Cut complete linkage while preserving the sampler's cluster ID ordering."""
+    tree = linkage(distances, method="complete")
+    children = tree[:, :2].astype(np.intp)
+    n_rows = len(tree) + 1
+    # Keep the existing heap order so cluster IDs and output row order agree.
+    nodes = [-(2 * n_rows - 2)]
+    for _ in range(n_clusters - 1):
+        left, right = children[-nodes[0] - n_rows]
+        heappush(nodes, -left)
+        heappushpop(nodes, -right)
+    labels = np.empty(n_rows, dtype=np.intp)
+    for label, node in enumerate(nodes):
+        pending = [-node]
+        while pending:
+            node = pending.pop()
+            if node < n_rows:
+                labels[node] = label
+            else:
+                pending.extend(children[node - n_rows])
+    return labels
 
 
 def get_most_common(srs):
@@ -174,8 +228,8 @@ def gower_matrix(data_x, data_y=None, weight=None, cat_features="auto"):
     The dense float64 output requires ``8 * n_x * n_y`` bytes. Self-comparison of N
     rows uses ``8 * N**2`` bytes: about 20 GB at 50,000 rows and 80 GB at 100,000 rows
     (decimal GB), before other temporary memory or downstream clustering.
-    Exact Gower sampling is unsuitable when this exceeds your memory budget;
-    requesting fewer output representatives does not reduce distance storage.
+    The sample function uses condensed distances instead; its storage is still
+    quadratic in the number of input rows.
 
     Raises
     ------

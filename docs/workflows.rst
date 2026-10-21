@@ -190,17 +190,22 @@ Sphinx build remains a separate check and keeps ``nbsphinx_execute="never"``.
 Sampling limits
 ---------------
 
-Exact Gower sampling through :func:`arfs.sampling.sample` stores the full dense
-float64 distance matrix for N input rows, requiring ``8 * N**2`` bytes. That is
-about 20 GB at 50,000 rows and 80 GB at 100,000 rows (decimal units), before
-clustering and other temporary memory. Requesting fewer output rows with ``n``
+Exact Gower sampling through :func:`arfs.sampling.sample` stores each pair once
+in a condensed float64 vector, requiring ``4 * N * (N - 1)`` bytes for N input
+rows. That is about 10 GB at 50,000 rows and 40 GB at 100,000 rows (decimal units),
+before clustering and other temporary memory. Requesting fewer output rows with ``n``
 does not reduce distance storage. Exact Gower sampling is unsuitable when this
 allocation exceeds your memory budget; reduce the input rows first.
 
 The large-data example retains a 10,000-row presample before Gower clustering,
-so its distance output alone is about 800 MB. Reduce the presample for smaller
+so its distance vector alone is about 400 MB. Reduce the presample for smaller
 machines. The full allocation and large-data throughput are not part of the
-bounded checks. :func:`arfs.sampling.gower_matrix` documents cross-matrix storage.
+bounded checks. Direct :func:`arfs.sampling.gower_matrix` calls still return a
+dense matrix: ``8 * n_x * n_y`` bytes, or ``8 * N**2`` for self-comparison.
+
+The sampler uses native numeric and categorical distance calculations and exact
+complete linkage. Floating-point reduction order can change nearly tied
+distances and therefore cluster memberships; recheck downstream results.
 
 Cluster representatives are synthetic column means/modes; Gower sampling rejects
 observation weights. Isolation sampling returns original rows, uses weights only

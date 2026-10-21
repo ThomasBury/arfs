@@ -72,6 +72,14 @@ for final-head hosted checks.
   `/tmp/arfs-pr-tree-mrmr/`. No runtime payload, test or notebook was changed
   while organizing commits; added delivery changes are documentation only.
 
+## Exact Gower sampling optimization — 2026-10-21
+
+After C06, the user separately authorized native distance calculations and
+condensed storage for exact sampling. The [implementation and benchmark
+handoff](gower-sampling-performance.md) records its behavior, validation and
+limits on `perf/gower-condensed-sampling`, based on `efc51fb` on updated main.
+The original C06 handoff below retains its documentation-only scope.
+
 ## Confirmed follow-up plan
 
 Recorded on 2026-10-17 against working-tree source at
