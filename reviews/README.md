@@ -15,6 +15,9 @@ historical handoffs.
 Follow-up implementation: [tree binning, grouping and tutorials](tree-preprocessing.md)
 tracks two phases separately from the completed review queue.
 
+The separately authorized [exact Gower sampling optimization](gower-sampling-performance.md)
+records the native condensed implementation, full-sampler measurements and limits.
+
 The [confirmed follow-up plan](REMEDIATION.md#confirmed-follow-up-plan) records
 only verified defects and measured costs from the 2026-10-17 report assessment.
 **C01–C06 are complete (C06 locally); no confirmed C follow-up remains.** These phases are separate

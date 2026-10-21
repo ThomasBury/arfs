@@ -325,20 +325,22 @@ def test_empty_row_shapes_and_singleton(sizes):
     assert_allclose(result, 0.0)
 
 
-def test_sampling_caller_uses_boolean_category_mask_with_integer_names(monkeypatch):
+def test_sampling_caller_uses_nominal_columns_with_integer_names(monkeypatch):
     X = pd.DataFrame({10: [0.0, 2.0, 4.0], 50: ["a", "a", "b"]})
-    original = sampling.gower_matrix
+    original = sampling._gower_condensed
     seen = {}
 
-    def capture(*args, **kwargs):
-        seen["mask"] = kwargs["cat_features"]
-        seen["distances"] = original(*args, **kwargs)
+    def capture(X, num_cols, non_num_cols):
+        seen["nominal"] = non_num_cols
+        seen["distances"] = original(X, num_cols, non_num_cols)
         return seen["distances"]
 
-    monkeypatch.setattr(sampling, "gower_matrix", capture)
+    monkeypatch.setattr(sampling, "_gower_condensed", capture)
     result = sampling.sample(X, n=1)
-    assert list(seen["mask"]) == [False, True]
-    assert_allclose(seen["distances"], reference(X, categorical=[50]))
+    assert seen["nominal"] == [50]
+    assert_allclose(
+        seen["distances"], reference(X, categorical=[50])[np.triu_indices(len(X), k=1)]
+    )
     assert result[10].iloc[0] == 2.0
     assert result[50].iloc[0] == "a"
 

@@ -2,7 +2,7 @@
 
 # Unreleased
 
-- Document exact Gower sampling's dense float64 distance storage: 8 N² bytes (about 20 GB at 50,000 rows and 80 GB at 100,000), before clustering and temporary memory. Requested output sample size does not reduce it; reduce input rows when it exceeds the memory budget.
+- Calculate Gower sampling distances with native SciPy numeric/categorical operations and pass condensed distances directly to exact complete-linkage clustering. Retained distances now use 4 N(N − 1) bytes (about 10 GB at 50,000 rows and 40 GB at 100,000), before clustering and temporary memory. Requested output size does not reduce this quadratic storage. Direct `gower_matrix` output and its pairwise missing-value/feature-weight rules are unchanged. Recheck downstream results: float64 reduction order can change nearly tied distances and cluster memberships.
 
 - Store MRMR redundancy scores only against selected features needed for later comparisons, reducing table storage from O(p²) to O(p k). The `redundancy` table now omits unselected columns and the final selected column; `redundancy_` and `ranking_` retain their meanings. Vectorize string/NumPy mean and max reducers while preserving arbitrary callable reducers, weights, row sampling and selection rules.
 
