@@ -299,8 +299,11 @@ rounds, a learning rate of 0.01, and depth-three regression trees with at least
 uses the empirical marginal distribution of those same responses. Use the same
 predictor and settings for the MMD, unchanged GrootCV, CPSS, CART, full and
 oracle subsets. Pair methods on the same rows and seed, and score the untouched
-evaluation rows with mean CRPS. Use learner seeds 11, 23 and 37 and record the
-dataset and split seeds before fitting. No settings are tuned on evaluation rows.
+evaluation rows with mean CRPS. Use learner seeds 11, 23 and 37. Use dataset
+seeds 100–109 for the null mechanism and 200–209 for the variance mechanism.
+For each dataset, generate training, development and evaluation rows separately
+with seeds equal to ten times the dataset seed plus 0, 1 and 2, respectively.
+No settings are tuned on evaluation rows.
 
 ### Conditional extension after reviewing the first phase
 
@@ -373,9 +376,12 @@ Freeze these screening criteria before execution:
 
 - **Continue distributional research:** variance-feature recovery is at least
   80% across the 30 variance-only dataset/seed runs, and mean evaluation CRPS
-  on those runs is at least 2% lower than for the paired unchanged GrootCV
-  selections under the same predictor. Results must also survive the CART
-  and NGBoost controls. Confirm any promising result using fresh replications.
+  on those runs is at least 2% lower than for each of the paired unchanged
+  GrootCV and CART-selected subsets under the same predictor. The oracle-feature
+  NGBoost control must reduce mean CRPS by at least 2% relative to the empirical
+  marginal predictor, showing the screen can detect the variance signal. The
+  MMD-selected predictor's mean CRPS must be at most 2% above full-feature
+  NGBoost's mean CRPS. Confirm any promising result using fresh replications.
 - **Continue stability work:** false selections fall by at least 50% in the
   extended null/additive assessment, with no more than a ten-percentage-point
   loss of strong-signal recall. Report correlated-group losses separately.

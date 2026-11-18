@@ -65,14 +65,17 @@ medians, versions, source hashes, settings, memory and comparison results.
 Aggregation/bookkeeping time is the residual after timed preparation, training
 and explanation; it is not an isolated aggregation-kernel measurement.
 
-Use `git archive ba5acb3 src` for the baseline. The [Leshy reproduction steps](Leshy-stage1.md#reproduction)
-restore the revised GrootCV source in `$snapshots/grootcv`. Put the desired
-source directory on `PYTHONPATH`:
+The [Leshy reproduction steps](Leshy-stage1.md#reproduction) restore the revised
+GrootCV source in `$snapshots/grootcv`. From the repository root, extract the
+baseline into a separate directory and run both snapshots:
 
 ```bash
-OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
-NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=1 MPLBACKEND=Agg \
-PYTHONPATH="$snapshots/grootcv/src" python tests/grootcv_benchmark.py wide /tmp/grootcv-wide.json
+mkdir "$snapshots/baseline"
+git archive ba5acb3 src | tar -x -C "$snapshots/baseline"
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+export NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=1 MPLBACKEND=Agg
+PYTHONPATH="$snapshots/baseline/src" python tests/grootcv_benchmark.py wide "$snapshots/grootcv-wide-baseline.json"
+PYTHONPATH="$snapshots/grootcv/src" python tests/grootcv_benchmark.py wide "$snapshots/grootcv-wide-revised.json"
 ```
 
 ## Verification

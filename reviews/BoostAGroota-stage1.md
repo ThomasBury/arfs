@@ -72,14 +72,16 @@ stopping decisions, history labels, support and rankings agree exactly.
 settings, versions, source hashes, timings, memory and full traces.
 
 The [Leshy reproduction steps](Leshy-stage1.md#reproduction) restore this
-benchmark's baseline in `$snapshots/leshy`. Extract the revised source from
-`d8aa054` with `git archive d8aa054 src`. Put the desired source directory on
-`PYTHONPATH`:
+benchmark's baseline in `$snapshots/leshy`. From the repository root, extract
+the revised source into a separate directory and run both snapshots:
 
 ```sh
-OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
-NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=1 MPLBACKEND=Agg \
-PYTHONPATH="$snapshots/leshy/src" python tests/boostagroota_benchmark.py wide /tmp/boost-wide.json
+mkdir "$snapshots/boostagroota"
+git archive d8aa054 src | tar -x -C "$snapshots/boostagroota"
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+export NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=1 MPLBACKEND=Agg
+PYTHONPATH="$snapshots/leshy/src" python tests/boostagroota_benchmark.py wide "$snapshots/boost-wide-baseline.json"
+PYTHONPATH="$snapshots/boostagroota/src" python tests/boostagroota_benchmark.py wide "$snapshots/boost-wide-revised.json"
 ```
 
 Cases are `tall`, `wide`, `multiclass`, `forest` and `permutation`.
