@@ -23,8 +23,8 @@ def test_fitted_mask_count_names_and_transform_agree(monkeypatch, decisions, kee
     history = np.full((2, 3), 2.0)
     monkeypatch.setattr(
         a.Leshy,
-        "select_features",
-        lambda self, **kwargs: (decisions, [1.0, 1.0], history, 1.0),
+        "_select_features",
+        lambda self, *args: (decisions, [1.0, 1.0], history, 1.0),
     )
     selector = a.Leshy(
         lgb.LGBMRegressor(verbosity=-1), keep_weak=keep_weak, random_state=0

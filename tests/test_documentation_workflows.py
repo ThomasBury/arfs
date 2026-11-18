@@ -3,6 +3,7 @@
 # ruff: noqa: S102
 # These tests execute only repository-owned notebook cells.
 
+import ast
 import json
 import re
 from pathlib import Path
@@ -29,6 +30,24 @@ def cell(notebook, index):
 def test_core_imports_need_no_optional_comparison_backends(notebook):
     with plt.rc_context():
         exec(compile(cell(notebook, 1), notebook, "exec"), {})
+
+
+def test_groot_notebook_calls_use_supported_constructor_arguments():
+    for path in (DOCS / "notebooks").glob("*.ipynb"):
+        notebook = json.loads(path.read_text())
+        for entry in notebook["cells"]:
+            source = "".join(entry["source"])
+            if entry["cell_type"] != "code" or "GrootCV(" not in source:
+                continue
+            source = "\n".join(
+                line for line in source.splitlines() if not line.startswith("%")
+            )
+            for node in ast.walk(ast.parse(source)):
+                if isinstance(node, ast.Call) and (
+                    getattr(node.func, "id", None) == "GrootCV"
+                    or getattr(node.func, "attr", None) == "GrootCV"
+                ):
+                    assert "fastshap" not in {kw.arg for kw in node.keywords}, path
 
 
 @pytest.mark.parametrize("index", [15, 21, 26])
@@ -282,3 +301,27 @@ def test_refreshed_tutorial_sources_compile_and_use_local_inputs(notebook):
             if entry["cell_type"] == "code"
         )
         assert "Titanic" not in source and "load_data(" not in source
+
+
+@pytest.mark.parametrize("selector", ["Leshy", "BoostAGroota"])
+def test_selector_notebooks_use_supported_importance(selector):
+    for path in (DOCS / "notebooks").glob("*.ipynb"):
+        for entry in json.loads(path.read_text())["cells"]:
+            source = "".join(entry["source"])
+            if entry["cell_type"] != "code" or f"{selector}(" not in source:
+                continue
+            source = "\n".join(
+                line for line in source.splitlines() if not line.startswith("%")
+            )
+            for node in ast.walk(ast.parse(source)):
+                if isinstance(node, ast.Call) and (
+                    getattr(node.func, "id", None) == selector
+                    or getattr(node.func, "attr", None) == selector
+                ):
+                    for keyword in node.keywords:
+                        if keyword.arg == "importance" and isinstance(
+                            keyword.value, ast.Constant
+                        ):
+                            assert keyword.value.value in ("shap", "pimp", "native"), (
+                                path
+                            )

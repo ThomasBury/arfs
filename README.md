@@ -21,7 +21,7 @@ Lasso selects individual encoded design columns. Tree grouping and binning do no
 
 `$ pip install arfs`
 
-FastTreeSHAP is an optional compiled backend, separate from the runtime and the `docs` dependency group. Its compatibility with the current dependency matrix is not validated. Use the default SHAP paths for the core examples. Leshy and BoostAGroota warn and fall back to SHAP when it is missing; `VariableImportance(fastshap=True)` raises an import error before training.
+FastTreeSHAP is an optional compiled backend, separate from the runtime and the `docs` dependency group. Its compatibility with the current dependency matrix is not validated. Use the default SHAP paths for the core examples. Leshy and BoostAGroota use native LightGBM SHAP or TreeExplainer; `VariableImportance(fastshap=True)` raises an import error before training.
 
 See [documentation workflows](./docs/workflows.rst) for the local HTML build, Pandoc prerequisite and notebook execution scope.
 The same guide records the tested Python/dependency snapshots and the limits of the selection experiments. An allowed dependency range is not evidence that every combination has been tested.
@@ -38,7 +38,7 @@ Examples (validation scope and optional prerequisites are recorded in the docume
  - [Passing custom params](./docs/notebooks/arfs_grootcv_custom_params.ipynb)
  - [Non-normal loss and sample weights](./docs/notebooks/arfs_non_normal_loss_and_sample_weight.ipynb)
  - [ARFS on GPU](./docs/notebooks/arfs_on_GPU.ipynb)
- - [Fast Shap](./docs/notebooks/arfs_shap_vs_fastshap.ipynb)
+ - [GrootCV native SHAP](./docs/notebooks/arfs_shap_vs_fastshap.ipynb)
  - [Categoricals](./docs/notebooks/issue_categoricals.ipynb)
  - [Collinearity](./docs/notebooks/issue_collinearity.ipynb)
  - [Reducing run time for large data](./docs/notebooks/arfs_large_data_sampling.ipynb)
@@ -95,6 +95,13 @@ The original algorithm above is historical context. BoostAGroota's current thres
 
 **Boruta --> Leshy**:
 
+Leshy accepts `importance="shap"`, `"pimp"`, or `"native"`. Replace former
+`importance="fastshap"` calls with `importance="shap"`. LightGBM SHAP uses native
+contributions; other compatible estimators use TreeExplainer. Call `fit` instead
+of the removed `select_features` method. `n_iter_` records completed iterations;
+`n_features_in_` records input width. Automatic tree sizing now handles unlimited
+LightGBM depth correctly, so refit and recheck results when using `n_estimators="auto"`.
+
   - Categorical features are detected and encoded. Category codes need the estimator's categorical handling; encoding alone does not establish better selection or prediction than one-hot encoding.
   - LightGBM is supported; runtime depends on the data, estimator and parameters
   - Accept compatible sklearn-style tree estimators; CatBoost/XGBoost execution is outside the tested runtime matrix
@@ -103,12 +110,22 @@ The original algorithm above is historical context. BoostAGroota's current thres
 
 **BoostARoota --> BoostAGroota**:
 
+BoostAGroota accepts `importance="shap"`, `"pimp"`, or `"native"`. Replace former
+`importance="fastshap"` calls with `importance="shap"`. The selection rule,
+fixed validation split and learner seed are unchanged. `n_rounds_` counts
+completed reduction rounds and `n_features_in_` records input width. Supply a
+compatible tree estimator; parameters are validated during `fit`, including
+changes through `set_params`. Invalid iteration counts now raise an error instead
+of being silently coerced. Selection operations require a successful fit.
+
   - Replace XGBoost with LightGBM, you can still use tree-based scikitlearn models
   - Replace native var.imp by SHAP var.imp. Indeed, the impurity var.imp. are biased en sensitive to large cardinality (see [scikit demo](https://scikit-learn.org/stable/auto_examples/inspection/plot_permutation_importance.html#sphx-glr-auto-examples-inspection-plot-permutation-importance-py)). Moreover, the native var. imp are computed on the train set, here the data are split (internally) in train and test, var. imp computed on the test set.
   - Categorical handling depends on the estimator. Fit any encoder on training rows only and identify categorical columns for estimators that require it. The validation does not compare encoding strategies or establish categorical superiority.
   - Observation weights do not automatically make SHAP row averages weight-adjusted population explanations. VariableImportance averages validation rows equally; GrootCV averages each fold's training rows.
 
 ## GrootCV, a new method
+
+GrootCV uses LightGBM's native SHAP contributions. Remove the former `fastshap` argument from existing calls. Boosting-round limits in `lgbm_params` now follow LightGBM precedence instead of being discarded; the fallback remains 10,000 rounds with 20-round early stopping. Refit and check selections when supplying these limits. Training-row explanations and the median-based shadow threshold are unchanged.
 
 **New: GrootCV**:
 
