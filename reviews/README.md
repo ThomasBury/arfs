@@ -24,7 +24,7 @@ the completed review queue; experiments and implementation are not yet authorize
 
 The [confirmed follow-up plan](REMEDIATION.md#confirmed-follow-up-plan) records
 only verified defects and measured costs from the 2026-10-17 report assessment.
-**C01–C06 are complete (C06 locally); no confirmed C follow-up remains.** These phases are separate
+**C01–C06 are complete.** These phases are separate
 from the completed RXX queue and the tree-preprocessing work. Implement one
 phase per explicit request and stop after its checks and handoff.
 
@@ -41,8 +41,8 @@ R16–R28 and R31 are also complete; their handoffs are linked in
 [R29](R29-plot-contracts.md), [R30](R30-dataset-fixtures.md),
 [R32](R32-documentation-workflows.md) and [R33](R33-release-evidence.md) are complete.
 **No RXX implementation remains.** R33's historical release delivery is recorded
-in the handoff. The current tree-preprocessing/MRMR work stays unreleased until
-the confirmed correctness follow-ups and release checks are complete.
+in the handoff. The tree-preprocessing and MRMR changes are included in
+[ARFS 5.0.0](../CHANGELOG.md#500--2026-11-18).
 Follow the
 [session batching and handoff guidance](REMEDIATION.md#session-batching-and-handoffs).
 Requests for the next confirmed follow-up use the first pending C phase above;

@@ -2,6 +2,8 @@
 
 # Unreleased
 
+# 5.0.0 — 2026-11-18
+
 - Simplify BoostAGroota to array-based round aggregation and construct its final diagnostic table once. Build shared shadow frames in one pass while preserving dtypes and RNG draws. Remove BoostAGroota's `importance="fastshap"` mode; use `"shap"` instead. Validate current parameters during `fit`, reject invalid iteration counts, require completed fitting for selection operations, and expose `n_rounds_` and `n_features_in_`. Constructor defaults, selection rules, learner seeds and fixed validation splits are unchanged.
 
 - Simplify Leshy's selection loop and collect importance history once. Use native LightGBM SHAP contributions in the shared Leshy/BoostAGroota helper, preserving the fixed validation split and aggregation conventions. Replace Leshy's `importance="fastshap"` with `"shap"` and call `fit` instead of the removed `select_features` method. Validate current parameters during fitting, raise `NotFittedError` before selection operations, and expose `n_iter_` and `n_features_in_`. Correct automatic tree sizing for unlimited depth; refit and recheck selections when using `n_estimators="auto"`.
@@ -28,7 +30,7 @@
 - Add opt-in MRMR row sampling through `sample_size` and `random_state`.
   Relevance and redundancy share one draw; full-data fitting remains the default.
 
-Breaking migration (requires refitting before release):
+## Breaking changes and refitting
 
  - Remove MRMR's `return_scores` argument. `fit` always returns the selector, so replace tuple unpacking with `selector.fit(X, y)` followed by `selector.selected_features_`, `selector.relevance_` and `selector.redundancy_`; `ranking_` retains the combined scores. `fit_transform` and sklearn pipelines now share the same fit contract.
  - Recheck selections after the RNG changes. Leshy uses integer learner seeds on an owned clone, and GrootCV now seeds shadows as well as default folds. Read Leshy's runtime learner configuration from `estimator_`; `estimator` remains the caller's original object. Read the fitted importance method from `importance_`; Leshy and BoostAGroota no longer support FastTreeSHAP.
