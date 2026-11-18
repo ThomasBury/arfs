@@ -326,7 +326,9 @@ class Leshy(SelectorMixin, BaseEstimator):
         self.imp_real_hist = history
         confirmed, tentative = _get_confirmed_and_tentative(decisions)
         tentative = _select_tentative(tentative, history, thresholds)
-        self._calculate_support(confirmed, tentative, self.n_features_in_)
+        support, support_weak = self._calculate_support(
+            confirmed, tentative, self.n_features_in_
+        )
         self._calculate_relative_ranking(
             self.n_features_in_, tentative, confirmed, history
         )
@@ -336,18 +338,21 @@ class Leshy(SelectorMixin, BaseEstimator):
             .sort_values(ascending=False)
             .index
         )
-        self.selected_features_ = self.feature_names_in_[self.support_]
-        self.not_selected_features_ = self.feature_names_in_[~self.support_]
+        self.selected_features_ = self.feature_names_in_[support]
+        self.not_selected_features_ = self.feature_names_in_[~support]
+        self.n_features_ = int(support.sum())
+        self.support_weak_ = support_weak
         self.running_time = time.time() - start_time
         if self.verbose > 0:
             confirmed_count = np.count_nonzero(decisions == 1)
-            weak_count = np.count_nonzero(self.support_weak_)
+            weak_count = np.count_nonzero(support_weak)
             print(
                 f"Leshy finished running using {self.importance_} var. imp.\n"
                 f"Iteration: {self.n_iter_} / {self.max_iter}\n"
                 f"Confirmed: {confirmed_count}\nTentative: {weak_count}\n"
                 f"Rejected: {self.n_features_in_ - confirmed_count - weak_count}"
             )
+        self.support_ = support
         return self
 
     def __sklearn_is_fitted__(self):
@@ -629,19 +634,18 @@ class Leshy(SelectorMixin, BaseEstimator):
         n_feat : int
             Total number of features.
 
-        Notes
-        -----
-        Populates ``n_features_``, the selected-feature count, and the selected
-        and tentative masks ``support_`` and ``support_weak_``.
+        Returns
+        -------
+        support, support_weak : tuple of boolean arrays
+            The selected and tentative masks.
         """
-        # basic result variables
-        self.support_ = np.zeros(n_feat, dtype=bool)
-        self.support_weak_ = np.zeros(n_feat, dtype=bool)
-        self.support_[confirmed] = 1
-        self.support_weak_[tentative] = 1
+        support = np.zeros(n_feat, dtype=bool)
+        support_weak = np.zeros(n_feat, dtype=bool)
+        support[confirmed] = True
+        support_weak[tentative] = True
         if self.keep_weak:
-            self.support_[tentative] = 1
-        self.n_features_ = int(self.support_.sum())
+            support[tentative] = True
+        return support, support_weak
 
     def _calculate_relative_ranking(self, n_feat, tentative, confirmed, imp_history):
         """

@@ -189,6 +189,29 @@ def test_iteration_count_reporting_and_nan_history(monkeypatch, capsys, early_st
         check_is_fitted(selector)
 
 
+def test_summary_failure_leaves_leshy_unfitted(monkeypatch):
+    X, y, _ = data()
+    selector = a.Leshy(
+        lgb.LGBMRegressor(verbosity=-1, n_jobs=1),
+        n_estimators=4,
+        max_iter=2,
+        importance="native",
+        random_state=1,
+    ).fit(X, y)
+
+    def closed_pipe(*args, **kwargs):
+        raise BrokenPipeError("closed selector output")
+
+    monkeypatch.setattr(a, "print", closed_pipe, raising=False)
+    selector.set_params(verbose=1)
+    with pytest.raises(BrokenPipeError, match="closed selector output"):
+        selector.fit(X, y)
+    with pytest.raises(NotFittedError):
+        check_is_fitted(selector)
+    with pytest.raises(NotFittedError):
+        selector.transform(X)
+
+
 @pytest.mark.parametrize("task", ["regression", "binary", "multiclass"])
 @pytest.mark.parametrize("rf", [False, True])
 def test_shared_native_shap_matches_legacy_reduction(monkeypatch, task, rf):
