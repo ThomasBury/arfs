@@ -10,6 +10,7 @@ from pandas.testing import assert_frame_equal
 from scipy.stats import binom
 from sklearn.base import clone
 from sklearn.exceptions import NotFittedError
+from sklearn.utils.validation import check_is_fitted
 from statsmodels.stats.multitest import fdrcorrection
 
 from arfs.feature_selection import allrelevant as a
@@ -137,6 +138,14 @@ def test_decisions_match_independent_binomial_reference(two_step):
     assert_array_equal(expected, [1, -1, 0, 1, -1])
 
 
+def test_two_step_fdr_keeps_a_candidate_that_passes_the_iteration_cutoff_undecided():
+    selector = a.Leshy(lgb.LGBMRegressor(), two_step=True)
+    hits = np.full(100, 5)
+    hits[0] = 10
+    decisions = np.zeros(100, dtype=int)
+    assert_array_equal(selector._do_tests(decisions, hits, 10), np.zeros_like(decisions))
+
+
 @pytest.mark.parametrize("early_stop", [False, True])
 def test_iteration_count_reporting_and_nan_history(monkeypatch, capsys, early_stop):
     X, y, _ = data()
@@ -169,11 +178,15 @@ def test_iteration_count_reporting_and_nan_history(monkeypatch, capsys, early_st
     if not early_stop:
         assert np.isnan(selector.imp_real_hist[1:, 0]).all()
         assert all(np.isnan(real[0]) for real in real_vectors[1:])
+        assert not selector.get_support().any()
+        check_is_fitted(selector)
     selector.set_params(max_iter=1)
     with pytest.raises(ValueError, match="max_iter"):
         selector.fit(X, y)
     with pytest.raises(NotFittedError):
         selector.transform(X)
+    with pytest.raises(NotFittedError):
+        check_is_fitted(selector)
 
 
 @pytest.mark.parametrize("task", ["regression", "binary", "multiclass"])

@@ -109,9 +109,10 @@ GrootCV, a new method
 GrootCV uses LightGBM's native SHAP contributions. Remove the former
 ``fastshap`` argument from existing calls. Boosting-round limits in
 ``lgbm_params`` follow LightGBM's parameter precedence instead of being
-discarded. With no supplied limit, training uses a 10,000-round ceiling and
-20-round early stopping. Supplying a previously ignored limit can change
-selected features; refit and check downstream results.
+discarded. With no supplied limit, training uses a 10,000-round ceiling, with
+20-round early stopping where supported. Set an explicit ``num_iterations``
+for DART, which disables early stopping. A previously ignored limit can change
+selected features, so refit and check downstream results.
 
 New: GrootCV:
 
@@ -119,7 +120,7 @@ New: GrootCV:
 - SHAP importance is the mean absolute contribution over each fold's training
   rows, summed over outputs for multi-output models, then normalized across
   real and shadow features; a zero-total fold contributes zeros. Validation
-  rows drive early stopping.
+  rows drive early stopping where supported.
 - Take each feature's median across all folds and repeats, then the maximum
   shadow median divided by ``cutoff``. Keep positive real medians at or above
   this threshold. Summary columns do not enter either calculation.

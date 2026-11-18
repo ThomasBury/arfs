@@ -6,6 +6,8 @@ import pytest
 import shap
 from numpy.testing import assert_allclose, assert_array_equal
 from pandas.testing import assert_frame_equal
+from sklearn.exceptions import NotFittedError
+from sklearn.utils.validation import check_is_fitted
 
 from arfs.feature_selection import allrelevant as a
 
@@ -109,6 +111,32 @@ def test_iteration_limits_reach_training_and_leave_parameters_owned(
     )
     assert iterations == [maximum, maximum]
     assert params == before
+
+
+def test_failed_refit_preserves_previous_selection_and_feature_order():
+    rng = np.random.default_rng(7)
+    X = pd.DataFrame(rng.normal(size=(240, 2)), columns=["a", "b"])
+    y = 5 * X.a + rng.normal(scale=0.1, size=len(X))
+    selector = a.GrootCV(
+        objective="l2",
+        n_folds=2,
+        n_iter=1,
+        n_jobs=1,
+        lgbm_params={"num_iterations": 5, "min_data_in_leaf": 5},
+    )
+    with pytest.raises(NotFittedError):
+        check_is_fitted(selector)
+
+    selector.fit(X, y)
+    selected = selector.transform(X)
+    selected_names = selector.get_feature_names_out()
+    selector.set_params(lgbm_params={"num_iterations": 0})
+    with pytest.raises(ValueError, match="boosting rounds"):
+        selector.fit(X[["b", "a"]], y)
+
+    assert_array_equal(selector.feature_names_in_, X.columns)
+    assert_array_equal(selector.get_feature_names_out(), selected_names)
+    assert_frame_equal(selector.transform(X), selected)
 
 
 def test_native_explanations_use_early_stopping_best_iteration():

@@ -125,11 +125,11 @@ of being silently coerced. Selection operations require a successful fit.
 
 ## GrootCV, a new method
 
-GrootCV uses LightGBM's native SHAP contributions. Remove the former `fastshap` argument from existing calls. Boosting-round limits in `lgbm_params` now follow LightGBM precedence instead of being discarded; the fallback remains 10,000 rounds with 20-round early stopping. Refit and check selections when supplying these limits. Training-row explanations and the median-based shadow threshold are unchanged.
+GrootCV uses LightGBM's native SHAP contributions. Remove the former `fastshap` argument from existing calls. Boosting-round limits in `lgbm_params` follow LightGBM precedence. The fallback remains 10,000 rounds, with 20-round early stopping where supported. Set an explicit `num_iterations` for DART, which disables early stopping. Refit and check selections when supplying a round limit.
 
 **New: GrootCV**:
 
-  - Repeated-fold feature importance, based on LightGBM only. Validation rows drive early stopping; SHAP summaries use fold training rows.
+  - Repeated-fold feature importance, based on LightGBM only. Validation rows drive early stopping where supported, and SHAP summaries use fold training rows.
   - the feature importance is derived using SHAP importance
   - Take the maximum shadow median across folds/repeats, divided by `cutoff`, and retain real medians at or above it. This is an empirical threshold, not calibrated false-discovery control.
   - Not based on a given percentage of cols needed to be deleted

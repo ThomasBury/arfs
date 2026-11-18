@@ -350,6 +350,9 @@ class Leshy(SelectorMixin, BaseEstimator):
             )
         return self
 
+    def __sklearn_is_fitted__(self):
+        return hasattr(self, "support_")
+
     def transform(self, X):
         check_is_fitted(self, "support_")
         if not isinstance(X, pd.DataFrame):
@@ -1339,7 +1342,8 @@ class GrootCV(SelectorMixin, BaseEstimator):
     zero-total fold contributes zeros. Each feature's median is computed across
     all folds and repeats. Keep positive real medians at or above the maximum
     shadow median divided by cutoff.
-    Explanations use training rows; validation rows drive early stopping.
+    Explanations use training rows. Validation rows drive early stopping when
+    supported by the boosting type.
     This empirical threshold does not establish false-discovery control.
 
     Parameters
@@ -1375,7 +1379,8 @@ class GrootCV(SelectorMixin, BaseEstimator):
     lgbm_params : dict, default=None
         The parameters for the LightGBM model. Boosting-round limits and their
         aliases follow LightGBM precedence; the fallback ceiling is 10,000
-        rounds, with 20-round early stopping.
+        rounds, with 20-round early stopping where supported. Set an explicit
+        ``num_iterations`` for DART, which disables early stopping.
     random_state : int, RandomState instance or None, default=2652124
         Controls shadows and default repeated folds. An integer replays each
         fit; a RandomState instance advances across fits; None uses NumPy's
@@ -1466,7 +1471,6 @@ class GrootCV(SelectorMixin, BaseEstimator):
         if not isinstance(X, pd.DataFrame):
             raise TypeError("X is not a pandas DataFrame")
 
-        self.feature_names_in_ = X.columns.to_numpy()
         y = pd.Series(y) if not isinstance(y, pd.Series) else y
 
         y = validate_target(y, len(X))
@@ -1474,8 +1478,8 @@ class GrootCV(SelectorMixin, BaseEstimator):
         if sample_weight is not None:
             sample_weight = pd.Series(sample_weight)
 
-        self.random_state_ = check_random_state(self.random_state)
-        self.selected_features_, self.cv_df, self.sha_cutoff = _reduce_vars_lgb_cv(
+        random_state = check_random_state(self.random_state)
+        selected_features, cv_df, sha_cutoff = _reduce_vars_lgb_cv(
             X,
             y,
             objective=self.objective,
@@ -1488,22 +1492,30 @@ class GrootCV(SelectorMixin, BaseEstimator):
             rf=self.rf,
             lgbm_params=self.lgbm_params,
             n_jobs=self.n_jobs,
-            random_state=self.random_state_,
+            random_state=random_state,
         )
 
-        self.selected_features_ = self.selected_features_.values
-        self.support_ = np.asarray(
-            [c in self.selected_features_ for c in self.feature_names_in_]
-        )
-        self.ranking_ = np.where(self.support_, 1, 2)
-
-        self.ranking_absolutes_ = list(
-            self.cv_df.set_index("feature")["Med"]
-            .loc[self.feature_names_in_]
+        feature_names = X.columns.to_numpy()
+        selected_features = selected_features.to_numpy()
+        support = np.asarray([c in selected_features for c in feature_names])
+        ranking_absolutes = list(
+            cv_df.set_index("feature")["Med"]
+            .loc[feature_names]
             .sort_values(ascending=False)
             .index
         )
+        self.random_state_ = random_state
+        self.feature_names_in_ = feature_names
+        self.selected_features_ = selected_features
+        self.cv_df = cv_df
+        self.sha_cutoff = sha_cutoff
+        self.ranking_ = np.where(support, 1, 2)
+        self.ranking_absolutes_ = ranking_absolutes
+        self.support_ = support
         return self
+
+    def __sklearn_is_fitted__(self):
+        return hasattr(self, "support_")
 
     def _get_support_mask(self):
         check_is_fitted(self)
@@ -1524,6 +1536,7 @@ class GrootCV(SelectorMixin, BaseEstimator):
         X_selected : pd.DataFrame of shape (n_samples, n_selected_features)
             The selected features from the input dataframe.
         """
+        check_is_fitted(self)
         if not isinstance(X, pd.DataFrame):
             raise TypeError("X is not a dataframe")
         return X[self.selected_features_]
