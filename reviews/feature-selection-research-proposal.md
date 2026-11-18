@@ -283,8 +283,24 @@ for importance evaluation. For GrootCV, use three folds, one repeat and a
 threshold of 0.9; five-pair results provide a predeclared sensitivity check.
 
 Keep raw and normalized MMD values, the normalization denominator, and the
-full-versus-full correction. Preserve negative corrected estimates. Do not
-declare positive scores significant.
+full-versus-full correction. Preserve negative corrected estimates. For this
+screen, select at most one feature: the highest strictly positive raw corrected
+score, with ties broken by input column order. Use the same rule for the CART
+control. A run recovers the variance feature when it selects \(X_1\). With no
+positive score, select the empty set. For the bounded Gaussian kernel, mark
+normalized scores undefined when the denominator is at or below \(10^{-12}\).
+The raw-score rule still applies. This screen makes no significance claim.
+
+Fit each selector on training rows only. Freeze its selected columns, then fit
+a fresh Normal NGBoost predictor on the combined training and development rows
+using those columns. Use logarithmic loss, natural gradients, 100 boosting
+rounds, a learning rate of 0.01, and depth-three regression trees with at least
+10 observations per leaf. Use all rows and columns each round. An empty subset
+uses the empirical marginal distribution of those same responses. Use the same
+predictor and settings for the MMD, unchanged GrootCV, CPSS, CART, full and
+oracle subsets. Pair methods on the same rows and seed, and score the untouched
+evaluation rows with mean CRPS. Use learner seeds 11, 23 and 37 and record the
+dataset and split seeds before fitting. No settings are tuned on evaluation rows.
 
 ### Conditional extension after reviewing the first phase
 
@@ -356,8 +372,9 @@ expanding the project.
 Freeze these screening criteria before execution:
 
 - **Continue distributional research:** variance-feature recovery is at least
-  80% across dataset/seed runs, independent CRPS improves by at least 2% over the
-  corresponding mean-oriented selection baseline, and results survive the CART
+  80% across the 30 variance-only dataset/seed runs, and mean evaluation CRPS
+  on those runs is at least 2% lower than for the paired unchanged GrootCV
+  selections under the same predictor. Results must also survive the CART
   and NGBoost controls. Confirm any promising result using fresh replications.
 - **Continue stability work:** false selections fall by at least 50% in the
   extended null/additive assessment, with no more than a ten-percentage-point
