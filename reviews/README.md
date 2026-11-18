@@ -18,6 +18,10 @@ tracks two phases separately from the completed review queue.
 The separately authorized [exact Gower sampling optimization](gower-sampling-performance.md)
 records the native condensed implementation, full-sampler measurements and limits.
 
+The [feature-selection research proposal](feature-selection-research-proposal.md)
+assesses distributional importance and stability selection. It is separate from
+the completed review queue; experiments and implementation are not yet authorized.
+
 The [confirmed follow-up plan](REMEDIATION.md#confirmed-follow-up-plan) records
 only verified defects and measured costs from the 2026-10-17 report assessment.
 **C01–C06 are complete (C06 locally); no confirmed C follow-up remains.** These phases are separate
