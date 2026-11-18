@@ -111,6 +111,30 @@ def test_first_training_failure_leaves_selector_unfitted(monkeypatch, operation)
         getattr(selector, operation)(*args)
 
 
+@pytest.mark.parametrize(
+    "summary", ["BoostAGroota ran successfully", "The feature selection BoostAGroota running time"]
+)
+def test_summary_failure_leaves_boostagroota_unfitted(monkeypatch, summary):
+    X, y = data()
+    monkeypatch.setattr(a, "_get_shap_imp", lambda *args, **kwargs: np.ones(8))
+    selector = a.BoostAGroota(lgb.LGBMRegressor(), iters=1, max_rounds=1).fit(X, y)
+
+    def closed_pipe(message, *args, **kwargs):
+        if message.startswith(summary):
+            raise BrokenPipeError("closed selector output")
+
+    monkeypatch.setattr(a, "print", closed_pipe, raising=False)
+    selector.set_params(silent=False)
+    with pytest.raises(BrokenPipeError, match="closed selector output"):
+        selector.fit(X, y)
+    with pytest.raises(NotFittedError):
+        check_is_fitted(selector)
+    with pytest.raises(NotFittedError):
+        selector.get_support()
+    with pytest.raises(NotFittedError):
+        selector.transform(X)
+
+
 @pytest.mark.parametrize("kind", ["duplicate", "empty_width", "empty_rows", "array"])
 def test_invalid_frames_fail_before_training(monkeypatch, kind):
     X, y = data()

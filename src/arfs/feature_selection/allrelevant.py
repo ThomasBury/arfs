@@ -1118,8 +1118,8 @@ class BoostAGroota(SelectorMixin, BaseEstimator):
             columns=columns,
         )
         self.mean_shadow = threshold
-        self.support_ = X.columns.isin(keep_vars)
-        self.ranking_ = np.where(self.support_, 1, 2)
+        support = X.columns.isin(keep_vars)
+        self.ranking_ = np.where(support, 1, 2)
         if not self.silent:
             elapsed = (time.time() - start_time) / 60
             print(
@@ -1128,6 +1128,7 @@ class BoostAGroota(SelectorMixin, BaseEstimator):
             print(
                 f"The feature selection BoostAGroota running time is {elapsed:8.2f} min"
             )
+        self.support_ = support
         return self
 
     def _check_params(self, X, y):
