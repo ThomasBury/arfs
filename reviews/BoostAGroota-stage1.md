@@ -71,12 +71,15 @@ stopping decisions, history labels, support and rankings agree exactly.
 [Raw benchmark evidence](evidence/boostagroota-stage1/benchmark.json) records
 settings, versions, source hashes, timings, memory and full traces.
 
-Reproduce either snapshot by selecting its source directory with `PYTHONPATH`:
+The [Leshy reproduction steps](Leshy-stage1.md#reproduction) restore this
+benchmark's baseline in `$snapshots/leshy`. Extract the revised source from
+`d8aa054` with `git archive d8aa054 src`. Put the desired source directory on
+`PYTHONPATH`:
 
 ```sh
 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=1 MPLBACKEND=Agg \
-PYTHONPATH=src python tests/boostagroota_benchmark.py wide /tmp/boost-wide.json
+PYTHONPATH="$snapshots/leshy/src" python tests/boostagroota_benchmark.py wide /tmp/boost-wide.json
 ```
 
 Cases are `tall`, `wide`, `multiclass`, `forest` and `permutation`.

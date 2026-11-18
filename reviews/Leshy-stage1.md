@@ -9,7 +9,9 @@ from 947 to 544 lines, including docstrings.
 
 - Replace Leshy's `importance="fastshap"` with `importance="shap"`. SHAP, signed
   permutation importance (`"pimp"`) and native importance remain supported.
-  BoostAGroota and VariableImportance keep their optional FastTreeSHAP paths.
+  BoostAGroota still had FastTreeSHAP in the measured snapshot. In 5.0.0, use
+  `importance="shap"` for BoostAGroota as well. VariableImportance keeps its
+  optional FastTreeSHAP path.
 - Call `fit` instead of the removed `select_features` orchestration method.
   Constructor defaults, fitted result names, DataFrame transforms and plots retain
   their contracts. `n_features_in_` records input width and `n_iter_` records
@@ -95,8 +97,27 @@ initial measurements taken during concurrent suite execution.
 
 ## Reproduction
 
-The [benchmark runner](../tests/leshy_benchmark.py) runs against either source
-snapshot through `PYTHONPATH`. Each case performs three single-worker fits with
+Restore the measured sources from `ba5acb3` with the [GrootCV source patch](evidence/grootcv-stage1/source.patch)
+and the [Leshy source patch](evidence/leshy-stage1/source.patch). From the repository
+root, run these commands in a shell. The first tree is the Leshy baseline, and the
+second includes the Leshy cleanup.
+
+```sh
+repo=$(pwd)
+snapshots=$(mktemp -d)
+mkdir "$snapshots/grootcv" "$snapshots/leshy"
+git archive ba5acb3 src | tar -x -C "$snapshots/grootcv"
+git -C "$snapshots/grootcv" apply --unidiff-zero "$repo/reviews/evidence/grootcv-stage1/source.patch"
+cp -R "$snapshots/grootcv/src" "$snapshots/leshy/"
+git -C "$snapshots/leshy" apply --unidiff-zero "$repo/reviews/evidence/leshy-stage1/source.patch"
+sha256sum "$snapshots/grootcv/src/arfs/feature_selection/allrelevant.py" \
+  "$snapshots/leshy/src/arfs/feature_selection/allrelevant.py"
+```
+
+The hashes must match the baseline and revised values, respectively, in the
+[validation manifest](evidence/leshy-stage1/validation.json). The
+[benchmark runner](../tests/leshy_benchmark.py) uses either source snapshot
+through `PYTHONPATH`. Each case performs three single-worker fits with
 fixed seed 42 and verifies exact replay and input/estimator ownership. It records
 full importance histories, shadow thresholds, cumulative hits, decisions, learner
 seeds, masks, rankings and selected names alongside timings, source hashes and
@@ -106,7 +127,7 @@ exact agreement for discrete state and selected names.
 ```bash
 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=1 MPLBACKEND=Agg \
-PYTHONPATH=src python tests/leshy_benchmark.py wide /tmp/leshy-wide.json
+PYTHONPATH="$snapshots/leshy/src" python tests/leshy_benchmark.py wide /tmp/leshy-wide.json
 ```
 
 Cases are `tall`, `wide`, `multiclass`, `forest` and `permutation`. All include one

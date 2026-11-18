@@ -122,6 +122,7 @@ def run(case):
         if reference is not None:
             assert_frame_equal(selector.cv_df, reference)
         reference = selector.cv_df.copy()
+    peak_rss = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
     return {
         "case": case,
         "shape": list(X.shape),
@@ -142,7 +143,7 @@ def run(case):
             key: float(np.median([m[key] for m in measurements]))
             for key in measurements[0]
         },
-        "peak_process_rss_kib": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
+        "peak_process_rss_kib": peak_rss // 1024 if sys.platform == "darwin" else peak_rss,
         "selected_features": selector.selected_features_.tolist(),
         "shadow_cutoff": selector.sha_cutoff,
         "cv_df": selector.cv_df.to_dict(orient="list"),

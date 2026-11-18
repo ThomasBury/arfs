@@ -103,21 +103,28 @@ def run(case):
             "selected",
         ]:
             assert_array_equal(trace[key], traces[0][key])
+    first = traces[0]
+    first["history"] = [
+        [None if np.isnan(value) else value for value in row] for row in first["history"]
+    ]
+    peak_rss = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
     return {
         "case": case,
         "shape": list(X.shape),
         "times_seconds": times,
         "median_seconds": float(np.median(times)),
-        "peak_process_rss_kib": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
+        "peak_process_rss_kib": peak_rss // 1024 if sys.platform == "darwin" else peak_rss,
         "versions": {
             name: importlib.metadata.version(name)
             for name in ["numpy", "pandas", "lightgbm", "shap", "scikit-learn"]
         },
         "source_sha256": hashlib.sha256(Path(a.__file__).read_bytes()).hexdigest(),
         "settings": selector.get_params(deep=False) | {"estimator": repr(estimator)},
-        "trace": traces[0],
+        "trace": first,
     }
 
 
 if __name__ == "__main__":
-    Path(sys.argv[2]).write_text(json.dumps(run(sys.argv[1]), indent=2) + "\n")
+    Path(sys.argv[2]).write_text(
+        json.dumps(run(sys.argv[1]), indent=2, allow_nan=False) + "\n"
+    )

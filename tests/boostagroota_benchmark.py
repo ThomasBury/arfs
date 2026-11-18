@@ -121,12 +121,13 @@ def run(case):
                 assert current[key] == first[key]
         for key in trace.keys() - {"rounds"}:
             assert trace[key] == traces[0][key]
+    peak_rss = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
     return {
         "case": case,
         "shape": list(X.shape),
         "times_seconds": times,
         "median_seconds": float(np.median(times)),
-        "peak_process_rss_kib": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
+        "peak_process_rss_kib": peak_rss // 1024 if sys.platform == "darwin" else peak_rss,
         "versions": {
             name: importlib.metadata.version(name)
             for name in ["numpy", "pandas", "lightgbm", "shap", "scikit-learn"]

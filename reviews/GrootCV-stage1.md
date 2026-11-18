@@ -7,8 +7,10 @@ remains separate. Baseline: `ba5acb326dd1efc5ebc096c8d0f9864e25e288bb`.
 ## Changes and migration
 
 - Use native LightGBM SHAP contributions and separate training from explanation.
-  Remove GrootCV's `fastshap` constructor argument; delete it from existing calls.
-  Leshy, BoostAGroota and VariableImportance keep their optional backend paths.
+  Remove GrootCV's `fastshap` constructor argument from existing calls. Leshy and
+  BoostAGroota still had FastTreeSHAP in the measured snapshot. In 5.0.0, use
+  `importance="shap"` for those selectors. VariableImportance keeps its optional
+  backend.
 - Reduce contributions through one shared helper, checking shape and finiteness
   and removing the bias column from every native output block. Scores stay in
   input-column order; VariableImportance uses the same reducer.
@@ -18,8 +20,9 @@ remains separate. Baseline: `ba5acb326dd1efc5ebc096c8d0f9864e25e288bb`.
   plots retain their contracts.
 - Honor boosting-round parameters and aliases using LightGBM's precedence.
   No supplied limit still means a 10,000-round ceiling with 20-round early
-  stopping. Previously ignored limits can now change selections; refit and check
-  downstream results. Dependencies, exports and version are unchanged.
+  stopping where supported. DART disables early stopping. Set an explicit round
+  limit for it. Previously ignored limits can change selections, so refit and
+  check downstream results.
 
 The aggregation rule, categorical roles, fold and shadow RNG policies,
 equal-row explanation averages and zero/nonfinite handling are unchanged.
@@ -62,12 +65,14 @@ medians, versions, source hashes, settings, memory and comparison results.
 Aggregation/bookkeeping time is the residual after timed preparation, training
 and explanation; it is not an isolated aggregation-kernel measurement.
 
-Reproduce one snapshot with the desired source directory on `PYTHONPATH`:
+Use `git archive ba5acb3 src` for the baseline. The [Leshy reproduction steps](Leshy-stage1.md#reproduction)
+restore the revised GrootCV source in `$snapshots/grootcv`. Put the desired
+source directory on `PYTHONPATH`:
 
 ```bash
 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
 NUMBA_NUM_THREADS=1 LOKY_MAX_CPU_COUNT=1 MPLBACKEND=Agg \
-PYTHONPATH=src python tests/grootcv_benchmark.py wide /tmp/grootcv-wide.json
+PYTHONPATH="$snapshots/grootcv/src" python tests/grootcv_benchmark.py wide /tmp/grootcv-wide.json
 ```
 
 ## Verification
