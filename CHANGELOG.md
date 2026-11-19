@@ -4,6 +4,12 @@
 
 # 5.0.0 — 2026-11-19
 
+## Upgrading to 5.0
+
+- **FastTreeSHAP.** The [Python 3.10 documentation check](./reviews/07-final-assessment.md#compatibility-matrix) could not resolve a usable FastTreeSHAP wheel. Replace `importance="fastshap"` with `importance="shap"` for Leshy and BoostAGroota. Remove `fastshap` from GrootCV calls. `VariableImportance` retains the optional `fastshap` argument and defaults it to `False`.
+
+## Release details
+
 - Simplify BoostAGroota to array-based round aggregation and construct its final diagnostic table once. Build shared shadow frames in one pass while preserving dtypes and RNG draws. Remove BoostAGroota's `importance="fastshap"` mode; use `"shap"` instead. Validate current parameters during `fit`, reject invalid iteration counts, require completed fitting for selection operations, and expose `n_rounds_` and `n_features_in_`. Constructor defaults, selection rules, learner seeds and fixed validation splits are unchanged.
 
 - Simplify Leshy's selection loop and collect importance history once. Use native LightGBM SHAP contributions in the shared Leshy/BoostAGroota helper, preserving the fixed validation split and aggregation conventions. Replace Leshy's `importance="fastshap"` with `"shap"` and call `fit` instead of the removed `select_features` method. Validate current parameters during fitting, raise `NotFittedError` before selection operations, and expose `n_iter_` and `n_features_in_`. Correct automatic tree sizing for unlimited depth; refit and recheck selections when using `n_estimators="auto"`.

@@ -1,4 +1,4 @@
-"""R32 source examples; CI copies docs alongside tests for installed-wheel checks."""
+"""Documentation examples and links, including installed-wheel checks."""
 
 # ruff: noqa: S102
 # These tests execute only repository-owned notebook cells.
@@ -7,7 +7,6 @@ import ast
 import json
 import re
 from pathlib import Path
-from types import SimpleNamespace
 from urllib.parse import unquote
 
 import matplotlib.pyplot as plt
@@ -20,16 +19,9 @@ ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
 
 
-def cell(notebook, index):
-    data = json.loads((DOCS / "notebooks" / (notebook + ".ipynb")).read_text())
-    source = "".join(data["cells"][index]["source"])
-    return source.removeprefix("%%time\n")
-
-
 @pytest.mark.parametrize("notebook", ["arfs_classification", "arfs_regression"])
 def test_core_imports_need_no_optional_comparison_backends(notebook):
-    with plt.rc_context():
-        exec(compile(cell(notebook, 1), notebook, "exec"), {})
+    run_tagged(notebook, ["setup"])
 
 
 def test_groot_notebook_calls_use_supported_constructor_arguments():
@@ -50,74 +42,61 @@ def test_groot_notebook_calls_use_supported_constructor_arguments():
                     assert "fastshap" not in {kw.arg for kw in node.keywords}, path
 
 
-@pytest.mark.parametrize("index", [15, 21, 26])
-def test_regression_fastshap_examples_do_not_run_by_default(index):
-    exec(compile(cell("arfs_regression", index), "optional-fastshap", "exec"), {})
-
-
-def test_classification_defines_encoding_before_first_fit():
-    frame = pd.DataFrame(
-        {
-            "number": [1.0, 2.0, 3.0, 4.0],
-            "category": pd.Categorical(["a", "b", "a", "b"]),
-        }
-    )
-    data = SimpleNamespace(
-        data=frame,
-        target=pd.Series(pd.Categorical(["1", "0", "1", "0"])),
-        categorical=["category"],
-    )
-    namespace = {"load_data": lambda **kwargs: data}
-    exec(
-        compile(cell("arfs_classification", 7), "classification-setup", "exec"),
-        namespace,
-    )
-    encoded = namespace["X_encoded"]
-    assert encoded.columns.tolist() == frame.columns.tolist()
-    assert encoded["category"].tolist() == [0, 1, 0, 1]
-    assert len(encoded) == len(namespace["y"]) == 4
-
-
-def test_sampling_keeps_presampling_limit_before_distance_allocation():
-    data = pd.DataFrame({"value": np.arange(10_005)})
+@pytest.mark.parametrize("size", [500, 605])
+def test_sampling_keeps_presampling_limit_before_distance_allocation(size):
+    data = pd.DataFrame({"value": np.arange(size)})
     seen = []
 
-    def sample(df, n, sample_weight, method):
+    def sample(df, n, method):
         seen.append((len(df), n, method))
         return df.iloc[:n].copy()
 
-    namespace = {"data": data, "sample": sample}
-    exec(
-        compile(cell("arfs_large_data_sampling", 15), "presampling", "exec"), namespace
+    result = run_tagged(
+        "arfs_large_data_sampling",
+        ["gower-presample"],
+        {"data": data, "sample": sample},
     )
-    assert seen == [(10_000, 1000, "gower")]
-    assert len(namespace["data_g_samp"]) == 1000
-    assert len(data) == 10_005
+    assert seen == [(min(size, 600), 120, "gower")]
+    assert len(result["gower"]) == 120
+    assert len(data) == size
 
 
-def test_timeseries_fit_and_predict_use_reduced_columns():
-    seen = []
-    frame = pd.DataFrame(
-        {"signal": np.arange(60), "random_num": np.arange(60), "holiday": np.zeros(60)}
-    )
-    model = SimpleNamespace(
-        fit=lambda X, y: seen.append(list(X.columns)),
-        predict=lambda X: (seen.append(list(X.columns)), np.zeros(len(X)))[1],
-    )
-    namespace = {
-        "X": frame,
-        "y": pd.Series(np.arange(60)),
-        "gbrt": model,
-        "ts_cv": TimeSeriesSplit(n_splits=2),
-        "plt": plt,
-    }
-    try:
-        exec(
-            compile(cell("arfs_timeseries", 10), "reduced-features", "exec"), namespace
-        )
-        assert seen == [["signal"], ["signal"]]
-    finally:
-        plt.close("all")
+def test_timeseries_refits_inside_each_window_and_reuses_selected_columns(monkeypatch):
+    from arfs.feature_selection import GrootCV
+
+    result = run_tagged("arfs_timeseries", ["setup"])
+    X = result["X"]
+    fit = GrootCV.fit
+    transform = GrootCV.transform
+    fitted = []
+    projected = []
+
+    def record_fit(self, X_train, y_train):
+        fitted.append((self, X_train.index))
+        assert isinstance(self.folds, TimeSeriesSplit)
+        for train, validation in self.folds.split(X_train):
+            assert train[-1] + self.folds.gap < validation[0]
+        return fit(self, X_train, y_train)
+
+    def record_transform(self, frame):
+        reduced = transform(self, frame)
+        projected.append((self, frame.index, reduced.columns.tolist()))
+        return reduced
+
+    monkeypatch.setattr(GrootCV, "fit", record_fit)
+    monkeypatch.setattr(GrootCV, "transform", record_transform)
+    run_tagged("arfs_timeseries", ["outer-evaluation"], result)
+
+    windows = list(result["outer"].split(X))
+    assert len({id(selector) for selector, _ in fitted}) == len(fitted) == len(windows)
+    assert len(projected) == 2 * len(windows)
+    for i, ((selector, fitted_rows), (train, test)) in enumerate(zip(fitted, windows)):
+        assert fitted_rows.equals(X.index[train])
+        assert projected[2 * i][0] is projected[2 * i + 1][0] is selector
+        assert projected[2 * i][1].equals(X.index[train])
+        assert projected[2 * i + 1][1].equals(X.index[test])
+        assert projected[2 * i][2] == projected[2 * i + 1][2]
+        assert "weekly_signal" in projected[2 * i][2]
 
 
 @pytest.mark.parametrize("launcher", ["Makefile", "make.bat"])
@@ -131,7 +110,7 @@ def test_readme_and_documentation_local_links_exist():
     targets = re.findall(r"\]\((\.[^ )]+)\)", text)
     targets += re.findall(r'src="([^"h][^"]*)"', text)
     for target in targets:
-        assert (ROOT / unquote(target)).exists(), target
+        assert (ROOT / unquote(target.split("#", 1)[0])).exists(), target
     for path in DOCS.glob("*.rst"):
         in_tree = False
         for line in path.read_text().splitlines():

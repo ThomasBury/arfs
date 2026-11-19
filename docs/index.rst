@@ -35,28 +35,29 @@ inside each training split and reuse them to transform held-out rows. Use
 
 
 .. toctree::
-   :maxdepth: 4
-   :glob:
-   :caption: Tutorials
+   :maxdepth: 2
+   :caption: Core tutorials
 
-   notebooks/preprocessing.ipynb
+   notebooks/arfs_regression.ipynb
+   notebooks/arfs_classification.ipynb
    notebooks/basic_feature_selection.ipynb
    notebooks/association_and_feature_selection.ipynb
-   notebooks/arfs_classification.ipynb
-   notebooks/arfs_regression.ipynb
-   notebooks/arfs_timeseries.ipynb
-   notebooks/arfs_large_data_sampling.ipynb
-   notebooks/arfs_on_GPU.ipynb
-   notebooks/arfs_shap_vs_fastshap.ipynb
-   notebooks/arfs_grootcv_custom_params.ipynb
-   notebooks/arfs_boruta_borutaShap_comparison.ipynb
-   notebooks/arfs_non_normal_loss_and_sample_weight.ipynb
-   notebooks/mrmr_feature_selection.ipynb
-   notebooks/mrmr_fs_VS_arfs.ipynb
+   notebooks/preprocessing.ipynb
    notebooks/lasso_feature_selection.ipynb
+   notebooks/mrmr_feature_selection.ipynb
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Advanced tutorials
+
+   notebooks/mrmr_fs_VS_arfs.ipynb
    notebooks/issue_categoricals.ipynb
    notebooks/issue_collinearity.ipynb
-   
+   notebooks/arfs_grootcv_custom_params.ipynb
+   notebooks/arfs_timeseries.ipynb
+   notebooks/arfs_large_data_sampling.ipynb
+   notebooks/arfs_non_normal_loss_and_sample_weight.ipynb
+
 Indices and tables
 ==================
 

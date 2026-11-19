@@ -59,21 +59,17 @@ to run the tutorials and build the docs.
 
 ## Tutorials
 
- - [Preprocessing](./docs/notebooks/preprocessing.ipynb)
- - [Basic FS (best before ARFS)](./docs/notebooks/basic_feature_selection.ipynb)
- - [Regression](./docs/notebooks/arfs_regression.ipynb)
- - [Classification](./docs/notebooks/arfs_classification.ipynb)
- - [LASSO and (G)LM feature selection](./docs/notebooks/lasso_feature_selection.ipynb)
- - [Passing custom params](./docs/notebooks/arfs_grootcv_custom_params.ipynb)
- - [Non-normal loss and sample weights](./docs/notebooks/arfs_non_normal_loss_and_sample_weight.ipynb)
- - [ARFS on GPU](./docs/notebooks/arfs_on_GPU.ipynb)
- - [GrootCV native SHAP](./docs/notebooks/arfs_shap_vs_fastshap.ipynb)
- - [Categoricals](./docs/notebooks/issue_categoricals.ipynb)
- - [Collinearity](./docs/notebooks/issue_collinearity.ipynb)
- - [Reducing run time for large data](./docs/notebooks/arfs_large_data_sampling.ipynb)
- - [Comparison to Boruta and BorutaShap](./docs/notebooks/arfs_boruta_borutaShap_comparison.ipynb)
- - [MRmr alternative](./docs/notebooks/mrmr_feature_selection.ipynb)
- - [MRmr vs ARFS](./docs/notebooks/mrmr_fs_VS_arfs.ipynb)
+- [Regression](./docs/notebooks/arfs_regression.ipynb) and [classification](./docs/notebooks/arfs_classification.ipynb)
+- [Basic feature selection](./docs/notebooks/basic_feature_selection.ipynb) and [association](./docs/notebooks/association_and_feature_selection.ipynb)
+- [Preprocessing](./docs/notebooks/preprocessing.ipynb), [Lasso](./docs/notebooks/lasso_feature_selection.ipynb) and [MRMR](./docs/notebooks/mrmr_feature_selection.ipynb)
+
+### Advanced tutorials
+
+- [MRMR versus all-relevant selection](./docs/notebooks/mrmr_fs_VS_arfs.ipynb)
+- [Categorical predictors](./docs/notebooks/issue_categoricals.ipynb) and [collinearity](./docs/notebooks/issue_collinearity.ipynb)
+- [GrootCV parameters](./docs/notebooks/arfs_grootcv_custom_params.ipynb)
+- [Time-series evaluation](./docs/notebooks/arfs_timeseries.ipynb) and [row sampling](./docs/notebooks/arfs_large_data_sampling.ipynb)
+- [Poisson loss and exposure weights](./docs/notebooks/arfs_non_normal_loss_and_sample_weight.ipynb)
 
 ## Method origins
 
