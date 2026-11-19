@@ -1,9 +1,31 @@
 # ARFS feature selection
 
-Install ARFS 5.0.1 from GitHub to run the examples below.
+<img src="logo.png" alt="ARFS logo" width="200" />
+
+[Web documentation](https://arfs.readthedocs.io/en/latest/) ·
+[PyPI](https://pypi.org/project/arfs/) ·
+[Downloads](https://pepy.tech/project/arfs) ·
+[Support ARFS on Ko-fi](https://ko-fi.com/V7V72SOHX)
+
+## Installation
+
+Add ARFS to a uv project that supports Python 3.9–3.12.
 
 ```sh
-pip install https://github.com/ThomasBury/arfs/releases/download/5.0.1/arfs-5.0.1-py3-none-any.whl
+uv add arfs
+```
+
+If you use pip, run this in your Python environment.
+
+```sh
+python -m pip install arfs
+```
+
+The examples below use ARFS 5.0.1. If PyPI still offers an older version,
+install the [5.0.1 release wheel](https://github.com/ThomasBury/arfs/releases/tag/5.0.1).
+
+```sh
+python -m pip install https://github.com/ThomasBury/arfs/releases/download/5.0.1/arfs-5.0.1-py3-none-any.whl
 ```
 
 ## First fit with GrootCV
