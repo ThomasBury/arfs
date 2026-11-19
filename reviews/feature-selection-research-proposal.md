@@ -270,11 +270,12 @@ Use 10 independently generated datasets per mechanism, three learner seeds per
 dataset, 800 training rows, 400 development rows and 2,000 independent evaluation
 rows, with 12 numeric predictors.
 
-Start with:
+For both mechanisms, draw all 12 predictors independently from the standard
+normal distribution, and draw an independent standard normal \(Z\) for each
+row. Start with:
 
 - **Null:** \(Y=Z\), independent of every predictor.
-- **Variance only:** \(Y=\exp(0.8X_1)Z\), with centered independent predictors
-  and \(Z\sim N(0,1)\).
+- **Variance only:** \(Y=\exp(0.8X_1)Z\).
 
 Freeze the protocol before results. Use 100-tree DRFs, honest splitting, fixed
 kernel bandwidth learned from training responses, and exact kernel calculations
@@ -303,6 +304,8 @@ evaluation rows with mean CRPS. Use learner seeds 11, 23 and 37. Use dataset
 seeds 100–109 for the null mechanism and 200–209 for the variance mechanism.
 For each dataset, generate training, development and evaluation rows separately
 with seeds equal to ten times the dataset seed plus 0, 1 and 2, respectively.
+For each split, use NumPy's PCG64 generator to draw the predictor matrix in row
+order, then draw the vector of independent \(Z\) values.
 No settings are tuned on evaluation rows.
 
 ### Conditional extension after reviewing the first phase
