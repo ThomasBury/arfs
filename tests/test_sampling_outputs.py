@@ -183,23 +183,34 @@ def test_invalid_feature_schema_rejected(method):
 
 
 @pytest.mark.parametrize("dtype", [object, "category", "string"])
-def test_isolation_category_vocabulary_excludes_zero_weight_rows(monkeypatch, dtype):
-    X = pd.DataFrame({"c": pd.Series(["a", "b", "c", "d", "a"], dtype=dtype)})
-    X.index = [8, 8, 30, 90, 50]
+def test_isolation_category_codes_preserve_missingness_and_fit_vocabulary(
+    monkeypatch, dtype
+):
+    values = ["a", "b", np.nan, "nan", None, pd.NA, "a"]
+    X = pd.DataFrame({"c": pd.Series(values, dtype=dtype)})
+    X.index = [8, 8, 30, 90, 50, 60, 70]
     before = X.copy(deep=True)
     seen = {}
 
-    def select(encoded, sample_weight, random_state=None):
-        seen["codes"] = encoded.c.to_numpy()
+    def fit(self, encoded, y=None, sample_weight=None):
+        seen["fit_codes"] = encoded.c.to_numpy()
         seen["weights"] = sample_weight
-        return np.array([1, 2])
+        return self
 
-    monkeypatch.setattr(sampling, "isof_find_sample", select)
-    weights = [1, 0, 1, 1, 0]
-    result = sampling.sample(X, sample_weight=weights, method="isoforest")
-    assert_array_equal(seen["codes"], [0, -1, 1, 2, 0])
-    assert_array_equal(seen["weights"], weights)
-    assert_frame_equal(result, X.iloc[[1, 2]])
+    def score_samples(self, encoded):
+        seen["score_codes"] = encoded.c.to_numpy()
+        return np.zeros(len(encoded))
+
+    monkeypatch.setattr(sampling.IsolationForest, "fit", fit)
+    monkeypatch.setattr(sampling.IsolationForest, "score_samples", score_samples)
+    result = sampling.sample(
+        X, sample_weight=[1, 0, 2, 3, 4, 5, 0], method="isoforest", random_state=0
+    )
+    assert_array_equal(seen["fit_codes"], [0, -1, 1, -1, -1])
+    assert_array_equal(seen["score_codes"], [0, -1, -1, 1, -1, -1, 0])
+    assert_array_equal(seen["weights"], [1, 2, 3, 4, 5])
+    selected = np.random.RandomState(0).choice(len(X), size=1, replace=False)
+    assert_frame_equal(result, X.iloc[selected])
     assert_frame_equal(X, before)
 
 

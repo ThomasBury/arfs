@@ -17,7 +17,7 @@ matplotlib==3.11.2
 narwhals==2.27.1
 numpy==2.5.4
 packaging==26.3
-pandas==3.0.6
+pandas==3.1.1
 patsy==1.0.3
 pillow==12.3.0
 pluggy==1.6.0

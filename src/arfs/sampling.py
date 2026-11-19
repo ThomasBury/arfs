@@ -46,7 +46,7 @@ def sample(df, n=1000, sample_weight=None, method="gower", random_state=None):
     sample_weight : pd.Series or np.array, optional
         Positional observation weights for the isolation forest fit only.
         Zero-weight rows are omitted from its category vocabulary and fit;
-        unseen score-only categories use code -1.
+        missing categorical values and unseen score-only categories use code -1.
         Its subset draws and KS screen are unweighted. Gower representatives
         reject row weights; direct gower_matrix has separate feature weights.
     method : str, optional
@@ -122,7 +122,7 @@ def sample(df, n=1000, sample_weight=None, method="gower", random_state=None):
             return df.copy()
         fit_rows = slice(None) if sample_weight is None else sample_weight > 0
         for col in non_num_cols:
-            values = X[col].astype("str")
+            values = X[col].astype("string")
             categories = values.iloc[fit_rows].astype("category").cat.categories
             X[col] = categories.get_indexer(values)
         idx = isof_find_sample(
