@@ -1,41 +1,56 @@
-Documentation workflows
-=======================
+Contributing and documentation workflows
+========================================
 
-Runtime validation
-------------------
+Use Python 3.12, ``uv`` and the system ``pandoc`` executable on your PATH.
+For example, on Debian or Ubuntu, install it with ``sudo apt install pandoc``.
+Clone the repository and install the locked documentation and test groups:
 
-The installed-wheel checks use Linux x86_64, with locked dependencies on CPython
-3.9, 3.10, 3.11 and 3.12, exact direct runtime minima on 3.9, and a separately
-pinned newer snapshot on 3.12. The requirement files under
-``.github/requirements/`` identify the minimum and newer snapshots; ``uv.lock``
-identifies the locked dependencies. The newer pins require Python 3.12 and
-must not be copied to earlier interpreters. The metadata range
-``>=3.9,<3.13`` does not certify every dependency combination or platform.
+.. code-block:: sh
 
-GPU/CUDA, Windows/macOS, other architectures, CatBoost/XGBoost, FastTreeSHAP
-and live HoloViews/Panel plots need separate execution before claiming support.
-Missing optional-backend errors are tested; that does not test
-the backends themselves. Persistence checks use fresh processes in the same
-environment, trusted artifacts and new prediction rows; they do not promise
-cross-version compatibility or safe loading of untrusted pickle files.
+   git clone https://github.com/ThomasBury/arfs.git
+   cd arfs
+   uv sync --python 3.12 --locked --group docs --group test
+   uv run --no-sync python -m pytest tests/test_documentation_workflows.py -q
 
-Selection experiments
----------------------
+Run the notebooks locally
+-------------------------
 
-The R33 release-evidence handoff records a fixed ten-seed screen of strong,
-null, weak, correlated, mixed-type, weighted and interacting signals for
-regression and binary classification. Selectors and category encoders learn
-only from each outer training split. The independent evaluation rows compare
-dummy, all-feature, univariate and known-signal baselines using mean squared
-error or binary log loss. Weighted cases use the same covariate-based weights
-for training and evaluation. No setting is chosen from evaluation outcomes.
+From the checkout root, register the project Python for this run and execute
+the notebooks in fresh kernels. The command writes review copies to
+``docs/_build/notebooks``; inspect their figures and tables before updating saved
+outputs in ``docs/notebooks``.
 
-These small synthetic experiments measure behavior for the recorded settings.
-They do not calibrate false-discovery control, certify weak-signal recovery,
-or establish superiority over other selectors, encodings or unweighted fits.
-An empty selection uses the dummy predictor for evaluation. In cross-validation
-or tuning, repeat preprocessing and selection inside every outer training fold.
-GrootCV's internal folds do not replace an untouched outer evaluation set.
+.. code-block:: sh
+
+   uv run --no-sync python -m ipykernel install --prefix docs/_build/kernels --name arfs-docs
+   JUPYTER_PATH="$PWD/docs/_build/kernels/share/jupyter" \
+     OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+     uv run --no-sync python -m nbconvert --to notebook --execute \
+     --ExecutePreprocessor.kernel_name=arfs-docs --ExecutePreprocessor.timeout=120 \
+     --output-dir docs/_build/notebooks docs/notebooks/*.ipynb
+
+The walkthroughs use local fixtures. The association notebook ends with the
+optional PPS reference and explains its released dependency requirement.
+
+Build and check HTML
+--------------------
+
+.. code-block:: sh
+
+   uv run --no-sync python -m sphinx -W --keep-going -b html docs docs/_build/html
+
+Open ``docs/_build/html/index.html`` and check the tutorial links and rendered
+outputs. Sphinx renders the saved outputs in ``docs/notebooks``. Notebook code
+runs in the separate command above. Read the Docs uses Python 3.12, system
+Pandoc and the locked ``docs`` group.
+
+The ``docs`` and ``test`` groups are for contributors. If you change their
+requirements, update ``uv.lock`` with ``uv lock`` and run ``uv lock --check``.
+Use these review records for earlier execution ledgers and the runtime matrix:
+
+* `Documentation workflows <https://github.com/ThomasBury/arfs/blob/main/reviews/R32-documentation-workflows.md>`_
+* `Tree preprocessing <https://github.com/ThomasBury/arfs/blob/main/reviews/tree-preprocessing.md>`_
+* `Release validation <https://github.com/ThomasBury/arfs/blob/main/reviews/R33-release-evidence.md>`_
 
 Opt-in MRMR row sampling
 ------------------------
@@ -68,43 +83,6 @@ inside the training fold. Row sampling does not reduce the redundancy table's
 feature-count cost. For p available predictors and k selected features, the table
 retains k - 1 selected-feature columns (none for k = 0), requiring O(p k) values. Input
 frames and temporary association calculations add to total process memory.
-
-Build HTML locally
-------------------
-
-Use Python 3.12 and install the system ``pandoc`` executable on PATH. The Python
-package named ``pandoc`` is not a substitute for that executable. Read the Docs
-installs the system package and the project's ``docs`` dependency group using
-``uv sync`` and ``uv.lock``; FastTreeSHAP is not part of either the core examples
-or the documentation build.
-
-From the checkout root:
-
-.. code-block:: sh
-
-   uv sync --locked --group docs --group test
-   uv run --no-sync python -m pytest tests/test_documentation_workflows.py -q
-   uv run --no-sync make -C docs html
-
-The ``docs`` and ``test`` groups contain contributor tools and are not published
-as package extras. Add documentation dependencies with
-``uv add --group docs <package>``. After manually editing ``pyproject.toml``, run
-``uv lock`` and commit both files together; ``uv lock --check`` verifies they
-agree without changing the lockfile. Reserve ``[project.optional-dependencies]``
-and ``uv add --optional <extra>`` for optional features installed by package
-users with ``pip install 'arfs[<extra>]'``.
-
-HTML is written to ``docs/_build/html``. On Windows, run ``make.bat html`` from
-``docs`` after activating the same environment. The Windows launcher has the
-same source path but has not been executed on Windows.
-
-The build renders saved notebook outputs without executing cells. The core
-tutorials use local fixtures. The association notebook ends with an optional
-PPS reference and explains its dependency constraint.
-
-The earlier execution ledgers are in the review records for
-`documentation workflows <https://github.com/ThomasBury/arfs/blob/main/reviews/R32-documentation-workflows.md>`_
-and `tree preprocessing <https://github.com/ThomasBury/arfs/blob/main/reviews/tree-preprocessing.md>`_.
 
 Sampling limits
 ---------------

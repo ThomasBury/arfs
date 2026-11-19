@@ -3,7 +3,9 @@ ARFS feature selection
 
 ARFS provides feature selection and preprocessing for pandas data. Start with
 the `offline GrootCV example <https://github.com/ThomasBury/arfs#first-fit-with-grootcv>`_
-to fit a selector and reuse it on held-out rows.
+to fit a selector and reuse it on held-out rows. See
+`Upgrading to 5.0 <https://github.com/ThomasBury/arfs/blob/main/CHANGELOG.md#upgrading-to-50>`_
+for migration steps.
 
 Choose a method
 ---------------

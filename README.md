@@ -54,8 +54,9 @@ and the training split. Use the held-out rows to evaluate a downstream model
 after selection.
 
 Start with the [method chooser](https://arfs.readthedocs.io/en/latest/) to pick
-a selector for your task, or see the [local documentation workflow](./docs/workflows.rst)
-to run the tutorials and build the docs.
+a selector for your task. See [Upgrading to 5.0](./CHANGELOG.md#upgrading-to-50)
+for migration steps and the [contributor guide](./docs/workflows.rst) to run
+the tutorials and build the docs.
 
 ## Tutorials
 
