@@ -163,9 +163,12 @@ def create_dtype_dict(df: pd.DataFrame, dic_keys: str = "col_names") -> dict:
     time_cols = df.select_dtypes(
         include=["datetime", "timedelta", "datetimetz"]
     ).columns
-    numerical_interval_cols = df.select_dtypes(
-        ["Interval[float]", "Interval[int]"]
-    ).columns
+    numerical_interval_cols = df.columns[
+        [
+            isinstance(dtype, pd.IntervalDtype) and dtype.subtype.kind in "iuf"
+            for dtype in df.dtypes
+        ]
+    ]
     numerical_cols = df.select_dtypes(include=np.number).columns
     remaining_cols = (
         df.columns.difference(categorical_cols)

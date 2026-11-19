@@ -22,7 +22,8 @@ def categorical_series(dtype, name="cat"):
     return pd.Series(values, dtype=dtype, name=name)
 
 
-def test_shared_dtype_groups_preserve_numeric_time_and_interval_roles():
+@pytest.mark.parametrize("closed", ["left", "right", "both", "neither"])
+def test_shared_dtype_groups_preserve_numeric_time_and_interval_roles(closed):
     X = pd.DataFrame(
         {str(dtype): categorical_series(dtype) for dtype in CATEGORICAL_DTYPES}
     )
@@ -31,7 +32,14 @@ def test_shared_dtype_groups_preserve_numeric_time_and_interval_roles():
     X["float"] = pd.Series(range(6), dtype="Float64")
     X["time"] = pd.date_range("2020", periods=6, tz="UTC")
     X["delta"] = pd.to_timedelta(range(6), unit="D")
-    X["interval"] = pd.arrays.IntervalArray.from_breaks(np.arange(7.0))
+    for name, breaks in {
+        "int_interval": np.arange(7, dtype=np.int64),
+        "uint_interval": np.arange(7, dtype=np.uint64),
+        "float_interval": np.arange(7.0),
+        "time_interval": pd.date_range("2020", periods=7),
+        "delta_interval": pd.to_timedelta(range(7), unit="D"),
+    }.items():
+        X[name] = pd.arrays.IntervalArray.from_breaks(breaks, closed=closed)
     X["unknown"] = pd.period_range("2020", periods=6, freq="M")
     before = X.copy(deep=True)
     groups = utils.create_dtype_dict(X, "dtypes")
@@ -39,8 +47,8 @@ def test_shared_dtype_groups_preserve_numeric_time_and_interval_roles():
         "cat": [str(dtype) for dtype in CATEGORICAL_DTYPES] + ["numeric_category"],
         "num": ["integer", "float", "delta"],
         "time": ["time", "delta"],
-        "num_interval": ["interval"],
-        "unk": ["unknown"],
+        "num_interval": ["int_interval", "uint_interval", "float_interval"],
+        "unk": ["delta_interval", "time_interval", "unknown"],
     }
     assert utils.create_dtype_dict(X) == {
         col: kind for kind, cols in groups.items() for col in cols

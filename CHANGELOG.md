@@ -2,7 +2,24 @@
 
 # Unreleased
 
+# 5.0.1 — 2026-11-19
+
+- Fix column type detection on pandas 3.1.1, including numeric interval columns.
+- Keep missing categories distinct from literal strings such as `"nan"` in isolation forest sampling. Missing values and categories seen only in zero-weight rows use code `-1`. Recheck sampled rows if your categorical columns contain missing values.
+- Add an offline first fit, a method chooser, and a contributor guide. Refresh the core and advanced tutorials with runnable examples.
+
 # 5.0.0 — 2026-11-19
+
+## Upgrading to 5.0
+
+- **Leshy and BoostAGroota.** Replace `importance="fastshap"` with `importance="shap"` and replace Leshy's `select_features` call with `fit`. Refit and recheck selections after changes to Leshy's automatic tree count and seeding. Read fitted Leshy configuration from `estimator_` and the fitted importance method from `importance_`. Read BoostAGroota's `sha_cutoff_df` as a final-round table.
+- **GrootCV.** Remove the `fastshap` argument. Refit and recheck selections because classification folds, shadow seeds and boosting limits can change the result. Reduce `n_folds` or supply custom folds for rare classes. Supply a reusable splitter or list for repeated fits, and set `num_iterations` explicitly with DART.
+- **VariableImportance.** Use the default `fastshap=False`. The argument is still available as an opt-in. The [Python 3.10 documentation check](./reviews/07-final-assessment.md#compatibility-matrix) could not resolve a usable FastTreeSHAP wheel.
+- **TreeDiscretizer and TreeGrouper.** Replace mixed-data calls with `TreeGrouper` for categoricals followed by `TreeDiscretizer` for numeric columns. Forward weights to both steps and refit existing discretizers. Read categorical maps from the fitted grouper. Use the native Booster in `tree_dic` directly, without `.model`.
+- **MRMR.** Remove `return_scores` and read `selected_features_`, `relevance_`, `redundancy_` and `ranking_` after `fit`. If you use the pair-score table `redundancy`, update consumers for its selected-feature columns.
+- **Association and sampling.** Pass `"drop"`, `"fill"` or `None` as `handle_na`. Recheck results if nominal missingness or near-tied Gower distances matter, and budget memory by the number of rows passed to Gower clustering.
+
+## Release details
 
 - Simplify BoostAGroota to array-based round aggregation and construct its final diagnostic table once. Build shared shadow frames in one pass while preserving dtypes and RNG draws. Remove BoostAGroota's `importance="fastshap"` mode; use `"shap"` instead. Validate current parameters during `fit`, reject invalid iteration counts, require completed fitting for selection operations, and expose `n_rounds_` and `n_features_in_`. Constructor defaults, selection rules, learner seeds and fixed validation splits are unchanged.
 
@@ -30,15 +47,12 @@
 - Add opt-in MRMR row sampling through `sample_size` and `random_state`.
   Relevance and redundancy share one draw; full-data fitting remains the default.
 
-## Breaking changes and refitting
-
- - Remove MRMR's `return_scores` argument. `fit` always returns the selector, so replace tuple unpacking with `selector.fit(X, y)` followed by `selector.selected_features_`, `selector.relevance_` and `selector.redundancy_`; `ranking_` retains the combined scores. `fit_transform` and sklearn pipelines now share the same fit contract.
- - Recheck selections after the RNG changes. Leshy uses integer learner seeds on an owned clone, and GrootCV now seeds shadows as well as default folds. Read Leshy's runtime learner configuration from `estimator_`; `estimator` remains the caller's original object. Read the fitted importance method from `importance_`; Leshy and BoostAGroota no longer support FastTreeSHAP.
+### Tree preprocessing details
  - `TreeDiscretizer` now bins numeric columns only. `all`, `numerical` and `None` select eligible numeric columns; explicitly selected categories raise an error. Replace mixed calls with `TreeGrouper` for categorical columns, followed by `TreeDiscretizer` for numeric columns. Forward `sample_weight` explicitly to each pipeline step.
  - Add `TreeGrouper(group_features="all", n_groups=10, boost_params=None, raw=False, task="regression")`. Nominal levels use native categorical splits; ordered categories retain their declared relative order with contiguous groups. Cast numeric category codes to categorical dtype explicitly.
  - Both fit one native LightGBM tree on all positive-weight training rows instead of the GBM wrapper's 80% training subset. Task, one round, leaf limit and all-row fitting override conflicting aliases and row-sampling settings without mutating supplied parameters. Validate finite numeric regression targets and numeric/Boolean binary `{0,1}` targets before dropping zero-weight rows. Constant targets remain valid.
  - Refit existing discretizers. `tree_dic` now contains native Boosters; remove `.model` access. Numeric `bin_upper_bound_dic` and `leaf_interval_dic_` remain; categorical `cat_bin_dict` moves to `TreeGrouper`, and the discretizer's `ordinal_encoder_dic` and `cat_features_` are removed. Grouper `category_dtypes_` and `group_dtypes_` record frozen input/output vocabularies. Missing and unseen levels follow native missing routes.
- - Numeric output options and response-scale `raw=True` remain, including binary probabilities. Use categorical bins and factor encoding for separate effects. Grouping/binning does not implement group/fused Lasso, guarantee better predictions or justify ordinary post-selection p-values. The tutorials now use training-only comparisons, explicit factor encoding and local data; preprocessing includes a known-truth factorial experiment and category-renaming counterexample. Saved outputs are cleared for the requested manual rerun, and the workflow guide records that execution/figure-inspection gap.
+ - Numeric output options and response-scale `raw=True` remain, including binary probabilities. Use categorical bins and factor encoding for separate effects. Grouping/binning does not implement group/fused Lasso, guarantee better predictions or justify ordinary post-selection p-values. The tutorials now use training-only comparisons, explicit factor encoding and local data; preprocessing includes a known-truth factorial experiment and category-renaming counterexample.
 
 # 4.0.1 — 2026-10-16
 
