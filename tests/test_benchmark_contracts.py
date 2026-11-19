@@ -167,8 +167,10 @@ def test_comparisons_run_each_supplied_model_and_method(
         assert_array_equal(sample_weight, weights)
         if selector_cls is a.Leshy:
             assert self.random_state == 11
+        result = fit(self, X, y, sample_weight=sample_weight)
+        if selector_cls is a.Leshy:
             assert self.is_lgb == isinstance(self.estimator, light)
-        return fit(self, X, y, sample_weight=sample_weight)
+        return result
 
     def observer(method, original):
         def observe(estimator, X, y, sample_weight=None, **kwargs):

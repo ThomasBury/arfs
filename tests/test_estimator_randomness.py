@@ -80,47 +80,6 @@ def test_leshy_owns_learner_and_replays_integer_seed_on_refit_and_clone(
     assert_rng_equal(state, np.random.get_state())
 
 
-@pytest.mark.parametrize("kind", ["leshy", "boost"])
-def test_fastshap_fallback_is_runtime_state_and_is_resolved_on_refit(monkeypatch, kind):
-    X, y = data()
-    learner = RandomForestRegressor(n_estimators=5, random_state=91)
-    selector = (
-        a.Leshy(
-            learner, n_estimators=4, max_iter=2, importance="fastshap", random_state=1
-        )
-        if kind == "leshy"
-        else a.BoostAGroota(
-            learner, iters=1, max_rounds=1, importance="fastshap", random_state=1
-        )
-    )
-    calls = []
-
-    def importance(backend):
-        def compute(estimator, frame, *args, **kwargs):
-            calls.append(backend)
-            return np.ones(frame.shape[1])
-
-        return compute
-
-    monkeypatch.setattr(a, "_get_shap_imp", importance("shap"))
-    monkeypatch.setattr(a, "_get_shap_imp_fast", importance("fastshap"))
-    monkeypatch.setitem(sys.modules, "fasttreeshap", None)
-    with pytest.warns(UserWarning, match="Fallback to shap"):
-        selector.fit(X, y)
-    assert selector.importance == "fastshap"
-    assert selector.importance_ == "shap"
-    assert set(calls) == {"shap"}
-    assert clone(selector).importance == "fastshap"
-    calls.clear()
-    monkeypatch.setitem(
-        sys.modules, "fasttreeshap", SimpleNamespace(TreeExplainer=object)
-    )
-    selector.fit(X, y)
-    assert selector.importance_ == "fastshap"
-    assert set(calls) == {"fastshap"}
-    assert learner.n_estimators == 5 and learner.random_state == 91
-
-
 def test_mrmr_resolves_current_default_callbacks_at_each_fit(monkeypatch):
     X, y = data()
     calls = []
@@ -266,13 +225,13 @@ def test_groot_default_and_custom_folds_keep_seed_contract(monkeypatch, custom):
 
     def train(frame, target, weight, validation, *args, **kwargs):
         seen.append((frame.index, validation.index))
-        return SimpleNamespace(best_iteration=1), None, 1
+        return SimpleNamespace(predict=lambda *args, **kwargs: None)
 
     monkeypatch.setattr(a, "_train_lgb_model", train)
     monkeypatch.setattr(
         a,
         "_compute_importance",
-        lambda frame, *args: list(zip(frame.columns, np.ones(frame.shape[1]))),
+        lambda frame, *args, **kwargs: np.ones(frame.shape[1]),
     )
     selector = a.GrootCV(objective="l2", n_folds=2, n_iter=3, folds=folds)
     selector.fit(X, y)
@@ -330,12 +289,12 @@ def test_none_and_randomstate_instances_keep_sklearn_rng_semantics(
     monkeypatch.setattr(
         a,
         "_train_lgb_model",
-        lambda *args, **kwargs: (SimpleNamespace(best_iteration=1), None, 1),
+        lambda *args, **kwargs: SimpleNamespace(predict=lambda *args, **kwargs: None),
     )
     monkeypatch.setattr(
         a,
         "_compute_importance",
-        lambda frame, *args: list(zip(frame.columns, np.ones(frame.shape[1]))),
+        lambda frame, *args, **kwargs: np.ones(frame.shape[1]),
     )
     try:
         if kind == "isolation":

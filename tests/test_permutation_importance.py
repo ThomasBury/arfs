@@ -112,14 +112,15 @@ def test_boost_signed_normalization_and_positive_evidence(
     X = X[["a", "b"]]
     monkeypatch.setattr(a, "_get_perm_imp", lambda *args, **kwargs: np.array(scores))
     with np.errstate(divide="raise", invalid="raise"):
-        _, kept, table, threshold = a._reduce_vars_sklearn(
-            X, y, model(), 1, 1, 1, 0.1, True, None, "pimp", None
-        )
-    assert_allclose(table.fscore1, expected)
-    assert_allclose(table.Mean, expected)
-    assert np.isfinite(threshold)
-    assert_array_equal(kept, selected)
-    assert (table.loc[table.feature.isin(kept), "Mean"] > 0).all()
+        selector = a.BoostAGroota(
+            model(), cutoff=1, iters=1, max_rounds=1, importance="pimp"
+        ).fit(X, y)
+    means = selector.sha_cutoff_df.mean()
+    assert_allclose(selector.sha_cutoff_df.loc["fscore1"], expected)
+    assert_allclose(means, expected)
+    assert np.isfinite(selector.mean_shadow)
+    assert_array_equal(selector.selected_features_, selected)
+    assert (means.loc[selected] > 0).all()
 
 
 @pytest.mark.parametrize(
@@ -142,10 +143,11 @@ def test_boost_each_iteration_has_its_own_positive_scale(monkeypatch):
     X, y = data()
     scores = iter([np.array([2.0, -1.0, 1.0, 0.0]), np.array([1.0, -1.0, 0.0, 0.0])])
     monkeypatch.setattr(a, "_get_perm_imp", lambda *args, **kwargs: next(scores))
-    _, kept, table, _ = a._reduce_vars_sklearn(
-        X[["a", "b"]], y, model(), 1, 1, 2, 0.1, True, None, "pimp", None
-    )
-    assert_allclose(table.fscore1, [0.5, -0.25, 0.25, 0.0])
-    assert_allclose(table.fscore2, [0.5, -0.5, 0.0, 0.0])
-    assert_allclose(table.Mean, [0.5, -0.375, 0.125, 0.0])
-    assert_array_equal(kept, ["a"])
+    selector = a.BoostAGroota(
+        model(), cutoff=1, iters=2, max_rounds=1, importance="pimp"
+    ).fit(X[["a", "b"]], y)
+    table = selector.sha_cutoff_df
+    assert_allclose(table.loc["fscore1"], [0.5, -0.25, 0.25, 0.0])
+    assert_allclose(table.loc["fscore2"], [0.5, -0.5, 0.0, 0.0])
+    assert_allclose(table.mean(), [0.5, -0.375, 0.125, 0.0])
+    assert_array_equal(selector.selected_features_, ["a"])

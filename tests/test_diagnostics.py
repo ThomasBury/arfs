@@ -29,7 +29,9 @@ def data():
 
 @pytest.mark.parametrize("rounds", [1, 2, 3])
 @pytest.mark.parametrize("cutoff", [1, 2])
-def test_boost_round_diagnostics_and_complete_first_ranking(monkeypatch, rounds, cutoff):
+def test_boost_round_diagnostics_and_complete_first_ranking(
+    monkeypatch, rounds, cutoff
+):
     X, y = data()
     scores = iter(
         [
@@ -81,7 +83,7 @@ def test_boost_round_diagnostics_and_complete_first_ranking(monkeypatch, rounds,
 def test_boost_first_round_ties_and_refit_reset_diagnostics(monkeypatch):
     X, y = data()
     monkeypatch.setattr(a, "_get_shap_imp", lambda *args, **kwargs: np.ones(6))
-    selector = fs.BoostAGroota(iters=1, max_rounds=1)
+    selector = fs.BoostAGroota(LGBMRegressor(), iters=1, max_rounds=1)
     for names in [["a", "b", "c"], [30, 10, 20]]:
         selector.fit(X.set_axis(names, axis=1), y)
         assert selector.ranking_absolutes_ == names
@@ -95,6 +97,7 @@ def test_boost_plot_colors_follow_names_instead_of_mean_order(names):
         [[0.2, 0.0, 0.1, 0.1], [0.2, 0.8, 0.1, 0.1]],
         columns=names + ["shadow_1", "shadow_2"],
     )
+    selector.support_ = np.array([True, False])
     selector.mean_shadow = 0.1
     selector.selected_features_ = np.array(names[:1])
     fig = selector.plot_importance()
@@ -160,7 +163,9 @@ def test_quiet_mode_keeps_warnings_visible(monkeypatch, capfd):
     X, y = data()
     monkeypatch.setattr(a, "_get_imp", lambda *args, **kwargs: np.ones(6))
     with pytest.warns(UserWarning, match="native variable importance"):
-        fs.BoostAGroota(importance="native", iters=1, max_rounds=1).fit(X, y)
+        fs.BoostAGroota(
+            LGBMRegressor(), importance="native", iters=1, max_rounds=1
+        ).fit(X, y)
     assert capfd.readouterr() == ("", "")
 
 

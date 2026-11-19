@@ -23,8 +23,8 @@ def test_fitted_mask_count_names_and_transform_agree(monkeypatch, decisions, kee
     history = np.full((2, 3), 2.0)
     monkeypatch.setattr(
         a.Leshy,
-        "select_features",
-        lambda self, **kwargs: (decisions, [1.0, 1.0], history, 1.0),
+        "_select_features",
+        lambda self, *args: (decisions, [1.0, 1.0], history, 1.0),
     )
     selector = a.Leshy(
         lgb.LGBMRegressor(verbosity=-1), keep_weak=keep_weak, random_state=0
@@ -88,7 +88,7 @@ def test_tentative_median_uses_every_actual_row(history, shadows, expected):
 @pytest.mark.parametrize("tentative", [np.array([], dtype=int), np.array([2])])
 def test_rejected_ranking_uses_both_iterations_and_preserves_support(tentative):
     selector = a.Leshy(lgb.LGBMRegressor(verbosity=-1), keep_weak=False)
-    selector._calculate_support(np.array([], dtype=int), tentative, 3)
+    selector.support_, _ = selector._calculate_support(np.array([], dtype=int), tentative, 3)
     before = selector.support_.copy()
     selector._calculate_relative_ranking(
         3,

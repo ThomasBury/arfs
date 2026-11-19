@@ -66,11 +66,19 @@ BorutaPy vs. Boruta R:
 Leshy configures an owned estimator clone and leaves the caller's estimator
 and constructor options unchanged. Its ``estimator_`` records the runtime
 learner configuration; importance helpers train separate clones. Leshy and
-BoostAGroota expose the resolved importance backend in ``importance_``; a
-FastTreeSHAP fallback leaves the requested ``importance`` option unchanged.
+BoostAGroota expose the fitted importance method in ``importance_``.
 
 BoostAGroota
 ------------
+
+Use ``importance="shap"``, ``"pimp"`` or ``"native"``. Replace the removed
+``importance="fastshap"`` mode with ``"shap"``. LightGBM uses native SHAP
+contributions; other compatible estimators use TreeExplainer. Supply a tree
+estimator and positive integer ``iters`` and ``max_rounds``. Current parameters
+are checked during ``fit``, including changes through ``set_params``; invalid
+round limits raise an error instead of being coerced. ``n_rounds_`` counts
+completed rounds and ``n_features_in_`` records input width. Selection operations
+require a successful fit, and a failed refit invalidates the previous selection.
 
 In each reduction round, BoostAGroota normalizes the real and shadow importances
 separately for each model iteration, then takes each feature's mean across
@@ -98,13 +106,21 @@ ordering, separate from the selected/rejected ranks in ``ranking_``.
 GrootCV, a new method
 ---------------------
 
+GrootCV uses LightGBM's native SHAP contributions. Remove the former
+``fastshap`` argument from existing calls. Boosting-round limits in
+``lgbm_params`` follow LightGBM's parameter precedence instead of being
+discarded. With no supplied limit, training uses a 10,000-round ceiling, with
+20-round early stopping where supported. Set an explicit ``num_iterations``
+for DART, which disables early stopping. A previously ignored limit can change
+selected features, so refit and check downstream results.
+
 New: GrootCV:
 
 - Repeated-fold feature importance based on LightGBM only; runtime and predictive accuracy depend on the data and parameters.
 - SHAP importance is the mean absolute contribution over each fold's training
   rows, summed over outputs for multi-output models, then normalized across
   real and shadow features; a zero-total fold contributes zeros. Validation
-  rows drive early stopping.
+  rows drive early stopping where supported.
 - Take each feature's median across all folds and repeats, then the maximum
   shadow median divided by ``cutoff``. Keep positive real medians at or above
   this threshold. Summary columns do not enter either calculation.
@@ -255,3 +271,14 @@ References
 - [The Boruta paper](https://www.jstatsoft.org/article/view/v036i11/v36i11.pdf)
 - [The python implementation](https://github.com/scikit-learn-contrib/boruta_py)
 - [BoostARoota](https://github.com/chasedehan/BoostARoota)
+
+Leshy implementation and migration
+----------------------------------
+
+Leshy uses native LightGBM SHAP contributions and TreeExplainer for other
+compatible estimators. Replace ``importance="fastshap"`` with
+``importance="shap"``. Call ``fit`` instead of the removed ``select_features``
+method. The selection procedure, fixed validation split and equal-row SHAP
+averages are unchanged. ``n_iter_`` counts completed iterations and
+``n_features_in_`` records input width. Unlimited depth now uses depth 10 for
+automatic tree sizing; refit and recheck selections with ``n_estimators="auto"``.

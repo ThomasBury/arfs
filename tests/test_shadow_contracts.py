@@ -1,6 +1,5 @@
 """R07 regressions for owned encoding and faithful categorical shadows."""
 
-import sys
 from contextlib import nullcontext
 
 import lightgbm as lgb
@@ -12,18 +11,6 @@ from numpy.testing import assert_allclose, assert_array_equal
 from pandas.testing import assert_frame_equal, assert_series_equal
 
 from arfs.feature_selection import allrelevant as ar
-
-
-def test_fastshap_missing_backend_fails_before_cloning(monkeypatch):
-    monkeypatch.setitem(sys.modules, "fasttreeshap", None)
-
-    def forbidden(*args, **kwargs):
-        pytest.fail("missing backend must fail before cloning or training")
-
-    monkeypatch.setattr(ar, "clone", forbidden)
-    X, y = data()
-    with pytest.raises(ImportError, match="fasttreeshap is not installed"):
-        ar._get_shap_imp_fast(model(), X, y)
 
 
 @pytest.fixture(
@@ -156,6 +143,7 @@ def test_leshy_repeated_shadows_keep_dtype_values_and_unique_names(
     )
     selector.estimator_ = selector.estimator
     selector.importance_ = selector.importance
+    selector._importance_getter = ar._get_imp
     selector.random_state_ = selector.random_state
     real, shadows = selector._add_shadows_get_imps(
         X, pd.Series(np.arange(len(X))), None, np.zeros(n_columns)
@@ -262,7 +250,7 @@ def test_real_groot_folds_and_plot_use_original_feature_identity(monkeypatch):
             category_cols=category_cols,
             **kwargs,
         )
-        infos = result[0].dump_model()["feature_infos"]
+        infos = result.dump_model()["feature_infos"]
         assert all(infos[col]["values"] for col in category_cols)
         assert infos["num"]["values"] == []
         recorded.append(list(category_cols))

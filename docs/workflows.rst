@@ -14,7 +14,7 @@ must not be copied to earlier interpreters. The metadata range
 
 GPU/CUDA, Windows/macOS, other architectures, CatBoost/XGBoost, FastTreeSHAP
 and live HoloViews/Panel plots need separate execution before claiming support.
-Missing optional-backend errors and fallbacks are tested; that does not test
+Missing optional-backend errors are tested; that does not test
 the backends themselves. Persistence checks use fresh processes in the same
 environment, trusted artifacts and new prediction rows; they do not promise
 cross-version compatibility or safe loading of untrusted pickle files.
@@ -113,9 +113,10 @@ substitute for the remote Titanic download, and regression on bundled Boston
 data. The classification encoder is also checked with categorical input.
 
 CatBoost/XGBoost model comparisons require separate compatible installations.
-FastTreeSHAP examples are opt-in; the basic notebook's two cells and the
-classification/regression FastTreeSHAP model cells are commented out. Install a
-compatible FastTreeSHAP build separately and uncomment an example to run it.
+VariableImportance's FastTreeSHAP example in the basic notebook remains opt-in.
+Install a compatible FastTreeSHAP build separately and uncomment that example
+to run it. Leshy and BoostAGroota use ``importance="shap"``; their former
+FastTreeSHAP modes have been removed.
 GPU, optional-backend speed comparisons and the remaining
 notebooks require their own execution before their saved results can be treated
 as current. No supported optional-backend version matrix is claimed here.

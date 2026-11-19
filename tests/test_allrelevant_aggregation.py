@@ -9,6 +9,7 @@ import pandas as pd
 import pytest
 from numpy.testing import assert_allclose, assert_array_equal
 from pandas.testing import assert_frame_equal
+from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 
 import arfs.feature_selection.allrelevant as a
 
@@ -18,6 +19,13 @@ def data(n_classes=3):
     X = pd.DataFrame(rng.normal(size=(120, 2)), columns=["a", "b"])
     y = pd.Series(np.tile(np.arange(n_classes), 120 // n_classes))
     return X, y
+
+
+def booster_with_importance(scores):
+    # A large bias catches accidental inclusion in native feature importance.
+    return SimpleNamespace(
+        predict=lambda frame, **kwargs: np.tile([*scores, 100.0], (len(frame), 1))
+    )
 
 
 @pytest.mark.parametrize(
@@ -44,9 +52,9 @@ def test_real_classification_objectives(objective, n_classes, monkeypatch):
     def checked_train(*args, **kwargs):
         result = train(*args, **kwargs)
         resolved.append(kwargs["objective"])
-        values = result[1]
-        assert values.shape[:2] == args[0].shape
-        assert values.ndim == (2 if kwargs["objective"] == "binary" else 3)
+        values = result.predict(args[0], pred_contrib=True)
+        outputs = 1 if kwargs["objective"] == "binary" else n_classes
+        assert values.shape == (len(args[0]), (args[0].shape[1] + 1) * outputs)
         return result
 
     monkeypatch.setattr(a, "_train_lgb_model", checked_train)
@@ -83,7 +91,7 @@ def test_groot_binary_majority_reaches_native_training(majority, monkeypatch):
 
     def checked_train(*args, **kwargs):
         result = train(*args, **kwargs)
-        seen.append(result[0].params.get("is_unbalance", False))
+        seen.append(result.params.get("is_unbalance", False))
         return result
 
     monkeypatch.setattr(a, "_train_lgb_model", checked_train)
@@ -111,9 +119,8 @@ def test_objective_from_params_and_explicit_override():
     assert params == original
 
 
-@pytest.mark.parametrize("fastshap", [False, True])
 @pytest.mark.parametrize("layout", ["single", "array", "list"])
-def test_shap_output_axes(layout, fastshap):
+def test_shap_output_axes(layout):
     X = pd.DataFrame(np.zeros((2, 3)), columns=["a", "b", "c"])
     values = np.arange(18.0).reshape(2, 3, 3) - 8
     if layout == "single":
@@ -123,15 +130,15 @@ def test_shap_output_axes(layout, fastshap):
         expected = np.abs(values).sum(axis=2).mean(axis=0)
         if layout == "list":
             values = [values[:, :, k] for k in range(3)]
-    actual = dict(a._compute_importance(X, values, {}, "binary", fastshap))
-    assert_allclose([actual[col] for col in X], expected)
+    actual = a._compute_importance(X, values)
+    assert_allclose(actual, expected)
 
 
 @pytest.mark.parametrize("shape", [(2,), (3, 3), (2, 4), (2, 3, 2, 2)])
 def test_shap_mismatched_axes_raise(shape):
     X = pd.DataFrame(np.zeros((2, 3)))
     with pytest.raises(ValueError, match="SHAP.*shape"):
-        a._compute_importance(X, np.ones(shape), {}, "l2", False)
+        a._compute_importance(X, np.ones(shape))
 
 
 @pytest.mark.parametrize("n_features", [1, 4])
@@ -142,19 +149,19 @@ def test_leshy_shap_keeps_every_feature(monkeypatch, task, layout, n_features):
     values = np.arange(1, X.size + 1, dtype=float).reshape(X.shape)
     values[1] *= -2
     if task == "regression":
-        estimator = lgb.LGBMRegressor()
+        estimator = RandomForestRegressor()
         y = pd.Series([0.1, 0.2, 0.3])
         outputs = [values]
         expected = np.abs(values).mean(axis=0)
         array = values
     elif task == "binary":
-        estimator = lgb.LGBMClassifier()
+        estimator = RandomForestClassifier()
         y = pd.Series([0, 1, 0])
         outputs = [-2 * values, 3 * values]
         expected = 3 * np.abs(values).mean(axis=0)
         array = outputs[1]
     else:
-        estimator = lgb.LGBMClassifier()
+        estimator = RandomForestClassifier()
         y = pd.Series([0, 1, 2])
         outputs = [values, -3 * values, 5 * values]
         expected = 9 * np.abs(values).mean(axis=0)
@@ -185,11 +192,7 @@ def test_groot_medians_use_only_fold_columns(monkeypatch, cutoff, repeats):
     values = iter(list(scores) * repeats)
 
     def train(frame, *args, **kwargs):
-        return (
-            SimpleNamespace(best_iteration=1),
-            np.tile(next(values), (len(frame), 1)),
-            1,
-        )
+        return booster_with_importance(next(values))
 
     monkeypatch.setattr(a, "_train_lgb_model", train)
     selector = a.GrootCV(objective="l2", n_folds=3, n_iter=repeats, cutoff=cutoff).fit(
@@ -218,11 +221,7 @@ def test_groot_ranking_plot_and_equality_use_medians(monkeypatch):
     )
 
     def train(frame, *args, **kwargs):
-        return (
-            SimpleNamespace(best_iteration=1),
-            np.tile(next(values), (len(frame), 1)),
-            1,
-        )
+        return booster_with_importance(next(values))
 
     monkeypatch.setattr(a, "_train_lgb_model", train)
     selector = a.GrootCV(objective="l2", n_folds=3, n_iter=1, cutoff=0.125).fit(X, y)
@@ -246,7 +245,11 @@ def test_boost_maximum_shadow_mean_and_equality(monkeypatch, importance, cutoff)
     ]
     monkeypatch.setattr(a, helper, lambda *args, **kwargs: next(scores))
     selector = a.BoostAGroota(
-        lgb.LGBMRegressor(), importance=importance, cutoff=cutoff, iters=2, max_rounds=1
+        lgb.LGBMRegressor(),
+        importance=importance,
+        cutoff=cutoff,
+        iters=2,
+        max_rounds=1,
     ).fit(X, y)
     assert selector.mean_shadow == pytest.approx(0.3 / cutoff)
     assert_allclose(selector.sha_cutoff_df.mean(axis=0), [0.3, 0.2, 0.3, 0.2])
@@ -260,11 +263,11 @@ def test_boost_single_iteration_strongest_shadow(monkeypatch):
     monkeypatch.setattr(
         a, "_get_shap_imp", lambda *args, **kwargs: np.array([0.3, 0.1, 0.5, 0.1])
     )
-    _, kept, _, threshold = a._reduce_vars_sklearn(
-        X, y, lgb.LGBMRegressor(), 1, 1, 1, 0.1, True, None, "shap", None
+    selector = a.BoostAGroota(lgb.LGBMRegressor(), cutoff=1, iters=1, max_rounds=1).fit(
+        X, y
     )
-    assert threshold == pytest.approx(0.5)
-    assert kept.empty
+    assert selector.mean_shadow == pytest.approx(0.5)
+    assert selector.selected_features_.size == 0
 
 
 @pytest.mark.parametrize(
@@ -276,7 +279,9 @@ def test_boost_single_iteration_strongest_shadow(monkeypatch):
         ([0.0, 0.0, 0.0, 0.0], [False, False], [2, 2]),
     ],
 )
-@pytest.mark.parametrize("selector_kind", ["boost_shap", "boost_native", "boost_pimp", "groot"])
+@pytest.mark.parametrize(
+    "selector_kind", ["boost_shap", "boost_native", "boost_pimp", "groot"]
+)
 def test_boost_and_groot_rankings_match_support_and_empty_selection(
     monkeypatch, scores, support, ranking, selector_kind
 ):
@@ -285,18 +290,16 @@ def test_boost_and_groot_rankings_match_support_and_empty_selection(
         monkeypatch.setattr(
             a,
             "_train_lgb_model",
-            lambda frame, *args, **kwargs: (
-                SimpleNamespace(best_iteration=1),
-                np.tile(scores, (len(frame), 1)),
-                1,
-            ),
+            lambda frame, *args, **kwargs: booster_with_importance(scores),
         )
         selector = a.GrootCV(objective="l2", n_folds=2, n_iter=1, cutoff=1).fit(X, y)
     else:
         imp = selector_kind.removeprefix("boost_")
-        helper = {"shap": "_get_shap_imp", "native": "_get_imp", "pimp": "_get_perm_imp"}[
-            imp
-        ]
+        helper = {
+            "shap": "_get_shap_imp",
+            "native": "_get_imp",
+            "pimp": "_get_perm_imp",
+        }[imp]
         monkeypatch.setattr(a, helper, lambda *args, **kwargs: np.array(scores))
         selector = a.BoostAGroota(
             lgb.LGBMRegressor(), importance=imp, cutoff=1, iters=1, max_rounds=1
@@ -323,19 +326,31 @@ def test_boost_zero_and_mixed_zero_iterations_remain_finite(monkeypatch, importa
     monkeypatch.setattr(a, helper, lambda *args, **kwargs: next(mixed))
     with np.errstate(divide="raise", invalid="raise"):
         selector = a.BoostAGroota(
-            lgb.LGBMRegressor(), importance=importance, cutoff=1, iters=2, max_rounds=1
+            lgb.LGBMRegressor(),
+            importance=importance,
+            cutoff=1,
+            iters=2,
+            max_rounds=1,
         ).fit(X, y)
-    assert_allclose(selector.sha_cutoff_df.iloc[:, :4], [[0.0, 0.0, 0.0, 0.0], [0.6, 0.2, 0.2, 0.0]])
+    assert_allclose(
+        selector.sha_cutoff_df.iloc[:, :4], [[0.0, 0.0, 0.0, 0.0], [0.6, 0.2, 0.2, 0.0]]
+    )
     assert_allclose(selector.sha_cutoff_df.mean(axis=0), [0.3, 0.1, 0.1, 0.0])
     assert selector.mean_shadow == pytest.approx(0.1)
     assert_array_equal(selector.selected_features_, ["a", "b"])
     assert_array_equal(selector.ranking_, [1, 1])
 
     # Zero shadow threshold still requires strictly positive real mean.
-    monkeypatch.setattr(a, helper, lambda *args, **kwargs: np.array([1.0, 0.0, 0.0, 0.0]))
+    monkeypatch.setattr(
+        a, helper, lambda *args, **kwargs: np.array([1.0, 0.0, 0.0, 0.0])
+    )
     with np.errstate(divide="raise", invalid="raise"):
         zero_shadow = a.BoostAGroota(
-            lgb.LGBMRegressor(), importance=importance, cutoff=1, iters=1, max_rounds=1
+            lgb.LGBMRegressor(),
+            importance=importance,
+            cutoff=1,
+            iters=1,
+            max_rounds=1,
         ).fit(X, y)
     assert zero_shadow.mean_shadow == pytest.approx(0.0)
     assert_array_equal(zero_shadow.selected_features_, ["a"])
@@ -364,17 +379,11 @@ def test_groot_zero_and_mixed_zero_folds_remain_finite_and_retained(monkeypatch)
     X, y = data()
 
     # Two zero folds and one positive fold: median across 3 folds must be 0.
-    three_folds = iter(
-        [np.zeros(4), np.zeros(4), np.array([0.8, 0.0, 0.2, 0.0])]
-    )
+    three_folds = iter([np.zeros(4), np.zeros(4), np.array([0.8, 0.0, 0.2, 0.0])])
     monkeypatch.setattr(
         a,
         "_train_lgb_model",
-        lambda frame, *args, **kwargs: (
-            SimpleNamespace(best_iteration=1),
-            np.tile(next(three_folds), (len(frame), 1)),
-            1,
-        ),
+        lambda frame, *args, **kwargs: booster_with_importance(next(three_folds)),
     )
     with np.errstate(divide="raise", invalid="raise"):
         selector = a.GrootCV(objective="l2", n_folds=3, n_iter=1, cutoff=1).fit(X, y)
@@ -390,11 +399,7 @@ def test_groot_zero_and_mixed_zero_folds_remain_finite_and_retained(monkeypatch)
     monkeypatch.setattr(
         a,
         "_train_lgb_model",
-        lambda frame, *args, **kwargs: (
-            SimpleNamespace(best_iteration=1),
-            np.tile(next(two_folds), (len(frame), 1)),
-            1,
-        ),
+        lambda frame, *args, **kwargs: booster_with_importance(next(two_folds)),
     )
     with np.errstate(divide="raise", invalid="raise"):
         mixed = a.GrootCV(objective="l2", n_folds=2, n_iter=1, cutoff=1).fit(X, y)
@@ -411,11 +416,7 @@ def test_groot_zero_and_mixed_zero_folds_remain_finite_and_retained(monkeypatch)
     monkeypatch.setattr(
         a,
         "_train_lgb_model",
-        lambda frame, *args, **kwargs: (
-            SimpleNamespace(best_iteration=1),
-            np.tile([1.0, 0.0, 0.0, 0.0], (len(frame), 1)),
-            1,
-        ),
+        lambda frame, *args, **kwargs: booster_with_importance([1.0, 0.0, 0.0, 0.0]),
     )
     with np.errstate(divide="raise", invalid="raise"):
         zero_shadow = a.GrootCV(objective="l2", n_folds=2, n_iter=1, cutoff=1).fit(X, y)
@@ -455,7 +456,11 @@ def test_boost_rejects_nonfinite_importance_without_swallowing(
     monkeypatch.setattr(a, helper, lambda *args, **kwargs: scores)
     with np.errstate(over="ignore"), pytest.raises(ValueError, match="finite"):
         a.BoostAGroota(
-            lgb.LGBMRegressor(), importance=importance, cutoff=1, iters=1, max_rounds=1
+            lgb.LGBMRegressor(),
+            importance=importance,
+            cutoff=1,
+            iters=1,
+            max_rounds=1,
         ).fit(X, y)
 
 
@@ -467,26 +472,11 @@ def test_groot_and_shared_helpers_reject_nonfinite_importance(monkeypatch, bad):
         a._compute_importance(
             pd.DataFrame(np.zeros((2, 4)), columns=["a", "b", "c", "d"]),
             np.vstack([scores, scores]),
-            {},
-            "l2",
-            False,
-        )
-    with np.errstate(over="ignore"), pytest.raises(ValueError, match="finite"):
-        a._merge_importance_df(
-            pd.DataFrame({"feature": ["a", "b", "c", "d"]}),
-            list(zip(["a", "b", "c", "d"], scores)),
-            0,
-            2,
-            ["a", "b", "c", "d"],
         )
     monkeypatch.setattr(
         a,
         "_train_lgb_model",
-        lambda frame, *args, **kwargs: (
-            SimpleNamespace(best_iteration=1),
-            np.tile(scores, (len(frame), 1)),
-            1,
-        ),
+        lambda frame, *args, **kwargs: booster_with_importance(scores),
     )
     with np.errstate(over="ignore"), pytest.raises(ValueError, match="finite"):
         a.GrootCV(objective="l2", n_folds=2, n_iter=1, cutoff=1).fit(X, y)
@@ -496,7 +486,7 @@ def test_groot_and_shared_helpers_reject_nonfinite_importance(monkeypatch, bad):
             a,
             "_split_fit_estimator",
             lambda *args, **kwargs: (
-                lgb.LGBMRegressor(),
+                RandomForestRegressor(),
                 X,
                 y,
                 None,
@@ -510,7 +500,7 @@ def test_groot_and_shared_helpers_reject_nonfinite_importance(monkeypatch, bad):
             ),
         )
         with pytest.raises(ValueError, match="finite"):
-            a._get_shap_imp(lgb.LGBMRegressor(), X, y)
+            a._get_shap_imp(RandomForestRegressor(), X, y)
         monkeypatch.setattr(
             a,
             "permutation_importance",
@@ -519,4 +509,4 @@ def test_groot_and_shared_helpers_reject_nonfinite_importance(monkeypatch, bad):
             ),
         )
         with pytest.raises(ValueError, match="finite"):
-            a._get_perm_imp(lgb.LGBMRegressor(), X, y, None)
+            a._get_perm_imp(RandomForestRegressor(), X, y, None)

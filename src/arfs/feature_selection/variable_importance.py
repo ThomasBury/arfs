@@ -554,35 +554,10 @@ def _compute_varimp_lgb(
         shap_matrix = gbm_model.model.predict(
             gbm_model.valid_features, pred_contrib=True
         )
-    values = (
-        np.stack(shap_matrix, axis=-1)
-        if isinstance(shap_matrix, list)
-        else np.asarray(shap_matrix)
+    importance = _compute_importance(
+        gbm_model.valid_features, shap_matrix, native=not fastshap
     )
-    if not np.isfinite(values).all():
-        raise ValueError("SHAP contributions must be finite.")
-    if not fastshap:
-        n_rows, n_features = gbm_model.valid_features.shape
-        block_size = n_features + 1
-        if (
-            values.ndim != 2
-            or values.shape[0] != n_rows
-            or values.shape[1] == 0
-            or values.shape[1] % block_size
-        ):
-            raise ValueError(
-                "Native SHAP contributions must have shape (rows, (features + 1) * outputs)."
-            )
-        # Native output has a bias column in every output block; TreeExplainer does not.
-        values = values.reshape(n_rows, -1, block_size)[:, :, :-1].transpose(0, 2, 1)
-    importance = dict(
-        _compute_importance(
-            gbm_model.valid_features, values, params, params["objective"], fastshap
-        )
-    )
-    feature_importances = pd.DataFrame(
-        {"feature": X.columns, "importance": [importance[c] for c in X.columns]}
-    )
+    feature_importances = pd.DataFrame({"feature": X.columns, "importance": importance})
     feature_importances = feature_importances.sort_values(
         "importance", ascending=False, kind="stable"
     ).reset_index(drop=True)

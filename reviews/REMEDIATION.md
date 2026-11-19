@@ -1,6 +1,6 @@
 # ARFS remediation handoff
 
-**Status: R01–R33 complete. C01–C06 complete (C06 locally). Tree preprocessing, MRMR sampling and the confirmed plan are being delivered separately; the next package release is deferred.**
+**Status: R01–R33 and C01–C06 are complete. The tree-preprocessing, MRMR sampling and confirmed follow-up changes are included in ARFS 5.0.0.**
 The [confirmed follow-up plan](#confirmed-follow-up-plan) below is separate from
 that historical delivery. **C01–C06 are complete; no confirmed C follow-up remains.**
 This handoff follows [review 07](07-final-assessment.md) of

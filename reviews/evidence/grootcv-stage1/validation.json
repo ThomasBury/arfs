@@ -1,0 +1,95 @@
+{
+  "wheel_sha256": "f9abd87381ec4d3aed0fafe746aceb22c28fc79df60fa6a0d46bedb7e3fc0eb3",
+  "sdist_sha256": "418f99c95cf3b5df3662c96afd375ba61634d26be55a454b63a751153915cd7d",
+  "wheel_python_modules_match_source": true,
+  "tests_sha256": "0fced19554b50a17923c9af5da6d9871df253fea3454671e1fcf69c8469ec9b3",
+  "source_suite": "2109 passed before the final notebook-constructor guard was added; installed-wheel runs below include that guard.",
+  "matrix": {
+    "py39-locked": {
+      "exit_code": 0,
+      "summary": "2110 passed, 559 warnings in 502.60s (0:08:22)",
+      "versions": {
+        "numpy": "2.0.2",
+        "pandas": "2.2.3",
+        "scikit-learn": "1.6.1",
+        "lightgbm": "4.6.0",
+        "shap": "0.47.1",
+        "pytest": "8.3.5"
+      },
+      "test_sources_match": true
+    },
+    "py39-minimum": {
+      "exit_code": 0,
+      "summary": "2110 passed, 559 warnings in 502.73s (0:08:22)",
+      "versions": {
+        "numpy": "2.0.2",
+        "pandas": "2.2.3",
+        "scikit-learn": "1.6.1",
+        "lightgbm": "4.6.0",
+        "shap": "0.47.0",
+        "pytest": "8.3.5"
+      },
+      "test_sources_match": true
+    },
+    "py310-locked": {
+      "exit_code": 0,
+      "summary": "2110 passed, 559 warnings in 521.77s (0:08:41)",
+      "versions": {
+        "numpy": "2.0.2",
+        "pandas": "2.2.3",
+        "scikit-learn": "1.6.1",
+        "lightgbm": "4.6.0",
+        "shap": "0.47.1",
+        "pytest": "8.3.5"
+      },
+      "test_sources_match": true
+    },
+    "py312-locked": {
+      "exit_code": 0,
+      "summary": "2110 passed, 558 warnings in 449.69s (0:07:29)",
+      "versions": {
+        "numpy": "2.0.2",
+        "pandas": "2.2.3",
+        "scikit-learn": "1.6.1",
+        "lightgbm": "4.6.0",
+        "shap": "0.47.1",
+        "pytest": "8.3.5"
+      },
+      "test_sources_match": true
+    },
+    "py311-locked": {
+      "exit_code": 0,
+      "summary": "2110 passed, 559 warnings in 458.48s (0:07:38)",
+      "versions": {
+        "numpy": "2.0.2",
+        "pandas": "2.2.3",
+        "scikit-learn": "1.6.1",
+        "lightgbm": "4.6.0",
+        "shap": "0.47.1",
+        "pytest": "8.3.5"
+      },
+      "test_sources_match": true
+    },
+    "py312-newer": {
+      "exit_code": 0,
+      "summary": "2094 passed, 344 warnings in 478.94s (0:07:58)",
+      "versions": {
+        "numpy": "2.5.4",
+        "pandas": "3.0.6",
+        "scikit-learn": "1.9.1",
+        "lightgbm": "4.7.0",
+        "shap": "0.53.0",
+        "pytest": "9.1.1"
+      },
+      "test_sources_match": true
+    }
+  },
+  "checks": {
+    "ruff": "pass: ruff 0.17.0 check .",
+    "lock": "pass: uv lock --check --offline",
+    "build": "pass: uv build --offline (sdist then wheel)",
+    "docs": "pass: sphinx -b html -W --keep-going; nbsphinx_execute=never",
+    "extra_docs_nitpick": "not an acceptance gate: -n reported 1236 unresolved API cross-references",
+    "mixed_feature_labels": "mixed-type feature labels: exact legacy row order and scores match: [1, 2, 'ShadowVar1', 'ShadowVar2', 'ShadowVar3', 'a']"
+  }
+}

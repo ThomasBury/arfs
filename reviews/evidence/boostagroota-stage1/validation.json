@@ -1,0 +1,71 @@
+{
+  "source_sha256": "260d80b812355fc1f1b9246d7ced788c3df1a5c5016cb08f714ca240e58071bc",
+  "source_suite": "2265 passed, 728 warnings in 341.73s (0:05:41)",
+  "installed_wheel_matrix": {
+    "py39-minimum": {
+      "exit_code": 0,
+      "summary": "2265 passed, 729 warnings in 361.09s (0:06:01)"
+    },
+    "py39-locked": {
+      "exit_code": 0,
+      "summary": "2265 passed, 729 warnings in 361.61s (0:06:01)"
+    },
+    "py311-locked": {
+      "exit_code": 0,
+      "summary": "2265 passed, 729 warnings in 265.51s (0:04:25)"
+    },
+    "py310-locked": {
+      "exit_code": 0,
+      "summary": "2265 passed, 729 warnings in 291.55s (0:04:51)"
+    },
+    "py312-locked": {
+      "exit_code": 0,
+      "summary": "2265 passed, 728 warnings in 263.28s (0:04:23)"
+    },
+    "py312-newer": {
+      "exit_code": 0,
+      "summary": "2249 passed, 313 warnings in 285.34s (0:04:45)"
+    }
+  },
+  "static_gates": {
+    "ruff": {
+      "command": [
+        "uv",
+        "tool",
+        "run",
+        "--offline",
+        "--from",
+        "ruff==0.17.0",
+        "ruff",
+        "check",
+        "."
+      ],
+      "exit_code": 0,
+      "output": "All checks passed!\n"
+    },
+    "lock": {
+      "command": [
+        "uv",
+        "lock",
+        "--check",
+        "--offline"
+      ],
+      "exit_code": 0,
+      "output": "Resolved 168 packages in 12ms\n"
+    },
+    "diff": {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output": ""
+    }
+  },
+  "documentation": "strict HTML build passed, notebooks not executed",
+  "package_parity": "all source/sdist/wheel Python modules and copied tests/docs verified",
+  "initial_source_setup_failure": "8 package-location assertions in editable environment; final complete run uses matching installed-wheel child processes",
+  "preserved_pending_work": "Leshy, retained importance helpers, and GrootCV byte-identical to captured baseline",
+  "baseline_status": " M CHANGELOG.md\n M README.md\n M \"docs/Methods overview.rst\"\n M docs/notebooks/arfs_classification.ipynb\n M docs/notebooks/arfs_grootcv_custom_params.ipynb\n M docs/notebooks/arfs_non_normal_loss_and_sample_weight.ipynb\n M docs/notebooks/arfs_on_GPU.ipynb\n M docs/notebooks/arfs_regression.ipynb\n M docs/notebooks/arfs_shap_vs_fastshap.ipynb\n M docs/notebooks/arfs_timeseries.ipynb\n M docs/notebooks/issue_categoricals.ipynb\n M src/arfs/feature_selection/allrelevant.py\n M src/arfs/feature_selection/variable_importance.py\n M tests/test_allrelevant_aggregation.py\n M tests/test_benchmark_contracts.py\n M tests/test_documentation_workflows.py\n M tests/test_estimator_randomness.py\n M tests/test_groot_classification_folds.py\n M tests/test_leshy_support.py\n M tests/test_shadow_contracts.py\n?? reviews/GrootCV-stage1.md\n?? reviews/Leshy-stage1.md\n?? tests/grootcv_benchmark.py\n?? tests/leshy_benchmark.py\n?? tests/test_groot_native.py\n?? tests/test_leshy_implementation.py\n"
+}

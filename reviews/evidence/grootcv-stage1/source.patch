@@ -1,0 +1,254 @@
+--- a/src/arfs/feature_selection/allrelevant.py
++++ b/src/arfs/feature_selection/allrelevant.py
+@@ -50 +49,0 @@
+-import operator
+@@ -2027,2 +2025,0 @@
+-    fastshap : bool, default=False
+-        If True, use fastSHAP for calculating feature importances; otherwise, use SHAP.
+@@ -2030 +2027 @@
+-        The number of jobs to run in parallel. If 0, no parallelism is used.
++        LightGBM's number of OpenMP threads. If 0, use the OpenMP default.
+@@ -2032 +2029,3 @@
+-        The parameters for the lightGBM model.
++        The parameters for the LightGBM model. Boosting-round limits and their
++        aliases follow LightGBM precedence; the fallback ceiling is 10,000
++        rounds, with 20-round early stopping.
+@@ -2077 +2075,0 @@
+-        fastshap=False,
+@@ -2089 +2086,0 @@
+-        self.fastshap = fastshap
+@@ -2145 +2141,0 @@
+-            fastshap=self.fastshap,
+@@ -2275 +2270,0 @@
+-    fastshap,
+@@ -2309,2 +2303,0 @@
+-    fastshap : bool
+-            enable or not the fasttreeshap implementation
+@@ -2352,3 +2345 @@
+-        folds = splitter(
+-            n_splits=n_folds, n_repeats=n_iter, random_state=deepcopy(rng)
+-        )
++        folds = splitter(n_splits=n_folds, n_repeats=n_iter, random_state=deepcopy(rng))
+@@ -2358 +2349 @@
+-    df = pd.DataFrame({"feature": X.columns})
++    fold_scores = []
+@@ -2371 +2362 @@
+-        bst, shap_matrix, bst.best_iteration = _train_lgb_model(
++        bst = _train_lgb_model(
+@@ -2381 +2371,0 @@
+-            fastshap=fastshap,
+@@ -2387,10 +2377,12 @@
+-            new_x_tr, shap_matrix, params, params["objective"], fastshap
+-        )
+-        df = _merge_importance_df(
+-            df=df,
+-            importance=importance,
+-            iter=iter,
+-            n_folds=n_folds,
+-            column_names=new_x_tr.columns,
+-            silent=silent,
+-        )
++            new_x_tr, bst.predict(new_x_tr, pred_contrib=True), native=True
++        )
++        importance_total = importance.sum()
++        if not np.isfinite(importance_total):
++            raise ValueError("Total feature importance must be finite.")
++        fold_scores.append(
++            importance / importance_total if importance_total > 0 else importance
++        )
++        if not silent and iter % n_folds == 0:
++            print(
++                "Groot iteration: ", iter // n_folds, " with " + str(n_folds) + " folds"
++            )
+@@ -2405 +2397,12 @@
+-    df["Med"] = df.filter(regex=r"^fscore\d+$").median(axis=1)
++    df = (
++        pd.DataFrame(
++            np.asarray(fold_scores).T,
++            index=new_x_tr.columns,
++            columns=[f"fscore{i}" for i in range(len(fold_scores))],
++        )
++        .rename_axis("feature")
++        .reset_index()
++    )
++    df["Med"] = np.median(fold_scores, axis=0)
++    # Retain the historical outer-merge row order, including mixed feature labels.
++    df = pd.merge(pd.DataFrame({"feature": X.columns}), df, on="feature", how="outer")
+@@ -2507,18 +2509,0 @@
+-    # we are using early_stopping
+-    # we prevent the overridding of it by popping the n_iterations
+-    keys_to_pop = [
+-        "num_iterations",
+-        "num_iteration",
+-        "n_iter",
+-        "num_tree",
+-        "num_trees",
+-        "num_round",
+-        "num_rounds",
+-        "nrounds",
+-        "num_boost_round",
+-        "n_estimators",
+-        "max_iter",
+-    ]
+-    for key in keys_to_pop:
+-        params.pop(key, None)
+-
+@@ -2586 +2570,0 @@
+-    fastshap=False,
+@@ -2591 +2575 @@
+-    Train a LightGBM model with the given training data and hyperparameters and return the trained model and its SHAP values.
++    Train a LightGBM model with validation-based early stopping.
+@@ -2611,3 +2595 @@
+-        round(s) to continue training._train_lgb_model
+-    fastshap : bool
+-        enable or not fasttreeshap implementation
++        round(s) to continue training.
+@@ -2621,2 +2603,2 @@
+-    tuple of (Booster, numpy.ndarray, int)
+-        The trained LightGBM model, its SHAP values for X_train, and the best iteration reached during training.
++    lightgbm.Booster
++        The trained model; best_iteration records the early-stopping result.
+@@ -2631 +2613 @@
+-    bst = lgb.train(
++    return lgb.train(
+@@ -2639,20 +2621,2 @@
+-    # Compute SHAP values with proper version handling
+-    try:
+-        if fastshap:
+-            from fasttreeshap import TreeExplainer
+-
+-            explainer = TreeExplainer(bst, algorithm="v1")
+-        else:
+-            import shap
+-
+-            explainer = shap.TreeExplainer(bst)
+-
+-        shap_matrix = explainer.shap_values(X_train)
+-
+-    except Exception as e:  # noqa: BLE001 - normalize optional SHAP backend failures.
+-        raise RuntimeError(f"SHAP computation failed: {e!s}")
+-
+-    return bst, shap_matrix, bst.best_iteration
+-
+-
+-def _compute_importance(new_x_tr, shap_matrix, param, objective, fastshap):
++
++def _compute_importance(new_x_tr, shap_matrix, *, native=False):
+@@ -2668,5 +2632,4 @@
+-        Expected values are separate; no feature column is removed.
+-    param : dict
+-        A dictionary containing the parameters for a LightGBM model.
+-    objective : str
+-        The objective function of the LightGBM model.
++        Native LightGBM contributions instead contain a flattened block of
++        features plus a bias column per output.
++    native : bool, default=False
++        Whether contributions use the native LightGBM layout.
+@@ -2676,2 +2639,2 @@
+-    list
+-        A list of tuples containing feature names and their corresponding importance scores.
++    numpy.ndarray
++        Importance scores in input-column order.
+@@ -2682 +2644,0 @@
+-    # TreeExplainer separates the expected value from feature contributions.
+@@ -2687,0 +2650,16 @@
++    if not np.isfinite(values).all():
++        raise ValueError("SHAP contributions must be finite.")
++    if native:
++        n_rows, n_features = new_x_tr.shape
++        block_size = n_features + 1
++        if (
++            values.ndim != 2
++            or values.shape[0] != n_rows
++            or values.shape[1] == 0
++            or values.shape[1] % block_size
++        ):
++            raise ValueError(
++                "Native SHAP contributions must have shape (rows, (features + 1) * outputs)."
++            )
++        # Every output block has its own bias; TreeExplainer omits these columns.
++        values = values.reshape(n_rows, -1, block_size)[:, :, :-1].transpose(0, 2, 1)
+@@ -2690,2 +2667,0 @@
+-    if not np.isfinite(values).all():
+-        raise ValueError("SHAP contributions must be finite.")
+@@ -2699,44 +2675 @@
+-    importance = dict(zip(new_x_tr.columns, shap_imp))
+-    return sorted(importance.items(), key=operator.itemgetter(1))
+-
+-
+-def _merge_importance_df(df, importance, iter, n_folds, column_names, silent=True):
+-    """
+-    Merge the feature importance dataframe `df` with the importance
+-    information for the current iteration of a cross-validation loop.
+-
+-    Parameters
+-    ----------
+-    df : pandas.DataFrame
+-        The current feature importance dataframe.
+-    importance : dict
+-        A dictionary with the feature importance information for
+-        the current iteration.
+-    i : int
+-        The index of the current iteration.
+-    n_folds : int
+-        The number of folds used in the cross-validation loop.
+-    silent : bool, optional
+-        If True, suppress output.
+-
+-    Returns
+-    -------
+-    pandas.DataFrame
+-        The updated feature importance dataframe.
+-    """
+-
+-    col = "fscore" + str(iter)
+-    df2 = pd.DataFrame(importance, columns=["feature", col])
+-    scores = df2[col].to_numpy(dtype=float)
+-    if not np.isfinite(scores).all():
+-        raise ValueError("Feature importance must be finite.")
+-    total = scores.sum()
+-    if not np.isfinite(total):
+-        raise ValueError("Total feature importance must be finite.")
+-    df2[col] = scores / total if total > 0 else np.zeros_like(scores, dtype=float)
+-    df = pd.merge(df, df2, on="feature", how="outer")
+-    nit = divmod(iter, n_folds)[0]
+-    nf = divmod(iter, n_folds)[1]
+-    if not silent and nf == 0:
+-        print("Groot iteration: ", nit, " with " + str(n_folds) + " folds")
+-    return df
++    return shap_imp
+--- a/src/arfs/feature_selection/variable_importance.py
++++ b/src/arfs/feature_selection/variable_importance.py
+@@ -557,4 +557,2 @@
+-    values = (
+-        np.stack(shap_matrix, axis=-1)
+-        if isinstance(shap_matrix, list)
+-        else np.asarray(shap_matrix)
++    importance = _compute_importance(
++        gbm_model.valid_features, shap_matrix, native=not fastshap
+@@ -562,24 +560 @@
+-    if not np.isfinite(values).all():
+-        raise ValueError("SHAP contributions must be finite.")
+-    if not fastshap:
+-        n_rows, n_features = gbm_model.valid_features.shape
+-        block_size = n_features + 1
+-        if (
+-            values.ndim != 2
+-            or values.shape[0] != n_rows
+-            or values.shape[1] == 0
+-            or values.shape[1] % block_size
+-        ):
+-            raise ValueError(
+-                "Native SHAP contributions must have shape (rows, (features + 1) * outputs)."
+-            )
+-        # Native output has a bias column in every output block; TreeExplainer does not.
+-        values = values.reshape(n_rows, -1, block_size)[:, :, :-1].transpose(0, 2, 1)
+-    importance = dict(
+-        _compute_importance(
+-            gbm_model.valid_features, values, params, params["objective"], fastshap
+-        )
+-    )
+-    feature_importances = pd.DataFrame(
+-        {"feature": X.columns, "importance": [importance[c] for c in X.columns]}
+-    )
++    feature_importances = pd.DataFrame({"feature": X.columns, "importance": importance})

@@ -29,13 +29,13 @@ def training_folds(monkeypatch):
                 validation_target.to_numpy(),
             )
         )
-        return SimpleNamespace(best_iteration=1), None, 1
+        return SimpleNamespace(predict=lambda *args, **kwargs: None)
 
     monkeypatch.setattr(a, "_train_lgb_model", train)
     monkeypatch.setattr(
         a,
         "_compute_importance",
-        lambda frame, *args: list(zip(frame.columns, np.ones(frame.shape[1]))),
+        lambda frame, *args, **kwargs: np.ones(frame.shape[1]),
     )
     return seen
 

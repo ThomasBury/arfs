@@ -1,0 +1,45 @@
+{
+  "source_summary": "2177 passed, 609 warnings in 452.59s (0:07:32)",
+  "installed_wheel_matrix": {
+    "py39-minimum": {
+      "exit_code": 0,
+      "summary": "2177 passed, 610 warnings in 504.45s (0:08:24)"
+    },
+    "py39-locked": {
+      "exit_code": 0,
+      "summary": "2177 passed, 610 warnings in 504.46s (0:08:24)"
+    },
+    "py310-locked": {
+      "exit_code": 0,
+      "summary": "2177 passed, 610 warnings in 522.64s (0:08:42)"
+    },
+    "py311-locked": {
+      "exit_code": 1,
+      "summary": "2 failed, 2175 passed, 610 warnings in 567.07s (0:09:27)"
+    },
+    "py312-locked": {
+      "exit_code": 0,
+      "summary": "2177 passed, 611 warnings in 582.69s (0:09:42)"
+    },
+    "py312-newer": {
+      "exit_code": 0,
+      "summary": "2161 passed, 317 warnings in 601.71s (0:10:01)"
+    }
+  },
+  "targeted_retry": {
+    "py311-locked": {
+      "summary": "8 passed, 29 deselected in 55.13s",
+      "reason": "Two original GBM fresh-process tests timed out after 60 seconds; all eight cases passed on targeted retry.",
+      "test_file": "tests/test_gbm_persistence.py",
+      "selection": "fresh_process"
+    }
+  },
+  "source_sdist_wheel_modules_match": true,
+  "copied_tests_match": true,
+  "shared_non_shap_helpers_and_boost_groot_suffix_unchanged": true,
+  "standard_sphinx_build": "passed",
+  "ruff": "passed",
+  "uv_lock_check": "passed",
+  "baseline_source_sha256": "6f62cbb8922e6778b6bbe5f7abbcc3967cd8b2f96678fe51a765ed3ad15abdc7",
+  "revised_source_sha256": "169caeac207980ef6c7b3c70006677267c1c161e2fca4242a079e14fc280ef78"
+}
