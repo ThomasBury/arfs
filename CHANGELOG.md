@@ -2,7 +2,7 @@
 
 # Unreleased
 
-# 5.0.0 — 2026-11-18
+# 5.0.0 — 2026-11-19
 
 - Simplify BoostAGroota to array-based round aggregation and construct its final diagnostic table once. Build shared shadow frames in one pass while preserving dtypes and RNG draws. Remove BoostAGroota's `importance="fastshap"` mode; use `"shap"` instead. Validate current parameters during `fit`, reject invalid iteration counts, require completed fitting for selection operations, and expose `n_rounds_` and `n_features_in_`. Constructor defaults, selection rules, learner seeds and fixed validation splits are unchanged.
 

@@ -42,7 +42,7 @@ R16–R28 and R31 are also complete; their handoffs are linked in
 [R32](R32-documentation-workflows.md) and [R33](R33-release-evidence.md) are complete.
 **No RXX implementation remains.** R33's historical release delivery is recorded
 in the handoff. The tree-preprocessing and MRMR changes are included in
-[ARFS 5.0.0](../CHANGELOG.md#500--2026-11-18).
+[ARFS 5.0.0](../CHANGELOG.md#500--2026-11-19).
 Follow the
 [session batching and handoff guidance](REMEDIATION.md#session-batching-and-handoffs).
 Requests for the next confirmed follow-up use the first pending C phase above;
