@@ -2,6 +2,12 @@
 
 # Unreleased
 
+# 5.0.1 — 2026-11-19
+
+- Fix column type detection on pandas 3.1.1, including numeric interval columns.
+- Keep missing categories distinct from literal strings such as `"nan"` in isolation forest sampling. Missing values and categories seen only in zero-weight rows use code `-1`. Recheck sampled rows if your categorical columns contain missing values.
+- Add an offline first fit, a method chooser, and a contributor guide. Refresh the core and advanced tutorials with runnable examples.
+
 # 5.0.0 — 2026-11-19
 
 ## Upgrading to 5.0

@@ -1,16 +1,9 @@
 # ARFS feature selection
 
-```sh
-pip install arfs
-```
-
-The first fit uses ARFS 5.0 and pandas 2.x. ARFS 5.0's dtype check fails
-with pandas 3.1.1. If you already have ARFS 5.0 from PyPI, run
-`pip install "pandas<3"`. If PyPI offers an earlier ARFS release, install
-the 5.0 wheel from GitHub with pandas 2.x:
+Install ARFS 5.0.1 from GitHub to run the examples below.
 
 ```sh
-pip install "pandas<3" https://github.com/ThomasBury/arfs/releases/download/5.0.0/arfs-5.0.0-py3-none-any.whl
+pip install https://github.com/ThomasBury/arfs/releases/download/5.0.1/arfs-5.0.1-py3-none-any.whl
 ```
 
 ## First fit with GrootCV
